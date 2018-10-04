@@ -1,0 +1,2 @@
+User: {{$email}}
+Pass: {{$pass}}

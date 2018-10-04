@@ -1,0 +1,58 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Kiper",
+        "contact": {
+            "name": "Sergio Ramos",
+            "url": "https://concepthaus.mx"
+        },
+        "version": "0.0.1"
+    },
+    "host": "http://192.168.33.10",
+    "basePath": "",
+    "schemes": [
+        "http"
+    ],
+    "paths": {
+        "/api/user": {
+            "get": {
+                "tags": [
+                    "authuser"
+                ],
+                "summary": "Display a listing of the resource.",
+                "description": "Returns Auth User overview.",
+                "operationId": "api.user.getAuthUser",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Auth User overview."
+                    },
+                    "401": {
+                        "description": "Unauthorized action."
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Error": {
+            "required": [
+                "code",
+                "message"
+            ],
+            "properties": {
+                "code": {
+                    "description": "Class ProspectosController",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "description": "Class ProspectosController",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

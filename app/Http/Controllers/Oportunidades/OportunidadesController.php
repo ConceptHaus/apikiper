@@ -1,0 +1,268 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Response;
+use App\Http\Requests;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
+use App\Modelos\User;
+use App\Modelos\Prospecto\Prospecto;
+use App\Modelos\Oportunidad\Oportunidad;
+use App\Modelos\Oportunidad\EtiquetasOportunidad;
+use App\Modelos\Oportunidad\ColaboradorOportunidad;
+use App\Modelos\Oportunidad\ServicioOportunidad;
+use App\Modelos\Oportunidad\ProspectoOportunidad;
+use App\Modelos\Extras\Recordatorio;
+use App\Modelos\Extras\DetalleRecordatorio;
+use App\Modelos\Extras\Evento;
+use App\Modelos\Extras\DetalleEvento;
+
+use DB;
+use Mail;
+
+
+class OportunidadesController extends Controller
+{
+    
+
+    public function getAllOportunidades(){
+
+    }
+
+    public function getOneOportunidad($id){
+
+    }
+
+    public function updateOneOportunidad($id){
+
+    }
+
+    public function deleteOportunidad($id){
+        
+    }
+
+    public function getEtiquetas($id){
+
+    }
+
+    public function addEtiquetas(Request $request, $id){
+        $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
+        $colaborador = $this->guard()->user();
+        if(isset($request->etiquetas)){
+            foreach($request->etiquetas as $etiqueta){
+                $validator = $this->validadorEtiqueta($etiqueta);
+                if($validator->passes()){
+                    try{
+                        DB::beginTransaction();
+                            $etiqueta_oportunidad = new EtiquetaOportunidad;
+                            $etiqueta_oportunidad->id_oportunidad = $prospecto->id_prospecto;
+                            $etiqueta_oportunidad->id_etiqueta = $etiqueta['id_etiqueta'];
+                            $oportunidad->etiqueta_oportunidad()->save($etiqueta_oportunidad);
+                        DB::commit();
+
+                    }catch(Exception $e){
+                        DB::rollBack();
+                        return response()->json([
+                            'error'=>true,
+                            'message'=>$e,
+                        ],400);
+                    }
+                }
+                else{
+                    $errores = $validator->errors()->toArray();
+                    return response()->json([
+                        'error'=>true,
+                        'messages'=>$errores
+                    ],400);
+                }
+            }
+            return response()->json([
+                        'error'=>false,
+                        'message'=>'Successfully register'
+                    ],200);
+
+        }
+        return response()->json([
+            'error'=>true,
+            'messages'=>'No hay etiquetas'
+        ],400);
+        
+    }   
+
+    public function getArchivos($id){
+
+    }
+
+    public function addArchivos(Request $request, $id){
+        $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
+        $colaborador = $this->guard()->user();
+        if(isset($request->files)){
+            foreach($request->files as $file){
+                $validator = $this->validadorFile($file);
+                if($validator->passes()){
+                        DB::beginTransaction();
+                        $archivo_oportunidad = new ArchivosOportunidadColaborador;
+                        $archivo_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
+                        $archivo_oportunidad->id_colaborador = $colaborador->id;
+                        $archivo_oportunidad->nombre = $file['nombre'];
+                        if(isset($file['desc'])){
+                            $archivo_oportunidad->desc = $file['desc'];
+                        }
+                        $archivo_oportunidad->url = $this->uploadFilesS3($file['file'],$colaborador->id,$prospecto->id_prospecto);
+                        $oportunidad->archivos_prospecto_colaborador()->save($archivo_prospecto);
+                        DB::commit();
+                }else{
+                    $errores = $validator->errors()->toArray();
+                    return response()->json([
+                        'error'=>true,
+                        'messages'=>$errores
+                    ],400);
+                }
+
+            }
+            return response()->json([
+                'error'=>false,
+                'messages'=>'Succesfully register'
+            ],200);
+        }
+        return response()->json([
+            'error'=>true,
+            'messages'=>'No hay archivos'
+        ],400);
+    }
+
+    public function getEventos($id){
+
+    }
+
+    public function addEventos(Request $request, $id){
+        $validator = $this->validadorEvento($request->all());
+        $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
+        $colaborador = $this->guard()->user();
+
+        if($validator->passes()){
+            try{
+                DB::beginTransaction();
+                $evento->id_colaborador = $colaborador->id;
+                $evento->id_oportunidad = $oportunidad->id_oportunidad;
+                $evento->save();
+
+                $detalle_evento = new DetalleEvento;
+                $detalle_evento->id_evento = $evento->id_evento;
+                $detale_evento->fecha_evento = $request->fecha_evento;
+                $detalle_evento->hora_evento = $request->hora_evento;
+                $detalle_evento->nota_evento = $request->nota_evento;
+                $evento->detalle()->save($detalle_evento);
+
+                DB::commit();
+                return response()->json([
+                    'error'=>false,
+                    'message'=>'Successfully register',
+                    'data'=>$evento
+                ],200);
+            }catch(Exception $e){
+                DB::rollBack();
+                return response()->json([
+                    'error'=>true,
+                    'message'=>$e
+                ],400);
+            }
+        }
+    }
+
+    public function getRecordatorios($id){
+
+    }
+
+    public function addRecordatorios(Request $request, $id){
+        $validator = $this->validadorRecordatorio($request->all());
+        $oportunidad = Prospecto::where('id_oportunidad',$id)->first();
+        $colaborador = $this->guard()->user();
+
+        if($validator->passes()){
+            try{
+                DB::beginTransaction();
+                $recordatorio = new Recordatorio;
+                $recordatorio->id_colaborador = $colaborador->id;
+                $recordatorio->id_oportunidad = $oportunidad->id_oportunidad;
+                $recordatorio->save();
+
+                $detalle_recordatorio = new DetalleRecordatorio;
+                $detalle_recordatorio->id_recordatorio = $recordatorio->id_recordatorio;
+                $detalle_recordatorio->fecha_recordatorio = $request->fecha_recordatorio;
+                $detalle_recordatorio->hora_recordatorio = $request->hora_recordatorio;
+                $detalle_recordatorio->nota_recordatorio = $request->nota_recordatorio;
+                $recordatorio->detalle()->save($detalle_recordatorio);
+                DB::comit();
+
+                return response()->json([
+                    'error'=>false,
+                    'message'=>'Successfully register',
+                    'data'=>$recordatorio,
+                ],200);
+
+            }catch(Exception $e){
+                DB::rollBack();
+                return response()->json([
+                    'error'=>true,
+                    'message'=>$e
+                ],400);
+            }
+        }
+    }
+   
+    public function validadorOportunidad(aray $data){
+        return Validator::make($data,[
+            'nombre_oportunidad'=>'required|string|max:255',
+            'id_servicio_cat'=>'required|numeric',
+            'id_colaborador'=>'required|string|max:255'
+        ]);
+    }
+
+    public function validadorEvento(array $data){
+        return Validator::make($data,[
+            'fecha_evento'=>'required|string|max:255',
+            'hora_evento'=>'required|string|max:255',
+            'nota_evento'=>'required|string|max:255'
+        ]);
+    }
+
+    public function validadorRecordatorio(array $data){
+        return Validator::make($data,[
+            'fecha_recordatorio'=>'required|string|max:255',
+            'hora_recordatorio'=>'required|string|max:255',
+            'nota_recordatorio'=>'required|string|max:255'
+        ]);
+    }
+
+    public function validadorEtiqueta(array $data){
+        return Validator::make($data,[
+            'id_etiqueta'=>'required|numeric'
+        ]);
+    }
+
+    public function validadorFile(array $data){
+        return Validator::make($data,[
+            'nombre'=>'required|string',
+            'file'=>'required|file'
+        ]);
+    }
+    public function uploadFilesS3($file, $colaborador, $oportunidad){
+        $disk = Storage::disk('s3');
+        $path = $file->store('oportunidad/'.$colaborador,'/'.$prospecto,'s3');
+        return $path;
+    }
+
+    public function guard(){
+
+        return Auth::guard();
+    }
+    
+
+
+}
