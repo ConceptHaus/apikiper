@@ -64,7 +64,7 @@ class ColaboradoresController extends Controller
                     
                     Mail::send('auth.emails.register',$arrayColaborador, function($contacto) use ($arrayColaborador){
                         $contacto->from('contacto@kiper.app', 'Kiper');
-                        $contacto->to($arrayColaborador['email'], 'Termino tu registro en Kiper');
+                        $contacto->to($arrayColaborador['email'], 'Termina tu registro en Kiper');
                     });
                     DB::commit();
                     return response()->json([
