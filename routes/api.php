@@ -39,7 +39,7 @@ Route::prefix('/v1/users')->group(function(){
 
 //Colaboradores
 Route::prefix('/v1/colaboradores')->group(function(){
-        Route::middleware(['cors'])->group(function(){
+        Route::middleware(['jwt.auth','cors'])->group(function(){
             Route::post('/', 'Colaboradores\ColaboradoresController@registerColaborador');
             Route::get('/', 'Colaboradores\ColaboradoresController@getAllColaboradores');
             Route::get('/{id}','Colaboradores\ColaboradoresController@getOneColaborador');
