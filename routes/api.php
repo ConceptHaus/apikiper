@@ -25,6 +25,10 @@ Route::prefix('/v1/users')->group(function(){
             Route::post('/login', 'Auth\LoginController@login');
             Route::get('/activate/{token}','Auth\UserController@activateUser');
             Route::post('/password','Auth\UserController@setPassword');
+            Route::get('event', function () {
+                event(new App\Events\EventColaborador('Someone'));
+                return "Event has been sent!";
+            });
         });
         
         Route::middleware(['jwt.auth','cors'])->group(function(){
@@ -35,7 +39,7 @@ Route::prefix('/v1/users')->group(function(){
 
 //Colaboradores
 Route::prefix('/v1/colaboradores')->group(function(){
-        Route::middleware(['jwt.auth','cors'])->group(function(){
+        Route::middleware(['cors'])->group(function(){
             Route::post('/', 'Colaboradores\ColaboradoresController@registerColaborador');
             Route::get('/', 'Colaboradores\ColaboradoresController@getAllColaboradores');
             Route::get('/{id}','Colaboradores\ColaboradoresController@getOneColaborador');

@@ -13,6 +13,7 @@
         "laravel/tinker": "~1.0",
         "nesbot/carbon": "1.29.*",
         "optimus/heimdal": "~1.0",
+        "pusher/pusher-php-server": "~3.0",
         "tymon/jwt-auth": "dev-develop",
         "zircote/swagger-php": "2.*"
     },
