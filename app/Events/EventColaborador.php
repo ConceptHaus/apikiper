@@ -8,9 +8,9 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
-class EventColaborador
+class EventColaborador implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     
@@ -21,10 +21,10 @@ class EventColaborador
      *
      * @return void
      */
-    public function __construct($username)
+    public function __construct($message)
     {
-        $this->$username = $username;
-        $this->message  = "{$username} liked your status";
+       
+        $this->message = $message;
     }
 
     /**
@@ -34,6 +34,6 @@ class EventColaborador
      */
     public function broadcastOn()
     {
-        return ['status-liked'];
+        return new Channel('my-channel');
     }
 }

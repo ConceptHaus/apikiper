@@ -25,8 +25,8 @@ Route::prefix('/v1/users')->group(function(){
             Route::post('/login', 'Auth\LoginController@login');
             Route::get('/activate/{token}','Auth\UserController@activateUser');
             Route::post('/password','Auth\UserController@setPassword');
-            Route::get('event', function () {
-                event(new App\Events\EventColaborador('Someone'));
+            Route::get('/event', function () {
+                broadcast(new App\Events\EventColaborador('Hi there!'));
                 return "Event has been sent!";
             });
         });
