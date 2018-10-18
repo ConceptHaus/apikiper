@@ -214,6 +214,13 @@ class OportunidadesController extends Controller
                 ],400);
             }
         }
+        
+        $errores = $validator->errors()->toArray();
+        return response()->json([
+            'error'=>true,
+            'messages'=>$errores
+        ],400);
+
     }
    
     public function validadorOportunidad(aray $data){
