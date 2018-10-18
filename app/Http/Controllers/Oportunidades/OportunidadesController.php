@@ -181,7 +181,7 @@ class OportunidadesController extends Controller
 
     public function addRecordatorios(Request $request, $id){
         $validator = $this->validadorRecordatorio($request->all());
-        $oportunidad = Prospecto::where('id_oportunidad',$id)->first();
+        $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
         $colaborador = $this->guard()->user();
 
         if($validator->passes()){

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use App\Http\Requests;
 
+use App\Modelos\Prospecto\Prospecto;
 
 use DB;
 use Mail;
@@ -56,5 +57,9 @@ class DataViewsController extends Controller
             ]
         ]);
 
+    }
+
+    public function prospectos(){
+        $total_prospectos = 
     }
 }
