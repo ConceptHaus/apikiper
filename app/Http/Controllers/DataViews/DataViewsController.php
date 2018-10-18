@@ -30,6 +30,13 @@ class DataViewsController extends Controller
                                     ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                                     ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
 
+        $colaboradores = DB::table('users')
+                                ->join('colaborador_oportunidad','users.id','colaborador_oportunidad.id_colaborador')
+                                ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                                ->select('users.*')->orderBy('detalle_oportunidad.descripcion')->get();
+
+        $origen_prospecto = DB::table('prospectos')
+                                ->select(DB::raw('count(*) as fuente_count, fuente'))->groupBy('fuente')->get();
         return response()->json([
             'message'=>'Success',
             'error'=>false,
@@ -37,9 +44,9 @@ class DataViewsController extends Controller
                 'oportunidades_cerradas'=>$oportuniades_cerradas,
                 'oportunidades_cotizadas'=>$oportunidades_cotizadas,
                 'prospectos_sin_contactar'=>'',
-                'colaboradores'=>'',
+                'colaboradores'=>$colaboradores,
                 'ingresos'=>'',
-                'origen_prospecto'=>''
+                'origen_prospecto'=>$origen_prospecto
             ]
         ]);
 
