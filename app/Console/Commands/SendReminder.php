@@ -37,8 +37,7 @@ class SendReminders extends Command
      */
     public function handle()
     {
-        //$appointmentReminder = new \App\AppointmentReminders\AppointmentReminder();
-        //$appointmentReminder->sendReminders();
+        $appointmentReminder = new \App\AppointmentReminders\AppointmentReminder();
+        $appointmentReminder->sendReminders();
     }
-
 }

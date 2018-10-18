@@ -5,8 +5,8 @@ namespace App\AppointmentReminders;
 use Illuminate\Log;
 use Carbon\Carbon;
 use Twilio\Rest\Client;
-
-class AppointmentReminders
+use App\Modelos\Extras\Recordatorio;
+class AppointmentReminder
 {
     /**
      * Construct a new AppointmentReminder
@@ -15,7 +15,7 @@ class AppointmentReminders
      */
     function __construct()
     {
-        $this->appointments = \App\Appointment::appointmentsDue()->get();
+        $this->appointments = Recordatorio::AppoinmentsDue()->get();
 
         
         $accountSid = env('TWILIO_ACCOUNT_SID');
@@ -26,10 +26,48 @@ class AppointmentReminders
     }
 
     public function sendReminders(){
-        $this->appoinment->each(
-            function($appoinment){
+        $this->appointments->each(
+            function($appointment){
                 $this->_remindAbout($appointment);
             }
         );
     }
+
+    /**
+     * Sends a message for an appointment
+     *
+     * @param Appointment $appointment The appointment to remind
+     *
+     * @return void
+     */
+    private function _remindAbout($appointment)
+    {
+        // $recipientName = $appointment->name;
+        // $time = Carbon::parse($appointment->when, 'UTC')
+        //       ->subMinutes($appointment->timezoneOffset)
+        //       ->format('g:i a');
+
+        $message = "Hello test, this is a reminder that you have an appointment at time!";
+        $this->_sendMessage('+525539487708', $message);
+    }
+
+    /**
+     * Sends a single message using the app's global configuration
+     *
+     * @param string $number  The number to message
+     * @param string $content The content of the message
+     *
+     * @return void
+     */
+    private function _sendMessage($number, $content)
+    {
+        $this->twilioClient->messages->create(
+            $number,
+            array(
+                "from" => $this->sendingNumber,
+                "body" => $content
+            )
+        );
+    }
+
 }

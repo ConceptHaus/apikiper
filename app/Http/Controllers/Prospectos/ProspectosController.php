@@ -49,6 +49,8 @@ class ProspectosController extends Controller
                 $prospecto->nombre = $request->nombre;
                 $prospecto->apellido = $request->apellido;
                 $prospecto->correo = $request->correo;
+                $prospecto->telefono = $request->telefono;
+                $prospecto->pruesto = $request->puesto;
                 $prospectoDetalle->nota = $request->nota;
                 $prospecto->fuente = $request->fuente;
                 $prospecto->save();

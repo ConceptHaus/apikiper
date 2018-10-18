@@ -3,6 +3,8 @@
 namespace App\Modelos\Extras;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+
 
 class Recordatorio extends Model
 {
@@ -30,5 +32,12 @@ class Recordatorio extends Model
 
     public function detalle(){
         return $this->hasOne('App\Modelos\Extras\DetalleRecordatorio','id_recordatorio','id_recordatorio');
+    }
+
+    public function scopeAppoinmentsDue($query){
+        $now = Carbon::now();
+        $inTenMinutes = Carbon::now()->addMinutes(10);
+        return $query->join('detalle_recordatorio','detalle_recordatorio.id_recordatorio','recordatorios.id_recordatorio')
+                    ->where('detalle_recordatorio.fecha_recordatorio','>=',$now)->where('detalle_recordatorio.fecha_recordatorio','<=',$inTenMinutes);
     }
 }

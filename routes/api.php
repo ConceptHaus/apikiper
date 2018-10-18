@@ -99,3 +99,11 @@ Route::prefix('/v1/oportunidades')->group(function(){
         });  
 });
 
+
+//DataViews
+
+Route::prefix('/v1/generales')->group(function(){
+    Route::middleware(['jwt.auth','cors'])->group(function(){
+        Route::get('/dashboard','DataViews\DataViewsController@dashboard');
+    });
+});
