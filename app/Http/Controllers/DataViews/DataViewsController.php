@@ -37,13 +37,19 @@ class DataViewsController extends Controller
 
         $origen_prospecto = DB::table('prospectos')
                                 ->select(DB::raw('count(*) as fuente_count, fuente'))->groupBy('fuente')->get();
+
+        $prospectos_sin_contactar = DB::table('prospectos')
+                                ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+                                ->where('status_prospecto.id_cat_status_prospecto','=',0)->count();
+        
+                                
         return response()->json([
             'message'=>'Success',
             'error'=>false,
             'data'=>[
                 'oportunidades_cerradas'=>$oportuniades_cerradas,
                 'oportunidades_cotizadas'=>$oportunidades_cotizadas,
-                'prospectos_sin_contactar'=>'',
+                'prospectos_sin_contactar'=>$prospectos_sin_contactar,
                 'colaboradores'=>$colaboradores,
                 'ingresos'=>'',
                 'origen_prospecto'=>$origen_prospecto
