@@ -198,7 +198,7 @@ class OportunidadesController extends Controller
                 $detalle_recordatorio->hora_recordatorio = $request->hora_recordatorio;
                 $detalle_recordatorio->nota_recordatorio = $request->nota_recordatorio;
                 $recordatorio->detalle()->save($detalle_recordatorio);
-                DB::comit();
+                DB::commit();
 
                 return response()->json([
                     'error'=>false,
