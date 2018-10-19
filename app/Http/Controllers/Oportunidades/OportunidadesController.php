@@ -62,7 +62,7 @@ class OportunidadesController extends Controller
                             $etiqueta_oportunidad = new EtiquetasOportunidad;
                             $etiqueta_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
                             $etiqueta_oportunidad->id_etiqueta = $etiqueta['id_etiqueta'];
-                            $oportunidad->etiqueta_oportunidad()->save($etiqueta_oportunidad);
+                            $oportunidad->etiquetas_oportunidad()->save($etiqueta_oportunidad);
                         DB::commit();
 
                     }catch(Exception $e){
