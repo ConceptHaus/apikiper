@@ -59,7 +59,7 @@ class OportunidadesController extends Controller
                 if($validator->passes()){
                     try{
                         DB::beginTransaction();
-                            $etiqueta_oportunidad = new EtiquetaOportunidad;
+                            $etiqueta_oportunidad = new EtiquetasOportunidad;
                             $etiqueta_oportunidad->id_oportunidad = $prospecto->id_prospecto;
                             $etiqueta_oportunidad->id_etiqueta = $etiqueta['id_etiqueta'];
                             $oportunidad->etiqueta_oportunidad()->save($etiqueta_oportunidad);
