@@ -60,6 +60,37 @@ class DataViewsController extends Controller
     }
 
     public function prospectos(){
-        $total_prospectos = 
+        $total_prospectos = Prospecto::all()->count();
+        $nocontactados_prospectos = DB::table('prospectos')
+                                    ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+                                    ->where('status_prospecto.id_cat_status_prospecto','=',0)->count();
+        $prospectos_fuente = DB::table('prospectos')
+                                    ->select(DB::raw('count(*) as fuente_count, fuente'))->groupBy('fuente')->get();
+        
+        $prospectos_t= DB::table('prospectos')
+                            ->join('detalle_prospecto','prospectos.id_prospecto','detalle_prospecto.id_prospecto')
+                            ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+                            
+                            ->select('prospectos.id_prospecto',
+                                    'prospectos.nombre',
+                                    'prospectos.apellido',
+                                    'prospectos.correo',
+                                    'detalle_prospecto.telefono',
+                                    'prospectos.fuente',
+                                    'prospectos.created_at')->get();
+        
+        $prospectos = Prospecto::with('detalle_prospecto')
+                                ->with('status_prospecto.status')->get();
+
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>[
+                'proespectos'=>$prospectos,
+                'prospectos_total'=>$total_prospectos,
+                'prospectos_nocontactados'=> $nocontactados_prospectos,
+                'prospectos_fuente'=> $prospectos_fuente
+            ]
+        ]);
     }
 }

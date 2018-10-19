@@ -103,7 +103,8 @@ Route::prefix('/v1/oportunidades')->group(function(){
 //DataViews
 
 Route::prefix('/v1/generales')->group(function(){
-    Route::middleware(['jwt.auth','cors'])->group(function(){
+    Route::middleware(['cors'])->group(function(){
         Route::get('/dashboard','DataViews\DataViewsController@dashboard');
+        Route::get('/prospectos','DataViews\DataViewsController@prospectos');
     });
 });
