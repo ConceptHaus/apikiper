@@ -78,7 +78,7 @@ Route::prefix('/v1/prospectos')->group(function(){
 
 //Oportunidades
 Route::prefix('/v1/oportunidades')->group(function(){
-        Route::middleware(['jwt.auth','cors'])->group(function(){
+        Route::middleware(['cors'])->group(function(){
             //CRUD principal
             Route::get('/','Oportunidades\OportunidadesController@getAllOportunidades');
             Route::get('/{id}','Oportunidades\OportunidadesController@getOneOportunidad');
