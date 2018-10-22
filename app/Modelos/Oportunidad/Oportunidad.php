@@ -50,7 +50,7 @@ use Alsofronie\Uuid\UuidModelTrait;
     }
 
     public function prospecto(){
-        return $this->hasOne('App\Modelos\Oportunidad\ProspectoOportunidad','id_oportunidad','id_oportunidad');
+        return $this->hasMany('App\Modelos\Oportunidad\ProspectoOportunidad','id_oportunidad','id_oportunidad');
     }
 
  }

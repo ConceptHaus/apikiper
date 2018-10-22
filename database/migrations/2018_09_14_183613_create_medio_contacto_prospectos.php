@@ -20,8 +20,8 @@ class CreateMedioContactoProspectos extends Migration
             $table->foreign('id_mediocontacto_catalogo')->references('id_mediocontacto_catalogo')->on('mediocontacto_catalogo')->onDelete('cascade');
             $table->uuid('id_prospecto');
             $table->foreign('id_prospecto')->references('id_prospecto')->on('prospectos')->onDelete('cascade');
-            $table->string('descripcion');
-            $table->string('fecha');
+            $table->string('descripcion')->nullable();
+            $table->dateTime('fecha');
             $table->string('hora');
             $table->timestamps();
         });

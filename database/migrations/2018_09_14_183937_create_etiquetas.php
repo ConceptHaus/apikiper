@@ -17,7 +17,7 @@ class CreateEtiquetas extends Migration
         Schema::create('etiquetas', function (Blueprint $table) {
             $table->increments('id_etiqueta')->unsigned();
             $table->string('nombre');
-            $table->string('descripcion');
+            $table->string('descripcion')->nullable();
             $table->timestamps();
         });
     }

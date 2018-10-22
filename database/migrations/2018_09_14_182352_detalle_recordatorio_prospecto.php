@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class DetalleRecordatorio extends Migration
+class DetalleRecordatorioProspecto extends Migration
 {
     /**
      * Run the migrations.
@@ -14,13 +14,13 @@ class DetalleRecordatorio extends Migration
     public function up()
     {
         //
-        Schema::create('detalle_recordatorio', function (Blueprint $table) {
+        Schema::create('detalle_recordatorio_prospecto', function (Blueprint $table) {
             $table->increments('id_detalle_recordatorio')->unsigned();
-            $table->integer('id_recordatorio')->unsigned();
-            $table->foreign('id_recordatorio')->references('id_recordatorio')->on('recordatorios')->onDelete('cascade');
-            $table->string('fecha_recordatorio');
+            $table->integer('id_recordatorio_prospecto')->unsigned();
+            $table->foreign('id_recordatorio_prospecto')->references('id_recordatorio_prospecto')->on('recordatorios_prospecto')->onDelete('cascade');
+            $table->dateTime('fecha_recordatorio');
             $table->string('hora_recordatorio');
-            $table->string('nota_recordatorio');
+            $table->string('nota_recordatorio')->nullable();
             $table->timestamps();
         });
     }

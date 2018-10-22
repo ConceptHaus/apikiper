@@ -17,7 +17,7 @@ class CreateCatStatusOportunidad extends Migration
         Schema::create('cat_status_oportunidad', function (Blueprint $table) {
             $table->increments('id_cat_status_oportunidad')->unsigned();
             $table->string('status');
-            $table->string('descripcion');
+            $table->string('descripcion')->nullable();
             $table->timestamps();
         });
     }

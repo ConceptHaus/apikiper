@@ -12,7 +12,9 @@ class MedioContactoProspecto extends Model
         'id_medio_contacto_prospecto',
         'id_mediocontacto_catalogo',
         'id_prospecto',
-        'descripcion'
+        'descripcion',
+        'fecha',
+        'hora'
     ];
 
     public function prospecto(){

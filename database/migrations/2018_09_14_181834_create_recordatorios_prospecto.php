@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateArchivosProspectoColaborador extends Migration
+class CreateRecordatoriosProspecto extends Migration
 {
     /**
      * Run the migrations.
@@ -14,19 +14,16 @@ class CreateArchivosProspectoColaborador extends Migration
     public function up()
     {
         //
-        Schema::create('archivos_prospecto_colaborador', function (Blueprint $table) {
-            $table->increments('id_archivos_prospecto_colaborador')->unsigned();
-
-            $table->uuid('id_colaborador');
-            $table->foreign('id_colaborador')->references('id')->on('users')->onDelete('cascade');
+        Schema::create('recordatorios_prospecto', function (Blueprint $table) {
+            $table->increments('id_recordatorio_prospecto')->unsigned();
 
             $table->uuid('id_prospecto');
             $table->foreign('id_prospecto')->references('id_prospecto')->on('prospectos')->onDelete('cascade');
 
-            $table->string('nombre');
-            $table->string('desc')->nullable();
-            $table->string('url');
+            $table->uuid('id_colaborador');
+            $table->foreign('id_colaborador')->references('id')->on('users')->onDelete('cascade');
 
+           
             $table->timestamps();
         });
     }
@@ -39,6 +36,6 @@ class CreateArchivosProspectoColaborador extends Migration
     public function down()
     {
         //
-          Schema::dropIfExists('archivos_prospecto_colaborador');
+          Schema::dropIfExists('recordatorios_prospecto');
     }
 }

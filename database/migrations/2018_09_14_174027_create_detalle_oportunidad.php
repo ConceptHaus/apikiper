@@ -21,7 +21,8 @@ class CreateDetalleOportunidad extends Migration
             $table->foreign('id_oportunidad')->references('id_oportunidad')->on('oportunidades')->onDelete('cascade');
 
 
-            $table->string('descripcion');
+            $table->string('descripcion')->nullable();
+            $table->integer('valor')->nullable();
             $table->timestamps();
         });
     }

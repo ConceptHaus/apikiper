@@ -21,7 +21,7 @@ class CreateArchivosOportunidadColaborador extends Migration
             $table->uuid('id_oportunidad');
             $table->foreign('id_oportunidad')->references('id_oportunidad')->on('oportunidades')->onDelete('cascade');
             $table->string('nombre');
-            $table->string('descripcion');
+            $table->string('descripcion')->nullable();
             $table->string('url');
             $table->timestamps();
         });

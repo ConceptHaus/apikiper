@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRecordatorios extends Migration
+class CreateOportunidadProspectoTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,12 @@ class CreateRecordatorios extends Migration
      */
     public function up()
     {
-        //
-        Schema::create('recordatorios', function (Blueprint $table) {
-            $table->increments('id_recordatorio')->unsigned();
-
+        Schema::create('oportunidad_prospecto', function (Blueprint $table) {
+            $table->increments('id_oportunidad_prospecto');
             $table->uuid('id_prospecto');
             $table->foreign('id_prospecto')->references('id_prospecto')->on('prospectos')->onDelete('cascade');
-
-            $table->uuid('id_colaborador');
-            $table->foreign('id_colaborador')->references('id')->on('users')->onDelete('cascade');
-
             $table->uuid('id_oportunidad');
             $table->foreign('id_oportunidad')->references('id_oportunidad')->on('oportunidades')->onDelete('cascade');
-
             $table->timestamps();
         });
     }
@@ -37,7 +30,6 @@ class CreateRecordatorios extends Migration
      */
     public function down()
     {
-        //
-          Schema::dropIfExists('recordatorios');
+        Schema::dropIfExists('opotunidad_prospecto');
     }
 }

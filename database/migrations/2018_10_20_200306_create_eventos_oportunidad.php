@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEventos extends Migration
+class CreateEventosOportunidad extends Migration
 {
     /**
      * Run the migrations.
@@ -13,20 +13,18 @@ class CreateEventos extends Migration
      */
     public function up()
     {
-        //
-        Schema::create('eventos', function (Blueprint $table) {
-            $table->increments('id_evento')->unsigned();
+        Schema::create('eventos_oportunidad', function (Blueprint $table) {
 
-            $table->uuid('id_prospecto');
-            $table->foreign('id_prospecto')->references('id_prospecto')->on('prospectos')->onDelete('cascade');
-
-            $table->uuid('id_colaborador');
-            $table->foreign('id_colaborador')->references('id')->on('users')->onDelete('cascade');
+            $table->increments('id_evento_oportunidad')->unsigned();
 
             $table->uuid('id_oportunidad');
             $table->foreign('id_oportunidad')->references('id_oportunidad')->on('oportunidades')->onDelete('cascade');
 
+             $table->uuid('id_colaborador');
+            $table->foreign('id_colaborador')->references('id')->on('users')->onDelete('cascade');
+
             $table->timestamps();
+
         });
     }
 
@@ -37,7 +35,7 @@ class CreateEventos extends Migration
      */
     public function down()
     {
-        //
-          Schema::dropIfExists('eventos');
+         Schema::dropIfExists('eventos_oportunidad');
+
     }
 }

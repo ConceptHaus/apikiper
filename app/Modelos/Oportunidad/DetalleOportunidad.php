@@ -11,7 +11,8 @@ class DetalleOportunidad extends Model
     protected $fillable = [
         'id_detalle_oportunidad',
         'id_oportunidad',
-        'descripcion'
+        'descripcion',
+        'valor'
     ];
     
     public function oportunidad(){

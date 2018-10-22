@@ -17,7 +17,7 @@ class User extends Authenticatable implements JWTSubject
 
 
     protected $fillable = [
-        'nombre', 'email', 'password','apellido','is_admin','status'
+       'id','nombre', 'email', 'password','apellido','is_admin','status'
     ];
    
 
@@ -43,7 +43,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function oportunidad(){
-        return $this->hasMany('App\Modelos\Oportunidad\Oportunidad','id_colaborador','id');
+        return $this->hasMany('App\Modelos\Oportunidad\ColaboradorOportunidad','id_colaborador','id');
     }
 
     public function archivos_oportunidad(){
@@ -57,7 +57,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function prospecto(){
-        return $this->hasMany('App\Modelos\Prospecto\Prospecto','id_colaborador','id');
+        return $this->hasMany('App\Modelos\Prospecto\ColaboradorProspecto','id_colaborador','id');
 
     }
 

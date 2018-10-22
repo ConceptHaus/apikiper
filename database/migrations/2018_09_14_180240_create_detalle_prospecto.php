@@ -20,12 +20,12 @@ class CreateDetalleProspecto extends Migration
             $table->uuid('id_prospecto');
             $table->foreign('id_prospecto')->references('id_prospecto')->on('prospectos')->onDelete('cascade');
 
-            $table->string('puesto');
-            $table->string('empresa');
-            $table->string('telefono');
-            $table->string('celular');
-            $table->string('whatsapp');
-            $table->string('nota');
+            $table->string('puesto')->nullable();
+            $table->string('empresa')->nullable();
+            $table->string('telefono')->nullable();
+            $table->string('celular')->nullable();
+            $table->string('whatsapp')->nullable();
+            $table->string('nota')->nullable();
             $table->timestamps();
         });
     }

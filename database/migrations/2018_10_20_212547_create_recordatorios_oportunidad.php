@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDetalleColaborador extends Migration
+class CreateRecordatoriosOportunidad extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,16 @@ class CreateDetalleColaborador extends Migration
      */
     public function up()
     {
-        //
-        Schema::create('detalle_colaborador', function (Blueprint $table) {
-            $table->increments('id_detalle_colaborador')->unsigned();
+       Schema::create('recordatorios_oportunidad', function (Blueprint $table) {
+            $table->increments('id_recordatorio_oportunidad')->unsigned();
+
+            $table->uuid('id_oportunidad');
+            $table->foreign('id_oportunidad')->references('id_oportunidad')->on('oportunidades')->onDelete('cascade');
+
             $table->uuid('id_colaborador');
             $table->foreign('id_colaborador')->references('id')->on('users')->onDelete('cascade');
-            $table->string('puesto')->nullable();
-            $table->string('telefono')->nullable();
-            $table->string('fecha_nacimiento')->nullable();
+
+           
             $table->timestamps();
         });
     }
@@ -32,7 +34,7 @@ class CreateDetalleColaborador extends Migration
      */
     public function down()
     {
-        //
-          Schema::dropIfExists('detalle_colaborador');
+        Schema::dropIfExists('recordatorios_oportunidad');
+
     }
 }

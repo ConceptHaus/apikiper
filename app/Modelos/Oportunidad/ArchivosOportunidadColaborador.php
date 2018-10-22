@@ -9,6 +9,7 @@ class ArchivosOportunidadColaborador extends Model
     protected $table = 'archivos_oportunidad_colaborador';
     protected $primaryKey = 'id_archivos_oportunidad_colaborador';
     protected $fillable = [
+        'id_archivos_oportunidad_colaborador',
         'id_colaborador',
         'id_oportunidad',
         'nombre',

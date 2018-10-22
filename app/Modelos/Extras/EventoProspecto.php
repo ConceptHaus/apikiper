@@ -4,15 +4,15 @@ namespace App\Modelos\Extras;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Evento extends Model
+class EventoProspecto extends Model
 {
-    protected $table = 'eventos';
-    protected $primaryKey = 'id_evento';
+    protected $table = 'eventos_prospecto';
+    protected $primaryKey = 'id_evento_prospecto';
     protected $fillable = [
-        'id_evento',
+        'id_evento_prospecto',
         'id_prospecto',
         'id_colaborador',
-        'id_oportunidad'
+       
     ];
 
     public function prospecto(){
@@ -23,11 +23,8 @@ class Evento extends Model
         return $this->belongsTo('App\Modelos\User','id','id_colaborador');
     }
 
-    public function oportunidad(){
-        return $this->belongsTo('App\Modelos\Oportunidad\Oportunidad','id_oportunidad','id_oportunidad');
-    }
-
+    
     public function detalle(){
-        return $this->hasOne('App\Modelos\Extras\DetalleEvento','id_evento','id_evento');
+        return $this->hasOne('App\Modelos\Extras\DetalleEventoProspecto','id_evento_prospecto','id_evento_prospecto');
     }
 }

@@ -17,7 +17,7 @@ class CreateCatStatusProspecto extends Migration
         Schema::create('cat_status_prospecto', function (Blueprint $table) {
             $table->increments('id_cat_status_prospecto')->unsigned();
             $table->string('status');
-            $table->string('descripcion');
+            $table->string('descripcion')->nullable();
             $table->timestamps();
         });
     }

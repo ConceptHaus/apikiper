@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use App\Http\Requests;
 
 use App\Modelos\Prospecto\Prospecto;
+use App\Modelos\User;
 
 use DB;
 use Mail;
@@ -32,16 +33,23 @@ class DataViewsController extends Controller
                                     ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
 
         $colaboradores = DB::table('users')
-                                ->join('colaborador_oportunidad','users.id','colaborador_oportunidad.id_colaborador')
-                                ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
-                                ->select('users.*')->orderBy('detalle_oportunidad.descripcion')->get();
+                                ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
+                                ->join('status_oportunidad',function($join){
+                                    $join->on('colaborador_oportunidad.id_oportunidad','=','status_oportunidad.id_oportunidad')
+                                    ->where('status_oportunidad.id_cat_status_oportunidad','=',2);
+                                })
+                                ->join('detalle_oportunidad',function($join){
+                                    $join->on('colaborador_oportunidad.id_oportunidad','=','detalle_oportunidad.id_oportunidad');
+                                    
+                                })->orderBy('detalle_oportunidad.valor','desc')->limit(5)->get();
+                                
 
         $origen_prospecto = DB::table('prospectos')
                                 ->select(DB::raw('count(*) as fuente_count, fuente'))->groupBy('fuente')->get();
 
         $prospectos_sin_contactar = DB::table('prospectos')
                                 ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
-                                ->where('status_prospecto.id_cat_status_prospecto','=',0)->count();
+                                ->where('status_prospecto.id_cat_status_prospecto','=',1)->count();
         
                                 
         return response()->json([
@@ -63,7 +71,7 @@ class DataViewsController extends Controller
         $total_prospectos = Prospecto::all()->count();
         $nocontactados_prospectos = DB::table('prospectos')
                                     ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
-                                    ->where('status_prospecto.id_cat_status_prospecto','=',0)->count();
+                                    ->where('status_prospecto.id_cat_status_prospecto','=',1)->count();
         $prospectos_fuente = DB::table('prospectos')
                                     ->select(DB::raw('count(*) as fuente_count, fuente'))->groupBy('fuente')->get();
         
