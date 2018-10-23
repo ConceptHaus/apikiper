@@ -242,7 +242,15 @@ class DataViewsController extends Controller
                         ->where('status_oportunidad.id_cat_status_oportunidad',2)
                         ->groupBy('users.email')->orderBy('valor_total','desc')->get();
 
-        $top_3 = '';
+        $top_3 = DB::table('users')
+                ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
+                ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                ->select('users.nombre','users.apellido',DB::raw('count(*) as ventas, oportunidades.id_oportunidad'))
+                ->where('status_oportunidad.id_cat_status_oportunidad',2)
+                ->groupBy('users.email')->orderBy('valor_total','desc')->get();
+
+
+
         return response()->json([
             'message'=>'Success',
             'error'=>false,
