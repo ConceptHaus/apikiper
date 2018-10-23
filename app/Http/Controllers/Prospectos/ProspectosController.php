@@ -10,8 +10,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-
-
 use App\Modelos\User;
 use App\Modelos\Prospecto\Prospecto;
 use App\Modelos\Prospecto\DetalleProspecto;
@@ -26,8 +24,6 @@ use App\Evento;
 use App\Modelos\Extras\Recordatorio;
 use App\Modelos\Extras\DetalleRecordatorio;
 use App\Modelos\Extras\DetalleEvento;
-
-
 
 use DB;
 use Mail;
@@ -133,11 +129,28 @@ class ProspectosController extends Controller
     }
 
     public function getAllProspectos(){
-
+        $prospectos = Prospecto::GetAllProspectos();
+        $prospectos_total = Prospecto::count();
+        $prospectos_sin_contactar = Prospecto::join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+                                    ->where('status_prospecto.id_cat_status_prospecto','=',1)->count();
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>[
+                'prospectos_total'=>$prospectos_total,
+                'prospectos_sin_contactar'=>$prospectos_sin_contactar,
+                'colaboradores'=>$prospectos
+            ]
+        ],200);
     }
 
-    public function getOneProspectos($id){
-
+    public function getOneProspecto($id){
+        $prospecto = Prospecto::GetOneProspecto($id);
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>$prospecto
+        ],200);
     }
 
     public function updateProspecto(Request $request, $id){
@@ -149,7 +162,13 @@ class ProspectosController extends Controller
     }
 
     public function getOportunidades($id){
+        $prospecto_oportunidades = Prospecto::GetProspectoOportunidades($id);
 
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>$prospecto_oportunidades
+        ],200);
     }
 
     public function addOportunidades(Request $request, $id){
@@ -218,8 +237,13 @@ class ProspectosController extends Controller
     }
 
     public function getRecordatorios($id){
+        $prospecto_recordatorios = Prospecto::GetProspectoRecordatorios($id);
 
-
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>$prospecto_recordatorios
+        ],200);
     }
 
     public function addRecordatorios(Request $request, $id){
@@ -265,7 +289,13 @@ class ProspectosController extends Controller
     }
 
     public function getEventos($id){
+        $prospecto_eventos = Prospecto::GetProspectoEventos($id);
 
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>$prospecto_eventos
+        ],200);
     }
 
     public function addEventos(Request $request, $id){
@@ -316,7 +346,12 @@ class ProspectosController extends Controller
     }
 
     public function getEtiquetas($id){
-
+        $prospecto_etiquetas = Prospecto::GetProspectoEtiquetas($id);
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>$prospecto_etiquetas
+        ],200);
     }
 
     public function addEtiquetas(Request $request, $id){
@@ -368,7 +403,12 @@ class ProspectosController extends Controller
     }
 
     public function getArchivos($id){
-
+        $prospecto_archivos = Prospecto::GetProspectoArchivos($id);
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>$prospecto_archivos
+        ],200);
     }
 
     public function addArchivos(Request $request, $id){

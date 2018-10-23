@@ -35,7 +35,12 @@ class OportunidadesController extends Controller
     }
 
     public function getOneOportunidad($id){
-
+        $oportunidad = Oportunidad::GetOneOportunidad($id);
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>$oportunidad
+        ],200);
     }
 
     public function updateOneOportunidad($id){
@@ -47,7 +52,12 @@ class OportunidadesController extends Controller
     }
 
     public function getEtiquetas($id){
-
+        $oportunidad_etiquetas = Oportunidad::GetOportunidadEtiquetas($id);
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>$oportunidad_etiquetas
+        ],200);
     }
 
     public function addEtiquetas(Request $request, $id){
@@ -95,7 +105,12 @@ class OportunidadesController extends Controller
     }   
 
     public function getArchivos($id){
-
+        $oportunidad_archivos = Oportunidad::GetOportunidadArchivos($id);
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>$oportunidad_archivos
+        ],200);
     }
 
     public function addArchivos(Request $request, $id){
@@ -137,7 +152,13 @@ class OportunidadesController extends Controller
     }
 
     public function getEventos($id){
-
+        $oportunidad_eventos = Oportunidad::GetOportunidadEventos($id);
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>$oportunidad_eventos
+        ],200);
+        
     }
 
     public function addEventos(Request $request, $id){
@@ -176,7 +197,12 @@ class OportunidadesController extends Controller
     }
 
     public function getRecordatorios($id){
-
+        $oportunidad_recordatorios = Oportunidad::GetOportunidadRecordatorios($id);
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>$oportunidad_recordatorios
+        ],200);
     }
 
     public function addRecordatorios(Request $request, $id){
