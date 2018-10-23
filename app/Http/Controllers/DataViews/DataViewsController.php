@@ -237,7 +237,10 @@ class DataViewsController extends Controller
                         ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
                         ->join('oportunidades','oportunidades.id_oportunidad','colaborador_oportunidad.id_oportunidad')
                         ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
-                        ->select('users.id','users.email',DB::raw("SUM(detalle_oportunidad.valor) as valor_total"))->groupBy('users.email')->orderBy('valor_total','desc')->get();
+                        ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                        ->select('users.id','users.email',DB::raw("SUM(detalle_oportunidad.valor) as valor_total"))
+                        ->where('status_oportunidad.id_cat_status_oportunidad',2)
+                        ->groupBy('users.email')->orderBy('valor_total','desc')->get();
 
         $top_3 = '';
         return response()->json([
