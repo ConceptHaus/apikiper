@@ -22,4 +22,8 @@ class ColaboradorOportunidad extends Model
         return $this->belongsTo('App\Modelos\Oportunidad\Oportunidad','id_oportunidad','id_oportunidad');
 
     }
+
+    public function colaboradorDetalle(){
+        return $this->hasOne('App\Modelos\Colaborador\DetalleColaborador','id_colaborador','id_colaborador');
+    }
 }

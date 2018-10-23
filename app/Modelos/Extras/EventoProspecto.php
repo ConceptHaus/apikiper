@@ -23,7 +23,6 @@ class EventoProspecto extends Model
         return $this->belongsTo('App\Modelos\User','id','id_colaborador');
     }
 
-    
     public function detalle(){
         return $this->hasOne('App\Modelos\Extras\DetalleEventoProspecto','id_evento_prospecto','id_evento_prospecto');
     }

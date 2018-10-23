@@ -20,7 +20,6 @@ use Illuminate\Http\Request;
 
 //User
 Route::prefix('/v1/users')->group(function(){
-
         Route::middleware(['api','cors'])->group(function(){
             Route::post('/login', 'Auth\LoginController@login');
             Route::get('/activate/{token}','Auth\UserController@activateUser');
@@ -39,7 +38,7 @@ Route::prefix('/v1/users')->group(function(){
 
 //Colaboradores
 Route::prefix('/v1/colaboradores')->group(function(){
-        Route::middleware(['jwt.auth','cors'])->group(function(){
+        Route::middleware(['cors'])->group(function(){
             Route::post('/', 'Colaboradores\ColaboradoresController@registerColaborador');
             Route::get('/', 'Colaboradores\ColaboradoresController@getAllColaboradores');
             Route::get('/{id}','Colaboradores\ColaboradoresController@getOneColaborador');
@@ -51,7 +50,7 @@ Route::prefix('/v1/colaboradores')->group(function(){
 
 //Prospectos
 Route::prefix('/v1/prospectos')->group(function(){
-        Route::middleware(['jwt.auth','cors'])->group(function(){
+        Route::middleware(['cors'])->group(function(){
             //CRUD principal
             Route::post('/', 'Prospectos\ProspectosController@registerProspecto');
             Route::get('/','Prospectos\ProspectosController@getAllProspectos');
@@ -70,9 +69,6 @@ Route::prefix('/v1/prospectos')->group(function(){
             Route::post('/{id}/etiquetas','Prospectos\ProspectosController@addEtiquetas');
             Route::get('/{id}/archivos','Prospectos\ProspectosController@getArchivos');
             Route::post('/{id}/archivos','Prospectos\ProspectosController@addArchivos');
-
-
-            
         });  
 });
 
@@ -94,8 +90,6 @@ Route::prefix('/v1/oportunidades')->group(function(){
             Route::post('/{id}/eventos','Oportunidades\OportunidadesController@addEventos');
             Route::get('/{id}/recordatorios','Oportunidades\OportunidadesController@getRecordatorios');
             Route::post('/{id}/recordatorios','Oportunidades\OportunidadesController@addRecordatorios');
-            
-            
         });  
 });
 
