@@ -18,6 +18,10 @@ class ColaboradorProspecto extends Model
         return $this->belongsTo('App\Modelos\Prospecto\Prospecto','id_colaborador','id_colaborador');
     }
 
+    public function colaboradorDetalle(){
+        return $this->hasOne('App\Modelos\Colaborador\DetalleColaborador','id_colaborador','id_colaborador');
+    }
+
     public function prospecto(){
         return $this->belongsTo('App\Modelos\User','id','id_colaborador');
     }
