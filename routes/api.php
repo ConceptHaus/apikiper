@@ -104,6 +104,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('oportunidades/{id}/{status}','DataViews\DataViewsController@mis_oportunidades_status');
         Route::get('/estadisticas/oportunidades','DataViews\DataViewsController@estadisticas_oportunidad');
         Route::get('/estadisticas/colaboradores','DataViews\DataViewsController@estadisticas_colaborador');
+        Route::get('/estadisticas/finanzas','DataViews\DataViewsController@estadisticas_finanzas');
 
     });
 });

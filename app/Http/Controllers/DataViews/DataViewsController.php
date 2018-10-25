@@ -40,7 +40,7 @@ class DataViewsController extends Controller
                                 ->select('users.nombre','users.apellido','detalle_colaborador.puesto','fotos_colaboradores.url_foto',DB::raw('count(*) as oportunidades_cerradas, users.id'))
                                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
                                 ->groupBy('users.id')
-                                ->orderBy('oportunidades','desc')->limit(5)->get();
+                                ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
                                 
 
         $origen_prospecto = DB::table('prospectos')
@@ -274,4 +274,26 @@ class DataViewsController extends Controller
         ]);
                     
     }
+
+    public function estadisticas_finanzas(){
+        $total_cotizado = DB::table('oportunidades')
+                            ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',1)
+                            ->sum('detalle_oportunidad.valor');
+
+
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>[
+                'total_cotizado'=>$total_cotizado,
+                'total_cerrador'=>'',
+                'total_noviable'=>'',
+                'top_3'=>'',
+                'fuentes'=>''
+            ]
+
+        ]);
+    }   
 }
