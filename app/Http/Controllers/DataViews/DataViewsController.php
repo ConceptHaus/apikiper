@@ -278,20 +278,49 @@ class DataViewsController extends Controller
     public function estadisticas_finanzas(){
         $total_cotizado = DB::table('oportunidades')
                             ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
-                            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',1)
                             ->sum('detalle_oportunidad.valor');
+                            
+        $total_cerrador = DB::table('oportunidades')
+                            ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',2)
+                            ->sum('detalle_oportunidad.valor');
+
+        $total_noviable = DB::table('oportunidades')
+                            ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',3)
+                            ->sum('detalle_oportunidad.valor');
+
+        $top_3 = DB::table('users')
+                    ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
+                    ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
+                    ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                    ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                    ->where('status_oportunidad.id_cat_status_oportunidad','=',2)
+                    ->select('users.nombre','users.apellido','detalle_colaborador.puesto',DB::raw('sum(detalle_oportunidad.valor) as total_ingresos'))
+                    ->groupBy('users.id')
+                    ->orderBy('total_ingresos','desc')
+                    ->limit(3)
+                    ->get();
+        $fuentes = DB::table('oportunidades')
+                    ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
+                    ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
+                    ->join('prospectos','prospectos.id_prospecto','oportunidad_prospecto.id_prospecto')
+                    ->get();
 
 
         return response()->json([
             'message'=>'Success',
             'error'=>false,
             'data'=>[
-                'total_cotizado'=>$total_cotizado,
-                'total_cerrador'=>'',
-                'total_noviable'=>'',
-                'top_3'=>'',
-                'fuentes'=>''
+                'total_cotizado'=>number_format($total_cotizado,2),
+                'total_cerrador'=>number_format($total_cerrador,2),
+                'total_noviable'=>number_format($total_noviable,2),
+                'top_3'=>$top_3,
+                'fuentes'=>$fuentes
             ]
 
         ]);
