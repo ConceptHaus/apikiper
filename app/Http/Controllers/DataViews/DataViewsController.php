@@ -305,10 +305,14 @@ class DataViewsController extends Controller
                     ->orderBy('total_ingresos','desc')
                     ->limit(3)
                     ->get();
+
         $fuentes = DB::table('oportunidades')
                     ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
+                    ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                     ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
                     ->join('prospectos','prospectos.id_prospecto','oportunidad_prospecto.id_prospecto')
+                    ->where('status_oportunidad.id_cat_status_oportunidad',2)
+                    ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'prospectos.fuente')->groupBy('prospectos.fuente')
                     ->get();
 
 
