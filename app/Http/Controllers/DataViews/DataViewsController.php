@@ -328,5 +328,59 @@ class DataViewsController extends Controller
             ]
 
         ]);
-    }   
+    } 
+    
+    public function etiquetas(){
+        $etiquetas = DB::table('etiquetas')->get();
+
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>[
+                'etiquetas'=>$etiquetas
+            ]
+        ]);
+
+    }
+
+    public function colaboradores(){
+        $colaboradores = DB::table('users')
+                        ->join('detalle_colaborador','users.id','detalle_colaborador.id_colaborador')
+                        ->join('fotos_colaboradores','fotos_colaboradores.id_colaborador','users.id')
+                        ->select('users.nombre','users.apellido','fotos_colaboradores.url_foto','detalle_colaborador.puesto','users.email','detalle_colaborador.telefono','users.created_at')
+                        ->get();
+        
+        return response()->json([
+                    'message'=>'Success',
+                    'error'=>false,
+                    'data'=>[
+                        'colaboradores'=>$colaboradores
+                    ]
+                ]);
+    }
+
+    public function status_oportunidades(){
+        $status = DB::table('cat_status_oportunidad')->get();
+        
+        return response()->json([
+                    'message'=>'Success',
+                    'error'=>false,
+                    'data'=>[
+                        'status'=>$status
+                    ]
+                ]);
+
+    }
+
+    public function servicios(){
+        $servicios = DB::table('cat_servicios')->get();
+        
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>[
+                'servicios'=>$servicios
+            ]
+        ]);
+    }
 }

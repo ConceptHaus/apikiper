@@ -105,6 +105,10 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/estadisticas/oportunidades','DataViews\DataViewsController@estadisticas_oportunidad');
         Route::get('/estadisticas/colaboradores','DataViews\DataViewsController@estadisticas_colaborador');
         Route::get('/estadisticas/finanzas','DataViews\DataViewsController@estadisticas_finanzas');
+        Route::get('/etiquetas','DataViews\DataViewsController@etiquetas');
+        Route::get('/status','DataViews\DataViewsController@status_oportunidades');
+        Route::get('/servicios','DataViews\DataViewsController@servicios');
+        Route::get('/colaboradores','DataViews\DataViewsController@colaboradores');
 
     });
 });
