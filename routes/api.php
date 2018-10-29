@@ -77,6 +77,7 @@ Route::prefix('/v1/oportunidades')->group(function(){
         Route::middleware(['cors'])->group(function(){
             //CRUD principal
             Route::get('/','Oportunidades\OportunidadesController@getAllOportunidades');
+            Route::get('/status/{status}','Oportunidades\OportunidadesController@getAllOportunidadesStatus');
             Route::get('/{id}','Oportunidades\OportunidadesController@getOneOportunidad');
             Route::put('/{id}','Oportunidades\OportunidadesController@updateOportunidad');
             Route::delete('/{id}','Oportunidades\OportunidadesController@deleteOportunidad');
@@ -100,6 +101,7 @@ Route::prefix('/v1/generales')->group(function(){
     Route::middleware(['cors'])->group(function(){
         Route::get('/dashboard','DataViews\DataViewsController@dashboard');
         Route::get('/prospectos','DataViews\DataViewsController@prospectos');
+        Route::get('/prospectos/{status}','DataViews\DataViewsController@prospectosstatus');
         Route::get('oportunidades/{id}','DataViews\DataViewsController@mis_oportunidades');
         Route::get('oportunidades/{id}/{status}','DataViews\DataViewsController@mis_oportunidades_status');
         Route::get('/estadisticas/oportunidades','DataViews\DataViewsController@estadisticas_oportunidad');

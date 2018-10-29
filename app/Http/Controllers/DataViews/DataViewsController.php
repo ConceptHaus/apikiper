@@ -67,7 +67,7 @@ class DataViewsController extends Controller
                 'ingresos'=>number_format($ingresos,2),
                 'origen_prospecto'=>$origen_prospecto
             ]
-        ]);
+            ],200);
 
     }
 
@@ -103,9 +103,26 @@ class DataViewsController extends Controller
                 'prospectos_nocontactados'=> $nocontactados_prospectos,
                 'prospectos_fuente'=> $prospectos_fuente
             ]
-        ]);
+            ],200);
     }
+    public function prospectosstatus($status){
+        $prospectos = DB::table('prospectos')
+                        ->join('detalle_prospecto','detalle_prospecto.id_prospecto','prospectos.id_prospecto')
+                        ->join('status_prospecto','status_prospecto.id_prospecto','prospectos.id_prospecto')
+                        ->join('cat_status_prospecto','cat_status_prospecto.id_cat_status_prospecto','status_prospecto.id_cat_status_prospecto')
+                        ->where('status_prospecto.id_cat_status_prospecto',$status)
+                        ->select('prospectos.id_prospecto','prospectos.nombre','prospectos.apellido','detalle_prospecto.telefono','prospectos.created_at','prospectos.fuente','cat_status_prospecto.status')
+                        ->get();
 
+        
+        
+
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>$prospectos
+            ],200);
+    }
     public function mis_oportunidades($id){
         $oportunidades_total = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
@@ -152,7 +169,7 @@ class DataViewsController extends Controller
                 'no_viables'=>$oportunidades_no_viables,
                 'oportunidades'=>$oportunidades
             ]
-        ]);
+            ],200);
     }
 
     public function mis_oportunidades_status($id, $status){
@@ -172,7 +189,9 @@ class DataViewsController extends Controller
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','colaborador_oportunidad.id_oportunidad')
                             ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->where('colaborador_oportunidad.id_colaborador','=',$id)
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',intval($status))
                             ->select(DB::raw('count(*) as fuente_count, prospectos.fuente'))->groupBy('prospectos.fuente')->get();
 
         $oportunidades = DB::table('oportunidades')
@@ -198,7 +217,7 @@ class DataViewsController extends Controller
                 'oportunidades'=> $oportunidades
                 
             ]
-        ]);
+            ],200);
     }
 
     public function estadisticas_oportunidad(){
@@ -232,7 +251,7 @@ class DataViewsController extends Controller
                 'no_viables'=>$oportunidades_no_viables,
                 'fuentes'=>$fuentes
             ]
-        ]);
+            ],200);
 
     }
 
@@ -271,7 +290,7 @@ class DataViewsController extends Controller
                 'top_3'=>$top_3,
                 'colaboradores'=>$colaboradores
             ]
-        ]);
+            ],200);
                     
     }
 
@@ -299,8 +318,9 @@ class DataViewsController extends Controller
                     ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
                     ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
                     ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                    ->join('fotos_colaboradores','fotos_colaboradores.id_colaborador','users.id')
                     ->where('status_oportunidad.id_cat_status_oportunidad','=',2)
-                    ->select('users.nombre','users.apellido','detalle_colaborador.puesto',DB::raw('sum(detalle_oportunidad.valor) as total_ingresos'))
+                    ->select('users.nombre','users.apellido','fotos_colaboradores.url_foto','detalle_colaborador.puesto',DB::raw('sum(detalle_oportunidad.valor) as total_ingresos'))
                     ->groupBy('users.id')
                     ->orderBy('total_ingresos','desc')
                     ->limit(3)
@@ -327,7 +347,7 @@ class DataViewsController extends Controller
                 'fuentes'=>$fuentes
             ]
 
-        ]);
+            ],200);
     } 
     
     public function etiquetas(){
@@ -339,7 +359,7 @@ class DataViewsController extends Controller
             'data'=>[
                 'etiquetas'=>$etiquetas
             ]
-        ]);
+            ],200);
 
     }
 
@@ -356,7 +376,7 @@ class DataViewsController extends Controller
                     'data'=>[
                         'colaboradores'=>$colaboradores
                     ]
-                ]);
+                    ],200);
     }
 
     public function status_oportunidades(){
@@ -368,7 +388,7 @@ class DataViewsController extends Controller
                     'data'=>[
                         'status'=>$status
                     ]
-                ]);
+                    ],200);
 
     }
 
@@ -381,6 +401,6 @@ class DataViewsController extends Controller
             'data'=>[
                 'servicios'=>$servicios
             ]
-        ]);
+            ],200);
     }
 }

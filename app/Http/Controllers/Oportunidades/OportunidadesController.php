@@ -31,7 +31,84 @@ class OportunidadesController extends Controller
     
 
     public function getAllOportunidades(){
+        $oportunidades_total = DB::table('oportunidades')->count();
 
+        $oportunidades_cotizadas = DB::table('oportunidades')
+                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
+
+        $oportunidades_cerradas = DB::table('oportunidades')
+                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
+
+        $oportunidades_no_viables = DB::table('oportunidades')
+                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',3)->count();
+
+
+
+         $oportunidades = DB::table('oportunidades')
+                            ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                            ->join('servicio_oportunidad','servicio_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                            ->join('cat_servicios','cat_servicios.id_servicio_cat','servicio_oportunidad.id_servicio_cat')
+                            ->select('oportunidades.id_oportunidad','oportunidades.nombre_oportunidad','cat_status_oportunidad.status','cat_servicios.nombre as servicio','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','prospectos.fuente','oportunidades.created_at')
+                            ->get(); 
+
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>[
+                'total'=>$oportunidades_total,
+                'cotizadas'=>$oportunidades_cotizadas,
+                'cerradas'=>$oportunidades_cerradas,
+                'no_viables'=>$oportunidades_no_viables,
+                'oportunidades'=>$oportunidades
+            ]
+            ],200);
+    }
+
+    public function getAllOportunidadesStatus($status){
+        $nombre_status = DB::table('cat_status_oportunidad')
+                            ->select('cat_status_oportunidad.status as nombre')
+                            ->where('cat_status_oportunidad.id_cat_status_oportunidad','=',intval($status))
+                            ->first();
+
+        $total = DB::table('oportunidades')
+                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',$status)->count();
+
+        $fuentes = DB::table('oportunidades')
+                            ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',intval($status))
+                            ->select(DB::raw('count(*) as fuente_count, prospectos.fuente'))->groupBy('prospectos.fuente')->get();
+
+        $oportunidades = DB::table('oportunidades')
+                            ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                            ->join('servicio_oportunidad','servicio_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                            ->join('cat_servicios','cat_servicios.id_servicio_cat','servicio_oportunidad.id_servicio_cat')
+                            ->select('oportunidades.id_oportunidad','oportunidades.nombre_oportunidad','cat_status_oportunidad.status','cat_servicios.nombre as servicio','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','prospectos.fuente','oportunidades.created_at')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',$status)
+                            ->get();
+
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>[
+                'status'=>$nombre_status,
+                'total'=>$total,
+                'fuentes'=>$fuentes,
+                'oportunidades'=> $oportunidades
+                
+            ]
+            ],200);
     }
 
     public function getOneOportunidad($id){
