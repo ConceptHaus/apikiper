@@ -181,7 +181,7 @@ class DataViewsController extends Controller
 
         $oportunidades_total = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
-                            ->where('colaborador_oportunidad.id_colaborador','=',$id)->count();
+                            ->where('colaborador_oportunidad.id_colaborador',$id)->count();
 
         $oportunidades_cotizadas = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
@@ -218,10 +218,30 @@ class DataViewsController extends Controller
             'message'=>'Success',
             'error'=>false,
             'data'=>[
-                'total'=>$oportunidades_total,
-                'cotizadas'=>$oportunidades_cotizadas,
-                'cerradas'=>$oportunidades_cerradas,
-                'no_viables'=>$oportunidades_no_viables,
+                'total'=>[
+                    'valor'=>$oportunidades_total,
+                    'porcentaje'=>100,
+                    'color'=>'#4646B9'
+
+                ],
+                'cotizadas'=>[
+                    'valor'=>$oportunidades_cotizadas,
+                    'porcentaje'=>intval(round($oportunidades_cotizadas*100/$oportunidades_total)),
+                    'color'=>$this->colorsOportunidades(1)
+                    
+                ],
+                'cerradas'=>[
+                    'valor'=>$oportunidades_cerradas,
+                    'porcentaje'=>intval(round($oportunidades_cerradas*100/$oportunidades_total)),
+                    'color'=>$this->colorsOportunidades(2)
+     
+                ],
+                'no_viables'=>[
+                    'valor'=>$oportunidades_no_viables,
+                    'porcentaje'=>intval(round($oportunidades_no_viables*100/$oportunidades_total,PHP_ROUND_HALF_DOWN)),
+                    'color'=>$this->colorsOportunidades(3)
+                    
+                ],
                 'oportunidades'=>$oportunidades
             ]
             ],200);
@@ -233,8 +253,10 @@ class DataViewsController extends Controller
         $nombre_status = DB::table('cat_status_oportunidad')
                             ->select('cat_status_oportunidad.status')
                             ->where('cat_status_oportunidad.id_cat_status_oportunidad','=',intval($status))
-                            ->get();
-
+                            ->first();
+        $total_general = DB::table('oportunidades')
+                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->where('colaborador_oportunidad.id_colaborador',$id)->count();
         $total = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
@@ -246,9 +268,10 @@ class DataViewsController extends Controller
                             ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','colaborador_oportunidad.id_oportunidad')
                             ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
                             ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
-                            ->where('colaborador_oportunidad.id_colaborador','=',$id)
-                            ->where('status_oportunidad.id_cat_status_oportunidad','=',intval($status))
-                            ->select(DB::raw('count(*) as fuente_count, prospectos.fuente'))->groupBy('prospectos.fuente')->get();
+                            ->where('colaborador_oportunidad.id_colaborador',$id)
+                            ->where('status_oportunidad.id_cat_status_oportunidad',$status)
+                            ->select(DB::raw('count(*) as fuente_count, prospectos.fuente'))->groupBy('prospectos.fuente')
+                            ->get();
 
         $oportunidades = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
@@ -267,8 +290,12 @@ class DataViewsController extends Controller
             'message'=>'Success',
             'error'=>false,
             'data'=>[
-                'status'=>$nombre_status,
-                'total'=>$total,
+                'status'=>$nombre_status->status,
+                'total'=>[
+                    'valor'=>$total,
+                    'porcentaje'=>$total*100/$total_general,
+                    'color'=>$this->colorsOportunidades($status)
+                ],
                 'fuentes'=>$fuentes,
                 'oportunidades'=> $oportunidades
                 
@@ -461,8 +488,16 @@ class DataViewsController extends Controller
     }
 
 
+    
+    //AUX
     public function guard()
     {
         return Auth::guard();
     }
+
+    public function colorsOportunidades($id){
+        $result = DB::table('cat_status_oportunidad')->select('cat_status_oportunidad.color')->where('id_cat_status_oportunidad',$id)->first();
+        return $result->color;
+    }
+
 }
