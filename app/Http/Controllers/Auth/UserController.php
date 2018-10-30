@@ -37,7 +37,7 @@ class UserController extends Controller
             'user'=>$this->guard()->user(),
             'detalle'=>$detalle,
             'oportunidades'=>$oportunidades,
-            'recordatorio'=>$recordatorios
+            'recordatorios'=>$recordatorios
         ],200);
     
     }

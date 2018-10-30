@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use App\Http\Requests;
+use Illuminate\Support\Facades\Auth;
+
 
 use App\Modelos\Prospecto\Prospecto;
 use App\Modelos\User;
@@ -123,7 +125,7 @@ class DataViewsController extends Controller
             'data'=>$prospectos
             ],200);
     }
-    public function mis_oportunidades($id){
+    public function oportunidadesByUser($id){
         $oportunidades_total = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->where('colaborador_oportunidad.id_colaborador','=',$id)->count();
@@ -171,6 +173,60 @@ class DataViewsController extends Controller
             ]
             ],200);
     }
+
+    public function misOportunidades(){
+
+        $id = $this->guard()->user()->id;
+
+
+        $oportunidades_total = DB::table('oportunidades')
+                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->where('colaborador_oportunidad.id_colaborador','=',$id)->count();
+
+        $oportunidades_cotizadas = DB::table('oportunidades')
+                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('colaborador_oportunidad.id_colaborador','=',$id)
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
+
+        $oportunidades_cerradas = DB::table('oportunidades')
+                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('colaborador_oportunidad.id_colaborador','=',$id)
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
+
+        $oportunidades_no_viables = DB::table('oportunidades')
+                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('colaborador_oportunidad.id_colaborador','=',$id)
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',3)->count();
+        
+        $oportunidades = DB::table('oportunidades')
+                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                            ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                            ->join('servicio_oportunidad','servicio_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                            ->join('cat_servicios','cat_servicios.id_servicio_cat','servicio_oportunidad.id_servicio_cat')
+                            ->where('colaborador_oportunidad.id_colaborador','=',$id)
+                            ->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','cat_status_oportunidad.status','cat_servicios.nombre as servicio','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','prospectos.fuente','oportunidades.created_at')
+                            ->get();
+        
+
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>[
+                'total'=>$oportunidades_total,
+                'cotizadas'=>$oportunidades_cotizadas,
+                'cerradas'=>$oportunidades_cerradas,
+                'no_viables'=>$oportunidades_no_viables,
+                'oportunidades'=>$oportunidades
+            ]
+            ],200);
+    }
+
 
     public function mis_oportunidades_status($id, $status){
         
@@ -402,5 +458,11 @@ class DataViewsController extends Controller
                 'servicios'=>$servicios
             ]
             ],200);
+    }
+
+
+    public function guard()
+    {
+        return Auth::guard();
     }
 }
