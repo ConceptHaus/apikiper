@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use App\Http\Requests;
 use App\Modelos\User;
+use App\Modelos\Colaborador\DetalleColaborador;
 use DB;
 use Mail;
 
@@ -18,8 +19,11 @@ class UserController extends Controller
     
 
     public function getAuthUser(Request $request){
-    
-        return response()->json($this->guard()->user(),200);
+        $detalle = DetalleColaborador::where('id_colaborador',$this->guard()->user()->id)->first();
+        return response()->json([
+            'user'=>$this->guard()->user(),
+            'detalle'=>$detalle
+        ],200);
     
     }
 
