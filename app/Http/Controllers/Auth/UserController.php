@@ -19,10 +19,25 @@ class UserController extends Controller
     
 
     public function getAuthUser(Request $request){
+        $id_user = $this->guard()->user()->id;
+        $oportunidades = DB::table('oportunidades')
+                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                            ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                            ->where('colaborador_oportunidad.id_colaborador',$id_user)
+                            ->select(DB::raw('count(*) as total, cat_status_oportunidad.status'))->groupBy('cat_status_oportunidad.status')
+                            ->get();
+
+        $recordatorios = DB::table('recordatorios_prospecto')
+                        ->join('detalle_recordatorio_prospecto','detalle_recordatorio_prospecto.id_recordatorio_prospecto','recordatorios_prospecto.id_recordatorio_prospecto')
+                        ->where('recordatorios_prospecto.id_colaborador',$id_user)->get();
         $detalle = DetalleColaborador::where('id_colaborador',$this->guard()->user()->id)->first();
+
         return response()->json([
             'user'=>$this->guard()->user(),
-            'detalle'=>$detalle
+            'detalle'=>$detalle,
+            'oportunidades'=>$oportunidades,
+            'recordatorio'=>$recordatorios
         ],200);
     
     }
