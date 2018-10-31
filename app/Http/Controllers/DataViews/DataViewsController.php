@@ -468,13 +468,28 @@ class DataViewsController extends Controller
     }
 
     public function status_oportunidades(){
-        $status = DB::table('cat_status_oportunidad')->get();
+        $status_1 = DB::table('cat_status_oportunidad')
+                        ->where('id_cat_status_oportunidad',1)
+                        ->select('status as nombre','descripcion','color')        
+                        ->first();
+
+        $status_2 = DB::table('cat_status_oportunidad')
+                        ->where('id_cat_status_oportunidad',2)
+                        ->select('status as nombre','descripcion','color')        
+                        ->first();
+        
+        $status_3 = DB::table('cat_status_oportunidad')
+                        ->where('id_cat_status_oportunidad',3)
+                        ->select('status as nombre','descripcion','color')        
+                        ->first();
         
         return response()->json([
                     'message'=>'Success',
                     'error'=>false,
                     'data'=>[
-                        'status'=>$status
+                        'status_1'=>$status_1,
+                        'status_2'=>$status_2,
+                        'status_3'=>$status_3
                     ]
                     ],200);
 
