@@ -32,7 +32,10 @@ Route::prefix('/v1/users')->group(function(){
         
         Route::middleware(['auth','cors'])->group(function(){
             Route::get('/me','Auth\UserController@getAuthUser');
+            Route::get('/me/oportunidades','Auth\UserController@oportunidades');
+            Route::get('/me/prospectos','Auth\UserController@oportunidades');
             Route::post('/logout', 'Auth\LoginController@logout');
+            
         });
 });
 
