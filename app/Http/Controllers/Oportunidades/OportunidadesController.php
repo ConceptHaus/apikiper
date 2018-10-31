@@ -49,7 +49,7 @@ class OportunidadesController extends Controller
 
          $oportunidades = DB::table('oportunidades')
                             ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
-                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('users','colaborador_oportunidad.id_colaborador','users.id')
                             ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
@@ -116,7 +116,7 @@ class OportunidadesController extends Controller
         $oportunidades = DB::table('oportunidades')
                             ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
-                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('users','colaborador_oportunidad.id_colaborador','users.id')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
