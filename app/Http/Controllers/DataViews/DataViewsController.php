@@ -6,12 +6,14 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use App\Http\Requests;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
 
 use App\Modelos\Prospecto\Prospecto;
 use App\Modelos\User;
-
+use App\Modelos\Extras\Etiqueta;
+use App\Modelos\Oportunidad\CatServicios;
 use DB;
 use Mail;
 
@@ -490,9 +492,146 @@ class DataViewsController extends Controller
             ],200);
     }
 
+    //POST
+    public function addEtiquetas(Request $request){
+        $validador = $this->validadorEtiqueta($request->all());
 
+        if($validador->passes()){
+            try{
+                DB::beginTransaction();
+                $etiqueta = new Etiqueta;
+                $etiqueta->nombre = $request->nombre;
+                $etiqueta->descripcion = $request->descripcion;
+                $etiqueta->save();
+
+                DB::commit();
+
+                return response()->json([
+                    'error'=>false,
+                    'message'=>'Successfully registered',
+                    'data'=>$etiqueta
+                ],200);
+            }catch(Exception $e){
+                DB::rollBack();
+                return response()->json([
+                    'error'=>true,
+                    'message'=>$e
+                ],400);
+            }
+           
+
+        }
+        $errores = $validador->errors()->toArray();
+        return response()->json([
+            'error'=>true,
+            'message'=>$errores
+        ],400);
+
+    }
+
+    //PUT
+    public function updateEtiquetas(Request $request){
+        
+        $id = $request->id_etiqueta;
     
+        try{
+            DB::beginTransaction();
+            
+            $etiqueta = Etiqueta::where('id_etiqueta',$id)->first();
+            $etiqueta->nombre = $request->nombre;
+            $etiqueta->descripcion = $request->descripcion;
+            $etiqueta->status = $request->status;
+            $etiqueta->save();
+
+            DB::commit();
+
+            return response()->json([
+                    'error'=>false,
+                    'message'=>'Successfully registered',
+                    'data'=>$etiqueta
+                ],200);
+
+        }catch(Exception $e){
+            DB::rollBack();
+            return response()->json([
+                'error'=>true,
+                'message'=>$e
+            ],400);
+        }
+        
+    }
+
+    public function addServicios(Request $request){
+        $validador = $this->validadorEtiqueta($request->all());
+
+        if($validador->passes()){
+            try{
+                DB::beginTransaction();
+                $servicio = new CatServicios;
+                $servicio->nombre = $request->nombre;
+                $servicio->descripcion = $request->descripcion;
+                $servicio->save();
+
+                DB::commit();
+
+                return response()->json([
+                    'error'=>false,
+                    'message'=>'Successfully registered',
+                    'data'=>$servicio
+                ],200);
+
+            }catch(Exception $e){
+                DB::rollBack();
+                return response()->json([
+                    'error'=>true,
+                    'message'=>$e
+                ],400);
+            }
+        }
+        $errores = $validador->errors()->toArray();
+        return response()->json([
+            'error'=>true,
+            'message'=>$errores
+        ],400);
+    }
+
+    //PUT
+    public function updateServicios(Request $request){
+        $id = $request->id_servicio;
+        try{
+            DB::beginTransaction();
+            $servicio = CatServicios::where('id_servicio_cat',$id)->first();
+            $servicio->nombre = $request->nombre;
+            $servicio->descripcion = $request->descripcion;
+            $servicio->status = $request->status;
+            $servicio->save();
+            DB::commit();
+
+            return response()->json([
+                'error'=>false,
+                'message'=>'Successfully registered',
+                'data'=>$servicio
+            ]);
+            
+        }catch(Exception $e){
+            DB::rollBack();
+            return response()->json([
+                'error'=>true,
+                'message'=>$e
+
+            ],400);
+        }
+    } 
+
+
     //AUX
+    public function validadorEtiqueta(array $data){
+        return Validator::make($data,[
+            'nombre'=>'required|string',
+            
+        ]);
+    }
+    
     public function guard()
     {
         return Auth::guard();

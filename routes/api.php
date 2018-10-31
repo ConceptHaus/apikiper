@@ -118,6 +118,10 @@ Route::prefix('/v1/generales')->group(function(){
 
         //POST
         Route::post('/etiquetas','DataViews\DataViewsController@addEtiquetas');
-
+        Route::post('/servicios','DataViews\DataViewsController@addServicios');
+        
+        //PUT
+        Route::put('/etiquetas','DataViews\DataViewsController@updateEtiquetas');
+        Route::put('/servicios','DataViews\DataViewsController@updateServicios');
     });
 });

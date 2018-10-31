@@ -68,7 +68,7 @@ class ColaboradoresController extends Controller
                     });
                     DB::commit();
                     return response()->json([
-                        'message'=>'Successfully register',
+                        'message'=>'Successfully registered',
                         'error'=>false,
                         'data'=> $this->transformColaboradorToJson($colaborador,$colaborador_ext)
                     ],200);

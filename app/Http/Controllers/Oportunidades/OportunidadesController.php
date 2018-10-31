@@ -202,7 +202,7 @@ class OportunidadesController extends Controller
             }
             return response()->json([
                         'error'=>false,
-                        'message'=>'Successfully register'
+                        'message'=>'Successfully registered'
                     ],200);
 
         }
@@ -292,7 +292,7 @@ class OportunidadesController extends Controller
                 DB::commit();
                 return response()->json([
                     'error'=>false,
-                    'message'=>'Successfully register',
+                    'message'=>'Successfully registered',
                     'data'=>$evento
                 ],200);
             }catch(Exception $e){
@@ -337,7 +337,7 @@ class OportunidadesController extends Controller
 
                 return response()->json([
                     'error'=>false,
-                    'message'=>'Successfully register',
+                    'message'=>'Successfully registered',
                     'data'=>$recordatorio,
                 ],200);
 

@@ -105,7 +105,7 @@ class ProspectosController extends Controller
                 }
                 DB::commit();
                 return response()->json([
-                        'message'=>'Successfully register',
+                        'message'=>'Successfully registered',
                         'error'=>false,
                         'data'=>$prospecto,
                     ],200);
@@ -213,7 +213,7 @@ class ProspectosController extends Controller
                 }
                 DB::commit();
                 return response()->json([
-                        'message'=>'Successfully register',
+                        'message'=>'Successfully registered',
                         'error'=>false,
                         'data'=>$nueva_oportunidad,
                     ],200);
@@ -266,7 +266,7 @@ class ProspectosController extends Controller
                 $recordatorio->detalle()->save($detalle_recordatorio);
                 DB::commit();
                 return response()->json([
-                        'message'=>'Successfully register',
+                        'message'=>'Successfully registered',
                         'error'=>false,
                         'data'=>$recordatorio,
                     ],200);
@@ -322,7 +322,7 @@ class ProspectosController extends Controller
                 
                 DB::commit();
                 return response()->json([
-                        'message'=>'Successfully register',
+                        'message'=>'Successfully registered',
                         'error'=>false,
                         'data'=>$evento,
                     ],200);
@@ -389,7 +389,7 @@ class ProspectosController extends Controller
             }
             return response()->json([
                         'error'=>false,
-                        'message'=>'Successfully register'
+                        'message'=>'Successfully registered'
                     ],200);
 
         }
