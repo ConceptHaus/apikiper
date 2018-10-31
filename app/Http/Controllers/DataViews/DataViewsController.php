@@ -248,8 +248,11 @@ class DataViewsController extends Controller
     }
 
 
-    public function mis_oportunidades_status($id, $status){
+    public function mis_oportunidades_status($status){
         
+        $id = $this->guard()->user()->id;
+
+
         $nombre_status = DB::table('cat_status_oportunidad')
                             ->select('cat_status_oportunidad.status')
                             ->where('cat_status_oportunidad.id_cat_status_oportunidad','=',intval($status))
