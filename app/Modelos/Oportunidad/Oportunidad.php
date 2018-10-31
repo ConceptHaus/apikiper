@@ -57,8 +57,8 @@ use Alsofronie\Uuid\UuidModelTrait;
         return $query->with('detalle_oportunidad')
                 ->with('status_oportunidad.status')
                 ->with('servicio_oportunidad')
-                ->with('colaborador_oportunidad.colaboradorDetalle')
-                ->with('prospecto.prospecto')
+                ->with('colaborador_oportunidad.colaborador.detalle')
+                ->with('prospecto.prospecto.detalle_prospecto')
                 ->where('id_oportunidad',$id)->first();
     }
 

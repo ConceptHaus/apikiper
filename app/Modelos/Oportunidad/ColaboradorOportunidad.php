@@ -15,7 +15,7 @@ class ColaboradorOportunidad extends Model
     ];
 
     public function colaborador(){
-        return $this->belongsTo('App\Modelos\User','id','id_colaborador');
+        return $this->belongsTo('App\Modelos\User','id_colaborador','id');
     }
 
     public function oportunidad(){
