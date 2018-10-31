@@ -113,5 +113,8 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/servicios','DataViews\DataViewsController@servicios');
         Route::get('/colaboradores','DataViews\DataViewsController@colaboradores');
 
+        //POST
+        Route::post('/etiquetas','DataViews\DataViewsController@addEtiquetas');
+
     });
 });
