@@ -14,6 +14,7 @@ use App\Modelos\Prospecto\Prospecto;
 use App\Modelos\User;
 use App\Modelos\Extras\Etiqueta;
 use App\Modelos\Oportunidad\CatServicios;
+use App\Modelos\Oportunidad\CatStatusOportunidad;
 use DB;
 use Mail;
 
@@ -576,6 +577,23 @@ class DataViewsController extends Controller
         
     }
 
+    public function deleteEtiquetas($id){
+        $etiqueta  = Etiqueta::where('id_etiqueta',$id)->first();
+        
+        if($etiqueta->delete()){
+            return response()->json([
+                'message'=>'Successfully deleted',
+                'error'=>false,
+            ]);
+        }
+        return response()->json([
+            'message'=>'Something wrong',
+            'error'=>true
+        ]);
+
+    }
+
+    //POST
     public function addServicios(Request $request){
         $validador = $this->validadorEtiqueta($request->all());
 
@@ -637,6 +655,47 @@ class DataViewsController extends Controller
             ],400);
         }
     } 
+
+    public function deleteServicios($id){
+        $servicios = CatServicios::where('id_servicio_cat',$id)->first();
+        
+        if($servicios->delete()){
+            return response()->json([
+                'message'=>'Successfully deleted',
+                'error'=>false,
+            ]);
+        }
+        return response()->json([
+            'message'=>'Something wrong',
+            'error'=>true
+        ]);
+    }
+
+    public function updateStatus(Request $request){
+        $id = $request->id_status;
+        try{
+            DB::beginTransaction();
+            $status = CatStatusOportunidad::where('id_cat_status_oportunidad',$id)->first();
+            $status->status = $request->status;
+            $status->descripcion = $request->descripcion;
+            $status->color = $request->color;
+            $status->save();
+            DB::commit();
+
+            return response()->json([
+                'error'=>false,
+                'message'=>'Successfully updated',
+                'data'=>$status
+            ]);
+
+        }catch(Exception $e){
+            DB::rollBack();
+            return response()->json([
+                'error'=>true,
+                'message'=>$e
+            ],400);
+        }
+    }
 
 
     //AUX

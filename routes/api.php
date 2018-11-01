@@ -123,5 +123,11 @@ Route::prefix('/v1/generales')->group(function(){
         //PUT
         Route::put('/etiquetas','DataViews\DataViewsController@updateEtiquetas');
         Route::put('/servicios','DataViews\DataViewsController@updateServicios');
+        Route::put('/status','DataViews\DataViewsController@updateStatus');
+
+        //DELETE
+        Route::delete('/etiquetas/{id}','DataViews\DataViewsController@deleteEtiquetas');
+        Route::delete('/servicios/{id}','DataViews\DataViewsController@deleteServicios');
+
     });
 });
