@@ -9,14 +9,15 @@ use Illuminate\Http\Response;
 use App\Http\Requests;
 use App\Modelos\User;
 use App\Modelos\Colaborador\DetalleColaborador;
+use App\Modelos\Colaborador\FotoColaborador;
 use DB;
 use Mail;
 
 
 class UserController extends Controller
 {
-   
-    
+
+
 
     public function getAuthUser(Request $request){
         $id_user = $this->guard()->user()->id;
@@ -27,7 +28,7 @@ class UserController extends Controller
                             ->where('colaborador_oportunidad.id_colaborador',$id_user)
                             ->select(DB::raw('count(*) as total, cat_status_oportunidad.status'))->groupBy('cat_status_oportunidad.status')
                             ->get();
-        
+
         $status_1 = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
@@ -39,11 +40,16 @@ class UserController extends Controller
         $recordatorios = DB::table('recordatorios_prospecto')
                         ->join('detalle_recordatorio_prospecto','detalle_recordatorio_prospecto.id_recordatorio_prospecto','recordatorios_prospecto.id_recordatorio_prospecto')
                         ->where('recordatorios_prospecto.id_colaborador',$id_user)->get();
-        $detalle = DetalleColaborador::where('id_colaborador',$this->guard()->user()->id)->first();
+        $detalle = DetalleColaborador::where('id_colaborador',$this->guard()->user()->id)
+                        ->first();
+        $img = FotoColaborador::where('id_colaborador', $this->guard()->user()->id)
+                        ->select('url_foto')
+                        ->first();
 
         return response()->json([
             'user'=>$this->guard()->user(),
             'detalle'=>$detalle,
+            'img_perfil'=>$img,
             'oportunidades'=>[
                 'status_1'=>'',
                 'status_2'=>'',
@@ -51,7 +57,7 @@ class UserController extends Controller
             ],
             'recordatorios'=>$recordatorios
         ],200);
-    
+
     }
 
        /**
