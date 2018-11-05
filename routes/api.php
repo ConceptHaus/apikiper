@@ -34,7 +34,7 @@ Route::prefix('/v1/users')->group(function(){
             Route::get('/me','Auth\UserController@getAuthUser');
             Route::get('/me/oportunidades','Auth\UserController@oportunidades');
             Route::get('/me/prospectos','Auth\UserController@oportunidades');
-            Route::post('/me', 'Auth\UserController@updateMe');
+            Route::put('/me', 'Auth\UserController@updateMe');
             Route::post('/logout', 'Auth\LoginController@logout');
 
         });
