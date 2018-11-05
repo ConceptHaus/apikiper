@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use App\Http\Requests;
+use Illuminate\Support\Facades\Validator;
 use App\Modelos\User;
 use App\Modelos\Colaborador\DetalleColaborador;
 use App\Modelos\Colaborador\FotoColaborador;
@@ -16,7 +17,16 @@ use Mail;
 
 class UserController extends Controller
 {
-
+    protected function validatorUpdate(array $data)
+    {
+        return Validator::make($data, [
+            'nombre' => 'required|string|max:255',
+            'apellido'=> 'required|string|max:255',
+            'puesto' => 'required|string|max:255',
+            'telefono'=> 'required|string|max:255',
+            'correo' => 'required|email|max:255'
+        ]);
+    }
 
 
     public function getAuthUser(Request $request){
@@ -57,6 +67,48 @@ class UserController extends Controller
             ],
             'recordatorios'=>$recordatorios
         ],200);
+
+    }
+
+    public function updateME(Request $request){
+        $id_me = $this->guard()->user()->id;
+        $me = User::where('id',$id_me)->first();
+        $me_ext = DetalleColaborador::where('id_colaborador',$id_me)->first();
+        $validator = $this->validatorUpdate($request->all());
+        if($validator->passes()){
+            try{
+            DB::beginTransaction();
+            $me->nombre = $request->nombre;
+            $me->apellido = $request->apellido;
+            $me->email = $request->correo;
+            $me_ext->puesto = $request->puesto;
+            $me_ext->telefono = $request->telefono;
+            // $me_ext->fecha_nacimiento = $request->fecha_nacimiento;
+            $me->save();
+            $me->detalle()->save($me_ext);
+            $meRes = User::GetOneUser($id_me);
+            DB::commit();
+            return response()->json([
+                'message'=>'Success',
+                'error'=>false,
+                'data'=>$meRes
+                ]);
+
+            }catch(Exception $e){
+                DB::rollBack();
+                return response()->json([
+                    'message'=>$e,
+                    'error'=>true
+                ],400);
+            }
+        }
+
+        $errores = $validator->errors()->toArray();
+
+            return response()->json([
+                'error'=>true,
+                'messages'=> $errores
+            ],400);
 
     }
 
