@@ -356,20 +356,17 @@ class DataViewsController extends Controller
 
         $top_3 = DB::table('users')
                 ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
+                ->join('fotos_colaboradores','fotos_colaboradores.id_colaborador','users.id')
                 ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
-                ->select('users.id','users.nombre','users.apellido',DB::raw('count(*) as cerradas, users.email'))
+                ->select('users.id','users.nombre','users.apellido','fotos_colaboradores.url_foto',DB::raw('count(*) as cerradas, users.email'))
                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
                 ->groupBy('users.email')->orderBy('cerradas','desc')->limit(3)->get();
 
         
-        $colaboradores =  User::with('oportunidad.oportunidad.status_oportunidad')->get();
+        $colaboradores =  User::with('oportunidad.oportunidad.status_oportunidad','oportunidad.oportunidad.detalle_oportunidad')
+                                ->get();
         
-        //DB::table('users')
-        //                 ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
-        //                 ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
-        //                 ->select('users.*')
-        //                 ->orderBy('users.email','desc')
-        //                 ->get();
+       
 
         return response()->json([
             'message'=>'Success',

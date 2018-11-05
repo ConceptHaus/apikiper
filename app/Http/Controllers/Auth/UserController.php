@@ -27,6 +27,14 @@ class UserController extends Controller
                             ->where('colaborador_oportunidad.id_colaborador',$id_user)
                             ->select(DB::raw('count(*) as total, cat_status_oportunidad.status'))->groupBy('cat_status_oportunidad.status')
                             ->get();
+        
+        $status_1 = DB::table('oportunidades')
+                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                            ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                            ->where('colaborador_oportunidad.id_colaborador',$id_user)
+                            ->select(DB::raw('count(*) as total, cat_status_oportunidad.status'))->groupBy('cat_status_oportunidad.status')
+                            ->get();
 
         $recordatorios = DB::table('recordatorios_prospecto')
                         ->join('detalle_recordatorio_prospecto','detalle_recordatorio_prospecto.id_recordatorio_prospecto','recordatorios_prospecto.id_recordatorio_prospecto')
@@ -36,7 +44,11 @@ class UserController extends Controller
         return response()->json([
             'user'=>$this->guard()->user(),
             'detalle'=>$detalle,
-            'oportunidades'=>$oportunidades,
+            'oportunidades'=>[
+                'status_1'=>'',
+                'status_2'=>'',
+                'status_3'=>''
+            ],
             'recordatorios'=>$recordatorios
         ],200);
     
