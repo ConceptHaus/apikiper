@@ -543,7 +543,7 @@ class DataViewsController extends Controller
                         ->join('oportunidades','oportunidades.id_oportunidad','colaborador_oportunidad.id_oportunidad')
                         ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
                         ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
-                        ->select('users.id','users.email',DB::raw("SUM(detalle_oportunidad.valor) as valor_total"))
+                        ->select('users.id','users.email','users.nombre',DB::raw("SUM(detalle_oportunidad.valor) as valor_total"))
                         ->where('status_oportunidad.id_cat_status_oportunidad',2)
                         ->groupBy('users.email')->orderBy('valor_total','desc')->get();
 
@@ -556,7 +556,9 @@ class DataViewsController extends Controller
                 ->groupBy('users.email')->orderBy('cerradas','desc')->limit(3)->get();
 
 
-        $colaboradores =  User::with('oportunidad.oportunidad.status_oportunidad','oportunidad.oportunidad.detalle_oportunidad')
+        $colaboradores = User::with('oportunidad.oportunidad.status_oportunidad','oportunidad.oportunidad.detalle_oportunidad')
+                                ->join('fotos_colaboradores','fotos_colaboradores.id_colaborador','users.id')
+                                ->join('detalle_colaborador','detalle_colaborador.id_colaborador', 'users.id')
                                 ->get();
 
 
