@@ -10,7 +10,7 @@ use Alsofronie\Uuid\UuidModelTrait;
  {
     use UuidModelTrait;
 
-    protected $table = 'oportunidades';   
+    protected $table = 'oportunidades';
     protected $primaryKey = 'id_oportunidad';
     protected $fillable = [
         'id_oportunidad',
