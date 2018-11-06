@@ -137,9 +137,7 @@ class ProspectosController extends Controller
             'message'=>'Success',
             'error'=>false,
             'data'=>[
-                'prospectos_total'=>$prospectos_total,
-                'prospectos_sin_contactar'=>$prospectos_sin_contactar,
-                'colaboradores'=>$prospectos
+                'prospectos'=>$prospectos
             ]
         ],200);
     }
