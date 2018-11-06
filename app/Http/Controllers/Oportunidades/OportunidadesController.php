@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 
 use App\Modelos\User;
 use App\Modelos\Prospecto\Prospecto;
+use App\Modelos\Prospecto\DetalleProspecto;
 use App\Modelos\Oportunidad\Oportunidad;
 use App\Modelos\Oportunidad\DetalleOportunidad;
 use App\Modelos\Oportunidad\EtiquetasOportunidad;
@@ -154,8 +155,52 @@ class OportunidadesController extends Controller
         ],200);
     }
 
-    public function updateOneOportunidad($id){
+    public function updateOneOportunidad(Request $request, $id){
 
+        $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
+        $colaborador_oportunidad = ColaboradorOportunidad::where('id_oportunidad',$id)->first();
+        $oportunidad_detalle = DetalleOportunidad::where('id_oportunidad',$id)->first();
+        $prospecto_oportunidad = ProspectoOportunidad::where('id_oportunidad',$id)->first();
+        $prospecto = Prospecto::where('id_prospecto',$prospecto_oportunidad->id_prospecto)->first();
+        $prospecto_detalle = DetalleProspecto::where('id_prospecto',$prospecto_oportunidad->id_prospecto)->first();
+
+        try{
+            DB::beginTransaction();
+            $oportunidad->nombre_oportunidad  = $request->nombre_proyecto;
+            $prospecto_oportunidad->id_prospecto = $request->id_prospecto;
+            $colaborador_oportunidad->id_colaborador = $request->id_colaborador;
+            
+            $oportunidad->save();
+            $prospecto_oportunidad->save();
+            $colaborador_oportunidad->save();
+            DB::commit();
+
+            return response()->json([
+                'error'=>false,
+                'message'=>'Successfully updated',
+                'data'=>[
+                    'oportunidad'=>$oportunidad,
+                    'prospecto_oportunidad'=>$prospecto_oportunidad,
+                    'colaborador_oportunidad'=>$colaborador_oportunidad,
+                ]
+                
+            ],200);
+
+        }catch(Exception $e){
+            DB::rollBack();
+            return response()->json([
+                'error'=>true,
+                'message'=>$e,
+            ],400);
+        }
+        
+
+        return response()->json([
+            'oportunidad'=>$oportunidad,
+            'detalle'=>$oportunidad_detalle,
+            'prospecto'=>$prospecto,
+            'detalle_prospecto'=>$prospecto_detalle
+        ],200);
     }
 
     public function deleteOportunidad($id){
@@ -360,14 +405,14 @@ class OportunidadesController extends Controller
 
     }
 
-    public function addValor($id){
+    public function addValor(Request $request,$id){
 
         $detalle = DetalleOportunidad::where('id_oportunidad',$id)->first();
         
         try{
-            
+            $valor = intval($request->valor);
             DB::beginTransaction();
-            $detalle->valor = $request->valor;
+            $detalle->valor = $valor;
             $detalle->save();
             DB::commit();
 

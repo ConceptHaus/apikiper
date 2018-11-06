@@ -83,7 +83,7 @@ Route::prefix('/v1/oportunidades')->group(function(){
             Route::get('/','Oportunidades\OportunidadesController@getAllOportunidades');
             Route::get('/status/{status}','Oportunidades\OportunidadesController@getAllOportunidadesStatus');
             Route::get('/{id}','Oportunidades\OportunidadesController@getOneOportunidad');
-            Route::put('/{id}','Oportunidades\OportunidadesController@updateOportunidad');
+            Route::put('/{id}','Oportunidades\OportunidadesController@updateOneOportunidad');
             Route::delete('/{id}','Oportunidades\OportunidadesController@deleteOportunidad');
 
             //Funcionalidades extras
