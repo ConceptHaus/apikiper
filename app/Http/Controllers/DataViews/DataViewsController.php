@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers\DataViews;
 
@@ -46,7 +46,7 @@ class DataViewsController extends Controller
                                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
                                 ->groupBy('users.id')
                                 ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
-                                
+
 
         $origen_prospecto = DB::table('prospectos')
                                 ->select(DB::raw('count(*) as fuente_count, fuente'))->groupBy('fuente')->get();
@@ -54,13 +54,13 @@ class DataViewsController extends Controller
         $prospectos_sin_contactar = DB::table('prospectos')
                                 ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
                                 ->where('status_prospecto.id_cat_status_prospecto','=',1)->count();
-        
+
         $ingresos = DB::table('oportunidades')
                     ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
                     ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                     ->where('status_oportunidad.id_cat_status_oportunidad',2)
                     ->sum('detalle_oportunidad.valor');
-                                
+
         return response()->json([
             'message'=>'Success',
             'error'=>false,
@@ -83,11 +83,11 @@ class DataViewsController extends Controller
                                     ->where('status_prospecto.id_cat_status_prospecto','=',1)->count();
         $prospectos_fuente = DB::table('prospectos')
                                     ->select(DB::raw('count(*) as fuente_count, fuente'))->groupBy('fuente')->get();
-        
+
         $prospectos_t= DB::table('prospectos')
                             ->join('detalle_prospecto','prospectos.id_prospecto','detalle_prospecto.id_prospecto')
                             ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
-                            
+
                             ->select('prospectos.id_prospecto',
                                     'prospectos.nombre',
                                     'prospectos.apellido',
@@ -95,7 +95,7 @@ class DataViewsController extends Controller
                                     'detalle_prospecto.telefono',
                                     'prospectos.fuente',
                                     'prospectos.created_at')->get();
-        
+
         $prospectos = Prospecto::with('detalle_prospecto')
                                 ->with('status_prospecto.status')->get();
 
@@ -119,8 +119,8 @@ class DataViewsController extends Controller
                         ->select('prospectos.id_prospecto','prospectos.nombre','prospectos.apellido','detalle_prospecto.telefono','prospectos.created_at','prospectos.fuente','cat_status_prospecto.status')
                         ->get();
 
-        
-        
+
+
 
         return response()->json([
             'message'=>'Success',
@@ -150,7 +150,7 @@ class DataViewsController extends Controller
                             ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->where('colaborador_oportunidad.id_colaborador','=',$id)
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',3)->count();
-        
+
         $oportunidades = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','colaborador_oportunidad.id_oportunidad')
@@ -162,7 +162,7 @@ class DataViewsController extends Controller
                             ->where('colaborador_oportunidad.id_colaborador','=',$id)
                             ->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','cat_status_oportunidad.status','cat_servicios.nombre as servicio','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','prospectos.fuente','oportunidades.created_at')
                             ->get();
-        
+
 
         return response()->json([
             'message'=>'Success',
@@ -203,7 +203,7 @@ class DataViewsController extends Controller
                             ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->where('colaborador_oportunidad.id_colaborador','=',$id)
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',3)->count();
-        
+
         $oportunidades = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','colaborador_oportunidad.id_oportunidad')
@@ -212,10 +212,11 @@ class DataViewsController extends Controller
                             ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
                             ->join('servicio_oportunidad','servicio_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
                             ->join('cat_servicios','cat_servicios.id_servicio_cat','servicio_oportunidad.id_servicio_cat')
+                            ->join('users','users.id', 'colaborador_oportunidad.id_colaborador')
                             ->where('colaborador_oportunidad.id_colaborador','=',$id)
-                            ->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','cat_status_oportunidad.status','cat_servicios.nombre as servicio','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','prospectos.fuente','oportunidades.created_at')
+                            ->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','cat_status_oportunidad.status','cat_servicios.nombre as servicio','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','prospectos.fuente','oportunidades.created_at', 'users.nombre as asignado_nombre', 'users.apellido as asignado_apellido')
                             ->get();
-        
+
 
         return response()->json([
             'message'=>'Success',
@@ -231,19 +232,19 @@ class DataViewsController extends Controller
                     'valor'=>$oportunidades_cotizadas,
                     'porcentaje'=>intval(round($oportunidades_cotizadas*100/$oportunidades_total)),
                     'color'=>$this->colorsOportunidades(1)
-                    
+
                 ],
                 'cerradas'=>[
                     'valor'=>$oportunidades_cerradas,
                     'porcentaje'=>intval(round($oportunidades_cerradas*100/$oportunidades_total)),
                     'color'=>$this->colorsOportunidades(2)
-     
+
                 ],
                 'no_viables'=>[
                     'valor'=>$oportunidades_no_viables,
                     'porcentaje'=>intval(round($oportunidades_no_viables*100/$oportunidades_total,PHP_ROUND_HALF_DOWN)),
                     'color'=>$this->colorsOportunidades(3)
-                    
+
                 ],
                 'oportunidades'=>$oportunidades
             ]
@@ -252,7 +253,7 @@ class DataViewsController extends Controller
 
 
     public function mis_oportunidades_status($status){
-        
+
         $id = $this->guard()->user()->id;
 
 
@@ -304,7 +305,7 @@ class DataViewsController extends Controller
                 ],
                 'fuentes'=>$fuentes,
                 'oportunidades'=> $oportunidades
-                
+
             ]
             ],200);
     }
@@ -324,13 +325,13 @@ class DataViewsController extends Controller
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',3)->count();
-        
+
         $fuentes = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','colaborador_oportunidad.id_oportunidad')
                             ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
                             ->select(DB::raw('count(*) as fuente_count, prospectos.fuente'))->groupBy('prospectos.fuente')->get();
-        
+
         return response()->json([
             'message'=>'Success',
             'error'=>false,
@@ -362,11 +363,11 @@ class DataViewsController extends Controller
                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
                 ->groupBy('users.email')->orderBy('cerradas','desc')->limit(3)->get();
 
-        
+
         $colaboradores =  User::with('oportunidad.oportunidad.status_oportunidad','oportunidad.oportunidad.detalle_oportunidad')
                                 ->get();
-        
-       
+
+
 
         return response()->json([
             'message'=>'Success',
@@ -377,7 +378,7 @@ class DataViewsController extends Controller
                 'colaboradores'=>$colaboradores
             ]
             ],200);
-                    
+
     }
 
     public function estadisticas_finanzas(){
@@ -386,7 +387,7 @@ class DataViewsController extends Controller
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',1)
                             ->sum('detalle_oportunidad.valor');
-                            
+
         $total_cerrador = DB::table('oportunidades')
                             ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
@@ -434,10 +435,12 @@ class DataViewsController extends Controller
             ]
 
             ],200);
-    } 
-    
+    }
+
     public function etiquetas(){
-        $etiquetas = DB::table('etiquetas')->get();
+        $etiquetas = DB::table('etiquetas')
+        ->orderBy('created_at', 'DESC')
+        ->get();
 
         return response()->json([
             'message'=>'Success',
@@ -455,7 +458,7 @@ class DataViewsController extends Controller
                         ->join('fotos_colaboradores','fotos_colaboradores.id_colaborador','users.id')
                         ->select('users.nombre','users.apellido','fotos_colaboradores.url_foto','detalle_colaborador.puesto','users.email','detalle_colaborador.telefono','users.created_at')
                         ->get();
-        
+
         return response()->json([
                     'message'=>'Success',
                     'error'=>false,
@@ -468,19 +471,20 @@ class DataViewsController extends Controller
     public function status_oportunidades(){
         $status_1 = DB::table('cat_status_oportunidad')
                         ->where('id_cat_status_oportunidad',1)
-                        ->select('status as nombre','descripcion','color')        
+                        ->select('id_cat_status_oportunidad as id','status as nombre','descripcion','color')
                         ->first();
+
 
         $status_2 = DB::table('cat_status_oportunidad')
                         ->where('id_cat_status_oportunidad',2)
-                        ->select('status as nombre','descripcion','color')        
+                        ->select('id_cat_status_oportunidad as id', 'status as nombre','descripcion','color')
                         ->first();
-        
+
         $status_3 = DB::table('cat_status_oportunidad')
                         ->where('id_cat_status_oportunidad',3)
-                        ->select('status as nombre','descripcion','color')        
+                        ->select('id_cat_status_oportunidad as id', 'status as nombre','descripcion','color')
                         ->first();
-        
+
         return response()->json([
                     'message'=>'Success',
                     'error'=>false,
@@ -494,8 +498,10 @@ class DataViewsController extends Controller
     }
 
     public function servicios(){
-        $servicios = DB::table('cat_servicios')->get();
-        
+        $servicios = DB::table('cat_servicios')
+        ->orderBy('created_at', 'DESC')
+        ->get();
+
         return response()->json([
             'message'=>'Success',
             'error'=>false,
@@ -531,7 +537,7 @@ class DataViewsController extends Controller
                     'message'=>$e
                 ],400);
             }
-           
+
 
         }
         $errores = $validador->errors()->toArray();
@@ -544,12 +550,12 @@ class DataViewsController extends Controller
 
     //PUT
     public function updateEtiquetas(Request $request){
-        
+
         $id = $request->id_etiqueta;
-    
+
         try{
             DB::beginTransaction();
-            
+
             $etiqueta = Etiqueta::where('id_etiqueta',$id)->first();
             $etiqueta->nombre = $request->nombre;
             $etiqueta->descripcion = $request->descripcion;
@@ -571,12 +577,12 @@ class DataViewsController extends Controller
                 'message'=>$e
             ],400);
         }
-        
+
     }
 
     public function deleteEtiquetas($id){
         $etiqueta  = Etiqueta::where('id_etiqueta',$id)->first();
-        
+
         if($etiqueta->delete()){
             return response()->json([
                 'message'=>'Successfully deleted',
@@ -642,7 +648,7 @@ class DataViewsController extends Controller
                 'message'=>'Successfully registered',
                 'data'=>$servicio
             ]);
-            
+
         }catch(Exception $e){
             DB::rollBack();
             return response()->json([
@@ -651,11 +657,11 @@ class DataViewsController extends Controller
 
             ],400);
         }
-    } 
+    }
 
     public function deleteServicios($id){
         $servicios = CatServicios::where('id_servicio_cat',$id)->first();
-        
+
         if($servicios->delete()){
             return response()->json([
                 'message'=>'Successfully deleted',
@@ -699,10 +705,10 @@ class DataViewsController extends Controller
     public function validadorEtiqueta(array $data){
         return Validator::make($data,[
             'nombre'=>'required|string',
-            
+
         ]);
     }
-    
+
     public function guard()
     {
         return Auth::guard();

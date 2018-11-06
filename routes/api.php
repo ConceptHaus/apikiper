@@ -29,13 +29,14 @@ Route::prefix('/v1/users')->group(function(){
                 return "Event has been sent!";
             });
         });
-        
+
         Route::middleware(['auth','cors'])->group(function(){
             Route::get('/me','Auth\UserController@getAuthUser');
             Route::get('/me/oportunidades','Auth\UserController@oportunidades');
             Route::get('/me/prospectos','Auth\UserController@oportunidades');
+            Route::put('/me', 'Auth\UserController@updateMe');
             Route::post('/logout', 'Auth\LoginController@logout');
-            
+
         });
 });
 
@@ -47,8 +48,8 @@ Route::prefix('/v1/colaboradores')->group(function(){
             Route::get('/{id}','Colaboradores\ColaboradoresController@getOneColaborador');
             Route::put('/{id}','Colaboradores\ColaboradoresController@updateColaborador');
             Route::delete('/{id}','Colaboradores\ColaboradoresController@deleteColaborador');
-            
-        });  
+
+        });
 });
 
 //Prospectos
@@ -72,7 +73,7 @@ Route::prefix('/v1/prospectos')->group(function(){
             Route::post('/{id}/etiquetas','Prospectos\ProspectosController@addEtiquetas');
             Route::get('/{id}/archivos','Prospectos\ProspectosController@getArchivos');
             Route::post('/{id}/archivos','Prospectos\ProspectosController@addArchivos');
-        });  
+        });
 });
 
 //Oportunidades
@@ -132,7 +133,7 @@ Route::prefix('/v1/generales')->group(function(){
         //POST
         Route::post('/etiquetas','DataViews\DataViewsController@addEtiquetas');
         Route::post('/servicios','DataViews\DataViewsController@addServicios');
-        
+
         //PUT
         Route::put('/etiquetas','DataViews\DataViewsController@updateEtiquetas');
         Route::put('/servicios','DataViews\DataViewsController@updateServicios');
