@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 
 use App\Modelos\Prospecto\Prospecto;
@@ -58,6 +59,197 @@ class DataViewsController extends Controller
         $ingresos = DB::table('oportunidades')
                     ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
                     ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                    ->where('status_oportunidad.id_cat_status_oportunidad',2)
+                    ->sum('detalle_oportunidad.valor');
+
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>[
+                'oportunidades_cerradas'=>number_format($oportuniades_cerradas),
+                'oportunidades_cotizadas'=>number_format($oportunidades_cotizadas),
+                'prospectos_sin_contactar'=>number_format($prospectos_sin_contactar),
+                'colaboradores'=>$colaboradores,
+                'ingresos'=>number_format($ingresos,2),
+                'origen_prospecto'=>$origen_prospecto
+            ]
+            ],200);
+
+    }
+    public function dashboardSemanal(){
+        //Oportunidades Cotizadas
+        //Oportunidades Cerradas
+        //Prospectos sin contactar
+        //Colaboradores
+        //Ingresos
+        //Origen Prospecto
+        //Historial
+        $semana = new Carbon('last week');
+        $hoy = new Carbon('now');
+
+        $oportuniades_cerradas = DB::table('oportunidades')
+                                    ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                                    ->whereBetween('oportunidades.created_at', array($semana->toDateString() ,$hoy->toDateString()))
+                                    ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
+
+        $oportunidades_cotizadas =  DB::table('oportunidades')
+                                    ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                                    ->whereBetween('oportunidades.created_at', array($semana->toDateString() ,$hoy->toDateString()))
+                                    ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
+
+        $colaboradores = DB::table('users')
+                                ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
+                                ->join('fotos_colaboradores','users.id','fotos_colaboradores.id_colaborador')
+                                ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
+                                ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                                ->select('users.nombre','users.apellido','detalle_colaborador.puesto','fotos_colaboradores.url_foto',DB::raw('count(*) as oportunidades_cerradas, users.id'))
+                                ->where('status_oportunidad.id_cat_status_oportunidad',2)
+                                ->whereBetween('status_oportunidad.created_at', array($semana->toDateString() ,$hoy->toDateString()))
+                                ->groupBy('users.id')
+                                ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
+
+
+        $origen_prospecto = DB::table('prospectos')
+                                ->whereBetween('prospectos.created_at', array($semana->toDateString() ,$hoy->toDateString()))
+                                ->select(DB::raw('count(*) as fuente_count, fuente'))->groupBy('fuente')->get();
+
+        $prospectos_sin_contactar = DB::table('prospectos')
+                                ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+                                ->whereBetween('prospectos.created_at', array($semana->toDateString() ,$hoy->toDateString()))
+                                ->where('status_prospecto.id_cat_status_prospecto','=',1)->count();
+
+        $ingresos = DB::table('oportunidades')
+                    ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
+                    ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                    ->whereBetween('oportunidades.created_at', array($semana->toDateString() ,$hoy->toDateString()))
+                    ->where('status_oportunidad.id_cat_status_oportunidad',2)
+                    ->sum('detalle_oportunidad.valor');
+
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>[
+                'oportunidades_cerradas'=>number_format($oportuniades_cerradas),
+                'oportunidades_cotizadas'=>number_format($oportunidades_cotizadas),
+                'prospectos_sin_contactar'=>number_format($prospectos_sin_contactar),
+                'colaboradores'=>$colaboradores,
+                'ingresos'=>number_format($ingresos,2),
+                'origen_prospecto'=>$origen_prospecto
+            ]
+            ],200);
+
+    }
+
+    public function dashboardMensual(){
+        //Oportunidades Cotizadas
+        //Oportunidades Cerradas
+        //Prospectos sin contactar
+        //Colaboradores
+        //Ingresos
+        //Origen Prospecto
+        //Historial
+        $mes = new Carbon('last month');
+        $hoy = new Carbon('now');
+
+        $oportuniades_cerradas = DB::table('oportunidades')
+                                    ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                                    ->whereBetween('oportunidades.created_at', array($mes->toDateString() ,$hoy->toDateString()))
+                                    ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
+
+        $oportunidades_cotizadas =  DB::table('oportunidades')
+                                    ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                                    ->whereBetween('oportunidades.created_at', array($mes->toDateString() ,$hoy->toDateString()))
+                                    ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
+
+        $colaboradores = DB::table('users')
+                                ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
+                                ->join('fotos_colaboradores','users.id','fotos_colaboradores.id_colaborador')
+                                ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
+                                ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                                ->select('users.nombre','users.apellido','detalle_colaborador.puesto','fotos_colaboradores.url_foto',DB::raw('count(*) as oportunidades_cerradas, users.id'))
+                                ->where('status_oportunidad.id_cat_status_oportunidad',2)
+                                ->whereBetween('status_oportunidad.created_at', array($mes->toDateString() ,$hoy->toDateString()))
+                                ->groupBy('users.id')
+                                ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
+
+
+        $origen_prospecto = DB::table('prospectos')
+                                ->whereBetween('prospectos.created_at', array($mes->toDateString() ,$hoy->toDateString()))
+                                ->select(DB::raw('count(*) as fuente_count, fuente'))->groupBy('fuente')->get();
+
+        $prospectos_sin_contactar = DB::table('prospectos')
+                                ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+                                ->whereBetween('prospectos.created_at', array($mes->toDateString() ,$hoy->toDateString()))
+                                ->where('status_prospecto.id_cat_status_prospecto','=',1)->count();
+
+        $ingresos = DB::table('oportunidades')
+                    ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
+                    ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                    ->whereBetween('oportunidades.created_at', array($mes->toDateString() ,$hoy->toDateString()))
+                    ->where('status_oportunidad.id_cat_status_oportunidad',2)
+                    ->sum('detalle_oportunidad.valor');
+
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>[
+                'oportunidades_cerradas'=>number_format($oportuniades_cerradas),
+                'oportunidades_cotizadas'=>number_format($oportunidades_cotizadas),
+                'prospectos_sin_contactar'=>number_format($prospectos_sin_contactar),
+                'colaboradores'=>$colaboradores,
+                'ingresos'=>number_format($ingresos,2),
+                'origen_prospecto'=>$origen_prospecto
+            ]
+            ],200);
+
+    }
+
+    public function dashboardAnual(){
+        //Oportunidades Cotizadas
+        //Oportunidades Cerradas
+        //Prospectos sin contactar
+        //Colaboradores
+        //Ingresos
+        //Origen Prospecto
+        //Historial
+        $anio = new Carbon('last year');
+        $hoy = new Carbon('now');
+
+        $oportuniades_cerradas = DB::table('oportunidades')
+                                    ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                                    ->whereBetween('oportunidades.created_at', array($anio->toDateString() ,$hoy->toDateString()))
+                                    ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
+
+        $oportunidades_cotizadas =  DB::table('oportunidades')
+                                    ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                                    ->whereBetween('oportunidades.created_at', array($anio->toDateString() ,$hoy->toDateString()))
+                                    ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
+
+        $colaboradores = DB::table('users')
+                                ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
+                                ->join('fotos_colaboradores','users.id','fotos_colaboradores.id_colaborador')
+                                ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
+                                ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                                ->select('users.nombre','users.apellido','detalle_colaborador.puesto','fotos_colaboradores.url_foto',DB::raw('count(*) as oportunidades_cerradas, users.id'))
+                                ->where('status_oportunidad.id_cat_status_oportunidad',2)
+                                ->whereBetween('status_oportunidad.created_at', array($anio->toDateString() ,$hoy->toDateString()))
+                                ->groupBy('users.id')
+                                ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
+
+
+        $origen_prospecto = DB::table('prospectos')
+                                ->whereBetween('prospectos.created_at', array($anio->toDateString() ,$hoy->toDateString()))
+                                ->select(DB::raw('count(*) as fuente_count, fuente'))->groupBy('fuente')->get();
+
+        $prospectos_sin_contactar = DB::table('prospectos')
+                                ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+                                ->whereBetween('prospectos.created_at', array($anio->toDateString() ,$hoy->toDateString()))
+                                ->where('status_prospecto.id_cat_status_prospecto','=',1)->count();
+
+        $ingresos = DB::table('oportunidades')
+                    ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
+                    ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                    ->whereBetween('oportunidades.created_at', array($anio->toDateString() ,$hoy->toDateString()))
                     ->where('status_oportunidad.id_cat_status_oportunidad',2)
                     ->sum('detalle_oportunidad.valor');
 

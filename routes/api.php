@@ -117,6 +117,9 @@ Route::prefix('/v1/oportunidades')->group(function(){
 Route::prefix('/v1/generales')->group(function(){
     Route::middleware(['cors'])->group(function(){
         Route::get('/dashboard','DataViews\DataViewsController@dashboard');
+        Route::get('/dashboard/semanal','DataViews\DataViewsController@dashboardSemanal');
+        Route::get('/dashboard/mensual','DataViews\DataViewsController@dashboardMensual');
+        Route::get('/dashboard/anual','DataViews\DataViewsController@dashboardAnual');
         Route::get('/prospectos','DataViews\DataViewsController@prospectos');
         Route::get('/prospectos/{status}','DataViews\DataViewsController@prospectosstatus');
         Route::get('/mis-oportunidades','DataViews\DataViewsController@misOportunidades');
