@@ -545,7 +545,7 @@ class DataViewsController extends Controller
                         ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
                         ->select('users.id','users.email','users.nombre',DB::raw("SUM(detalle_oportunidad.valor) as valor_total"))
                         ->where('status_oportunidad.id_cat_status_oportunidad',2)
-                        ->groupBy('users.email')->orderBy('valor_total','desc')->get();
+                        ->groupBy('users.email')->orderBy('valor_total','desc')->limit(10)->get();
 
         $top_3 = DB::table('users')
                 ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
