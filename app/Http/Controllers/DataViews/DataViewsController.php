@@ -561,6 +561,10 @@ class DataViewsController extends Controller
                                 ->join('detalle_colaborador','detalle_colaborador.id_colaborador', 'users.id')
                                 ->get();
 
+        $oportunidades_cotizadas =  DB::table('oportunidades')
+                                ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                                ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
+
 
 
         return response()->json([
@@ -569,7 +573,8 @@ class DataViewsController extends Controller
             'data'=>[
                 'ventas'=>$users_ventas,
                 'top_3'=>$top_3,
-                'colaboradores'=>$colaboradores
+                'colaboradores'=>$colaboradores,
+                'oportunidades_cotizadas'=>$oportunidades_cotizadas
             ]
             ],200);
 
