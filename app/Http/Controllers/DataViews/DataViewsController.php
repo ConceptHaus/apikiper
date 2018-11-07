@@ -556,10 +556,14 @@ class DataViewsController extends Controller
                 ->groupBy('users.email')->orderBy('cerradas','desc')->limit(3)->get();
 
 
-        $colaboradores = User::with('oportunidad.oportunidad.status_oportunidad','oportunidad.oportunidad.detalle_oportunidad')
-                                ->join('fotos_colaboradores','fotos_colaboradores.id_colaborador','users.id')
-                                ->join('detalle_colaborador','detalle_colaborador.id_colaborador', 'users.id')
-                                ->get();
+        $colaboradores = DB::table('users')
+                ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
+                ->join('detalle_colaborador','detalle_colaborador.id_colaborador', 'users.id')
+                ->join('fotos_colaboradores','fotos_colaboradores.id_colaborador','users.id')
+                ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                ->select('users.id','users.nombre','users.apellido','users.email','detalle_colaborador.telefono','fotos_colaboradores.url_foto',DB::raw('count(status_oportunidad.id_cat_status_oportunidad = 2) as cerradas'), DB::raw('count(status_oportunidad.id_cat_status_oportunidad = 1) as cotizadas'))
+                ->groupBy('users.id')
+                ->get();
 
         $oportunidades_cotizadas =  DB::table('oportunidades')
                                 ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
@@ -573,8 +577,7 @@ class DataViewsController extends Controller
             'data'=>[
                 'ventas'=>$users_ventas,
                 'top_3'=>$top_3,
-                'colaboradores'=>$colaboradores,
-                'oportunidades_cotizadas'=>$oportunidades_cotizadas
+                'colaboradores'=>$colaboradores
             ]
             ],200);
 
