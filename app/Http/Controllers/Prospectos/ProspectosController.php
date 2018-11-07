@@ -152,7 +152,36 @@ class ProspectosController extends Controller
     }
 
     public function updateProspecto(Request $request, $id){
+            $prospecto = Prospecto::where('id_prospecto',$id)->first();
+            $detalle = DetalleProspecto::where('id_prospecto',$id)->first();
 
+        try{
+            
+            DB::beginTransaction();
+            $prospecto->nombre = $request->nombre;
+            $prospecto->apellido = $request->apellido;
+            $prospecto->fuente = $request->fuente;
+            $prospecto->correo = $request->correo;
+            $detalle->telefono = $request->telefono;
+            $prospecto->save();
+            $detalle->save();
+            DB::commit();
+            return response()->json([
+                'error'=>false,
+                'message'=>'Successfully updated',
+                'data'=>[
+                    'prospecto'=>$prospecto,
+                    'detalle'=>$detalle
+                ]
+            ],200);
+        }catch(Exception $e){
+            return response()->json([
+                'error'=>true,
+                'message'=>'Something is wrong '.$e,
+            ],400);
+        }
+            
+            
     }
 
     public function deleteProspecto($id){
