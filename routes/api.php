@@ -108,7 +108,7 @@ Route::prefix('/v1/oportunidades')->group(function(){
 
             Route::post('/{id}/valor','Oportunidades\OportunidadesController@addValor');
 
-        });  
+        });
 });
 
 
@@ -128,6 +128,9 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/estadisticas/oportunidades','DataViews\DataViewsController@estadisticas_oportunidad');
         Route::get('/estadisticas/colaboradores','DataViews\DataViewsController@estadisticas_colaborador');
         Route::get('/estadisticas/finanzas','DataViews\DataViewsController@estadisticas_finanzas');
+        Route::get('/estadisticas/finanzas/semanal','DataViews\DataViewsController@estadisticas_finanzas_semanal');
+        Route::get('/estadisticas/finanzas/mensual','DataViews\DataViewsController@estadisticas_finanzas_mensual');
+        Route::get('/estadisticas/finanzas/anual','DataViews\DataViewsController@estadisticas_finanzas_anual');
         Route::get('/etiquetas','DataViews\DataViewsController@etiquetas');
         Route::get('/status','DataViews\DataViewsController@status_oportunidades');
         Route::get('/servicios','DataViews\DataViewsController@servicios');

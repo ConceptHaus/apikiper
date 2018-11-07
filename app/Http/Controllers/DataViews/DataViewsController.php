@@ -565,12 +565,6 @@ class DataViewsController extends Controller
                 ->groupBy('users.id')
                 ->get();
 
-        $oportunidades_cotizadas =  DB::table('oportunidades')
-                                ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
-                                ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
-
-
-
         return response()->json([
             'message'=>'Success',
             'error'=>false,
@@ -621,6 +615,195 @@ class DataViewsController extends Controller
                     ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
                     ->join('prospectos','prospectos.id_prospecto','oportunidad_prospecto.id_prospecto')
                     ->where('status_oportunidad.id_cat_status_oportunidad',2)
+                    ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'prospectos.fuente')->groupBy('prospectos.fuente')
+                    ->get();
+
+
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>[
+                'total_cotizado'=>number_format($total_cotizado,2),
+                'total_cerrador'=>number_format($total_cerrador,2),
+                'total_noviable'=>number_format($total_noviable,2),
+                'top_3'=>$top_3,
+                'fuentes'=>$fuentes
+            ]
+
+            ],200);
+    }
+
+    public function estadisticas_finanzas_semanal(){
+      $semana = new Carbon('last week');
+      $hoy = new Carbon('now');
+
+        $total_cotizado = DB::table('oportunidades')
+                            ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',1)
+                            ->whereBetween('oportunidades.created_at', array($semana->toDateString() ,$hoy->toDateString()))
+                            ->sum('detalle_oportunidad.valor');
+
+        $total_cerrador = DB::table('oportunidades')
+                            ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',2)
+                            ->whereBetween('oportunidades.created_at', array($semana->toDateString() ,$hoy->toDateString()))
+                            ->sum('detalle_oportunidad.valor');
+
+        $total_noviable = DB::table('oportunidades')
+                            ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',3)
+                            ->whereBetween('oportunidades.created_at', array($semana->toDateString() ,$hoy->toDateString()))
+                            ->sum('detalle_oportunidad.valor');
+
+        $top_3 = DB::table('users')
+                    ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
+                    ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
+                    ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                    ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                    ->join('fotos_colaboradores','fotos_colaboradores.id_colaborador','users.id')
+                    ->where('status_oportunidad.id_cat_status_oportunidad','=',2)
+                    ->select('users.nombre','users.apellido','fotos_colaboradores.url_foto','detalle_colaborador.puesto',DB::raw('sum(detalle_oportunidad.valor) as total_ingresos'))
+                    ->groupBy('users.id')
+                    ->orderBy('total_ingresos','desc')
+                    ->limit(3)
+                    ->get();
+
+        $fuentes = DB::table('oportunidades')
+                    ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
+                    ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                    ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
+                    ->join('prospectos','prospectos.id_prospecto','oportunidad_prospecto.id_prospecto')
+                    ->where('status_oportunidad.id_cat_status_oportunidad',2)
+                    ->whereBetween('oportunidades.created_at', array($semana->toDateString() ,$hoy->toDateString()))
+                    ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'prospectos.fuente')->groupBy('prospectos.fuente')
+                    ->get();
+
+
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>[
+                'total_cotizado'=>number_format($total_cotizado,2),
+                'total_cerrador'=>number_format($total_cerrador,2),
+                'total_noviable'=>number_format($total_noviable,2),
+                'top_3'=>$top_3,
+                'fuentes'=>$fuentes
+            ]
+
+            ],200);
+    }
+
+    public function estadisticas_finanzas_mensual(){
+      $mes = new Carbon('last month');
+      $hoy = new Carbon('now');
+
+        $total_cotizado = DB::table('oportunidades')
+                            ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',1)
+                            ->whereBetween('oportunidades.created_at', array($mes->toDateString() ,$hoy->toDateString()))
+                            ->sum('detalle_oportunidad.valor');
+
+        $total_cerrador = DB::table('oportunidades')
+                            ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',2)
+                            ->whereBetween('oportunidades.created_at', array($mes->toDateString() ,$hoy->toDateString()))
+                            ->sum('detalle_oportunidad.valor');
+
+        $total_noviable = DB::table('oportunidades')
+                            ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',3)
+                            ->whereBetween('oportunidades.created_at', array($mes->toDateString() ,$hoy->toDateString()))
+                            ->sum('detalle_oportunidad.valor');
+
+        $top_3 = DB::table('users')
+                    ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
+                    ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
+                    ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                    ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                    ->join('fotos_colaboradores','fotos_colaboradores.id_colaborador','users.id')
+                    ->where('status_oportunidad.id_cat_status_oportunidad','=',2)
+                    ->select('users.nombre','users.apellido','fotos_colaboradores.url_foto','detalle_colaborador.puesto',DB::raw('sum(detalle_oportunidad.valor) as total_ingresos'))
+                    ->groupBy('users.id')
+                    ->orderBy('total_ingresos','desc')
+                    ->limit(3)
+                    ->get();
+
+        $fuentes = DB::table('oportunidades')
+                    ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
+                    ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                    ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
+                    ->join('prospectos','prospectos.id_prospecto','oportunidad_prospecto.id_prospecto')
+                    ->where('status_oportunidad.id_cat_status_oportunidad',2)
+                    ->whereBetween('oportunidades.created_at', array($mes->toDateString() ,$hoy->toDateString()))
+                    ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'prospectos.fuente')->groupBy('prospectos.fuente')
+                    ->get();
+
+
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>[
+                'total_cotizado'=>number_format($total_cotizado,2),
+                'total_cerrador'=>number_format($total_cerrador,2),
+                'total_noviable'=>number_format($total_noviable,2),
+                'top_3'=>$top_3,
+                'fuentes'=>$fuentes
+            ]
+
+            ],200);
+    }
+
+    public function estadisticas_finanzas_anual(){
+      $anio = new Carbon('last year');
+      $hoy = new Carbon('now');
+
+        $total_cotizado = DB::table('oportunidades')
+                            ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',1)
+                            ->whereBetween('oportunidades.created_at', array($anio->toDateString() ,$hoy->toDateString()))
+                            ->sum('detalle_oportunidad.valor');
+
+        $total_cerrador = DB::table('oportunidades')
+                            ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',2)
+                            ->whereBetween('oportunidades.created_at', array($anio->toDateString() ,$hoy->toDateString()))
+                            ->sum('detalle_oportunidad.valor');
+
+        $total_noviable = DB::table('oportunidades')
+                            ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',3)
+                            ->whereBetween('oportunidades.created_at', array($anio->toDateString() ,$hoy->toDateString()))
+                            ->sum('detalle_oportunidad.valor');
+
+        $top_3 = DB::table('users')
+                    ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
+                    ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
+                    ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                    ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                    ->join('fotos_colaboradores','fotos_colaboradores.id_colaborador','users.id')
+                    ->where('status_oportunidad.id_cat_status_oportunidad','=',2)
+                    ->select('users.nombre','users.apellido','fotos_colaboradores.url_foto','detalle_colaborador.puesto',DB::raw('sum(detalle_oportunidad.valor) as total_ingresos'))
+                    ->groupBy('users.id')
+                    ->orderBy('total_ingresos','desc')
+                    ->limit(3)
+                    ->get();
+
+        $fuentes = DB::table('oportunidades')
+                    ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
+                    ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                    ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
+                    ->join('prospectos','prospectos.id_prospecto','oportunidad_prospecto.id_prospecto')
+                    ->where('status_oportunidad.id_cat_status_oportunidad',2)
+                    ->whereBetween('oportunidades.created_at', array($anio->toDateString() ,$hoy->toDateString()))
                     ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'prospectos.fuente')->groupBy('prospectos.fuente')
                     ->get();
 
