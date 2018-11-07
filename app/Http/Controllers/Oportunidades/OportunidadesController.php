@@ -12,11 +12,14 @@ use Illuminate\Support\Facades\Storage;
 
 use App\Modelos\User;
 use App\Modelos\Prospecto\Prospecto;
+use App\Modelos\Prospecto\DetalleProspecto;
 use App\Modelos\Oportunidad\Oportunidad;
+use App\Modelos\Oportunidad\DetalleOportunidad;
 use App\Modelos\Oportunidad\EtiquetasOportunidad;
 use App\Modelos\Oportunidad\ColaboradorOportunidad;
 use App\Modelos\Oportunidad\ServicioOportunidad;
 use App\Modelos\Oportunidad\ProspectoOportunidad;
+use App\Modelos\Oportunidad\StatusOportunidad;
 use App\Modelos\Extras\RecordatorioOportunidad;
 use App\Modelos\Extras\DetalleRecordatorioOportunidad;
 use App\Modelos\Extras\Evento;
@@ -152,8 +155,52 @@ class OportunidadesController extends Controller
         ],200);
     }
 
-    public function updateOneOportunidad($id){
+    public function updateOneOportunidad(Request $request, $id){
 
+        $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
+        $colaborador_oportunidad = ColaboradorOportunidad::where('id_oportunidad',$id)->first();
+        $oportunidad_detalle = DetalleOportunidad::where('id_oportunidad',$id)->first();
+        $prospecto_oportunidad = ProspectoOportunidad::where('id_oportunidad',$id)->first();
+        $prospecto = Prospecto::where('id_prospecto',$prospecto_oportunidad->id_prospecto)->first();
+        $prospecto_detalle = DetalleProspecto::where('id_prospecto',$prospecto_oportunidad->id_prospecto)->first();
+
+        try{
+            DB::beginTransaction();
+            $oportunidad->nombre_oportunidad  = $request->nombre_proyecto;
+            $prospecto_oportunidad->id_prospecto = $request->id_prospecto;
+            $colaborador_oportunidad->id_colaborador = $request->id_colaborador;
+            
+            $oportunidad->save();
+            $prospecto_oportunidad->save();
+            $colaborador_oportunidad->save();
+            DB::commit();
+
+            return response()->json([
+                'error'=>false,
+                'message'=>'Successfully updated',
+                'data'=>[
+                    'oportunidad'=>$oportunidad,
+                    'prospecto_oportunidad'=>$prospecto_oportunidad,
+                    'colaborador_oportunidad'=>$colaborador_oportunidad,
+                ]
+                
+            ],200);
+
+        }catch(Exception $e){
+            DB::rollBack();
+            return response()->json([
+                'error'=>true,
+                'message'=>$e,
+            ],400);
+        }
+        
+
+        return response()->json([
+            'oportunidad'=>$oportunidad,
+            'detalle'=>$oportunidad_detalle,
+            'prospecto'=>$prospecto,
+            'detalle_prospecto'=>$prospecto_detalle
+        ],200);
     }
 
     public function deleteOportunidad($id){
@@ -357,7 +404,155 @@ class OportunidadesController extends Controller
         ],400);
 
     }
-   
+
+    public function addValor(Request $request,$id){
+
+        $detalle = DetalleOportunidad::where('id_oportunidad',$id)->first();
+        
+        try{
+            $valor = intval($request->valor);
+            DB::beginTransaction();
+            $detalle->valor = $valor;
+            $detalle->save();
+            DB::commit();
+
+            return response()->json([
+                'error'=>false,
+                'message'=>'Successfully registered',
+                'data'=>$detalle
+            ],200);
+
+        }catch(Exception $e){
+
+            return response()->json([
+                'error'=>true,
+                'messages'=>$e
+            ],400);
+
+        }
+        
+
+    }
+
+    public function getServicios($id){
+        $servicios_oportunidad = ServicioOportunidad::where('id_oportunidad',$id)->get();
+        $servicios = array();
+
+        foreach ($servicios_oportunidad as $servicio){
+
+            $new_object = DB::table('cat_servicios')->where('id_servicio_cat',$servicio->id_servicio_cat)
+            ->where('status',1)
+            ->select('id_servicio_cat','nombre','descripcion')->first();
+
+            $new_object->id_servicio_oportunidad = $servicio->id_servicio_oportunidad;
+
+            array_push($servicios, $new_object);
+        }
+
+        return response()->json([
+            'error'=>false,
+            'messages'=>'Successfully selected',
+            'data'=>$servicios
+        ],200);
+    }
+
+    public function addServicios(Request $request, $id){
+       try{
+            DB::beginTransaction();
+            $servicio_oportunidad = new ServicioOportunidad;
+            $servicio_oportunidad->id_oportunidad = $id;
+            $servicio_oportunidad->id_servicio_cat = $request->id_servicio;
+            $servicio_oportunidad->save();
+            DB::commit();
+            return response()->json([
+            'error'=>false,
+            'messages'=>'Successfully registered',
+            'data'=>$servicio_oportunidad
+        ],200);
+       }catch(Exception $e){
+            DB::rollBack();
+            return response()->json([
+                    'error'=>true,
+                    'message'=>$e
+                ],400);
+       }
+        
+
+    }
+    public function deleteServicios(Request $request, $id){
+
+        $servicio = ServicioOportunidad::where('id_servicio_oportunidad',$request->id_servicio_oportunidad)
+                            ->where('id_oportunidad',$id)->first();
+
+        if($servicio){
+            
+            if($servicio->delete()){
+
+                    return response()->json([
+                    'error'=>false,
+                    'messages'=>'Successfully deleted',
+                    'data'=>$servicio
+                ],200);
+            }
+            
+            return response()->json([
+                'error'=>true,
+                'messages'=>'Something is wrong.',
+                
+            ],400);
+
+        }
+        return response()->json([
+                'error'=>true,
+                'messages'=>'Servicio no encontrado.',
+                
+            ],400);
+        
+
+    }
+    public function getStatus($id){
+        $oportunidad_status = StatusOportunidad::where('id_oportunidad',$id)->first();
+        $status = DB::table('cat_status_oportunidad')
+                    ->where('id_cat_status_oportunidad',$oportunidad_status->id_cat_status_oportunidad)
+                    ->first();
+
+        return response()->json([
+            'error'=>false,
+            'message'=>'Successfully selected',
+            'data'=>$status
+        ],200);
+    }
+    
+    public function updateStatus(Request $request,$id){
+        $status = $request->status;
+        try{
+            DB::beginTransaction();
+            $oportunidad_status = StatusOportunidad::where('id_oportunidad',$id)->first();
+            $oportunidad_status->id_cat_status_oportunidad = $status;
+            $oportunidad_status->save();
+            DB::commit();
+
+            return response()->json([
+                'error'=>false,
+                'message'=>'Successfully registered',
+                'data'=>$oportunidad_status
+            ],200);
+
+        }catch(Exception $e){
+            DB::rollBack();
+            return response()->json([
+                'error'=>true,
+                'messages'=>$e
+            ],400);
+
+        }
+        
+    }
+
+
+
+
+    //AUX
     public function validadorOportunidad(aray $data){
         return Validator::make($data,[
             'nombre_oportunidad'=>'required|string|max:255',

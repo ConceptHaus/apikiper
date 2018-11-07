@@ -83,19 +83,32 @@ Route::prefix('/v1/oportunidades')->group(function(){
             Route::get('/','Oportunidades\OportunidadesController@getAllOportunidades');
             Route::get('/status/{status}','Oportunidades\OportunidadesController@getAllOportunidadesStatus');
             Route::get('/{id}','Oportunidades\OportunidadesController@getOneOportunidad');
-            Route::put('/{id}','Oportunidades\OportunidadesController@updateOportunidad');
+            Route::put('/{id}','Oportunidades\OportunidadesController@updateOneOportunidad');
             Route::delete('/{id}','Oportunidades\OportunidadesController@deleteOportunidad');
 
             //Funcionalidades extras
             Route::get('/{id}/etiquetas','Oportunidades\OportunidadesController@getEtiquetas');
             Route::post('/{id}/etiquetas','Oportunidades\OportunidadesController@addEtiquetas');
+
             Route::get('/{id}/archivos','Oportunidades\OportunidadesController@getArchivos');
             Route::post('/{id}/archivos','Oportunidades\OportunidadesController@addArchivos');
+
             Route::get('/{id}/eventos','Oportunidades\OportunidadesController@getEventos');
             Route::post('/{id}/eventos','Oportunidades\OportunidadesController@addEventos');
+
             Route::get('/{id}/recordatorios','Oportunidades\OportunidadesController@getRecordatorios');
             Route::post('/{id}/recordatorios','Oportunidades\OportunidadesController@addRecordatorios');
-        });
+
+            Route::get('/{id}/status','Oportunidades\OportunidadesController@getStatus');
+            Route::post('/{id}/status','Oportunidades\OportunidadesController@updateStatus');
+
+            Route::get('/{id}/servicios','Oportunidades\OportunidadesController@getServicios');
+            Route::post('/{id}/servicios','Oportunidades\OportunidadesController@addServicios');
+            Route::delete('/{id}/servicios','Oportunidades\OportunidadesController@deleteServicios');
+
+            Route::post('/{id}/valor','Oportunidades\OportunidadesController@addValor');
+
+        });  
 });
 
 
