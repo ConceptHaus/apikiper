@@ -20,10 +20,10 @@ public function googleApiCallback(){
 
     
     LaravelGmail::makeToken();
+    $id = '166f4226948f3c73';
+    $message = LaravelGmail::message()->get($id);
 
-    $messages = LaravelGmail::message()->unread()->all();
-
-    return $messages;
+    return response()->json($message->getPlainTextBody);
 
 }
 
