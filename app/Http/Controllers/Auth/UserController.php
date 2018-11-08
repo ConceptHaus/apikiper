@@ -28,6 +28,17 @@ class UserController extends Controller
         ]);
     }
 
+    protected function validatorUpdateMe(array $data)
+    {
+        return Validator::make($data, [
+            'nombre' => 'required|string|max:255',
+            'apellido'=> 'required|string|max:255',
+            'puesto' => 'required|string|max:255',
+            'telefono'=> 'required|string|max:255'
+            // 'correo' => 'required|email|max:255'
+        ]);
+    }
+
 
     public function getAuthUser(Request $request){
         $id_user = $this->guard()->user()->id;
@@ -94,13 +105,13 @@ class UserController extends Controller
         $id_me = $this->guard()->user()->id;
         $me = User::where('id',$id_me)->first();
         $me_ext = DetalleColaborador::where('id_colaborador',$id_me)->first();
-        $validator = $this->validatorUpdate($request->all());
+        $validator = $this->validatorUpdateMe($request->all());
         if($validator->passes()){
             try{
             DB::beginTransaction();
             $me->nombre = $request->nombre;
             $me->apellido = $request->apellido;
-            $me->email = $request->correo;
+            // $me->email = $request->correo;
             $me_ext->puesto = $request->puesto;
             $me_ext->telefono = $request->telefono;
             // $me_ext->fecha_nacimiento = $request->fecha_nacimiento;
