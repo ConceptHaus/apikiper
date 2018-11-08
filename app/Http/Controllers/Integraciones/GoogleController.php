@@ -18,7 +18,12 @@ public function googleApi(){
 
 public function googleApiCallback(){
 
-    return LaravelGmail::makeToken();
+    
+    LaravelGmail::makeToken();
+
+    $messages = LaravelGmail::message()->all( $pageToken = null );
+
+    return $messages;
 
 }
 
