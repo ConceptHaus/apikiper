@@ -21,7 +21,7 @@ public function googleApiCallback(){
     
     LaravelGmail::makeToken();
 
-    $messages = LaravelGmail::message()->all( $pageToken = null );
+    $messages = LaravelGmail::message()->unread()->all();
 
     return $messages;
 
