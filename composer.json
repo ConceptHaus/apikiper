@@ -7,6 +7,7 @@
     "require": {
         "php": ">=7.0.0",
         "alsofronie/eloquent-uuid": "dev-master",
+        "dacastro4/laravel-gmail": "^0.6.0",
         "darkaonline/l5-swagger": "5.5.*",
         "doctrine/common": "2.7.0",
         "doctrine/dbal": "2.5.13",
@@ -15,6 +16,7 @@
         "laravel/tinker": "~1.0",
         "nesbot/carbon": "1.29.*",
         "optimus/heimdal": "~1.0",
+        "pulkitjalan/google-apiclient": "^3.1",
         "pusher/pusher-php-server": "~3.0",
         "twilio/sdk": "^5.24",
         "tymon/jwt-auth": "dev-develop",
