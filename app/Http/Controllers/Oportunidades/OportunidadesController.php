@@ -287,6 +287,8 @@ class OportunidadesController extends Controller
                         $archivo_oportunidad->url = $this->uploadFilesS3($file['file'],$colaborador->id,$prospecto->id_prospecto);
                         $oportunidad->archivos_prospecto_colaborador()->save($archivo_prospecto);
                         DB::commit();
+                        
+
                 }else{
                     $errores = $validator->errors()->toArray();
                     return response()->json([
