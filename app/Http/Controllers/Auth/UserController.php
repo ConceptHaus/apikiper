@@ -120,7 +120,9 @@ class UserController extends Controller
             $me->detalle()->save($me_ext);
             $meRes = User::GetOneUser($id_me);
             DB::commit();
+            // $token = $this->respondWithToken($this->guard()->refresh());
             return response()->json([
+                // 'access_token' => $token->original['access_token'],
                 'message'=>'Success',
                 'error'=>false,
                 'data'=>$meRes
