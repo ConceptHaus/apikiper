@@ -272,7 +272,8 @@ class OportunidadesController extends Controller
     public function addArchivos(Request $request, $id){
         $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
         $colaborador = $this->guard()->user();
-        if(isset($request->files)){
+        if(count($request->files) != 0){
+            
             foreach($request->files as $file){
                 $validator = $this->validadorFile($file);
                 if($validator->passes()){
