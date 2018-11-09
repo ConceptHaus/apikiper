@@ -87,14 +87,15 @@ class UserController extends Controller
                         ->select('url_foto')
                         ->first();
 
+        
         return response()->json([
             'user'=>$this->guard()->user(),
             'detalle'=>$detalle,
             'img_perfil'=>$img,
             'oportunidades'=>[
-                'status_1'=>$status_1,
-                'status_2'=>$status_2,
-                'status_3'=>$status_3
+                'status_1'=>$this->statusEmpty($status_1,1),
+                'status_2'=>$this->statusEmpty($status_2,2),
+                'status_3'=>$this->statusEmpty($status_3,3)
             ],
             'recordatorios'=>$recordatorios
         ],200);
@@ -145,6 +146,21 @@ class UserController extends Controller
 
     }
 
+
+    public function statusEmpty($status,$id){
+        if(count($status) == 0){
+            
+            $empty = DB::table('cat_status_oportunidad')
+
+                    ->select('id_cat_status_oportunidad','status','color')
+                    ->where('id_cat_status_oportunidad',$id)
+                    ->first();
+            return $empty;
+
+        }else{
+            return $status;
+        }
+    }
        /**
      * Get the token array structure.
      *

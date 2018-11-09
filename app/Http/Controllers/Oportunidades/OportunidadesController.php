@@ -459,7 +459,7 @@ class OportunidadesController extends Controller
     public function addServicios(Request $request, $id){
        try{
             DB::beginTransaction();
-            $servicio_oportunidad = new ServicioOportunidad;
+            $servicio_oportunidad = ServicioOportunidad::where('id_oportunidad',$id)->first();
             $servicio_oportunidad->id_oportunidad = $id;
             $servicio_oportunidad->id_servicio_cat = $request->id_servicio;
             $servicio_oportunidad->save();
