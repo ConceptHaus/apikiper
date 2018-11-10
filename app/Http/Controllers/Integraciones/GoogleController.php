@@ -17,30 +17,16 @@ public function googleApi(){
     
 }
 
-public function googleApiCallback(){
+public function googleApiCallback(Request $request){
 
     
-    LaravelGmail::makeToken();
-    // $id = '166f4226948f3c73';
-    // $message = LaravelGmail::message()->get($id);
+    $client = new \Google_Client([
+        'client_id' => '764823240722-ef1gloj1rb8f7i56v6a7umbo8feqqpg9.apps.googleusercontent.com'
+    ]);
     
-    $mail = new Mail;
-    $mail->to('sergirams@gmail.com')->from('sergio@concepthaus.mx')->subject('Prueba')->message('Prueba')->send();
-    
+    $payload = $client->verifyIdToken($request->idToken);
 
-    return response()->json($mail);
-
-        // foreach ( $messages as $message ) {
-        //     $mensaje = LaravelGmail::message()->get($message->id);
-
-        //     $body = $mensaje->getSubject();
-        //     $subject = $mensaje->getSubject();
-
-        //     return response()->json($body);
-        // }
-        //return $messages;
-    
-
+    return response()->json($payload);
 }
 
 
