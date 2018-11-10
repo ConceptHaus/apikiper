@@ -48,7 +48,7 @@ class ProspectosController extends Controller
                 $prospectoDetalle->telefono = $request->telefono;
                 $prospectoDetalle->puesto = $request->puesto;
                 $prospectoDetalle->nota = $request->nota;
-                $prospecto->fuente = $request->fuente;
+                $prospecto->fuente = 'Manual';
                 $prospecto->save();
                 $prospecto->detalle_prospecto()->save($prospectoDetalle);
                 if($etiquetas != null){
