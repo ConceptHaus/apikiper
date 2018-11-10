@@ -11,10 +11,18 @@ use Dacastro4\LaravelGmail\Services\Message\Mail;
 class GoogleController extends Controller
 {
 
-public function googleApi(){
+public function googleApi(Request $request){
 
-    return LaravelGmail::redirect();
+    $client = new \Google_Client([
+        'client_id' => env('GOOGLE_CLIENT_ID')
+    ]);
     
+    $jwt = new Firebase\Jwt\Jwt;
+    $jwt::$leeway = 1.5;
+    
+    $payload = $client->verifyIdToken($request->token);
+
+    return response()->json($payload);
 }
 
 public function googleApiCallback(Request $request){

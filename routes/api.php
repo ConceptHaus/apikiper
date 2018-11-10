@@ -21,8 +21,8 @@ use Illuminate\Http\Request;
 //Integrations
 Route::prefix('/v1')->group(function(){
     Route::middleware(['api','cors'])->group(function(){
-        Route::get('/google','Integraciones\GoogleController@googleApi');
-         Route::get('/google/callback','Integraciones\GoogleController@googleApiCallback');
+        Route::post('/google','Integraciones\GoogleController@googleApi');
+         Route::post('/google/callback','Integraciones\GoogleController@googleApiCallback');
     });
 });
 
