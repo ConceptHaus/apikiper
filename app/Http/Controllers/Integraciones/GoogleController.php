@@ -16,9 +16,9 @@ public function googleApi(Request $request){
     $client = new \Google_Client([
         'client_id' => env('GOOGLE_CLIENT_ID')
     ]);
-    //$client->addScope(\Google_Service_Gmail::GMAIL_READONLY);
+    
     $jwt = new \Firebase\JWT\JWT;
-    $jwt::$leeway = 1.5;
+    $jwt::$leeway = 10;
     
     $verify = new \Google_AccessToken_Verify($client->getHttpClient(), null, $jwt);
     $payload = $verify->verifyIdToken($request->token);
@@ -27,17 +27,17 @@ public function googleApi(Request $request){
     return response()->json($payload);
 }
 
-public function googleApiCallback(Request $request){
+// public function googleApiCallback(Request $request){
 
     
-    $client = new \Google_Client([
-        'client_id' => '764823240722-ef1gloj1rb8f7i56v6a7umbo8feqqpg9.apps.googleusercontent.com'
-    ]);
+//     $client = new \Google_Client([
+//         'client_id' => '764823240722-ef1gloj1rb8f7i56v6a7umbo8feqqpg9.apps.googleusercontent.com'
+//     ]);
     
-    $payload = $client->verifyIdToken($request->idToken);
+//     $payload = $client->verifyIdToken($request->idToken);
 
-    return response()->json($payload);
-}
+//     return response()->json($payload);
+// }
 
 
 }
