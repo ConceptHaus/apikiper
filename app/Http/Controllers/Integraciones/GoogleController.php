@@ -16,11 +16,13 @@ public function googleApi(Request $request){
     $client = new \Google_Client([
         'client_id' => env('GOOGLE_CLIENT_ID')
     ]);
-    
-    $jwt = new Firebase\Jwt\Jwt;
+    //$client->addScope(\Google_Service_Gmail::GMAIL_READONLY);
+    $jwt = new \Firebase\JWT\JWT;
     $jwt::$leeway = 1.5;
     
-    $payload = $client->verifyIdToken($request->token);
+    $verify = new \Google_AccessToken_Verify($client->getHttpClient(), null, $jwt);
+    $payload = $verify->verifyIdToken($request->token);
+
 
     return response()->json($payload);
 }

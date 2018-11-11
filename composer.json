@@ -12,6 +12,7 @@
         "doctrine/common": "2.7.0",
         "doctrine/dbal": "2.5.13",
         "fideloper/proxy": "~3.3",
+        "firebase/php-jwt": "^5.0",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
         "nesbot/carbon": "1.29.*",
