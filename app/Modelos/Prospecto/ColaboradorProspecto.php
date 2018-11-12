@@ -11,7 +11,7 @@ class ColaboradorProspecto extends Model
 
   use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
   use SoftDeletes;
-  
+
     protected $table = 'colaborador_prospecto';
     protected $primary = 'id_colaborador_prospecto';
     protected $fillable = [
@@ -20,6 +20,7 @@ class ColaboradorProspecto extends Model
         'id_prospecto'
     ];
 
+    
     public function colaborador(){
         return $this->belongsTo('App\Modelos\Prospecto\Prospecto','id_colaborador','id_colaborador');
     }

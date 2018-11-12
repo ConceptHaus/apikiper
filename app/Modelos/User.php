@@ -28,14 +28,7 @@ class User extends Authenticatable implements JWTSubject
 
     protected $softCascade = [
       'detalle',
-      'integracion',
-      'foto',
-      'oportunidad',
-      // 'archivos_oportunidad',
-      // 'archivos_prospecto',
-      // 'prospecto',
-      // 'recordatorio',
-      // 'eventos'
+      'foto'
     ];
     /**
      * The attributes that should be hidden for arrays.

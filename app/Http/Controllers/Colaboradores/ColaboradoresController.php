@@ -152,13 +152,16 @@ class ColaboradoresController extends Controller
 
     }
 
-    public function deleteColaborador($id){
-      $colaborador = User::where('id',$id)->first();
+    public function deleteColaborador(Request $request){
+      $id_borrar = $request->borrar;
+      $id_asignar = $request->asignar;
+
+      $colaborador = User::where('id',$id_borrar)->first();
 
       try{
       if ($colaborador) {
       DB::beginTransaction();
-      User::where('id',$id)->delete();
+      User::where('id',$id_borrar)->delete();
       DB::commit();
       return response()->json([
           'message'=>'Successfully deleted',
@@ -174,9 +177,7 @@ class ColaboradoresController extends Controller
 
       ],400);
     }
-
     }
-
 
     public function transformColaboradorToJson(User $colaborador, DetalleColaborador $colaborador_ext){
         return [
