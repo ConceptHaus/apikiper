@@ -61,7 +61,7 @@ class ColaboradoresController extends Controller
                     $colaborador->detalle()->save($colaborador_ext);
                     $arrayColaborador = $colaborador->toArray();
                     $arrayColaborador['pass'] = $pass;
-                    
+
                     Mail::send('auth.emails.register',$arrayColaborador, function($contacto) use ($arrayColaborador){
                         $contacto->from('contacto@kiper.app', 'Kiper');
                         $contacto->to($arrayColaborador['email'], 'Termina tu registro en Kiper');
@@ -82,18 +82,18 @@ class ColaboradoresController extends Controller
                 }
             }
             $errores = $validator->errors()->toArray();
-            
+
             return response()->json([
                 'error'=>true,
                 'messages'=> $errores
             ],400);
-       
+
 
     }
 
     public function getAllColaboradores(){
         $colaboradores = User::GetallUsers();
-        
+
         return response()->json([
             'message'=>'Success',
             'error'=>false,
@@ -144,17 +144,39 @@ class ColaboradoresController extends Controller
         }
 
         $errores = $validator->errors()->toArray();
-            
+
             return response()->json([
                 'error'=>true,
                 'messages'=> $errores
             ],400);
 
     }
-    
+
     public function deleteColaborador($id){
+      $colaborador = User::where('id',$id)->first();
+
+      try{
+      if ($colaborador) {
+      DB::beginTransaction();
+      User::where('id',$id)->delete();
+      DB::commit();
+      return response()->json([
+          'message'=>'Successfully deleted',
+          'error'=>false,
+          'data'=> $id
+      ],200);
+      }
+    }catch (Exception $e){
+      DB::rollBack();
+      return response()->json([
+          'error'=>true,
+          'messages'=>'Colaborador no encontrado.',
+
+      ],400);
+    }
 
     }
+
 
     public function transformColaboradorToJson(User $colaborador, DetalleColaborador $colaborador_ext){
         return [

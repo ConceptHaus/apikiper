@@ -21,6 +21,7 @@ class CreateDetalleColaborador extends Migration
             $table->string('puesto')->nullable();
             $table->string('telefono')->nullable();
             $table->string('fecha_nacimiento')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

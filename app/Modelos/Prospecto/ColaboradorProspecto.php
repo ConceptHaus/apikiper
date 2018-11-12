@@ -3,9 +3,15 @@
 namespace App\Modelos\Prospecto;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class ColaboradorProspecto extends Model
 {
+
+  use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
+  use SoftDeletes;
+  
     protected $table = 'colaborador_prospecto';
     protected $primary = 'id_colaborador_prospecto';
     protected $fillable = [
@@ -13,7 +19,7 @@ class ColaboradorProspecto extends Model
         'id_colaborador',
         'id_prospecto'
     ];
-    
+
     public function colaborador(){
         return $this->belongsTo('App\Modelos\Prospecto\Prospecto','id_colaborador','id_colaborador');
     }
@@ -25,5 +31,5 @@ class ColaboradorProspecto extends Model
     public function prospecto(){
         return $this->belongsTo('App\Modelos\User','id','id_colaborador');
     }
-    
+
 }

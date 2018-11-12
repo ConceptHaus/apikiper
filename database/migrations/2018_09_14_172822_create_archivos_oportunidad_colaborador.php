@@ -23,6 +23,7 @@ class CreateArchivosOportunidadColaborador extends Migration
             $table->string('nombre');
             $table->string('descripcion')->nullable();
             $table->string('url');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

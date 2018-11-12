@@ -6,6 +6,9 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+
 use Alsofronie\Uuid\UuidModelTrait;
 
 
@@ -14,13 +17,26 @@ class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
     use UuidModelTrait;
+    use softDeletes;
+    use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
 
+    // protected $dates = ['deleted_at'];
 
     protected $fillable = [
        'id','nombre', 'email', 'password','apellido','is_admin','status'
     ];
-   
 
+    protected $softCascade = [
+      'detalle',
+      'integracion',
+      'foto',
+      'oportunidad',
+      // 'archivos_oportunidad',
+      // 'archivos_prospecto',
+      // 'prospecto',
+      // 'recordatorio',
+      // 'eventos'
+    ];
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -72,7 +88,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function scopeGetAllUsers($query){
-        return $query->with('detalle')->get();
+        return $query->with('detalle','foto')->get();
     }
 
     public function scopeGetOneUser($query,$id){
