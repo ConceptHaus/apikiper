@@ -166,7 +166,7 @@ class OportunidadesController extends Controller
 
         try{
             DB::beginTransaction();
-            $oportunidad->nombre_oportunidad  = $request->nombre_proyecto;
+            $oportunidad->nombre_oportunidad  = $request->nombre_oportunidad;
             $prospecto_oportunidad->id_prospecto = $request->id_prospecto;
             $colaborador_oportunidad->id_colaborador = $request->id_colaborador;
 
