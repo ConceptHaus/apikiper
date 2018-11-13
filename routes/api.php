@@ -55,7 +55,7 @@ Route::prefix('/v1/colaboradores')->group(function(){
             Route::get('/', 'Colaboradores\ColaboradoresController@getAllColaboradores');
             Route::get('/{id}','Colaboradores\ColaboradoresController@getOneColaborador');
             Route::put('/{id}','Colaboradores\ColaboradoresController@updateColaborador');
-            Route::delete('/{id}','Colaboradores\ColaboradoresController@deleteColaborador');
+            Route::delete('/','Colaboradores\ColaboradoresController@deleteColaborador');
 
         });
 });
@@ -67,6 +67,7 @@ Route::prefix('/v1/prospectos')->group(function(){
             Route::post('/', 'Prospectos\ProspectosController@registerProspecto');
             Route::get('/','Prospectos\ProspectosController@getAllProspectos');
             Route::get('/{id}','Prospectos\ProspectosController@getOneProspecto');
+            Route::get('/status/no-contactados', 'Prospectos\ProspectosController@getProspectosNoContactado');
             Route::put('/{id}','Prospectos\ProspectosController@updateProspecto');
             Route::delete('/{id}','Prospectos\ProspectosController@deleteProspecto');
 

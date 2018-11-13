@@ -21,6 +21,7 @@ class CreateProspectos extends Migration
             $table->string('apellido');
             $table->string('correo');
             $table->string('fuente');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -18,6 +18,7 @@ class CreateCatIntegraciones extends Migration
             $table->increments('id_cat_integracion')->unsigned();
             $table->string('api');
             $table->string('api_token');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

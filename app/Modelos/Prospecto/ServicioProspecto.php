@@ -3,9 +3,14 @@
 namespace App\Modelos\Prospecto;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ServicioProspecto extends Model
 {
+
+    use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
+    use SoftDeletes;
+
     protected $table = 'servicio_prospecto';
     protected $primaryKey = 'id_servicio_prospecto';
     protected $fillable = [

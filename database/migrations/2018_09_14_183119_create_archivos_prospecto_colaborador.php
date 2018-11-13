@@ -27,6 +27,7 @@ class CreateArchivosProspectoColaborador extends Migration
             $table->string('desc')->nullable();
             $table->string('url');
 
+            $table->softDeletes();
             $table->timestamps();
         });
     }

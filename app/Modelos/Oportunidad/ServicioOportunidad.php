@@ -3,9 +3,13 @@
 namespace App\Modelos\Oportunidad;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ServicioOportunidad extends Model
 {
+    use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
+    use SoftDeletes;
+
     protected $table = 'servicio_oportunidad';
     protected $primaryKey = 'id_servicio_oportunidad';
     protected $fillable = [

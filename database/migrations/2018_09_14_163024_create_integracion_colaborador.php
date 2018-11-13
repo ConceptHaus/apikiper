@@ -20,6 +20,7 @@ class CreateIntegracionColaborador extends Migration
             $table->foreign('id_colaborador')->references('id')->on('users')->onDelete('cascade');
             $table->integer('id_cat_integracion')->unsigned();
             $table->foreign('id_cat_integracion')->references('id_cat_integracion')->on('cat_integraciones')->onDelete('cascade');
+            $table->softDeletes();
 
 
         });

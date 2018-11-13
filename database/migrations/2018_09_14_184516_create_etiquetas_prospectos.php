@@ -22,7 +22,7 @@ class CreateEtiquetasProspectos extends Migration
 
             $table->integer('id_etiqueta')->unsigned();
             $table->foreign('id_etiqueta')->references('id_etiqueta')->on('etiquetas')->onDelete('cascade');
-
+            $table->softDeletes();
             $table->timestamps();
         });
     }

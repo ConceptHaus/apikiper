@@ -14,9 +14,10 @@ class AddColorCatStatusOportunidad extends Migration
     public function up()
     {
         Schema::table('cat_status_oportunidad', function (Blueprint $table) {
-            
+
             $table->string('color')->nullable();
-            
+            $table->softDeletes();
+
         });
     }
 

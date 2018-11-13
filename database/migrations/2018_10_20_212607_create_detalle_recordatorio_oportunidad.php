@@ -20,6 +20,7 @@ class CreateDetalleRecordatorioOportunidad extends Migration
             $table->dateTime('fecha_recordatorio');
             $table->string('hora_recordatorio');
             $table->string('nota_recordatorio')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

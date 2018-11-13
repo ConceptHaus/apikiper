@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Modelos\User;
 use App\Modelos\Colaborador\DetalleColaborador;
+use App\Modelos\Oportunidad\ColaboradorOportunidad;
+use App\Modelos\Oportunidad\ArchivosOportunidadColaborador;
+use App\Modelos\Prospecto\ColaboradorProspecto;
+use App\Modelos\Prospecto\ArchivosProspectoColaborador;
+
 
 use DB;
 use Mail;
@@ -61,7 +66,7 @@ class ColaboradoresController extends Controller
                     $colaborador->detalle()->save($colaborador_ext);
                     $arrayColaborador = $colaborador->toArray();
                     $arrayColaborador['pass'] = $pass;
-                    
+
                     Mail::send('auth.emails.register',$arrayColaborador, function($contacto) use ($arrayColaborador){
                         $contacto->from('contacto@kiper.app', 'Kiper');
                         $contacto->to($arrayColaborador['email'], 'Termina tu registro en Kiper');
@@ -82,18 +87,18 @@ class ColaboradoresController extends Controller
                 }
             }
             $errores = $validator->errors()->toArray();
-            
+
             return response()->json([
                 'error'=>true,
                 'messages'=> $errores
             ],400);
-       
+
 
     }
 
     public function getAllColaboradores(){
         $colaboradores = User::GetallUsers();
-        
+
         return response()->json([
             'message'=>'Success',
             'error'=>false,
@@ -144,15 +149,90 @@ class ColaboradoresController extends Controller
         }
 
         $errores = $validator->errors()->toArray();
-            
+
             return response()->json([
                 'error'=>true,
                 'messages'=> $errores
             ],400);
 
     }
-    
-    public function deleteColaborador($id){
+
+    public function deleteColaborador(Request $request){
+      $id_borrar = $request->id_borrar;
+      $id_asignar = $request->id_asignar;
+
+      $colaborador_borrar = User::where('id',$id_borrar)->first();
+      $colaborador_asignar = User::where('id',$id_asignar)->first();
+
+      if ($colaborador_asignar) {
+        try{
+
+          DB::beginTransaction();
+
+          $oportunidades = ColaboradorOportunidad::where('id_colaborador',$id_borrar)->get();
+          foreach ($oportunidades as $oportunidad) {
+            $oportunidad->id_colaborador = $id_asignar;
+            $oportunidad->save();
+          }
+
+          $prospectos = ColaboradorProspecto::where('id_colaborador',$id_borrar)->get();
+          foreach ($prospectos as $prospecto) {
+            $prospecto->id_colaborador = $id_asignar;
+            $prospecto->save();
+          }
+
+          $archivos_prospecto = ArchivosProspectoColaborador::where('id_colaborador',$id_borrar)->get();
+          foreach ($archivos_prospecto as $archivo_prospecto) {
+            $archivo_prospecto->id_colaborador = $id_asignar;
+            $archivo_prospecto->save();
+          }
+
+          $archivos_oportunidad = ArchivosOportunidadColaborador::where('id_colaborador',$id_borrar)->get();
+          foreach ($archivos_oportunidad as $archivo_oportunidad) {
+            $archivo_oportunidad->id_colaborador = $id_asignar;
+            $archivo_oportunidad->save();
+          }
+
+          DB::commit();
+        }catch (Exception $e){
+
+          DB::rollBack();
+
+        }
+      }
+
+
+      if ($colaborador_borrar) {
+        try{
+
+            DB::beginTransaction();
+            User::where('id', $id_borrar)->delete();
+            DB::commit();
+
+            return response()->json([
+                'message'=>'Successfully deleted',
+                'error'=>false,
+                'data'=>$id_borrar
+            ],200);
+
+        }catch (Exception $e){
+
+          DB::rollBack();
+
+          return response()->json([
+            'message'=>'Something went grong',
+            'error'=>true,
+            'data'=>$id_borrar
+          ],400);
+
+        }
+      }
+
+      return response()->json([
+          'message'=>'Colaborador no encontrado',
+          'error'=>true,
+          'data'=>$id_borrar
+      ],400);
 
     }
 

@@ -3,16 +3,20 @@
 namespace App\Modelos\Extras;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class EventoProspecto extends Model
 {
+    use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
+    use SoftDeletes;
+
     protected $table = 'eventos_prospecto';
     protected $primaryKey = 'id_evento_prospecto';
     protected $fillable = [
         'id_evento_prospecto',
         'id_prospecto',
         'id_colaborador',
-       
+
     ];
 
     public function prospecto(){

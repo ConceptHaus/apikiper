@@ -18,6 +18,7 @@ class CreateEtiquetas extends Migration
             $table->increments('id_etiqueta')->unsigned();
             $table->string('nombre');
             $table->string('descripcion')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

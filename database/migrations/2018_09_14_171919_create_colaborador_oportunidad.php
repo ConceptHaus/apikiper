@@ -20,6 +20,7 @@ class CreateColaboradorOportunidad extends Migration
             $table->foreign('id_colaborador')->references('id')->on('users')->onDelete('cascade');
             $table->uuid('id_oportunidad');
             $table->foreign('id_oportunidad')->references('id_oportunidad')->on('oportunidades')->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

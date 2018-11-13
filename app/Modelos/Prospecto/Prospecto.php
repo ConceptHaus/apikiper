@@ -5,14 +5,17 @@ namespace App\Modelos\Prospecto;
 use Illuminate\Database\Eloquent\Model;
 
 use Alsofronie\Uuid\UuidModelTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class Prospecto extends Model
 {
     use UuidModelTrait;
+    use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
+    use SoftDeletes;
 
     protected $table = 'prospectos';
     protected $primaryKey = 'id_prospecto';
-    protected $primary = 'id_prospecto';
     protected $fillable = [
         'id_prospecto',
         'nombre',
@@ -20,7 +23,19 @@ class Prospecto extends Model
         'correo',
         'fuente'
     ];
-    
+    protected $softCascade = [
+      'detalle_prospecto',
+      'status_prospecto',
+      'colaborador_prospecto',
+      'servicio_prospecto',
+      'etiquetas_prospecto',
+      'medio_contacto',
+      'archivos_prospecto_colaborador',
+      // 'eventos',
+      // 'recordatorios',
+      // 'oportunidades'
+    ];
+
     public function detalle_prospecto(){
         return $this->hasOne('App\Modelos\Prospecto\DetalleProspecto','id_prospecto','id_prospecto');
     }
@@ -89,5 +104,5 @@ class Prospecto extends Model
     public function scopeGetProspectoArchivos($query,$id){
         return $query->with('archivos_prospecto_colaborador')->where('id_prospecto',$id)->first();
     }
-    
+
 }

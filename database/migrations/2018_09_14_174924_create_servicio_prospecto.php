@@ -24,7 +24,7 @@ class CreateServicioProspecto extends Migration
             $table->integer('id_servicio_cat')->unsigned();
             $table->foreign('id_servicio_cat')->references('id_servicio_cat')->on('cat_servicios')->onDelete('cascade');
 
-
+            $table->softDeletes();
             $table->timestamps();
         });
     }

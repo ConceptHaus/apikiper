@@ -19,6 +19,7 @@ class CreateFotosColaboradores extends Migration
             $table->uuid('id_colaborador');
             $table->foreign('id_colaborador')->references('id')->on('users')->onDelete('cascade');
             $table->string('url_foto');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

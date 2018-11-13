@@ -1,11 +1,15 @@
-<?php 
+<?php
 
 namespace App\Modelos\Oportunidad;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DetalleOportunidad extends Model
 {
+    use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
+    use SoftDeletes;
+
     protected $table = 'detalle_oportunidad';
     protected $primaryKey = 'id_detalle_oportunidad';
     protected $fillable = [
@@ -14,7 +18,7 @@ class DetalleOportunidad extends Model
         'descripcion',
         'valor'
     ];
-    
+
     public function oportunidad(){
         return $this->belongsTo('App\Modelos\Oportunidad\Oportunidad','id_oportunidad','id_oportunidad');
     }
