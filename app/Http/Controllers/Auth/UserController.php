@@ -35,7 +35,6 @@ class UserController extends Controller
             'apellido'=> 'required|string|max:255',
             'puesto' => 'required|string|max:255',
             'telefono'=> 'required|string|max:255'
-            // 'correo' => 'required|email|max:255'
         ]);
     }
 
@@ -87,7 +86,7 @@ class UserController extends Controller
                         ->select('url_foto')
                         ->first();
 
-        
+
         return response()->json([
             'user'=>$this->guard()->user(),
             'detalle'=>$detalle,
@@ -112,17 +111,13 @@ class UserController extends Controller
             DB::beginTransaction();
             $me->nombre = $request->nombre;
             $me->apellido = $request->apellido;
-            // $me->email = $request->correo;
             $me_ext->puesto = $request->puesto;
             $me_ext->telefono = $request->telefono;
-            // $me_ext->fecha_nacimiento = $request->fecha_nacimiento;
             $me->save();
             $me->detalle()->save($me_ext);
             $meRes = User::GetOneUser($id_me);
             DB::commit();
-            // $token = $this->respondWithToken($this->guard()->refresh());
             return response()->json([
-                // 'access_token' => $token->original['access_token'],
                 'message'=>'Success',
                 'error'=>false,
                 'data'=>$meRes
@@ -149,7 +144,7 @@ class UserController extends Controller
 
     public function statusEmpty($status,$id){
         if(count($status) == 0){
-            
+
             $empty = DB::table('cat_status_oportunidad')
 
                     ->select('id_cat_status_oportunidad','status','color')
