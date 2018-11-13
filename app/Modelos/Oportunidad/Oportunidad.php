@@ -6,15 +6,30 @@ use Illuminate\Database\Eloquent\Model;
 
 use Alsofronie\Uuid\UuidModelTrait;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
  class Oportunidad extends Model
  {
     use UuidModelTrait;
+    use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
+    use SoftDeletes;
 
     protected $table = 'oportunidades';
     protected $primaryKey = 'id_oportunidad';
     protected $fillable = [
         'id_oportunidad',
         'nombre_oportunidad'
+    ];
+
+    protected $softCascade = [
+      'status_oportunidad',
+      'detalle_oportunidad',
+      'servicio_oportunidad',
+      'colaborador_oportunidad',
+      // 'etiquetas_oportunidad',
+      'archivos_oportunidad',
+      // 'recordatorios',
+      // 'eventos',
     ];
 
     public function status_oportunidad(){

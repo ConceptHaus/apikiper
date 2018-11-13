@@ -3,9 +3,12 @@
 namespace App\Modelos\Extras;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Etiqueta extends Model
 {
+    use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
+    use SoftDeletes;
     protected $table = 'etiquetas';
     protected $primaryKey = 'id_etiqueta';
     protected $fillable = [

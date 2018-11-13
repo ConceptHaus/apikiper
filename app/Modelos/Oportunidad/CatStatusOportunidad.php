@@ -3,9 +3,13 @@
 namespace App\Modelos\Oportunidad;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CatStatusOportunidad extends Model
 {
+    use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
+    use SoftDeletes;
+
     protected $table = 'cat_status_oportunidad';
     protected $primaryKey = 'id_cat_status_oportunidad';
     protected $fillable = [

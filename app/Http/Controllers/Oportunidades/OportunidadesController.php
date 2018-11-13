@@ -205,6 +205,35 @@ class OportunidadesController extends Controller
 
     public function deleteOportunidad($id){
 
+      $oportunidad = Oportunidad::GetOneOportunidad($id);
+
+      if ($oportunidad) {
+        try {
+
+          DB::beginTransaction();
+          Oportunidad::where('id_oportunidad',$id)->delete();
+          DB::commit();
+
+          return response()->json([
+            'error'=>false,
+            'message'=>'Oportunidad borrada correctamente.'
+          ],200);
+
+        } catch (Exception $e) {
+
+          DB::rollBack();
+          return response()->json([
+            'error'=>true,
+            'message'=>'Sometring is wrong'.$e
+          ],400);
+        }
+
+      }
+
+      return response()->json([
+        'error'=>true,
+        'message'=>'Oportunidad no encontrada.'
+      ],400);
     }
 
     public function getEtiquetas($id){

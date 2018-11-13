@@ -4,10 +4,14 @@ namespace App\Modelos\Extras;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class RecordatorioOportunidad extends Model
 {
+    use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
+    use SoftDeletes;
+
     protected $table = 'recordatorios_oportunidad';
     protected $primaryKey = 'id_recordatorio_oportunidad';
     protected $fillable = [
@@ -16,7 +20,7 @@ class RecordatorioOportunidad extends Model
         'id_oportunidad'
     ];
 
-   
+
 
     public function colaborador(){
         return $this->belongsTo('App\Modelos\User','id','id_colaborador');

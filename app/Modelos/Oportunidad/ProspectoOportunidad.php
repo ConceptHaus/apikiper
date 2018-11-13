@@ -2,9 +2,13 @@
 namespace App\Modelos\Oportunidad;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProspectoOportunidad extends Model
 {
+    use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
+    use SoftDeletes;
+
     protected $table = 'oportunidad_prospecto';
     protected $primaryKey ='id_oportunidad_prospecto';
     protected $fillable = [
