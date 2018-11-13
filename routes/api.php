@@ -81,6 +81,8 @@ Route::prefix('/v1/prospectos')->group(function(){
             Route::post('/{id}/etiquetas','Prospectos\ProspectosController@addEtiquetas');
             Route::get('/{id}/archivos','Prospectos\ProspectosController@getArchivos');
             Route::post('/{id}/archivos','Prospectos\ProspectosController@addArchivos');
+            
+            Route::get('/{id}/mailing','Prospectos\ProspectosController@sendMailing');
         });
 });
 
