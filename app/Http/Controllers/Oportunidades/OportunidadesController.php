@@ -31,7 +31,7 @@ use Mail;
 
 class OportunidadesController extends Controller
 {
-    
+
 
     public function getAllOportunidades(){
         $oportunidades_total = DB::table('oportunidades')->count();
@@ -59,8 +59,8 @@ class OportunidadesController extends Controller
                             ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
                             ->join('servicio_oportunidad','servicio_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
                             ->join('cat_servicios','cat_servicios.id_servicio_cat','servicio_oportunidad.id_servicio_cat')
-                            ->select('oportunidades.id_oportunidad','oportunidades.nombre_oportunidad','cat_status_oportunidad.status','cat_servicios.nombre as servicio','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','prospectos.fuente','users.nombre as asigando_nombre','users.apellido as asigando_apellido','oportunidades.created_at')
-                            ->get(); 
+                            ->select('oportunidades.id_oportunidad','oportunidades.nombre_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad  as status_id','cat_status_oportunidad.status','cat_servicios.nombre as servicio','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','prospectos.fuente','users.nombre as asigando_nombre','users.apellido as asigando_apellido','oportunidades.created_at')
+                            ->get();
 
         return response()->json([
             'message'=>'Success',
@@ -76,19 +76,19 @@ class OportunidadesController extends Controller
                     'valor'=>$oportunidades_cotizadas,
                     'porcentaje'=>intval(round($oportunidades_cotizadas*100/$oportunidades_total)),
                     'color'=>$this->colorsOportunidades(1)
-                    
+
                 ],
                 'cerradas'=>[
                     'valor'=>$oportunidades_cerradas,
                     'porcentaje'=>intval(round($oportunidades_cerradas*100/$oportunidades_total)),
                     'color'=>$this->colorsOportunidades(2)
-     
+
                 ],
                 'no_viables'=>[
                     'valor'=>$oportunidades_no_viables,
                     'porcentaje'=>intval(round($oportunidades_no_viables*100/$oportunidades_total,PHP_ROUND_HALF_DOWN)),
                     'color'=>$this->colorsOportunidades(3)
-                    
+
                 ],
                 'oportunidades'=>$oportunidades
             ]
@@ -141,7 +141,7 @@ class OportunidadesController extends Controller
                 ],
                 'fuentes'=>$fuentes,
                 'oportunidades'=> $oportunidades
-                
+
             ]
             ],200);
     }
@@ -169,7 +169,7 @@ class OportunidadesController extends Controller
             $oportunidad->nombre_oportunidad  = $request->nombre_proyecto;
             $prospecto_oportunidad->id_prospecto = $request->id_prospecto;
             $colaborador_oportunidad->id_colaborador = $request->id_colaborador;
-            
+
             $oportunidad->save();
             $prospecto_oportunidad->save();
             $colaborador_oportunidad->save();
@@ -183,7 +183,7 @@ class OportunidadesController extends Controller
                     'prospecto_oportunidad'=>$prospecto_oportunidad,
                     'colaborador_oportunidad'=>$colaborador_oportunidad,
                 ]
-                
+
             ],200);
 
         }catch(Exception $e){
@@ -193,7 +193,7 @@ class OportunidadesController extends Controller
                 'message'=>$e,
             ],400);
         }
-        
+
 
         return response()->json([
             'oportunidad'=>$oportunidad,
@@ -204,7 +204,7 @@ class OportunidadesController extends Controller
     }
 
     public function deleteOportunidad($id){
-        
+
     }
 
     public function getEtiquetas($id){
@@ -257,8 +257,8 @@ class OportunidadesController extends Controller
             'error'=>true,
             'messages'=>'No hay etiquetas'
         ],400);
-        
-    }   
+
+    }
 
     public function getArchivos($id){
         $oportunidad_archivos = Oportunidad::GetOportunidadArchivos($id);
@@ -273,7 +273,7 @@ class OportunidadesController extends Controller
         $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
         $colaborador = $this->guard()->user();
         if(count($request->files) != 0){
-            
+
             foreach($request->files as $file){
                 $validator = $this->validadorFile($file);
                 if($validator->passes()){
@@ -288,7 +288,7 @@ class OportunidadesController extends Controller
                         $archivo_oportunidad->url = $this->uploadFilesS3($file['file'],$colaborador->id,$prospecto->id_prospecto);
                         $oportunidad->archivos_prospecto_colaborador()->save($archivo_prospecto);
                         DB::commit();
-                        
+
 
                 }else{
                     $errores = $validator->errors()->toArray();
@@ -317,7 +317,7 @@ class OportunidadesController extends Controller
             'error'=>false,
             'data'=>$oportunidad_eventos
         ],200);
-        
+
     }
 
     public function addEventos(Request $request, $id){
@@ -399,7 +399,7 @@ class OportunidadesController extends Controller
                 ],400);
             }
         }
-        
+
         $errores = $validator->errors()->toArray();
         return response()->json([
             'error'=>true,
@@ -411,7 +411,7 @@ class OportunidadesController extends Controller
     public function addValor(Request $request,$id){
 
         $detalle = DetalleOportunidad::where('id_oportunidad',$id)->first();
-        
+
         try{
             $valor = intval($request->valor);
             DB::beginTransaction();
@@ -433,7 +433,7 @@ class OportunidadesController extends Controller
             ],400);
 
         }
-        
+
 
     }
 
@@ -479,7 +479,7 @@ class OportunidadesController extends Controller
                     'message'=>$e
                 ],400);
        }
-        
+
 
     }
     public function deleteServicios(Request $request, $id){
@@ -488,7 +488,7 @@ class OportunidadesController extends Controller
                             ->where('id_oportunidad',$id)->first();
 
         if($servicio){
-            
+
             if($servicio->delete()){
 
                     return response()->json([
@@ -497,20 +497,20 @@ class OportunidadesController extends Controller
                     'data'=>$servicio
                 ],200);
             }
-            
+
             return response()->json([
                 'error'=>true,
                 'messages'=>'Something is wrong.',
-                
+
             ],400);
 
         }
         return response()->json([
                 'error'=>true,
                 'messages'=>'Servicio no encontrado.',
-                
+
             ],400);
-        
+
 
     }
     public function getStatus($id){
@@ -525,7 +525,7 @@ class OportunidadesController extends Controller
             'data'=>$status
         ],200);
     }
-    
+
     public function updateStatus(Request $request,$id){
         $status = $request->status;
         try{
@@ -549,7 +549,7 @@ class OportunidadesController extends Controller
             ],400);
 
         }
-        
+
     }
 
 
@@ -602,7 +602,7 @@ class OportunidadesController extends Controller
 
         return Auth::guard();
     }
-    
+
     public function colorsOportunidades($id){
         $result = DB::table('cat_status_oportunidad')->select('cat_status_oportunidad.color')->where('id_cat_status_oportunidad',$id)->first();
         return $result->color;
