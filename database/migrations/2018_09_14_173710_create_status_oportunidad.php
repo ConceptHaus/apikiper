@@ -20,7 +20,7 @@ class CreateStatusOportunidad extends Migration
             $table->foreign('id_oportunidad')->references('id_oportunidad')->on('oportunidades')->onDelete('cascade');
             $table->integer('id_cat_status_oportunidad')->unsigned();
             $table->foreign('id_cat_status_oportunidad')->references('id_cat_status_oportunidad')->on('cat_status_oportunidad')->onDelete('cascade');
-
+            $table->softDeletes();
             $table->timestamps();
         });
     }

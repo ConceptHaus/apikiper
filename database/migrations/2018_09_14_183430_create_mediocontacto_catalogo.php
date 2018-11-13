@@ -17,6 +17,7 @@ class CreateMediocontactoCatalogo extends Migration
         Schema::create('mediocontacto_catalogo', function (Blueprint $table) {
             $table->increments('id_mediocontacto_catalogo')->unsigned();
             $table->string('nombre');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -24,7 +24,7 @@ class CreateDetalleEventoOportunidad extends Migration
             $table->dateTime('fecha_evento');
             $table->string('hora_evento');
             $table->string('nota_evento')->nullable();
-
+            $table->softDeletes();
             $table->timestamps();
 
         });

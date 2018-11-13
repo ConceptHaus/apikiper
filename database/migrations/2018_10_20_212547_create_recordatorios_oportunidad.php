@@ -22,7 +22,7 @@ class CreateRecordatoriosOportunidad extends Migration
             $table->uuid('id_colaborador');
             $table->foreign('id_colaborador')->references('id')->on('users')->onDelete('cascade');
 
-           
+            $table->softDeletes();
             $table->timestamps();
         });
     }

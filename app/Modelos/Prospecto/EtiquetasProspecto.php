@@ -3,9 +3,13 @@
 namespace App\Modelos\Prospecto;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class EtiquetasProspecto extends Model
 {
+    use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
+    use SoftDeletes;
+
     protected $table = 'etiquetas_prospectos';
     protected $primaryKey = 'id_etiquetas_prospecto';
     protected $fillable = [

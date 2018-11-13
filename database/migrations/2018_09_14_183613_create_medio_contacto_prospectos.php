@@ -23,6 +23,7 @@ class CreateMedioContactoProspectos extends Migration
             $table->string('descripcion')->nullable();
             $table->dateTime('fecha');
             $table->string('hora');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

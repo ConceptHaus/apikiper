@@ -22,7 +22,7 @@ class CreateColaboradorProspecto extends Migration
 
             $table->uuid('id_prospecto');
             $table->foreign('id_prospecto')->references('id_prospecto')->on('prospectos')->onDelete('cascade');
-
+            $table->softDeletes();
             $table->timestamps();
         });
     }

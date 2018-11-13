@@ -18,6 +18,7 @@ class CreateCatStatusOportunidad extends Migration
             $table->increments('id_cat_status_oportunidad')->unsigned();
             $table->string('status');
             $table->string('descripcion')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

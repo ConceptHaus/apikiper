@@ -18,6 +18,7 @@ class CreateOportunidades extends Migration
             $table->uuid('id_oportunidad');
             $table->primary('id_oportunidad');
             $table->string('nombre_oportunidad');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

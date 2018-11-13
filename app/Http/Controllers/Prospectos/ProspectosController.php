@@ -39,7 +39,7 @@ class ProspectosController extends Controller
 
             try{
                 DB::beginTransaction();
-                
+
                 $prospecto = new Prospecto;
                 $prospectoDetalle = new DetalleProspecto;
                 $prospecto->nombre = $request->nombre;
@@ -53,19 +53,19 @@ class ProspectosController extends Controller
                 $prospecto->detalle_prospecto()->save($prospectoDetalle);
                 if($etiquetas != null){
                     //Crear etiquetas
-                    
+
                     foreach($etiquetas as $etiqueta){
                        $etiqueta_prospecto = new EtiquetasProspecto;
                        $etiqueta_prospecto->id_etiqueta = $etiqueta['id_etiqueta'];
                        $etiqueta_prospecto->id_prospecto = $prospecto->id_prospecto;
                        $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
-                    
+
                     }
                 }
                 if($oportunidades != null){
                     //Crear oportunidades
                     foreach($oportunidades as $oportunidad){
-                        
+
                         //Datos generales oportunidad
                         $nueva_oportunidad = new Oportunidad;
                         $nueva_oportunidad->nombre_oportunidad = $oportunidad['nombre_oportunidad'];
@@ -76,7 +76,7 @@ class ProspectosController extends Controller
                         $servicio_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                         $servicio_oportunidad->id_servicio_cat = $oportunidad['id_servicio_cat'];
                         $nueva_oportunidad->servicio_oportunidad()->save($servicio_oportunidad);
-                        
+
                         //Asignación a colaborador
                         $colaborador_oportunidad = new ColaboradorOportunidad;
                         $colaborador_oportunidad->id_colaborador = $oportunidad['id_colaborador'];
@@ -88,7 +88,7 @@ class ProspectosController extends Controller
                         $prospecto_oportunidad->id_prospecto = $prospecto->id_prospecto;
                         $prospecto_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                         $prospecto_oportunidad->save();
-                        
+
                         if(isset($oportunidad['etiquetas'])){
                             //Etiquetas de oportunidad
                             foreach($oportunidad['etiquetas'] as $etiqueta){
@@ -97,9 +97,9 @@ class ProspectosController extends Controller
                                 $etiqueta_oportunidad->id_etiqueta = $etiqueta['id_etiqueta'];
                                 $nueva_oportunidad->etiquetas_oportunidad()->save($etiqueta_oportunidad);
                             }
-                            
+
                         }
-                        
+
                     }
 
                 }
@@ -114,11 +114,11 @@ class ProspectosController extends Controller
                 return response()->json([
                     'message'=>$e,
                     'error'=>true,
-                    
+
                 ],400);
             }
-            
-        
+
+
         }
 
         $errores = $validator->errors()->toArray();
@@ -156,7 +156,7 @@ class ProspectosController extends Controller
             $detalle = DetalleProspecto::where('id_prospecto',$id)->first();
 
         try{
-            
+
             DB::beginTransaction();
             $prospecto->nombre = $request->nombre;
             $prospecto->apellido = $request->apellido;
@@ -180,12 +180,41 @@ class ProspectosController extends Controller
                 'message'=>'Something is wrong '.$e,
             ],400);
         }
-            
-            
+
+
     }
 
     public function deleteProspecto($id){
-        
+
+      $prospecto = Prospecto::where('id_prospecto',$id)->first();
+      // return $prospecto;
+      if ($prospecto) {
+
+        try{
+
+          DB::beginTransaction();
+          Prospecto::where('id_prospecto', $id)->delete();
+          DB::commit();
+
+          return response()->json([
+              'error'=>false,
+              'message'=>'Prospecto borrado correctamente.'
+          ],200);
+
+        }catch (Exception $e){
+
+          DB::rollback();
+          return response()->json([
+              'error'=>true,
+              'message'=>'Something is wrong' .$e
+          ],400);
+        }
+      }
+
+      return response()->json([
+          'error'=>true,
+          'message'=>'Prospecto no encontrado.'
+      ],400);
     }
 
     public function getOportunidades($id){
@@ -201,7 +230,7 @@ class ProspectosController extends Controller
     public function addOportunidades(Request $request, $id){
         $validator = $this->validadorOportunidad($request->all());
         $prospecto = Prospecto::where('id_prospecto',$id)->first();
-        
+
         if($validator->passes() || $prospecto == null){
             try{
                 DB::beginTransaction();
@@ -215,7 +244,7 @@ class ProspectosController extends Controller
                 $servicio_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                 $servicio_oportunidad->id_servicio_cat = $request->id_servicio_cat;
                 $nueva_oportunidad->servicio_oportunidad()->save($servicio_oportunidad);
-                
+
                 //Asignación a colaborador
                 $colaborador_oportunidad = new ColaboradorOportunidad;
                 $colaborador_oportunidad->id_colaborador = $request->id_colaborador;
@@ -227,7 +256,7 @@ class ProspectosController extends Controller
                 $prospecto_oportunidad->id_prospecto = $prospecto->id_prospecto;
                 $prospecto_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                 $prospecto_oportunidad->save();
-                
+
                 if($request->etiquetas){
                     //Etiquetas de oportunidad
                     foreach($request->etiquetas as $etiqueta){
@@ -236,7 +265,7 @@ class ProspectosController extends Controller
                         $etiqueta_oportunidad->id_etiqueta = $etiqueta['id_etiqueta'];
                         $nueva_oportunidad->etiquetas_oportunidad()->save($etiqueta_oportunidad);
                     }
-                    
+
                 }
                 DB::commit();
                 return response()->json([
@@ -244,14 +273,14 @@ class ProspectosController extends Controller
                         'error'=>false,
                         'data'=>$nueva_oportunidad,
                     ],200);
-            
+
             }catch(Exception $e){
                 DB::rollBack();
                     return response()->json([
                         'message'=>$e,
                         'error'=>true,
-                        
-                        
+
+
                     ],400);
             }
         }
@@ -260,7 +289,7 @@ class ProspectosController extends Controller
                 'error'=>true,
                 'messages'=> $errores
         ],400);
-        
+
     }
 
     public function getRecordatorios($id){
@@ -346,15 +375,15 @@ class ProspectosController extends Controller
                 $detalle_evento->nota_evento = $request->nota_evento;
                 $detalle_evento->lugar_evento = $request->lugar_evento;
                 $evento->detalle()->save($detalle_evento);
-                
+
                 DB::commit();
                 return response()->json([
                         'message'=>'Successfully registered',
                         'error'=>false,
                         'data'=>$evento,
                     ],200);
-     
-            
+
+
             }catch(Exception $e){
                 DB::rollBack();
                 return response()->json([
@@ -363,7 +392,7 @@ class ProspectosController extends Controller
                 ],400);
             }
         }
-        
+
         $errores = $validator->errors()->toArray();
         return response()->json([
             'error'=>true,
@@ -412,7 +441,7 @@ class ProspectosController extends Controller
                         'messages'=>$errores
                     ],400);
                 }
-                
+
             }
             return response()->json([
                         'error'=>false,
@@ -420,7 +449,7 @@ class ProspectosController extends Controller
                     ],200);
 
         }
-        
+
         return response()->json([
             'error'=>true,
             'messages'=>'No hay etiquetas'
@@ -494,13 +523,13 @@ class ProspectosController extends Controller
             'nombre'=>'required|string|max:255',
             'apellido'=>'required|string|max:255',
             'correo'=>'required|string|email|max:255|unique:prospectos',
-            
+
         ]);
 
     }
 
     public function validadorOportunidad(array $data){
-        
+
         return Validator::make($data,[
             'nombre_oportunidad'=>'required|string|max:255',
             'id_servicio_cat'=>'required|numeric',
@@ -526,7 +555,7 @@ class ProspectosController extends Controller
 
         ]);
     }
-    
+
     public function validadorEtiqueta(array $data){
         return Validator::make($data,[
             'id_etiqueta'=>'required|numeric'
@@ -551,6 +580,6 @@ class ProspectosController extends Controller
     {
         return Auth::guard();
     }
-        
+
 
 }

@@ -18,6 +18,7 @@ class CreateCatServicios extends Migration
             $table->increments('id_servicio_cat')->unsigned();
             $table->string('nombre');
             $table->string('descripcion')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

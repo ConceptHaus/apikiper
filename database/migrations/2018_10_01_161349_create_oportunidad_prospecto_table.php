@@ -19,6 +19,7 @@ class CreateOportunidadProspectoTable extends Migration
             $table->foreign('id_prospecto')->references('id_prospecto')->on('prospectos')->onDelete('cascade');
             $table->uuid('id_oportunidad');
             $table->foreign('id_oportunidad')->references('id_oportunidad')->on('oportunidades')->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
