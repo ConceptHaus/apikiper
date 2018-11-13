@@ -11,9 +11,9 @@ class ArchivosProspectoColaborador extends Model
 
   use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
   use SoftDeletes;
-  
+
     protected $table = 'archivos_prospecto_colaborador';
-    protected $primary = 'id_archivos_prospecto_colaborador';
+    protected $primaryKey = 'id_archivos_prospecto_colaborador';
     protected $fillable = [
         'id_archivos_prospecto_colaborador',
         'id_colaborador',

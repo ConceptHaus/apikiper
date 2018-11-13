@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class CatMedioContacto extends Model
 {
     protected $table = 'mediocontacto_catalogo';
-    protected $primary = 'id_mediocontacto_catalogo';
+    protected $primaryKey = 'id_mediocontacto_catalogo';
     protected $fillable = [
         'id_mediocontacto_catalogo',
         'nombre',

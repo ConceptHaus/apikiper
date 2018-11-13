@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class EtiquetasOportunidad extends Model
 {
     protected $table = 'etiquetas_oportunidades';
-    protected $primary = 'id_etiquetas_oportunidad';
+    protected $primaryKey = 'id_etiquetas_oportunidad';
     protected $fillable = [
         'id_etiquetas_oportunidad',
         'id_oportunidad',
