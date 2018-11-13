@@ -81,7 +81,9 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function scopeGetAllUsers($query){
-        return $query->with('detalle','foto')->get();
+        return $query->with('detalle','foto')
+                     ->orderBy('created_at','desc')
+                     ->get();
     }
 
     public function scopeGetOneUser($query,$id){

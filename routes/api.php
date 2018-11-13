@@ -67,6 +67,7 @@ Route::prefix('/v1/prospectos')->group(function(){
             Route::post('/', 'Prospectos\ProspectosController@registerProspecto');
             Route::get('/','Prospectos\ProspectosController@getAllProspectos');
             Route::get('/{id}','Prospectos\ProspectosController@getOneProspecto');
+            Route::get('/status/no-contactados', 'Prospectos\ProspectosController@getProspectosNoContactado');
             Route::put('/{id}','Prospectos\ProspectosController@updateProspecto');
             Route::delete('/{id}','Prospectos\ProspectosController@deleteProspecto');
 

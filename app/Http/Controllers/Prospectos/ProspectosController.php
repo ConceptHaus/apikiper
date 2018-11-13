@@ -217,6 +217,18 @@ class ProspectosController extends Controller
       ],400);
     }
 
+    public function getProspectosNoContactado (){
+      $prospectos_sin_contactar = Prospecto::join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+                                  ->where('status_prospecto.id_cat_status_prospecto','=',1)
+                                  ->get();
+
+      return response()->json([
+        'error'=>false,
+        'message'=>'Success',
+        'data'=>$prospectos_sin_contactar
+      ],200);
+    }
+
     public function getOportunidades($id){
         $prospecto_oportunidades = Prospecto::GetProspectoOportunidades($id);
 
