@@ -18,18 +18,18 @@ class DatabaseSeeder extends Seeder
         $etiquetas = factory(App\Modelos\Extras\Etiqueta::class,100)->create();
         $servicios = factory(App\Modelos\Oportunidad\CatServicios::class,10)->create();
         $medios_contacto = factory(App\Modelos\Prospecto\CatMedioContacto::class,5)->create();
-        $colaborador = factory(App\Modelos\User::class,50)->create()
+        $colaborador = factory(App\Modelos\User::class,1000)->create()
                         ->each(function($u){
                             $u->detalle()->save(factory(App\Modelos\Colaborador\DetalleColaborador::class)->make());
                             $u->foto()->save(factory(App\Modelos\Colaborador\FotoColaborador::class)->make());
                         });
-        $prospecto = factory(App\Modelos\Prospecto\Prospecto::class,50)->create()
+        $prospecto = factory(App\Modelos\Prospecto\Prospecto::class,15050)->create()
                         ->each(function($p){
                             $p->detalle_prospecto()->save(factory(App\Modelos\Prospecto\DetalleProspecto::class)->make());
                             $p->status_prospecto()->save(factory(App\Modelos\Prospecto\StatusProspecto::class)->make());
                         });
         
-        $oportunidad = factory(App\Modelos\Oportunidad\Oportunidad::class,150)->create()
+        $oportunidad = factory(App\Modelos\Oportunidad\Oportunidad::class,50000)->create()
                         ->each(function($o){
                             $o->detalle_oportunidad()->save(factory(App\Modelos\Oportunidad\DetalleOportunidad::class)->make());
                             $o->status_oportunidad()->save(factory(App\Modelos\Oportunidad\StatusOportunidad::class)->make());
