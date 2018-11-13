@@ -489,10 +489,12 @@ class ProspectosController extends Controller
 
 
     public function sendMailing($id){
+        $oportunidades = DB::table('oportunidades')->get();
         $user = Prospecto::where('id_prospecto',$id)->first();
         $usera['email'] = $user->correo;
         $usera['nombre'] = $user->nombre;
 
+        
         // Mailgun::send('mailing.template_one', $usera, function ($message) {
         //     $message->tag('myTag');
         //     $message->testmode(true);

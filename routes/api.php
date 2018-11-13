@@ -22,7 +22,8 @@ use Illuminate\Http\Request;
 Route::prefix('/v1')->group(function(){
     Route::middleware(['api','cors'])->group(function(){
         Route::post('/google','Integraciones\GoogleController@googleApi');
-         Route::post('/google/callback','Integraciones\GoogleController@googleApiCallback');
+        Route::post('/google/callback','Integraciones\GoogleController@googleApiCallback');
+        Route::get('/template',function(){return view('mailing.template_one');});
     });
 });
 
