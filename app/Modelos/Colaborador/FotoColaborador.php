@@ -9,7 +9,7 @@ class FotoColaborador extends Model
 {
   use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
   use SoftDeletes;
-  
+
     protected $table = 'fotos_colaboradores';
 
      protected $primaryKey = 'id_foto_colaboradores';
@@ -23,4 +23,9 @@ class FotoColaborador extends Model
       return $this->belongsTo('App\Modelos\User','id','id_colaborador');
 
     }
+
+    // public function scopeUrl_foto($query){
+    //   return $query->where('colaborador','id_colaborador')
+    //                ->select('url_foto')->get();
+    // }
 }

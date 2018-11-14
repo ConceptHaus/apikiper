@@ -87,6 +87,7 @@ class Prospecto extends Model
                 ->with('detalle_prospecto')
                 ->with('colaborador_prospecto.colaboradorDetalle')
                 ->with('servicio_prospecto')
+                ->with('oportunidades.oportunidad.detalle_oportunidad.status.status')
                 ->with('medio_contacto')
                 ->where('id_prospecto',$id)->first();
     }
