@@ -77,7 +77,9 @@ class Prospecto extends Model
     }
 
     public function scopeGetAllProspectos($query){
-        return $query->with('status_prospecto.status')->get();
+        return $query->with('status_prospecto.status')
+                     ->orderBy('created_at', 'desc')
+                     ->get();
     }
 
     public function scopeGetOneProspecto($query,$id){
