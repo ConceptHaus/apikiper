@@ -15,25 +15,25 @@ class DatabaseSeeder extends Seeder
     {
         
         Model::unguard();
-        $etiquetas = factory(App\Modelos\Extras\Etiqueta::class,1500)->create();
-        $servicios = factory(App\Modelos\Oportunidad\CatServicios::class,150)->create();
-        $medios_contacto = factory(App\Modelos\Prospecto\CatMedioContacto::class,5)->create();
-        $colaborador = factory(App\Modelos\User::class,1500)->create()
-                        ->each(function($u){
-                            $u->detalle()->save(factory(App\Modelos\Colaborador\DetalleColaborador::class)->make());
-                            $u->foto()->save(factory(App\Modelos\Colaborador\FotoColaborador::class)->make());
-                        });
-        $prospecto = factory(App\Modelos\Prospecto\Prospecto::class,15000)->create()
-                        ->each(function($p){
-                            $p->detalle_prospecto()->save(factory(App\Modelos\Prospecto\DetalleProspecto::class)->make());
-                            $p->status_prospecto()->save(factory(App\Modelos\Prospecto\StatusProspecto::class)->make());
-                        });
+        // $etiquetas = factory(App\Modelos\Extras\Etiqueta::class,1500)->create();
+        // $servicios = factory(App\Modelos\Oportunidad\CatServicios::class,150)->create();
+        // $medios_contacto = factory(App\Modelos\Prospecto\CatMedioContacto::class,5)->create();
+        // $colaborador = factory(App\Modelos\User::class,1500)->create()
+        //                 ->each(function($u){
+        //                     $u->detalle()->save(factory(App\Modelos\Colaborador\DetalleColaborador::class)->make());
+        //                     $u->foto()->save(factory(App\Modelos\Colaborador\FotoColaborador::class)->make());
+        //                 });
+        // $prospecto = factory(App\Modelos\Prospecto\Prospecto::class,15000)->create()
+        //                 ->each(function($p){
+        //                     $p->detalle_prospecto()->save(factory(App\Modelos\Prospecto\DetalleProspecto::class)->make());
+        //                     $p->status_prospecto()->save(factory(App\Modelos\Prospecto\StatusProspecto::class)->make());
+        //                 });
         
-        $oportunidad = factory(App\Modelos\Oportunidad\Oportunidad::class,150000)->create()
-                        ->each(function($o){
-                            $o->detalle_oportunidad()->save(factory(App\Modelos\Oportunidad\DetalleOportunidad::class)->make());
-                            $o->status_oportunidad()->save(factory(App\Modelos\Oportunidad\StatusOportunidad::class)->make());
-                        });
+        // $oportunidad = factory(App\Modelos\Oportunidad\Oportunidad::class,150000)->create()
+        //                 ->each(function($o){
+        //                     $o->detalle_oportunidad()->save(factory(App\Modelos\Oportunidad\DetalleOportunidad::class)->make());
+        //                     $o->status_oportunidad()->save(factory(App\Modelos\Oportunidad\StatusOportunidad::class)->make());
+        //                 });
 
         $prospecto_oportunidad = factory(App\Modelos\Oportunidad\ProspectoOportunidad::class,150000)->create();
 
