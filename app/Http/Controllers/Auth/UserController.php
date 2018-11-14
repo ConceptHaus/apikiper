@@ -79,7 +79,9 @@ class UserController extends Controller
 
         $recordatorios = DB::table('recordatorios_prospecto')
                         ->join('detalle_recordatorio_prospecto','detalle_recordatorio_prospecto.id_recordatorio_prospecto','recordatorios_prospecto.id_recordatorio_prospecto')
-                        ->where('recordatorios_prospecto.id_colaborador',$id_user)->get();
+                        ->where('recordatorios_prospecto.id_colaborador',$id_user)
+                        ->orderBy('detalle_recordatorio_prospecto.fecha_recordatorio', 'desc')
+                        ->get();
         $detalle = DetalleColaborador::where('id_colaborador',$this->guard()->user()->id)
                         ->first();
         $img = FotoColaborador::where('id_colaborador', $this->guard()->user()->id)
@@ -168,7 +170,7 @@ class UserController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => $this->guard()->factory()->getTTL() * 60
+            'expires_in' => $this->guard()->factory()->getTTL() * 1440
         ]);
     }
 
