@@ -22,4 +22,8 @@ class DetalleOportunidad extends Model
     public function oportunidad(){
         return $this->belongsTo('App\Modelos\Oportunidad\Oportunidad','id_oportunidad','id_oportunidad');
     }
+
+    public function status(){
+      return $this->belongsTo('App\Modelos\Oportunidad\StatusOportunidad','id_oportunidad','id_oportunidad');
+    }
 }
