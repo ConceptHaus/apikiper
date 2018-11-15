@@ -17,6 +17,7 @@ use App\Modelos\Extras\Etiqueta;
 use App\Modelos\Oportunidad\CatServicios;
 use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Modelos\Prospecto\CatMedioContacto;
+use Mailgun;
 use DB;
 use Mail;
 
@@ -47,7 +48,7 @@ class DataViewsController extends Controller
                                 ->select('users.nombre','users.apellido','detalle_colaborador.puesto','fotos_colaboradores.url_foto',DB::raw('count(*) as oportunidades_cerradas, users.id'))
                                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
                                 ->groupBy('users.id')
-                                ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
+                                ->orderBy('oportunidades_cerradas','desc')->limit(4)->get();
 
 
         $origen_prospecto = DB::table('prospectos')
@@ -107,7 +108,7 @@ class DataViewsController extends Controller
                                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
                                 ->whereBetween('status_oportunidad.created_at', array($semana->toDateString() ,$hoy->toDateString()))
                                 ->groupBy('users.id')
-                                ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
+                                ->orderBy('oportunidades_cerradas','desc')->limit(4)->get();
 
 
         $origen_Maual = DB::table('prospectos')
@@ -186,7 +187,7 @@ class DataViewsController extends Controller
                                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
                                 ->whereBetween('status_oportunidad.updated_at', array($mes->toDateString() ,$hoy->toDateString()))
                                 ->groupBy('users.id')
-                                ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
+                                ->orderBy('oportunidades_cerradas','desc')->limit(4)->get();
 
 
         $origen_Maual = DB::table('prospectos')
@@ -265,7 +266,7 @@ class DataViewsController extends Controller
                                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
                                 ->whereBetween('status_oportunidad.updated_at', array($anio->toDateString() ,$hoy->toDateString()))
                                 ->groupBy('users.id')
-                                ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
+                                ->orderBy('oportunidades_cerradas','desc')->limit(4)->get();
 
 
         $origen_Maual = DB::table('prospectos')
@@ -1145,6 +1146,17 @@ class DataViewsController extends Controller
         ]);
     }
 
+    public function validatorMail(array $data){
+      return Validator::make($data,[
+          'email_de'=>'required|email',
+          'nombre_de'=>'string|max:255',
+          'email_para'=>'required|email',
+          'nombre_para'=>'string|max:255',
+          'asunto'=>'required|string|max:255',
+          'contenido'=>'required'
+      ]);
+    }
+
     public function guard()
     {
         return Auth::guard();
@@ -1155,6 +1167,7 @@ class DataViewsController extends Controller
         return $result->color;
     }
 
+    //Extras
     public function getMedioContacto(){
       $medio_contacto = CatMedioContacto::select('id_mediocontacto_catalogo as id', 'nombre')->get();
 
@@ -1171,5 +1184,34 @@ class DataViewsController extends Controller
         'message'=>'Medios de contacto no obtenidos.'
       ],400);
     }
+
+    public function sendMail (Request $request){
+      $data = $request->all();
+      $validator = $this->validatorMail($data);
+
+      if ($validator->passes()) {
+
+        Mailgun::send('mailing.mail', $data, function ($message) use ($data){
+           // $message->tag('myTag');
+           $message->from($data['email_de'],$data['nombre_de']);
+           // $message->testmode(true);
+           $message->subject($data['asunto']);
+           $message->to($data['email_para'],$data['nombre_para']);
+       });
+
+       return response()->json([
+         'error'=>false,
+         'message'=>'Mail enviado correctamente',
+       ],200);
+      }
+
+      $errores = $validator->errors()->toArray();
+      return response()->json([
+        'error'=>true,
+        'message'=>$errores
+      ],400);
+    }
+
+
 
 }

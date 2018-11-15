@@ -22,7 +22,8 @@ use Illuminate\Http\Request;
 Route::prefix('/v1')->group(function(){
     Route::middleware(['api','cors'])->group(function(){
         Route::post('/google','Integraciones\GoogleController@googleApi');
-         Route::post('/google/callback','Integraciones\GoogleController@googleApiCallback');
+        Route::post('/google/callback','Integraciones\GoogleController@googleApiCallback');
+        Route::get('/template',function(){return view('mailing.template_one');});
     });
 });
 
@@ -82,6 +83,8 @@ Route::prefix('/v1/prospectos')->group(function(){
             Route::post('/{id}/etiquetas','Prospectos\ProspectosController@addEtiquetas');
             Route::get('/{id}/archivos','Prospectos\ProspectosController@getArchivos');
             Route::post('/{id}/archivos','Prospectos\ProspectosController@addArchivos');
+            
+            Route::get('/{id}/mailing','Prospectos\ProspectosController@sendMailing');
         });
 });
 
@@ -149,6 +152,7 @@ Route::prefix('/v1/generales')->group(function(){
         //POST
         Route::post('/etiquetas','DataViews\DataViewsController@addEtiquetas');
         Route::post('/servicios','DataViews\DataViewsController@addServicios');
+        Route::post('/mail','DataViews\DataViewsController@sendMail');
 
         //PUT
         Route::put('/etiquetas','DataViews\DataViewsController@updateEtiquetas');
