@@ -166,6 +166,7 @@ return [
         PulkitJalan\Google\GoogleServiceProvider::class,
         Dacastro4\LaravelGmail\LaravelGmailServiceProvider::class,
         Bogardo\Mailgun\MailgunServiceProvider::class,
+        Askedio\SoftCascade\Providers\GenericServiceProvider::class,
 
 
         /*
