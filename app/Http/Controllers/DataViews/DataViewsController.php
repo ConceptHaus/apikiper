@@ -1149,7 +1149,9 @@ class DataViewsController extends Controller
     public function validatorMail(array $data){
       return Validator::make($data,[
           'email_de'=>'required|email',
+          'nombre_de'=>'string|max:255',
           'email_para'=>'required|email',
+          'nombre_para'=>'string|max:255',
           'asunto'=>'required|string|max:255',
           'contenido'=>'required'
       ]);
@@ -1193,13 +1195,12 @@ class DataViewsController extends Controller
 
       if ($validator->passes()) {
 
-        Mailgun::send('auth.mailing.template_one', $data, function ($message) {
-           $message->tag('myTag');
-           $message->testmode(true);
-           $message->to('sergio@concepthaus.mx', 'User One', [
-               'age' => 37,
-               'city' => 'New York'
-           ]);
+        Mailgun::send('mailing.mail', $data, function ($message) use ($data){
+           // $message->tag('myTag');
+           $message->from($data['email_de'],$data['nombre_de']);
+           // $message->testmode(true);
+           $message->subject($data['asunto']);
+           $message->to('javier@concepthaus.mx',$data['nombre_para']);
        });
 
        return response()->json([

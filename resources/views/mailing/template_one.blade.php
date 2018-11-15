@@ -1,11 +1,10 @@
-<!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Kiper Template</title>
-        
+
     <style type="text/css">
 		p{
 			margin:10px 0;
@@ -408,7 +407,7 @@
     <tbody class="mcnCaptionBlockOuter">
         <tr>
             <td class="mcnCaptionBlockInner" valign="top" style="padding:9px;">
-                
+
 
 
 
@@ -418,20 +417,20 @@
             <table align="left" border="0" cellpadding="0" cellspacing="0" class="mcnCaptionRightImageContentContainer" width="264">
                 <tbody><tr>
                     <td class="mcnCaptionRightImageContent" align="center" valign="top">
-                    
-                        
+
+
 
                         <img alt="" src="https://gallery.mailchimp.com/766ee0c962d543c02140cdccb/images/a02171ce-9bc1-4b83-b641-423f0239ffff.png" width="120" style="max-width:120px;" class="mcnImage">
-                        
 
-                    
+
+
                     </td>
                 </tr>
             </tbody></table>
             <table class="mcnCaptionRightTextContentContainer" align="right" border="0" cellpadding="0" cellspacing="0" width="264">
                 <tbody><tr>
                     <td valign="top" class="mcnTextContent">
-                        <h1 class="null" style="margin-top: 15px; text-align: left;"><span style="color:#E43D30"><span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif">Título.</span></span></h1>
+                        <h1 class="null" style="margin-top: 15px; text-align: left;"><span style="color:#E43D30"><span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif">{{ $asunto }}</span></span></h1>
 
 <div style="text-align: left;"><span style="font-size:19px"><span style="font-family:times new roman,times,baskerville,georgia,serif">&nbsp; &nbsp; &nbsp; Subtítulo.</span></span></div>
 
@@ -469,11 +468,11 @@
                     <table align="left" width="100%" border="0" cellpadding="0" cellspacing="0" class="mcnImageContentContainer" style="min-width:100%;">
                         <tbody><tr>
                             <td class="mcnImageContent" valign="top" style="padding-right: 0px; padding-left: 0px; padding-top: 0; padding-bottom: 0; text-align:center;">
-                                
-                                    
+
+
                                         <img align="center" alt="" src="https://gallery.mailchimp.com/766ee0c962d543c02140cdccb/images/239b660a-ed08-4381-94eb-c785a2519f8e.png" width="600" style="max-width:800px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage">
-                                    
-                                
+
+
                             </td>
                         </tr>
                     </tbody></table>
@@ -514,10 +513,10 @@
             <td valign="top" class="mcnTextBlockInner" style="padding-top:9px;">
                 <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%; min-width:100%;" width="100%" class="mcnTextContentContainer">
                     <tbody><tr>
-                        
+
                         <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px;">
-                        
-                            Este es un texto prueba:&nbsp;Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+                            {{ $contenido }}
                         </td>
                     </tr>
                 </tbody></table>
