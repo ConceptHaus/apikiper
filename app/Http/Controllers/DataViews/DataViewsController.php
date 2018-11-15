@@ -47,7 +47,7 @@ class DataViewsController extends Controller
                                 ->select('users.nombre','users.apellido','detalle_colaborador.puesto','fotos_colaboradores.url_foto',DB::raw('count(*) as oportunidades_cerradas, users.id'))
                                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
                                 ->groupBy('users.id')
-                                ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
+                                ->orderBy('oportunidades_cerradas','desc')->limit(4)->get();
 
 
         $origen_prospecto = DB::table('prospectos')
@@ -107,7 +107,7 @@ class DataViewsController extends Controller
                                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
                                 ->whereBetween('status_oportunidad.created_at', array($semana->toDateString() ,$hoy->toDateString()))
                                 ->groupBy('users.id')
-                                ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
+                                ->orderBy('oportunidades_cerradas','desc')->limit(4)->get();
 
 
         $origen_Maual = DB::table('prospectos')
@@ -186,7 +186,7 @@ class DataViewsController extends Controller
                                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
                                 ->whereBetween('status_oportunidad.updated_at', array($mes->toDateString() ,$hoy->toDateString()))
                                 ->groupBy('users.id')
-                                ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
+                                ->orderBy('oportunidades_cerradas','desc')->limit(4)->get();
 
 
         $origen_Maual = DB::table('prospectos')
@@ -265,7 +265,7 @@ class DataViewsController extends Controller
                                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
                                 ->whereBetween('status_oportunidad.updated_at', array($anio->toDateString() ,$hoy->toDateString()))
                                 ->groupBy('users.id')
-                                ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
+                                ->orderBy('oportunidades_cerradas','desc')->limit(4)->get();
 
 
         $origen_Maual = DB::table('prospectos')
