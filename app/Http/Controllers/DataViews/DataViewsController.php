@@ -16,6 +16,7 @@ use App\Modelos\User;
 use App\Modelos\Extras\Etiqueta;
 use App\Modelos\Oportunidad\CatServicios;
 use App\Modelos\Oportunidad\CatStatusOportunidad;
+use App\Modelos\Prospecto\CatMedioContacto;
 use DB;
 use Mail;
 
@@ -1152,6 +1153,23 @@ class DataViewsController extends Controller
     public function colorsOportunidades($id){
         $result = DB::table('cat_status_oportunidad')->select('cat_status_oportunidad.color')->where('id_cat_status_oportunidad',$id)->first();
         return $result->color;
+    }
+
+    public function getMedioContacto(){
+      $medio_contacto = CatMedioContacto::select('id_mediocontacto_catalogo as id', 'nombre')->get();
+
+      if ($medio_contacto) {
+        return response()->json([
+          'error'=>false,
+          'message'=>'Medios de contacto obtenidos correctamente.',
+          'data'=>$medio_contacto
+        ],200);
+      }
+
+      return response()->json([
+        'error'=>true,
+        'message'=>'Medios de contacto no obtenidos.'
+      ],400);
     }
 
 }
