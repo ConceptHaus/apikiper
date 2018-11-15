@@ -1188,10 +1188,6 @@ class DataViewsController extends Controller
     public function sendMail (Request $request){
       $data = $request->all();
       $validator = $this->validatorMail($data);
-      // $data['email_de'] = $request->email_de;
-      // $data['email_para'] = $request->email_para;
-      // $data['asunto'] = $request->asunto;
-      // $data['contenido'] = $request->contenido;
 
       if ($validator->passes()) {
 
@@ -1200,7 +1196,7 @@ class DataViewsController extends Controller
            $message->from($data['email_de'],$data['nombre_de']);
            // $message->testmode(true);
            $message->subject($data['asunto']);
-           $message->to('javier@concepthaus.mx',$data['nombre_para']);
+           $message->to($data['email_para'],$data['nombre_para']);
        });
 
        return response()->json([
