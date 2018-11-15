@@ -7,7 +7,6 @@
     "require": {
         "php": ">=7.0.0",
         "alsofronie/eloquent-uuid": "dev-master",
-        "askedio/laravel-soft-cascade": "5.5.15",
         "bogardo/mailgun": "^5.0",
         "dacastro4/laravel-gmail": "^0.6.0",
         "darkaonline/l5-swagger": "5.5.*",
@@ -19,6 +18,7 @@
         "laravel/tinker": "~1.0",
         "nesbot/carbon": "1.29.*",
         "optimus/heimdal": "~1.0",
+        "php-http/guzzle6-adapter": "^1.1",
         "pulkitjalan/google-apiclient": "^3.1",
         "pusher/pusher-php-server": "~3.0",
         "twilio/sdk": "^5.24",
