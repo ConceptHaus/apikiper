@@ -17,6 +17,7 @@ use App\Modelos\Extras\Etiqueta;
 use App\Modelos\Oportunidad\CatServicios;
 use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Modelos\Prospecto\CatMedioContacto;
+use Mailgun;
 use DB;
 use Mail;
 
@@ -1145,6 +1146,15 @@ class DataViewsController extends Controller
         ]);
     }
 
+    public function validatorMail(array $data){
+      return Validator::make($data,[
+          'email_de'=>'required|email',
+          'email_para'=>'required|email',
+          'asunto'=>'required|string|max:255',
+          'contenido'=>'required'
+      ]);
+    }
+
     public function guard()
     {
         return Auth::guard();
@@ -1155,6 +1165,7 @@ class DataViewsController extends Controller
         return $result->color;
     }
 
+    //Extras
     public function getMedioContacto(){
       $medio_contacto = CatMedioContacto::select('id_mediocontacto_catalogo as id', 'nombre')->get();
 
@@ -1171,5 +1182,39 @@ class DataViewsController extends Controller
         'message'=>'Medios de contacto no obtenidos.'
       ],400);
     }
+
+    public function sendMail (Request $request){
+      $data = $request->all();
+      $validator = $this->validatorMail($data);
+      // $data['email_de'] = $request->email_de;
+      // $data['email_para'] = $request->email_para;
+      // $data['asunto'] = $request->asunto;
+      // $data['contenido'] = $request->contenido;
+
+      if ($validator->passes()) {
+
+        Mailgun::send('auth.mailing.template_one', $data, function ($message) {
+           $message->tag('myTag');
+           $message->testmode(true);
+           $message->to('sergio@concepthaus.mx', 'User One', [
+               'age' => 37,
+               'city' => 'New York'
+           ]);
+       });
+
+       return response()->json([
+         'error'=>false,
+         'message'=>'Mail enviado correctamente',
+       ],200);
+      }
+
+      $errores = $validator->errors()->toArray();
+      return response()->json([
+        'error'=>true,
+        'message'=>$errores
+      ],400);
+    }
+
+
 
 }
