@@ -24,6 +24,8 @@ use App\Evento;
 use App\Modelos\Extras\Recordatorio;
 use App\Modelos\Extras\DetalleRecordatorio;
 use App\Modelos\Extras\DetalleEvento;
+use App\Modelos\Oportunidad\StatusOportunidad;
+use App\Modelos\Prospecto\StatusProspecto;
 
 use DB;
 use Mail;
@@ -42,6 +44,8 @@ class ProspectosController extends Controller
 
                 $prospecto = new Prospecto;
                 $prospectoDetalle = new DetalleProspecto;
+                $statusProspecto = new StatusProspecto;
+                $statusProspecto->id_cat_status_prospecto = 1;
                 $prospecto->nombre = $request->nombre;
                 $prospecto->apellido = $request->apellido;
                 $prospecto->correo = $request->correo;
@@ -50,6 +54,7 @@ class ProspectosController extends Controller
                 $prospectoDetalle->nota = $request->nota;
                 $prospecto->fuente = 'Manual';
                 $prospecto->save();
+                $prospecto->status_prospecto()->save($statusProspecto);
                 $prospecto->detalle_prospecto()->save($prospectoDetalle);
                 if($etiquetas != null){
                     //Crear etiquetas
@@ -68,8 +73,11 @@ class ProspectosController extends Controller
 
                         //Datos generales oportunidad
                         $nueva_oportunidad = new Oportunidad;
+                        $statusOportunidad = new StatusOportunidad;
+                        $statusOportunidad->id_cat_status_oportunidad = 1;
                         $nueva_oportunidad->nombre_oportunidad = $oportunidad['nombre_oportunidad'];
                         $nueva_oportunidad->save();
+                        $nueva_oportunidad->status_oportunidad()->save($statusOportunidad);
 
                         //Servicio de la oportunidad
                         $servicio_oportunidad = new ServicioOportunidad;
@@ -536,18 +544,18 @@ class ProspectosController extends Controller
         $usera['email'] = $user->correo;
         $usera['nombre'] = $user->nombre;
 
-        
+
         // Mailgun::send('mailing.template_one', $usera, function ($message) {
         //     $message->tag('myTag');
         //     $message->testmode(true);
         //     $message->to('sergio@concepthaus.mx', 'User One', [
-        //         'age' => 37, 
+        //         'age' => 37,
         //         'city' => 'New York'
         //     ]);
         // });
         // Mailgun::send('auth.emails.register', $usera, function($message){
         //     $message->to('sergio@concepthaus.mx', 'User One', [
-        //         'age' => 37, 
+        //         'age' => 37,
         //         'city' => 'New York'
         //     ]);
         //     $message->to('paola@concepthaus.mx', 'User Two', [
@@ -555,7 +563,7 @@ class ProspectosController extends Controller
         //         'city' => 'London'
         //     ]);
         //     $message->to('javier@concepthaus.mx', 'User One', [
-        //         'age' => 37, 
+        //         'age' => 37,
         //         'city' => 'New York'
         //     ]);
         //     $message->to('isaac@concepthaus.mx', 'User Two', [
@@ -563,7 +571,7 @@ class ProspectosController extends Controller
         //         'city' => 'London'
         //     ]);
         //     $message->to('liz@concepthaus.mx', 'User One', [
-        //         'age' => 37, 
+        //         'age' => 37,
         //         'city' => 'New York'
         //     ]);
         //     $message->to('sergirams@gmail.com', 'User Two', [
@@ -571,7 +579,7 @@ class ProspectosController extends Controller
         //         'city' => 'London'
         //     ]);
         // });
-        
+
         return response()->json([
         'user1@example.com' => [
             'name' => 'User One',
