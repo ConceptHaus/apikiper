@@ -312,22 +312,25 @@ class OportunidadesController extends Controller
          //   foreach($request->files as $file){
          //       $validator = $this->validadorFile($file);
          //       if($validator->passes()){
-                        DB::beginTransaction();
-                        $archivo_oportunidad = new ArchivosOportunidadColaborador;
-                        $archivo_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
-                        $archivo_oportunidad->id_colaborador = $colaborador->id;
-                        $archivo_oportunidad->nombre = 'prueba';
-                        // if(isset($file['desc'])){
-                        //     $archivo_oportunidad->desc = $file['desc'];
-                        // }
-                        $archivo_oportunidad->url = $this->uploadFilesS3($request->file('image'),$colaborador->id,$oportunidad->id_oportunidad);
-                        $oportunidad->archivos_prospecto_colaborador()->save($archivo_oportunidad);
-                        DB::commit();
-                        return response()->json([
-                            'error'=>false,
-                            'messages'=>'Success fully',
-                            'data'=>$archivo_oportunidad
-                        ],200);
+                    if($request->hasFile('image')){
+                            DB::beginTransaction();
+                            $archivo_oportunidad = new ArchivosOportunidadColaborador;
+                            $archivo_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
+                            $archivo_oportunidad->id_colaborador = $colaborador->id;
+                            $archivo_oportunidad->nombre = 'prueba';
+                            // if(isset($file['desc'])){
+                            //     $archivo_oportunidad->desc = $file['desc'];
+                            // }
+                            $archivo_oportunidad->url = $this->uploadFilesS3($request->file('image'),$colaborador->id,$oportunidad->id_oportunidad);
+                            $oportunidad->archivos_prospecto_colaborador()->save($archivo_oportunidad);
+                            DB::commit();
+                            return response()->json([
+                                'error'=>false,
+                                'messages'=>'Success fully',
+                                'data'=>$archivo_oportunidad
+                            ],200);
+                    }
+                       
 
          //       }else{
                     // $errores = $validator->errors()->toArray();
