@@ -318,8 +318,8 @@ class OportunidadesController extends Controller
                         // if(isset($file['desc'])){
                         //     $archivo_oportunidad->desc = $file['desc'];
                         // }
-                        $archivo_oportunidad->url = $this->uploadFilesS3($request->file('image'),$colaborador->id,$prospecto->id_prospecto);
-                        $oportunidad->archivos_prospecto_colaborador()->save($archivo_prospecto);
+                        $archivo_oportunidad->url = $this->uploadFilesS3($request->file('image'),$colaborador->id,$oportunidad->id_oportunidad);
+                        $oportunidad->archivos_prospecto_colaborador()->save($archivo_oportunidad);
                         DB::commit();
                         return response()->json([
                             'error'=>false,
