@@ -318,7 +318,7 @@ class OportunidadesController extends Controller
                             $archivo_oportunidad = new ArchivosOportunidadColaborador;
                             $archivo_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
                             $archivo_oportunidad->id_colaborador = $colaborador->id;
-                            $archivo_oportunidad->nombre = 'test.'.$request->image->getClientOriginalExtension();
+                            $archivo_oportunidad->nombre = $request->image->getClientOriginalExtension();
                             // if(isset($file['desc'])){
                             //     $archivo_oportunidad->desc = $file['desc'];
                             // }
