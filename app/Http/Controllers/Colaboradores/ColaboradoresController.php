@@ -73,7 +73,7 @@ class ColaboradoresController extends Controller
                     });
                     DB::commit();
                     return response()->json([
-                        'message'=>'Successfully registered',
+                        'message'=>'Registro Correcto',
                         'error'=>false,
                         'data'=> $this->transformColaboradorToJson($colaborador,$colaborador_ext)
                     ],200);
@@ -100,7 +100,7 @@ class ColaboradoresController extends Controller
         $colaboradores = User::GetallUsers();
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>$colaboradores
         ],200);
@@ -110,7 +110,7 @@ class ColaboradoresController extends Controller
         $colaborador = User::GetOneUser($id);
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>$colaborador
         ]);
@@ -134,7 +134,7 @@ class ColaboradoresController extends Controller
             $colaboradorRes = User::GetOneUser($id_colaborador);
             DB::commit();
             return response()->json([
-                'message'=>'Success',
+                'message'=>'Correcto',
                 'error'=>false,
                 'data'=>$colaboradorRes
                 ]);
@@ -210,7 +210,7 @@ class ColaboradoresController extends Controller
             DB::commit();
 
             return response()->json([
-                'message'=>'Successfully deleted',
+                'message'=>'Borrado Correctamente',
                 'error'=>false,
                 'data'=>$id_borrar
             ],200);
@@ -220,9 +220,9 @@ class ColaboradoresController extends Controller
           DB::rollBack();
 
           return response()->json([
-            'message'=>'Something went grong',
+            'message'=>'Ocurrio un error',
             'error'=>true,
-            'data'=>$id_borrar
+            'data'=>$e
           ],400);
 
         }

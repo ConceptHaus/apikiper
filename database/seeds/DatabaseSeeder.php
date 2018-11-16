@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        
+
         Model::unguard();
         $etiquetas = factory(App\Modelos\Extras\Etiqueta::class,1500)->create();
         $servicios = factory(App\Modelos\Oportunidad\CatServicios::class,150)->create();
@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
                             $p->detalle_prospecto()->save(factory(App\Modelos\Prospecto\DetalleProspecto::class)->make());
                             $p->status_prospecto()->save(factory(App\Modelos\Prospecto\StatusProspecto::class)->make());
                         });
-        
+
         $oportunidad = factory(App\Modelos\Oportunidad\Oportunidad::class,150000)->create()
                         ->each(function($o){
                             $o->detalle_oportunidad()->save(factory(App\Modelos\Oportunidad\DetalleOportunidad::class)->make());
@@ -65,7 +65,7 @@ class DatabaseSeeder extends Seeder
                                 $e->detalle()->save(factory(App\Modelos\Extras\DetalleRecordatorioOportunidad::class)->make());
                             });
 
-        Model::reguard();    
+        Model::reguard();
 
     }
 }

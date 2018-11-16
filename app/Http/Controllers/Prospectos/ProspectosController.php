@@ -24,6 +24,8 @@ use App\Evento;
 use App\Modelos\Extras\Recordatorio;
 use App\Modelos\Extras\DetalleRecordatorio;
 use App\Modelos\Extras\DetalleEvento;
+use App\Modelos\Oportunidad\StatusOportunidad;
+use App\Modelos\Prospecto\StatusProspecto;
 
 use DB;
 use Mail;
@@ -42,6 +44,8 @@ class ProspectosController extends Controller
 
                 $prospecto = new Prospecto;
                 $prospectoDetalle = new DetalleProspecto;
+                $statusProspecto = new StatusProspecto;
+                $statusProspecto->id_cat_status_prospecto = 1;
                 $prospecto->nombre = $request->nombre;
                 $prospecto->apellido = $request->apellido;
                 $prospecto->correo = $request->correo;
@@ -50,6 +54,7 @@ class ProspectosController extends Controller
                 $prospectoDetalle->nota = $request->nota;
                 $prospecto->fuente = 'Manual';
                 $prospecto->save();
+                $prospecto->status_prospecto()->save($statusProspecto);
                 $prospecto->detalle_prospecto()->save($prospectoDetalle);
                 if($etiquetas != null){
                     //Crear etiquetas
@@ -68,8 +73,11 @@ class ProspectosController extends Controller
 
                         //Datos generales oportunidad
                         $nueva_oportunidad = new Oportunidad;
+                        $statusOportunidad = new StatusOportunidad;
+                        $statusOportunidad->id_cat_status_oportunidad = 1;
                         $nueva_oportunidad->nombre_oportunidad = $oportunidad['nombre_oportunidad'];
                         $nueva_oportunidad->save();
+                        $nueva_oportunidad->status_oportunidad()->save($statusOportunidad);
 
                         //Servicio de la oportunidad
                         $servicio_oportunidad = new ServicioOportunidad;
@@ -105,7 +113,7 @@ class ProspectosController extends Controller
                 }
                 DB::commit();
                 return response()->json([
-                        'message'=>'Successfully registered',
+                        'message'=>'Registro Correcto',
                         'error'=>false,
                         'data'=>$prospecto,
                     ],200);
@@ -134,7 +142,7 @@ class ProspectosController extends Controller
         $prospectos_sin_contactar = Prospecto::join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
                                     ->where('status_prospecto.id_cat_status_prospecto','=',1)->count();
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>[
                 'prospectos'=>$prospectos
@@ -145,7 +153,7 @@ class ProspectosController extends Controller
     public function getOneProspecto($id){
         $prospecto = Prospecto::GetOneProspecto($id);
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>$prospecto
         ],200);
@@ -168,7 +176,7 @@ class ProspectosController extends Controller
             DB::commit();
             return response()->json([
                 'error'=>false,
-                'message'=>'Successfully updated',
+                'message'=>'Actualizado Correctamente',
                 'data'=>[
                     'prospecto'=>$prospecto,
                     'detalle'=>$detalle
@@ -225,7 +233,7 @@ class ProspectosController extends Controller
 
       return response()->json([
         'error'=>false,
-        'message'=>'Success',
+        'message'=>'Correcto',
         'data'=>$prospectos_sin_contactar
       ],200);
     }
@@ -234,7 +242,7 @@ class ProspectosController extends Controller
         $prospecto_oportunidades = Prospecto::GetProspectoOportunidades($id);
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>$prospecto_oportunidades
         ],200);
@@ -282,7 +290,7 @@ class ProspectosController extends Controller
                 }
                 DB::commit();
                 return response()->json([
-                        'message'=>'Successfully registered',
+                        'message'=>'Registo Correcto',
                         'error'=>false,
                         'data'=>$nueva_oportunidad,
                     ],200);
@@ -309,7 +317,7 @@ class ProspectosController extends Controller
         $prospecto_recordatorios = Prospecto::GetProspectoRecordatorios($id);
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>$prospecto_recordatorios
         ],200);
@@ -335,7 +343,7 @@ class ProspectosController extends Controller
                 $recordatorio->detalle()->save($detalle_recordatorio);
                 DB::commit();
                 return response()->json([
-                        'message'=>'Successfully registered',
+                        'message'=>'Registro Correcto',
                         'error'=>false,
                         'data'=>$recordatorio,
                     ],200);
@@ -361,7 +369,7 @@ class ProspectosController extends Controller
         $prospecto_eventos = Prospecto::GetProspectoEventos($id);
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>$prospecto_eventos
         ],200);
@@ -391,7 +399,7 @@ class ProspectosController extends Controller
 
                 DB::commit();
                 return response()->json([
-                        'message'=>'Successfully registered',
+                        'message'=>'Registro Correcto',
                         'error'=>false,
                         'data'=>$evento,
                     ],200);
@@ -417,7 +425,7 @@ class ProspectosController extends Controller
     public function getEtiquetas($id){
         $prospecto_etiquetas = Prospecto::GetProspectoEtiquetas($id);
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>$prospecto_etiquetas
         ],200);
@@ -458,7 +466,7 @@ class ProspectosController extends Controller
             }
             return response()->json([
                         'error'=>false,
-                        'message'=>'Successfully registered'
+                        'message'=>'Registro Correcto'
                     ],200);
 
         }
@@ -474,7 +482,7 @@ class ProspectosController extends Controller
     public function getArchivos($id){
         $prospecto_archivos = Prospecto::GetProspectoArchivos($id);
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>$prospecto_archivos
         ],200);
@@ -536,18 +544,18 @@ class ProspectosController extends Controller
         $usera['email'] = $user->correo;
         $usera['nombre'] = $user->nombre;
 
-        
+
         // Mailgun::send('mailing.template_one', $usera, function ($message) {
         //     $message->tag('myTag');
         //     $message->testmode(true);
         //     $message->to('sergio@concepthaus.mx', 'User One', [
-        //         'age' => 37, 
+        //         'age' => 37,
         //         'city' => 'New York'
         //     ]);
         // });
         // Mailgun::send('auth.emails.register', $usera, function($message){
         //     $message->to('sergio@concepthaus.mx', 'User One', [
-        //         'age' => 37, 
+        //         'age' => 37,
         //         'city' => 'New York'
         //     ]);
         //     $message->to('paola@concepthaus.mx', 'User Two', [
@@ -555,7 +563,7 @@ class ProspectosController extends Controller
         //         'city' => 'London'
         //     ]);
         //     $message->to('javier@concepthaus.mx', 'User One', [
-        //         'age' => 37, 
+        //         'age' => 37,
         //         'city' => 'New York'
         //     ]);
         //     $message->to('isaac@concepthaus.mx', 'User Two', [
@@ -563,7 +571,7 @@ class ProspectosController extends Controller
         //         'city' => 'London'
         //     ]);
         //     $message->to('liz@concepthaus.mx', 'User One', [
-        //         'age' => 37, 
+        //         'age' => 37,
         //         'city' => 'New York'
         //     ]);
         //     $message->to('sergirams@gmail.com', 'User Two', [
@@ -571,7 +579,7 @@ class ProspectosController extends Controller
         //         'city' => 'London'
         //     ]);
         // });
-        
+
         return response()->json([
         'user1@example.com' => [
             'name' => 'User One',
