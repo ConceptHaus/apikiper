@@ -303,7 +303,7 @@ class OportunidadesController extends Controller
     public function addArchivos(Request $request, $id){
         $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
         $colaborador = $this->guard()->user();
-        return response()->json(['archivo'=>$request->all(),'id'=>$id],400);
+        return response()->json(['archivo'=>$request->file('image'),'id'=>$id],400);
         if(count($request->files) != 0){
 
             foreach($request->files as $file){
