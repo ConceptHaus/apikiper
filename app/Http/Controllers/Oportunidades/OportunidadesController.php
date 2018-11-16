@@ -327,7 +327,7 @@ class OportunidadesController extends Controller
                             DB::commit();
                             return response()->json([
                                 'error'=>false,
-                                'messages'=>'Success fully',
+                                'messages'=>'Archivo registrado',
                                 'data'=>$archivo_oportunidad
                             ],200);
                     }
