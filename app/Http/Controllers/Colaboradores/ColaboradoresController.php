@@ -9,10 +9,12 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Modelos\User;
 use App\Modelos\Colaborador\DetalleColaborador;
+use App\Modelos\Colaborador\FotoColaborador;
 use App\Modelos\Oportunidad\ColaboradorOportunidad;
 use App\Modelos\Oportunidad\ArchivosOportunidadColaborador;
 use App\Modelos\Prospecto\ColaboradorProspecto;
 use App\Modelos\Prospecto\ArchivosProspectoColaborador;
+
 
 
 use DB;
@@ -107,13 +109,81 @@ class ColaboradoresController extends Controller
     }
 
     public function getOneColaborador($id){
-        $colaborador = User::GetOneUser($id);
+      $id_user = $id;
+      $oportunidades = DB::table('oportunidades')
+                          ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                          ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                          ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                          ->where('colaborador_oportunidad.id_colaborador',$id_user)
+                          ->select(DB::raw('count(*) as total, cat_status_oportunidad.status'))->groupBy('cat_status_oportunidad.status')
+                          ->get();
 
-        return response()->json([
-            'message'=>'Correcto',
-            'error'=>false,
-            'data'=>$colaborador
-        ]);
+      $status_1 = DB::table('oportunidades')
+                          ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                          ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                          ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                          ->where('colaborador_oportunidad.id_colaborador',$id_user)
+                          ->where('cat_status_oportunidad.id_cat_status_oportunidad',1)
+                          ->select('cat_status_oportunidad.id_cat_status_oportunidad','cat_status_oportunidad.color',DB::raw('count(*) as total, cat_status_oportunidad.status'))->groupBy('cat_status_oportunidad.status')
+                          ->get();
+
+      $status_2 = DB::table('oportunidades')
+                          ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                          ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                          ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                          ->where('colaborador_oportunidad.id_colaborador',$id_user)
+                          ->where('cat_status_oportunidad.id_cat_status_oportunidad',2)
+                          ->select('cat_status_oportunidad.id_cat_status_oportunidad','cat_status_oportunidad.color',DB::raw('count(*) as total, cat_status_oportunidad.status'))->groupBy('cat_status_oportunidad.status')
+                          ->get();
+
+      $status_3 = DB::table('oportunidades')
+                          ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                          ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                          ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                          ->where('colaborador_oportunidad.id_colaborador',$id_user)
+                          ->where('cat_status_oportunidad.id_cat_status_oportunidad',3)
+                          ->select('cat_status_oportunidad.id_cat_status_oportunidad','cat_status_oportunidad.color',DB::raw('count(*) as total, cat_status_oportunidad.status'))->groupBy('cat_status_oportunidad.status')
+                          ->get();
+
+
+      $recordatorios = DB::table('recordatorios_prospecto')
+                      ->join('detalle_recordatorio_prospecto','detalle_recordatorio_prospecto.id_recordatorio_prospecto','recordatorios_prospecto.id_recordatorio_prospecto')
+                      ->where('recordatorios_prospecto.id_colaborador',$id_user)
+                      ->orderBy('detalle_recordatorio_prospecto.fecha_recordatorio', 'desc')
+                      ->get();
+      $detalle = DetalleColaborador::where('id_colaborador',$id_user)
+                      ->first();
+      $img = FotoColaborador::where('id_colaborador', $id_user)
+                      ->select('url_foto')
+                      ->first();
+
+
+      return response()->json([
+          'user'=>$id_user,
+          'detalle'=>$detalle,
+          'img_perfil'=>$img,
+          'oportunidades'=>[
+              'status_1'=>$this->statusEmpty($status_1,1),
+              'status_2'=>$this->statusEmpty($status_2,2),
+              'status_3'=>$this->statusEmpty($status_3,3)
+          ],
+          'recordatorios'=>$recordatorios
+      ],200);
+    }
+
+    public function statusEmpty($status,$id){
+        if(count($status) == 0){
+
+            $empty = DB::table('cat_status_oportunidad')
+
+                    ->select('id_cat_status_oportunidad','status','color')
+                    ->where('id_cat_status_oportunidad',$id)
+                    ->first();
+            return $empty;
+
+        }else{
+            return $status;
+        }
     }
 
     public function updateColaborador(Request $request){

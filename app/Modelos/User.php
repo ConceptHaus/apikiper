@@ -71,7 +71,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function recordatorio(){
-        return $this->hasMany('App\Modelos\Extras\Recordatorio','id_colaborador','id');
+        return $this->hasMany('App\Modelos\Extras\RecordatorioOportunidad','id_colaborador','id');
 
     }
 
@@ -88,6 +88,8 @@ class User extends Authenticatable implements JWTSubject
 
     public function scopeGetOneUser($query,$id){
         return $query->with('detalle')
+                ->with('foto')
+                ->with('oportunidad')
                 ->where('id',$id)->first();
     }
     /**
