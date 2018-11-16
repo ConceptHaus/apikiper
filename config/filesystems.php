@@ -54,6 +54,16 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
+         //backpack
+        'uploads' => [
+                    'driver' => 'local',
+                    'root' => public_path('uploads'),
+                ],
+        // used for Backpack/LogManager
+        'storage' => [
+                    'driver' => 'local',
+                    'root'   => storage_path(),
+                ],
 
         's3' => [
             'driver' => 's3',
