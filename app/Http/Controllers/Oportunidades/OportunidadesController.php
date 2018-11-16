@@ -631,7 +631,7 @@ class OportunidadesController extends Controller
     }
     public function uploadFilesS3($file, $colaborador, $oportunidad){
         $disk = Storage::disk('s3');
-        $path = $file->store('oportunidad/'.$colaborador,'/'.$prospecto,'s3');
+        $path = $file->store('oportunidad/'.$colaborador,'/'.$oportunidad,'s3');
         return $path;
     }
 
