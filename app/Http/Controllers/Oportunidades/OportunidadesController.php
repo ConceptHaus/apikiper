@@ -303,43 +303,47 @@ class OportunidadesController extends Controller
     public function addArchivos(Request $request, $id){
         $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
         $colaborador = $this->guard()->user();
-        return response()->json(['archivo'=>$request->hasFile('image'),'id'=>$id],400);
-        if(count($request->files) != 0){
+        //return response()->json(['archivo'=>$request->hasFile('image'),'id'=>$id],400);
+       // if(count($request->files) != 0){
 
-            foreach($request->files as $file){
-                $validator = $this->validadorFile($file);
-                if($validator->passes()){
+         //   foreach($request->files as $file){
+         //       $validator = $this->validadorFile($file);
+         //       if($validator->passes()){
                         DB::beginTransaction();
                         $archivo_oportunidad = new ArchivosOportunidadColaborador;
                         $archivo_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
                         $archivo_oportunidad->id_colaborador = $colaborador->id;
-                        $archivo_oportunidad->nombre = $file['nombre'];
-                        if(isset($file['desc'])){
-                            $archivo_oportunidad->desc = $file['desc'];
-                        }
-                        $archivo_oportunidad->url = $this->uploadFilesS3($file['file'],$colaborador->id,$prospecto->id_prospecto);
+                        $archivo_oportunidad->nombre = 'prueba';
+                        // if(isset($file['desc'])){
+                        //     $archivo_oportunidad->desc = $file['desc'];
+                        // }
+                        $archivo_oportunidad->url = $this->uploadFilesS3($request->file('image'),$colaborador->id,$prospecto->id_prospecto);
                         $oportunidad->archivos_prospecto_colaborador()->save($archivo_prospecto);
                         DB::commit();
+                        return response()->json([
+                            'error'=>false,
+                            'messages'=>'Success fully',
+                            'data'=>$archivo_oportunidad
+                        ],200);
 
+         //       }else{
+                    // $errores = $validator->errors()->toArray();
+                    // return response()->json([
+                    //     'error'=>true,
+                    //     'messages'=>$errores
+                    // ],400);
+           //     }
 
-                }else{
-                    $errores = $validator->errors()->toArray();
-                    return response()->json([
-                        'error'=>true,
-                        'messages'=>$errores
-                    ],400);
-                }
-
-            }
-            return response()->json([
-                'error'=>false,
-                'messages'=>'Succesfully register'
-            ],200);
-        }
-        return response()->json([
-            'error'=>true,
-            'messages'=>'No hay archivos'
-        ],400);
+          //  }
+            // return response()->json([
+            //     'error'=>false,
+            //     'messages'=>'Succesfully register'
+            // ],200);
+        //}
+        // return response()->json([
+        //     'error'=>true,
+        //     'messages'=>'No hay archivos'
+        // ],400);
     }
 
     public function getEventos($id){
