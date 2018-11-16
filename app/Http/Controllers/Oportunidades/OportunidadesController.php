@@ -64,7 +64,7 @@ class OportunidadesController extends Controller
                             ->get();
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>[
                 'total'=>[
@@ -132,7 +132,7 @@ class OportunidadesController extends Controller
                             ->get();
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
            'data'=>[
                 'status'=>$nombre_status->nombre,
@@ -151,7 +151,7 @@ class OportunidadesController extends Controller
     public function getOneOportunidad($id){
         $oportunidad = Oportunidad::GetOneOportunidad($id);
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>$oportunidad
         ],200);
@@ -179,7 +179,7 @@ class OportunidadesController extends Controller
 
             return response()->json([
                 'error'=>false,
-                'message'=>'Successfully updated',
+                'message'=>'Actualizado Correctamente',
                 'data'=>[
                     'oportunidad'=>$oportunidad,
                     'prospecto_oportunidad'=>$prospecto_oportunidad,
@@ -241,7 +241,7 @@ class OportunidadesController extends Controller
     public function getEtiquetas($id){
         $oportunidad_etiquetas = Oportunidad::GetOportunidadEtiquetas($id);
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>$oportunidad_etiquetas
         ],200);
@@ -280,7 +280,7 @@ class OportunidadesController extends Controller
             }
             return response()->json([
                         'error'=>false,
-                        'message'=>'Successfully registered'
+                        'message'=>'Registo Correctamente'
                     ],200);
 
         }
@@ -294,7 +294,7 @@ class OportunidadesController extends Controller
     public function getArchivos($id){
         $oportunidad_archivos = Oportunidad::GetOportunidadArchivos($id);
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>$oportunidad_archivos
         ],200);
@@ -344,7 +344,7 @@ class OportunidadesController extends Controller
     public function getEventos($id){
         $oportunidad_eventos = Oportunidad::GetOportunidadEventos($id);
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>$oportunidad_eventos
         ],200);
@@ -373,7 +373,7 @@ class OportunidadesController extends Controller
                 DB::commit();
                 return response()->json([
                     'error'=>false,
-                    'message'=>'Successfully registered',
+                    'message'=>'Registro Correcto',
                     'data'=>$evento
                 ],200);
             }catch(Exception $e){
@@ -389,7 +389,7 @@ class OportunidadesController extends Controller
     public function getRecordatorios($id){
         $oportunidad_recordatorios = Oportunidad::GetOportunidadRecordatorios($id);
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>$oportunidad_recordatorios
         ],200);
@@ -418,7 +418,7 @@ class OportunidadesController extends Controller
 
                 return response()->json([
                     'error'=>false,
-                    'message'=>'Successfully registered',
+                    'message'=>'Registo Correcto',
                     'data'=>$recordatorio,
                 ],200);
 
@@ -452,7 +452,7 @@ class OportunidadesController extends Controller
 
             return response()->json([
                 'error'=>false,
-                'message'=>'Successfully registered',
+                'message'=>'Registo Correcto',
                 'data'=>$detalle
             ],200);
 
@@ -485,7 +485,7 @@ class OportunidadesController extends Controller
 
         return response()->json([
             'error'=>false,
-            'messages'=>'Successfully selected',
+            'messages'=>'Seleccion Correcta',
             'data'=>$servicios
         ],200);
     }
@@ -500,7 +500,7 @@ class OportunidadesController extends Controller
             DB::commit();
             return response()->json([
             'error'=>false,
-            'messages'=>'Successfully registered',
+            'messages'=>'Registro Correcto',
             'data'=>$servicio_oportunidad
         ],200);
        }catch(Exception $e){
@@ -524,7 +524,7 @@ class OportunidadesController extends Controller
 
                     return response()->json([
                     'error'=>false,
-                    'messages'=>'Successfully deleted',
+                    'messages'=>'Borrado Correctamente',
                     'data'=>$servicio
                 ],200);
             }
@@ -552,7 +552,7 @@ class OportunidadesController extends Controller
 
         return response()->json([
             'error'=>false,
-            'message'=>'Successfully selected',
+            'message'=>'Seleccion Correcta',
             'data'=>$status
         ],200);
     }
@@ -568,7 +568,7 @@ class OportunidadesController extends Controller
 
             return response()->json([
                 'error'=>false,
-                'message'=>'Successfully registered',
+                'message'=>'Registro Correcto',
                 'data'=>$oportunidad_status
             ],200);
 

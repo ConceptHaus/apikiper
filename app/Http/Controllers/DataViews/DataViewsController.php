@@ -297,7 +297,7 @@ class DataViewsController extends Controller
                     ->sum('detalle_oportunidad.valor');
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>[
                 'oportunidades_cerradas'=>number_format($oportuniades_cerradas),
@@ -341,7 +341,7 @@ class DataViewsController extends Controller
                                 ->get();
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>[
                 'prospectos'=>$prospectos,
@@ -365,7 +365,7 @@ class DataViewsController extends Controller
 
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>$prospectos
             ],200);
@@ -408,7 +408,7 @@ class DataViewsController extends Controller
 
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>[
                 'total'=>$oportunidades_total,
@@ -463,7 +463,7 @@ class DataViewsController extends Controller
 
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>[
                 'total'=>[
@@ -538,7 +538,7 @@ class DataViewsController extends Controller
                             ->get();
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>[
                 'status'=>$nombre_status->status,
@@ -577,7 +577,7 @@ class DataViewsController extends Controller
                             ->select(DB::raw('count(*) as fuente_count, prospectos.fuente'))->groupBy('prospectos.fuente')->get();
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>[
                 'cotizadas'=>$oportunidades_cotizadas,
@@ -618,7 +618,7 @@ class DataViewsController extends Controller
                 ->get();
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>[
                 'ventas'=>$users_ventas,
@@ -672,7 +672,7 @@ class DataViewsController extends Controller
 
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>[
                 'total_cotizado'=>number_format($total_cotizado,2),
@@ -735,7 +735,7 @@ class DataViewsController extends Controller
 
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>[
                 'total_cotizado'=>number_format($total_cotizado,2),
@@ -798,7 +798,7 @@ class DataViewsController extends Controller
 
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>[
                 'total_cotizado'=>number_format($total_cotizado,2),
@@ -861,7 +861,7 @@ class DataViewsController extends Controller
 
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>[
                 'total_cotizado'=>number_format($total_cotizado,2),
@@ -880,7 +880,7 @@ class DataViewsController extends Controller
         ->get();
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>[
                 'etiquetas'=>$etiquetas
@@ -897,7 +897,7 @@ class DataViewsController extends Controller
                         ->get();
 
         return response()->json([
-                    'message'=>'Success',
+                    'message'=>'Correcto',
                     'error'=>false,
                     'data'=>[
                         'colaboradores'=>$colaboradores
@@ -923,7 +923,7 @@ class DataViewsController extends Controller
                         ->first();
 
         return response()->json([
-                    'message'=>'Success',
+                    'message'=>'Correcto',
                     'error'=>false,
                     'data'=>[
                         'status_1'=>$status_1,
@@ -940,7 +940,7 @@ class DataViewsController extends Controller
         ->get();
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>[
                 'servicios'=>$servicios
@@ -964,7 +964,7 @@ class DataViewsController extends Controller
 
                 return response()->json([
                     'error'=>false,
-                    'message'=>'Successfully registered',
+                    'message'=>'Registro Correcto',
                     'data'=>$etiqueta
                 ],200);
             }catch(Exception $e){
@@ -1003,7 +1003,7 @@ class DataViewsController extends Controller
 
             return response()->json([
                     'error'=>false,
-                    'message'=>'Successfully registered',
+                    'message'=>'Registo Correcto',
                     'data'=>$etiqueta
                 ],200);
 
@@ -1022,7 +1022,7 @@ class DataViewsController extends Controller
 
         if($etiqueta->delete()){
             return response()->json([
-                'message'=>'Successfully deleted',
+                'message'=>'Borrado Correctamente',
                 'error'=>false,
             ]);
         }
@@ -1049,7 +1049,7 @@ class DataViewsController extends Controller
 
                 return response()->json([
                     'error'=>false,
-                    'message'=>'Successfully registered',
+                    'message'=>'Registro Correcto',
                     'data'=>$servicio
                 ],200);
 
@@ -1082,7 +1082,7 @@ class DataViewsController extends Controller
 
             return response()->json([
                 'error'=>false,
-                'message'=>'Successfully registered',
+                'message'=>'Registro Correcto',
                 'data'=>$servicio
             ]);
 
@@ -1101,7 +1101,7 @@ class DataViewsController extends Controller
 
         if($servicios->delete()){
             return response()->json([
-                'message'=>'Successfully deleted',
+                'message'=>'Borrado Correctamente',
                 'error'=>false,
             ]);
         }
@@ -1124,7 +1124,7 @@ class DataViewsController extends Controller
 
             return response()->json([
                 'error'=>false,
-                'message'=>'Successfully updated',
+                'message'=>'Actualizado Correctamente',
                 'data'=>$status
             ]);
 

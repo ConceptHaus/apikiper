@@ -113,7 +113,7 @@ class ProspectosController extends Controller
                 }
                 DB::commit();
                 return response()->json([
-                        'message'=>'Successfully registered',
+                        'message'=>'Registro Correcto',
                         'error'=>false,
                         'data'=>$prospecto,
                     ],200);
@@ -142,7 +142,7 @@ class ProspectosController extends Controller
         $prospectos_sin_contactar = Prospecto::join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
                                     ->where('status_prospecto.id_cat_status_prospecto','=',1)->count();
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>[
                 'prospectos'=>$prospectos
@@ -153,7 +153,7 @@ class ProspectosController extends Controller
     public function getOneProspecto($id){
         $prospecto = Prospecto::GetOneProspecto($id);
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>$prospecto
         ],200);
@@ -176,7 +176,7 @@ class ProspectosController extends Controller
             DB::commit();
             return response()->json([
                 'error'=>false,
-                'message'=>'Successfully updated',
+                'message'=>'Actualizado Correctamente',
                 'data'=>[
                     'prospecto'=>$prospecto,
                     'detalle'=>$detalle
@@ -233,7 +233,7 @@ class ProspectosController extends Controller
 
       return response()->json([
         'error'=>false,
-        'message'=>'Success',
+        'message'=>'Correcto',
         'data'=>$prospectos_sin_contactar
       ],200);
     }
@@ -242,7 +242,7 @@ class ProspectosController extends Controller
         $prospecto_oportunidades = Prospecto::GetProspectoOportunidades($id);
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>$prospecto_oportunidades
         ],200);
@@ -290,7 +290,7 @@ class ProspectosController extends Controller
                 }
                 DB::commit();
                 return response()->json([
-                        'message'=>'Successfully registered',
+                        'message'=>'Registo Correcto',
                         'error'=>false,
                         'data'=>$nueva_oportunidad,
                     ],200);
@@ -317,7 +317,7 @@ class ProspectosController extends Controller
         $prospecto_recordatorios = Prospecto::GetProspectoRecordatorios($id);
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>$prospecto_recordatorios
         ],200);
@@ -343,7 +343,7 @@ class ProspectosController extends Controller
                 $recordatorio->detalle()->save($detalle_recordatorio);
                 DB::commit();
                 return response()->json([
-                        'message'=>'Successfully registered',
+                        'message'=>'Registro Correcto',
                         'error'=>false,
                         'data'=>$recordatorio,
                     ],200);
@@ -369,7 +369,7 @@ class ProspectosController extends Controller
         $prospecto_eventos = Prospecto::GetProspectoEventos($id);
 
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>$prospecto_eventos
         ],200);
@@ -399,7 +399,7 @@ class ProspectosController extends Controller
 
                 DB::commit();
                 return response()->json([
-                        'message'=>'Successfully registered',
+                        'message'=>'Registro Correcto',
                         'error'=>false,
                         'data'=>$evento,
                     ],200);
@@ -425,7 +425,7 @@ class ProspectosController extends Controller
     public function getEtiquetas($id){
         $prospecto_etiquetas = Prospecto::GetProspectoEtiquetas($id);
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>$prospecto_etiquetas
         ],200);
@@ -466,7 +466,7 @@ class ProspectosController extends Controller
             }
             return response()->json([
                         'error'=>false,
-                        'message'=>'Successfully registered'
+                        'message'=>'Registro Correcto'
                     ],200);
 
         }
@@ -482,7 +482,7 @@ class ProspectosController extends Controller
     public function getArchivos($id){
         $prospecto_archivos = Prospecto::GetProspectoArchivos($id);
         return response()->json([
-            'message'=>'Success',
+            'message'=>'Correcto',
             'error'=>false,
             'data'=>$prospecto_archivos
         ],200);
