@@ -24,6 +24,7 @@ use App\Modelos\Extras\RecordatorioOportunidad;
 use App\Modelos\Extras\DetalleRecordatorioOportunidad;
 use App\Modelos\Extras\Evento;
 use App\Modelos\Extras\DetalleEvento;
+use App\Modelos\Oportunidad\ArchivosOportunidadColaborador;
 
 use DB;
 use Mail;
