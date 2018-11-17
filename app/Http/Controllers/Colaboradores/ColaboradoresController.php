@@ -110,6 +110,9 @@ class ColaboradoresController extends Controller
 
     public function getOneColaborador($id){
       $id_user = $id;
+
+      $user = User::getOneUser($id_user);
+
       $oportunidades = DB::table('oportunidades')
                           ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                           ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
@@ -159,7 +162,7 @@ class ColaboradoresController extends Controller
 
 
       return response()->json([
-          'user'=>$id_user,
+          'user'=>$user,
           'detalle'=>$detalle,
           'img_perfil'=>$img,
           'oportunidades'=>[

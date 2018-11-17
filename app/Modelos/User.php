@@ -87,10 +87,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function scopeGetOneUser($query,$id){
-        return $query->with('detalle')
-                ->with('foto')
-                ->with('oportunidad')
-                ->where('id',$id)->first();
+        return $query->where('id',$id)->first();
     }
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
