@@ -251,11 +251,11 @@ class OportunidadesController extends Controller
         ],200);
     }
 
-    public function addEtiquetas(Request $request, $id){
+    public function addEtiquetas($request, $id){
         $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
         $colaborador = $this->guard()->user();
-        if(isset($request->etiquetas)){
-            foreach($request->etiquetas as $etiqueta){
+        if(isset($request['etiquetas'])){
+            foreach($request['etiquetas'] as $etiqueta){
                 $validator = $this->validadorEtiqueta($etiqueta);
                 if($validator->passes()){
                     try{
@@ -341,14 +341,14 @@ class OportunidadesController extends Controller
                     }
 
              }catch(Exception $e){
-                
+
                 return response()->json([
                         'error'=>true,
                         'messages'=>$e
                     ],400);
              }
-                    
-                       
+
+
          //       }else{
                     // $errores = $validator->errors()->toArray();
                     // return response()->json([
