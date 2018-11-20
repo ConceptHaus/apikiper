@@ -13,10 +13,10 @@ class AddStatusServicios extends Migration
      */
     public function up()
     {
-        Schema::table('etiquetas', function (Blueprint $table) {
+        Schema::table('cat_servicios', function (Blueprint $table) {
 
             $table->boolean('status')->default(1);
-            $table->softDeletes();
+            //$table->softDeletes();
 
         });
     }
@@ -28,7 +28,7 @@ class AddStatusServicios extends Migration
      */
     public function down()
     {
-        Schema::table('etiquetas', function (Blueprint $table) {
+        Schema::table('cat_servicios', function (Blueprint $table) {
 
             $table->boolean('status');
 
