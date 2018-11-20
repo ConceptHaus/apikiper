@@ -290,7 +290,8 @@ class OportunidadesController extends Controller
         }
         return response()->json([
             'error'=>true,
-            'messages'=>'No hay etiquetas'
+            'messages'=>'No hay etiquetas',
+            'data'=>$request
         ],400);
 
     }
