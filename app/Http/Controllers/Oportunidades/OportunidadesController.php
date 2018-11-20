@@ -297,6 +297,9 @@ class OportunidadesController extends Controller
 
     public function getArchivos($id){
         $oportunidad_archivos = Oportunidad::GetOportunidadArchivos($id);
+        foreach($oportunidad_archivos['archivos_oportunidad'] as $archivo){
+            $archivo['ext'] = pathinfo($archivo->nombre, PATHINFO_EXTENSION);
+        }
         return response()->json([
             'message'=>'Correcto',
             'error'=>false,
