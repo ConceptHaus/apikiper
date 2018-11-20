@@ -254,8 +254,8 @@ class OportunidadesController extends Controller
     public function addEtiquetas($request, $id){
         $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
         $colaborador = $this->guard()->user();
-        if(isset($request['etiquetas'])){
-            foreach($request['etiquetas'] as $etiqueta){
+        if(isset($request)){
+            foreach($request as $etiqueta){
                 $validator = $this->validadorEtiqueta($etiqueta);
                 if($validator->passes()){
                     try{
@@ -329,7 +329,7 @@ class OportunidadesController extends Controller
                             // }
                             $archivo_oportunidad->url = $this->uploadFilesS3($request->image,$colaborador->id,$oportunidad->id_oportunidad);
                             $oportunidad->archivos_oportunidad()->save($archivo_oportunidad);
-                            
+
                             $archivo_oportunidad['ext'] = $request->image->getClientOriginalExtension();
 
                             DB::commit();
