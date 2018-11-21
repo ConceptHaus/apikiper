@@ -21,8 +21,8 @@ use App\Modelos\Oportunidad\ColaboradorOportunidad;
 use App\Modelos\Oportunidad\ServicioOportunidad;
 use App\Modelos\Oportunidad\ProspectoOportunidad;
 use App\Evento;
-use App\Modelos\Extras\Recordatorio;
-use App\Modelos\Extras\DetalleRecordatorio;
+use App\Modelos\Extras\RecordatorioProspecto;
+use App\Modelos\Extras\DetalleRecordatorioProspecto;
 use App\Modelos\Extras\DetalleEvento;
 use App\Modelos\Oportunidad\StatusOportunidad;
 use App\Modelos\Prospecto\StatusProspecto;
@@ -331,12 +331,12 @@ class ProspectosController extends Controller
         if($validator->passes()){
             try{
                 DB::beginTransaction();
-                $recordatorio = new Recordatorio;
+                $recordatorio = new RecordatorioProspecto;
                 $recordatorio->id_colaborador = $colaborador->id;
                 $recordatorio->id_prospecto = $prospecto->id_prospecto;
                 $recordatorio->save();
-                $detalle_recordatorio = new DetalleRecordatorio;
-                $detalle_recordatorio->id_recordatorio = $recordatorio->id_recordatorio;
+                $detalle_recordatorio = new DetalleRecordatorioProspecto;
+                $detalle_recordatorio->id_recordatorio_prospecto = $recordatorio->id_recordatorio_prospecto;
                 $detalle_recordatorio->fecha_recordatorio = $request->fecha_recordatorio;
                 $detalle_recordatorio->hora_recordatorio = $request->hora_recordatorio;
                 $detalle_recordatorio->nota_recordatorio = $request->nota_recordatorio;
