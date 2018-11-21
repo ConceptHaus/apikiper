@@ -75,7 +75,7 @@ class ColaboradoresController extends Controller
                        $contacto->from('contacto@kiper.app', 'Kiper');
                        // $message->testmode(true);
                        $contacto->subject('Termina tu registro en Kiper');
-                       $contacto->to($arrayColaborador['email'],$arrayColaborador['nombre'] $arrayColaborador['apellido']);
+                       $contacto->to($arrayColaborador['email'],$arrayColaborador['nombre']);
                    });
 
                     DB::commit();
