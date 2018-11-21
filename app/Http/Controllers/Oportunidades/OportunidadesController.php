@@ -474,11 +474,17 @@ class OportunidadesController extends Controller
 
     public function addValor(Request $request,$id){
 
+
         $detalle = DetalleOportunidad::where('id_oportunidad',$id)->first();
 
         try{
-            $valor = intval($request->valor);
+
             DB::beginTransaction();
+            if(!$detalle){
+              $detalle = new DetalleOportunidad;
+              $detalle->id_oportunidad = $id;
+            }
+            $valor = intval($request->valor);
             $detalle->valor = $valor;
             $detalle->save();
             DB::commit();
@@ -497,7 +503,6 @@ class OportunidadesController extends Controller
             ],400);
 
         }
-
 
     }
 
