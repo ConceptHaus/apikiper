@@ -196,9 +196,10 @@ class ColaboradoresController extends Controller
 
     public function updateColaborador(Request $request){
         $id_colaborador = $request->id;
-        $colaborador = User::where('id',$id_colaborador)->first();
-        $colaborador_ext = DetalleColaborador::where('id_colaborador',$id_colaborador)->first();
+        $colaborador = User::where('id',$id_colaborador)->get();
+        $colaborador_ext = DetalleColaborador::where('id_colaborador',$id_colaborador)->get();
         $validator = $this->validatorUpdate($request->all());
+
         if($validator->passes()){
             try{
             DB::beginTransaction();
