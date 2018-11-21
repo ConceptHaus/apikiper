@@ -340,6 +340,10 @@ class OportunidadesController extends Controller
                                 'data'=>$archivo_oportunidad
                             ],200);
                     }
+                    return response()->json([
+                            'error'=>true,
+                            'messages'=>'No existe archivo'
+                        ],400);
 
              }catch(Exception $e){
 
