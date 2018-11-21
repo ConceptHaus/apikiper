@@ -491,22 +491,36 @@ class ProspectosController extends Controller
     public function addArchivos(Request $request, $id){
         $prospecto = Prospecto::where('id_prospecto',$id)->first();
         $colaborador = $this->guard()->user();
-        if(isset($request->files)){
-            foreach($request->files as $file){
-                $validator = $this->validadorFile($file);
-                if($validator->passes()){
+        // if(isset($request->files)){
+        //     foreach($request->files as $file){
+        //         $validator = $this->validadorFile($file);
+        //         if($validator->passes()){
                     try{
-                        DB::beginTransaction();
-                        $archivo_prospecto = new ArchivosProspectoColaborador;
-                        $archivo_prospecto->id_prospecto = $prospecto->id_prospecto;
-                        $archivo_prospecto->id_colaborador = $colaborador->id;
-                        $archivo_prospecto->nombre = $file['nombre'];
-                        if(isset($file['desc'])){
-                            $archivo_prospecto->desc = $file['desc'];
+
+                        if($request->file('image')->isValid()){
+                            DB::beginTransaction();
+                            $archivo_prospecto = new ArchivosProspectoColaborador;
+                            $archivo_prospecto->id_prospecto = $prospecto->id_prospecto;
+                            $archivo_prospecto->id_colaborador = $colaborador->id;
+                            $archivo_prospecto->nombre = 'prospecto_file_'.time().'.'.$request->image->getClientOriginalExtension();
+                            // if(isset($file['desc'])){
+                            //     $archivo_prospecto->desc = $file['desc'];
+                            // }
+                            $archivo_prospecto->url = $this->uploadFilesS3($request->image,$colaborador->id,$prospecto->id_prospecto);
+                            $prospecto->archivos_prospecto_colaborador()->save($archivo_prospecto);
+                            $archivo_prospecto['ext'] = $request->image->getClientOriginalExtension();
+                            DB::commit();
+                            return response()->json([
+                                'error'=>false,
+                                'messages'=>'Archivo registrado',
+                                'data'=>$archivo_prospecto
+                            ],200);
                         }
-                        $archivo_prospecto->url = $this->uploadFilesS3($file['file'],$colaborador->id,$prospecto->id_prospecto);
-                        $prospecto->archivos_prospecto_colaborador()->save($archivo_prospecto);
-                        DB::commit();
+                        return response()->json([
+                            'error'=>true,
+                            'messages'=>'No existe archivo'
+                        ],400);
+                            
 
                     }catch(Exception $e){
                         DB::rollback();
@@ -515,25 +529,25 @@ class ProspectosController extends Controller
                             'messages'=>$e
                         ],400);
                     }
-                }else{
-                    $errores = $validator->errors()->toArray();
-                    return response()->json([
-                        'error'=>true,
-                        'messages'=>$errores
-                    ],400);
-                }
-            }
+            //     }else{
+            //         $errores = $validator->errors()->toArray();
+            //         return response()->json([
+            //             'error'=>true,
+            //             'messages'=>$errores
+            //         ],400);
+            //     }
+            // }
 
-            return response()->json([
-                'error'=>false,
-                'messages'=>'Succesfully register'
-            ],200);
-        }
+            // return response()->json([
+            //     'error'=>false,
+            //     'messages'=>'Succesfully register'
+            // ],200);
+        // }
 
-        return response()->json([
-            'error'=>true,
-            'messages'=>'No hay archivos'
-        ],400);
+        // return response()->json([
+        //     'error'=>true,
+        //     'messages'=>'No hay archivos'
+        // ],400);
 
     }
 
@@ -645,7 +659,8 @@ class ProspectosController extends Controller
         //Sube archivos a bucket de Amazon
         $disk = Storage::disk('s3');
         $path = $file->store('prospecto/'.$colaborador.'/'.$prospecto,'s3');
-        return $path;
+        Storage::setVisibility($path,'public');
+        return $disk->url($path);
     }
 
     public function guard()
