@@ -12,7 +12,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>*|MC:SUBJECT|*</title>
+        <title>Termina tu Registro en Kiper</title>
 
     <style type="text/css">
 		p{
@@ -100,9 +100,7 @@
 			table-layout:fixed !important;
 		}
 	/*
-	@tab Page
-	@section Heading 1
-	@style heading 1
+
 	*/
 		h1{
 			/*@editable*/color:#222222;
@@ -115,9 +113,7 @@
 			/*@editable*/text-align:center;
 		}
 	/*
-	@tab Page
-	@section Heading 2
-	@style heading 2
+
 	*/
 		h2{
 			/*@editable*/color:#222222;
@@ -130,9 +126,7 @@
 			/*@editable*/text-align:left;
 		}
 	/*
-	@tab Page
-	@section Heading 3
-	@style heading 3
+
 	*/
 		h3{
 			/*@editable*/color:#444444;
@@ -145,9 +139,7 @@
 			/*@editable*/text-align:left;
 		}
 	/*
-	@tab Page
-	@section Heading 4
-	@style heading 4
+
 	*/
 		h4{
 			/*@editable*/color:#999999;
@@ -160,8 +152,7 @@
 			/*@editable*/text-align:left;
 		}
 	/*
-	@tab Header
-	@section Header Container Style
+
 	*/
 		#templateHeader{
 			/*@editable*/background-color:#d0d0d0;
@@ -175,8 +166,7 @@
 			/*@editable*/padding-bottom:85px;
 		}
 	/*
-	@tab Header
-	@section Header Interior Style
+
 	*/
 		.headerContainer{
 			/*@editable*/background-color:transparent;
@@ -190,8 +180,7 @@
 			/*@editable*/padding-bottom:0;
 		}
 	/*
-	@tab Header
-	@section Header Text
+
 	*/
 		.headerContainer .mcnTextContent,.headerContainer .mcnTextContent p{
 			/*@editable*/color:#808080;
@@ -201,8 +190,7 @@
 			/*@editable*/text-align:left;
 		}
 	/*
-	@tab Header
-	@section Header Link
+
 	*/
 		.headerContainer .mcnTextContent a,.headerContainer .mcnTextContent p a{
 			/*@editable*/color:#00ADD8;
@@ -210,8 +198,7 @@
 			/*@editable*/text-decoration:underline;
 		}
 	/*
-	@tab Body
-	@section Body Container Style
+
 	*/
 		#templateBody{
 			/*@editable*/background-color:#FFFFFF;
@@ -225,8 +212,7 @@
 			/*@editable*/padding-bottom:45px;
 		}
 	/*
-	@tab Body
-	@section Body Interior Style
+
 	*/
 		.bodyContainer{
 			/*@editable*/background-color:transparent;
@@ -240,8 +226,7 @@
 			/*@editable*/padding-bottom:0;
 		}
 	/*
-	@tab Body
-	@section Body Text
+
 	*/
 		.bodyContainer .mcnTextContent,.bodyContainer .mcnTextContent p{
 			/*@editable*/color:#808080;
@@ -251,8 +236,7 @@
 			/*@editable*/text-align:left;
 		}
 	/*
-	@tab Body
-	@section Body Link
+
 	*/
 		.bodyContainer .mcnTextContent a,.bodyContainer .mcnTextContent p a{
 			/*@editable*/color:#00ADD8;
@@ -260,8 +244,7 @@
 			/*@editable*/text-decoration:underline;
 		}
 	/*
-	@tab Footer
-	@section Footer Style
+
 	*/
 		#templateFooter{
 			/*@editable*/background-color:#5d737e;
@@ -275,8 +258,7 @@
 			/*@editable*/padding-bottom:12px;
 		}
 	/*
-	@tab Footer
-	@section Footer Interior Style
+
 	*/
 		.footerContainer{
 			/*@editable*/background-color:transparent;
@@ -290,8 +272,7 @@
 			/*@editable*/padding-bottom:0;
 		}
 	/*
-	@tab Footer
-	@section Footer Text
+
 	*/
 		.footerContainer .mcnTextContent,.footerContainer .mcnTextContent p{
 			/*@editable*/color:#FFFFFF;
@@ -301,8 +282,7 @@
 			/*@editable*/text-align:center;
 		}
 	/*
-	@tab Footer
-	@section Footer Link
+
 	*/
 		.footerContainer .mcnTextContent a,.footerContainer .mcnTextContent p a{
 			/*@editable*/color:#FFFFFF;
@@ -399,9 +379,7 @@
 
 }	@media only screen and (max-width: 480px){
 	/*
-	@tab Mobile Styles
-	@section Heading 1
-	@tip Make the first-level headings larger in size for better readability on small screens.
+
 	*/
 		h1{
 			/*@editable*/font-size:30px !important;
@@ -410,9 +388,7 @@
 
 }	@media only screen and (max-width: 480px){
 	/*
-	@tab Mobile Styles
-	@section Heading 2
-	@tip Make the second-level headings larger in size for better readability on small screens.
+
 	*/
 		h2{
 			/*@editable*/font-size:26px !important;
@@ -421,9 +397,7 @@
 
 }	@media only screen and (max-width: 480px){
 	/*
-	@tab Mobile Styles
-	@section Heading 3
-	@tip Make the third-level headings larger in size for better readability on small screens.
+
 	*/
 		h3{
 			/*@editable*/font-size:20px !important;
@@ -432,9 +406,7 @@
 
 }	@media only screen and (max-width: 480px){
 	/*
-	@tab Mobile Styles
-	@section Heading 4
-	@tip Make the fourth-level headings larger in size for better readability on small screens.
+
 	*/
 		h4{
 			/*@editable*/font-size:18px !important;
@@ -443,9 +415,7 @@
 
 }	@media only screen and (max-width: 480px){
 	/*
-	@tab Mobile Styles
-	@section Boxed Text
-	@tip Make the boxed text larger in size for better readability on small screens. We recommend a font size of at least 16px.
+
 	*/
 		.mcnBoxedTextContentContainer .mcnTextContent,.mcnBoxedTextContentContainer .mcnTextContent p{
 			/*@editable*/font-size:14px !important;
@@ -454,9 +424,7 @@
 
 }	@media only screen and (max-width: 480px){
 	/*
-	@tab Mobile Styles
-	@section Header Text
-	@tip Make the header text larger in size for better readability on small screens.
+
 	*/
 		.headerContainer .mcnTextContent,.headerContainer .mcnTextContent p{
 			/*@editable*/font-size:16px !important;
@@ -465,9 +433,7 @@
 
 }	@media only screen and (max-width: 480px){
 	/*
-	@tab Mobile Styles
-	@section Body Text
-	@tip Make the body text larger in size for better readability on small screens. We recommend a font size of at least 16px.
+
 	*/
 		.bodyContainer .mcnTextContent,.bodyContainer .mcnTextContent p{
 			/*@editable*/font-size:16px !important;
@@ -476,9 +442,7 @@
 
 }	@media only screen and (max-width: 480px){
 	/*
-	@tab Mobile Styles
-	@section Footer Text
-	@tip Make the footer content text larger in size for better readability on small screens.
+
 	*/
 		.footerContainer .mcnTextContent,.footerContainer .mcnTextContent p{
 			/*@editable*/font-size:14px !important;
@@ -629,7 +593,7 @@
                         <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px;color: #51636E;font-size: 18px;">
 
                             <div style="text-align: center;"><span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif">Correo<br>
-<span style="color:#E43D30"><span style="font-size:24px"><strong>{{ $email }}</strong></span></span></span>
+<span style="color:#E43D30"><span style="font-size:24px"><strong> {{$email}} </strong></span></span></span>
 
 <hr></div>
 

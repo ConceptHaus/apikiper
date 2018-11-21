@@ -19,6 +19,7 @@ use App\Modelos\Prospecto\ArchivosProspectoColaborador;
 
 use DB;
 use Mail;
+use Mailgun;
 
 class ColaboradoresController extends Controller
 {
@@ -69,10 +70,14 @@ class ColaboradoresController extends Controller
                     $arrayColaborador = $colaborador->toArray();
                     $arrayColaborador['pass'] = $pass;
 
-                    Mail::send('auth.emails.register',$arrayColaborador, function($contacto) use ($arrayColaborador){
-                        $contacto->from('contacto@kiper.app', 'Kiper');
-                        $contacto->to($arrayColaborador['email'], 'Termina tu registro en Kiper');
-                    });
+                    Mailgun::send('auth.emails.register',$arrayColaborador,function ($contacto) use ($arrayColaborador){
+                       // $message->tag('myTag');
+                       $contacto->from('contacto@kiper.app', 'Kiper');
+                       // $message->testmode(true);
+                       $contacto->subject('Termina tu registro en Kiper');
+                       $contacto->to($arrayColaborador['email'],$arrayColaborador['nombre'] $arrayColaborador['apellido']);
+                   });
+
                     DB::commit();
                     return response()->json([
                         'message'=>'Registro Correcto',
