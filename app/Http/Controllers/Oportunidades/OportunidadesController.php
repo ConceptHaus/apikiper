@@ -480,6 +480,10 @@ class OportunidadesController extends Controller
         try{
 
             DB::beginTransaction();
+            if(!$detalle){
+              $detalle = new DetalleOportunidad;
+              $detalle->id_oportunidad = $id;
+            }
             $valor = intval($request->valor);
             $detalle->valor = $valor;
             $detalle->save();
