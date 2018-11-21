@@ -83,7 +83,7 @@ Route::prefix('/v1/prospectos')->group(function(){
             Route::post('/{id}/etiquetas','Prospectos\ProspectosController@addEtiquetas');
             Route::get('/{id}/archivos','Prospectos\ProspectosController@getArchivos');
             Route::post('/{id}/archivos','Prospectos\ProspectosController@addArchivos');
-            
+
             Route::get('/{id}/mailing','Prospectos\ProspectosController@sendMailing');
         });
 });
@@ -118,7 +118,7 @@ Route::prefix('/v1/oportunidades')->group(function(){
             Route::post('/{id}/servicios','Oportunidades\OportunidadesController@addServicios');
             Route::delete('/{id}/servicios','Oportunidades\OportunidadesController@deleteServicios');
 
-            Route::post('/{id}/valor','Oportunidades\OportunidadesController@addValor');
+            Route::put('/{id}/valor','Oportunidades\OportunidadesController@addValor');
 
         });
 });
