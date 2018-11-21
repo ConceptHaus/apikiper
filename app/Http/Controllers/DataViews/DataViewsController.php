@@ -474,19 +474,19 @@ class DataViewsController extends Controller
                 ],
                 'cotizadas'=>[
                     'valor'=>$oportunidades_cotizadas,
-                    'porcentaje'=>intval(round($oportunidades_cotizadas*100/$oportunidades_total)),
+                    'porcentaje'=>$this->porcentajeOportunidades($oportunidades_cotizadas,$oportunidades_total),
                     'color'=>$this->colorsOportunidades(1)
 
                 ],
                 'cerradas'=>[
                     'valor'=>$oportunidades_cerradas,
-                    'porcentaje'=>intval(round($oportunidades_cerradas*100/$oportunidades_total)),
+                    'porcentaje'=>$this->porcentajeOportunidades($oportunidades_cerradas,$oportunidades_total),
                     'color'=>$this->colorsOportunidades(2)
 
                 ],
                 'no_viables'=>[
                     'valor'=>$oportunidades_no_viables,
-                    'porcentaje'=>intval(round($oportunidades_no_viables*100/$oportunidades_total,PHP_ROUND_HALF_DOWN)),
+                    'porcentaje'=>$this->porcentajeOportunidades($oportunidades_no_viables,$oportunidades_total),
                     'color'=>$this->colorsOportunidades(3)
 
                 ],
@@ -544,7 +544,7 @@ class DataViewsController extends Controller
                 'status'=>$nombre_status->status,
                 'total'=>[
                     'valor'=>$total,
-                    'porcentaje'=>$total*100/$total_general,
+                    'porcentaje'=>$this->porcentajeOportunidades($total,$total_general),
                     'color'=>$this->colorsOportunidades($status)
                 ],
                 'fuentes'=>$fuentes,
@@ -1212,6 +1212,11 @@ class DataViewsController extends Controller
       ],400);
     }
 
-
+    public function porcentajeOportunidades($oportunidad, $total){
+        if($oportunidad == 0){
+            return intval($oportunidad);
+        }
+        return intval(round($oportunidad*100/$total));
+    }
 
 }
