@@ -376,6 +376,7 @@ class OportunidadesController extends Controller
 
     public function deleteArchivos($id){
         $archivo = ArchivosOportunidadColaborador::where('id_archivos_oportunidad_colaborador',$id)->first();
+        return $archivo;
         if($archivo != null){
             try{
                 DB::beginTransaction();
