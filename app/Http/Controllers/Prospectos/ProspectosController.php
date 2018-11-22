@@ -16,6 +16,7 @@ use App\Modelos\Prospecto\DetalleProspecto;
 use App\Modelos\Prospecto\EtiquetasProspecto;
 use App\Modelos\Prospecto\ArchivosProspectoColaborador;
 use App\Modelos\Oportunidad\Oportunidad;
+use App\Modelos\Oportunidad\DetalleOportunidad;
 use App\Modelos\Oportunidad\EtiquetasOportunidad;
 use App\Modelos\Oportunidad\ColaboradorOportunidad;
 use App\Modelos\Oportunidad\ServicioOportunidad;
@@ -79,6 +80,11 @@ class ProspectosController extends Controller
                         $nueva_oportunidad->save();
                         $nueva_oportunidad->status_oportunidad()->save($statusOportunidad);
 
+                        //Detalle de oportunidades
+                        $detalle_oportunidad = new DetalleOportunidad;
+                        $detalle_oportunidad->valor = $request->valor;
+                        $nueva_oportunidad->detalle_oportunidad()->save($detalle_oportunidad);
+                        
                         //Servicio de la oportunidad
                         $servicio_oportunidad = new ServicioOportunidad;
                         $servicio_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
