@@ -76,8 +76,13 @@ class Prospecto extends Model
         return $this->hasMany('App\Modelos\Oportunidad\ProspectoOportunidad','id_prospecto','id_prospecto');
     }
 
+    public function foto(){
+        return $this->hasMany('App\Modelos\Prospecto\FotoProspecto','id_prospecto','id_prospecto');
+    }
+
     public function scopeGetAllProspectos($query){
         return $query->with('status_prospecto.status')
+                     ->with('foto')
                      ->orderBy('created_at', 'desc')
                      ->get();
     }
@@ -85,6 +90,7 @@ class Prospecto extends Model
     public function scopeGetOneProspecto($query,$id){
         return $query->with('status_prospecto.status')
                 ->with('detalle_prospecto')
+                ->with('foto')
                 ->with('colaborador_prospecto.colaboradorDetalle')
                 ->with('servicio_prospecto')
                 ->with('oportunidades.oportunidad.detalle_oportunidad.status.status')

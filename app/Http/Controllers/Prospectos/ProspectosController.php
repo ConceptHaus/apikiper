@@ -156,7 +156,7 @@ class ProspectosController extends Controller
         ],200);
     }
 
-    public function getOneProspecto($id){
+    public function getoneprospecto($id){
         $prospecto = Prospecto::GetOneProspecto($id);
         return response()->json([
             'message'=>'Correcto',
@@ -177,6 +177,7 @@ class ProspectosController extends Controller
             $prospecto->fuente = $request->fuente;
             $prospecto->correo = $request->correo;
             $detalle->telefono = $request->telefono;
+            $detalle->nota = $request->nota;
             $prospecto->save();
             $detalle->save();
             DB::commit();
@@ -191,7 +192,7 @@ class ProspectosController extends Controller
         }catch(Exception $e){
             return response()->json([
                 'error'=>true,
-                'message'=>'Something is wrong '.$e,
+                'message'=>$e,
             ],400);
         }
 
