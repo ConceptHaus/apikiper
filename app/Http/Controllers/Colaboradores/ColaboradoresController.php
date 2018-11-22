@@ -40,7 +40,7 @@ class ColaboradoresController extends Controller
         return Validator::make($data, [
             'nombre' => 'required|string|max:255',
             'apellido'=> 'required|string|max:255',
-            'is_admin'=> 'required|boolean|max:255',
+            // 'is_admin'=> 'required|boolean|max:255',
             'puesto' => 'required|string|max:255',
             'telefono'=> 'required|string|max:255',
             'fecha_nacimiento'=> 'required|string|max:255'
