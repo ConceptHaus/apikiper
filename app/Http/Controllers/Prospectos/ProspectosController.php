@@ -562,6 +562,33 @@ class ProspectosController extends Controller
 
     }
 
+    public function deleteArchivos($id){
+            $archivo = ArchivosProspectoColaborador::where('id_archivos_prospecto_colaborador',$id)->first();
+            if($archivo){
+                try{
+                DB::beginTransaction();
+                $archivo->delete();
+                DB::commit();
+
+                return response()->json([
+                    'error'=>false,
+                    'message'=>'Successfully deleted',
+                ]);
+
+                }catch(Exception $e){
+                    return response()->json([
+                        'error'=>true,
+                        'message'=>$e
+                    ]);
+                }
+            }
+            return response()->json([
+                'error'=>true,
+                'message'=>'El archivo no existe.'
+            ]);
+            
+    }
+
 
     public function sendMailing($id){
         $oportunidades = DB::table('oportunidades')->get();

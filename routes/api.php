@@ -83,7 +83,7 @@ Route::prefix('/v1/prospectos')->group(function(){
             Route::post('/{id}/etiquetas','Prospectos\ProspectosController@addEtiquetas');
             Route::get('/{id}/archivos','Prospectos\ProspectosController@getArchivos');
             Route::post('/{id}/archivos','Prospectos\ProspectosController@addArchivos');
-
+            Route::delete('{id_colaborador}/archivos/{id}','Prospectos\ProspectosController@deleteArchivos');
             Route::get('/{id}/mailing','Prospectos\ProspectosController@sendMailing');
         });
 });
@@ -104,6 +104,7 @@ Route::prefix('/v1/oportunidades')->group(function(){
 
             Route::get('/{id}/archivos','Oportunidades\OportunidadesController@getArchivos');
             Route::post('/{id}/archivos','Oportunidades\OportunidadesController@addArchivos');
+            Route::delete('{id_oportunidad}/archivos/{id}','Oportunidades\OportunidadesController@deleteArchivos');
 
             Route::get('/{id}/eventos','Oportunidades\OportunidadesController@getEventos');
             Route::post('/{id}/eventos','Oportunidades\OportunidadesController@addEventos');

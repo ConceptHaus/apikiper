@@ -374,6 +374,31 @@ class OportunidadesController extends Controller
         // ],400);
     }
 
+    public function deleteArchivos($id){
+        $archivo = ArchivosOportunidadColaborador::where('id_archivos_oportunidad_colaborador',$id)->first();
+        if($archivo){
+            try{
+                DB::beginTransaction();
+                $archivo->delete();
+                DB::commit();
+
+                return response()->json([
+                    'error'=>false,
+                    'message'=>'Successfully deleted',
+                ]);
+            }catch(Exception $e){
+                return resposonse()->json([
+                    'error'=>true,
+                    'message'=>$e
+                ]);
+            }
+
+        }
+        return response()->json([
+            'error'=>true,
+            'message'=>'El archivo no existe.'
+        ]);
+    }
     public function getEventos($id){
         $oportunidad_eventos = Oportunidad::GetOportunidadEventos($id);
         return response()->json([
