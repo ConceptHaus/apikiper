@@ -32,7 +32,7 @@ class ColaboradoresController extends Controller
             'is_admin'=> 'required|boolean|max:255',
             'puesto' => 'required|string|max:255',
             'telefono'=> 'required|string|max:255',
-            'fecha_nacimiento'=> 'required|string|max:255'
+            //'fecha_nacimiento'=> 'required|string|max:255'
         ]);
     }
     protected function validatorUpdate(array $data)
@@ -43,7 +43,7 @@ class ColaboradoresController extends Controller
             // 'is_admin'=> 'required|boolean|max:255',
             'puesto' => 'required|string|max:255',
             'telefono'=> 'required|string|max:255',
-            'fecha_nacimiento'=> 'required|string|max:255'
+            //'fecha_nacimiento'=> 'required|string|max:255'
         ]);
     }
     public function registerColaborador(Request $request){
