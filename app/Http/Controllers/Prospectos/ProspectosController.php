@@ -566,7 +566,7 @@ class ProspectosController extends Controller
 
     }
 
-    public function deleteArchivos($id){
+    public function deleteArchivos($prospecto,$id){
             $archivo = ArchivosProspectoColaborador::where('id_archivos_prospecto_colaborador',$id)->first();
             if($archivo){
                 try{
