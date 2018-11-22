@@ -337,11 +337,28 @@ class DataViewsController extends Controller
 
     public function prospectos(){
         $total_prospectos = Prospecto::all()->count();
+
         $nocontactados_prospectos = DB::table('prospectos')
                                     ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
                                     ->where('status_prospecto.id_cat_status_prospecto','=',1)->count();
-        $prospectos_fuente = DB::table('prospectos')
-                                    ->select(DB::raw('count(*) as fuente_count, fuente'))->groupBy('fuente')->get();
+
+        $origen_Maual = DB::table('prospectos')
+                                    // ->whereBetween('prospectos.created_at', array($anio->toDateString() ,$hoy->toDateString()))
+                                    ->where('fuente', 'Manual')
+                                    ->select('fuente')->count();
+
+        $origen_Facebook = DB::table('prospectos')
+                                    // ->whereBetween('prospectos.created_at', array($anio->toDateString() ,$hoy->toDateString()))
+                                    ->where('fuente', 'Facebook')
+                                    ->select('fuente')->count();
+
+        $origen_Google = DB::table('prospectos')
+                                    // ->whereBetween('prospectos.created_at', array($anio->toDateString() ,$hoy->toDateString()))
+                                    ->where('fuente', 'Google')
+                                    ->select('fuente')->count();
+        // $prospectos_fuente = DB::table('prospectos')
+        //                             ->select(DB::raw('count(*) as fuente_count, fuente'))->groupBy('fuente')->get();
+
 
         $prospectos_t= DB::table('prospectos')
                             ->join('detalle_prospecto','prospectos.id_prospecto','detalle_prospecto.id_prospecto')
@@ -367,7 +384,11 @@ class DataViewsController extends Controller
                 'prospectos'=>$prospectos,
                 'prospectos_total'=>$total_prospectos,
                 'prospectos_nocontactados'=> $nocontactados_prospectos,
-                'prospectos_fuente'=> $prospectos_fuente
+                'prospectos_fuente'=>[
+                  'Manual'=>$origen_Maual,
+                  'Facebook'=>$origen_Facebook,
+                  'Google'=>$origen_Google
+                ]
             ]
             ],200);
     }
