@@ -150,7 +150,7 @@ class ProspectosController extends Controller
         ],200);
     }
 
-    public function getOneProspecto($id){
+    public function getoneprospecto($id){
         $prospecto = Prospecto::GetOneProspecto($id);
         return response()->json([
             'message'=>'Correcto',
