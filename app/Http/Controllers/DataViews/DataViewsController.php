@@ -876,6 +876,7 @@ class DataViewsController extends Controller
 
     public function etiquetas(){
         $etiquetas = DB::table('etiquetas')
+        ->where('status',1)
         ->orderBy('created_at', 'DESC')
         ->get();
 
