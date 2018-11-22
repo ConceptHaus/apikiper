@@ -82,9 +82,9 @@ class ProspectosController extends Controller
 
                         //Detalle de oportunidades
                         $detalle_oportunidad = new DetalleOportunidad;
-                        $detalle_oportunidad->valor = $request->valor;
+                        $detalle_oportunidad->valor = $oportunidad['valor'];
                         $nueva_oportunidad->detalle_oportunidad()->save($detalle_oportunidad);
-                        
+
                         //Servicio de la oportunidad
                         $servicio_oportunidad = new ServicioOportunidad;
                         $servicio_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
