@@ -493,6 +493,9 @@ class ProspectosController extends Controller
 
     public function getArchivos($id){
         $prospecto_archivos = Prospecto::GetProspectoArchivos($id);
+        foreach($prospecto_archivos['archivos_prospecto_colaborador'] as $archivo){
+            $archivo['ext'] = pathinfo($archivo->nombre, PATHINFO_EXTENSION);
+        }
         return response()->json([
             'message'=>'Correcto',
             'error'=>false,
@@ -561,6 +564,33 @@ class ProspectosController extends Controller
         //     'messages'=>'No hay archivos'
         // ],400);
 
+    }
+
+    public function deleteArchivos($id){
+            $archivo = ArchivosProspectoColaborador::where('id_archivos_prospecto_colaborador',$id)->first();
+            if($archivo){
+                try{
+                DB::beginTransaction();
+                $archivo->delete();
+                DB::commit();
+
+                return response()->json([
+                    'error'=>false,
+                    'message'=>'Successfully deleted',
+                ]);
+
+                }catch(Exception $e){
+                    return response()->json([
+                        'error'=>true,
+                        'message'=>$e
+                    ]);
+                }
+            }
+            return response()->json([
+                'error'=>true,
+                'message'=>'El archivo no existe.'
+            ]);
+            
     }
 
 
