@@ -17,6 +17,7 @@ use App\Modelos\Extras\Etiqueta;
 use App\Modelos\Oportunidad\CatServicios;
 use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Modelos\Prospecto\CatMedioContacto;
+use App\Modelos\Prospecto\StatusProspecto;
 use Mailgun;
 use DB;
 use Mail;
@@ -1192,6 +1193,12 @@ class DataViewsController extends Controller
 
       if ($validator->passes()) {
 
+        DB::beginTransaction();
+        $prospecto = StatusProspecto::where('id_prospecto',$request->id_prospecto)->first();
+        $prospecto->id_cat_status_prospecto = 2;
+        $prospecto->save();
+        DB::commit();
+
         Mailgun::send('mailing.mail', $data, function ($message) use ($data){
            // $message->tag('myTag');
            $message->from($data['email_de'],$data['nombre_de']);
@@ -1218,6 +1225,25 @@ class DataViewsController extends Controller
             return intval($oportunidad);
         }
         return intval(round($oportunidad*100/$total));
+    }
+
+    public function cambioStatusProspecto ($id){
+
+      try {
+        DB::beginTransaction();
+        $statusProspecto = StatusProspecto::where('id_prospecto',$id);
+        $statusProspecto->id_cat_status_prospecto = 2;
+        $statusProspecto->save();
+        DB::commit();
+      }catch (Exception $e) {
+        DB::rollBack();
+
+        return response()->json([
+          'error'=>true,
+          'message'=>$e
+        ],400);
+      }
+
     }
 
 }

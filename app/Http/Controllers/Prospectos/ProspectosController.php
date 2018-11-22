@@ -251,6 +251,7 @@ class ProspectosController extends Controller
     public function addOportunidades(Request $request, $id){
         $validator = $this->validadorOportunidad($request->all());
         $prospecto = Prospecto::where('id_prospecto',$id)->first();
+        $status = StatusProspecto::where('id_prospecto',$id)->first();
 
         if($validator->passes() || $prospecto == null){
             try{
@@ -277,6 +278,10 @@ class ProspectosController extends Controller
                 $prospecto_oportunidad->id_prospecto = $prospecto->id_prospecto;
                 $prospecto_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                 $prospecto_oportunidad->save();
+
+                //Cambio de Status Prospecto
+                $status->cat_status_prospecto = 2;
+                $status->save();
 
                 if($request->etiquetas){
                     //Etiquetas de oportunidad
@@ -520,7 +525,7 @@ class ProspectosController extends Controller
                             'error'=>true,
                             'messages'=>'No existe archivo'
                         ],400);
-                            
+
 
                     }catch(Exception $e){
                         DB::rollback();
