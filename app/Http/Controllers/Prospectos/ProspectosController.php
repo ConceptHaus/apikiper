@@ -87,17 +87,25 @@ class ProspectosController extends Controller
                         $detalle_oportunidad->valor = $oportunidad['valor'];
                         $nueva_oportunidad->detalle_oportunidad()->save($detalle_oportunidad);
 
+                        
                         //Servicio de la oportunidad
-                        $servicio_oportunidad = new ServicioOportunidad;
-                        $servicio_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
-                        $servicio_oportunidad->id_servicio_cat = $oportunidad['id_servicio_cat'];
-                        $nueva_oportunidad->servicio_oportunidad()->save($servicio_oportunidad);
+                        if($oportunidad['id_servicio_cat']){
 
+                            $servicio_oportunidad = new ServicioOportunidad;
+                            $servicio_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
+                            $servicio_oportunidad->id_servicio_cat = $oportunidad['id_servicio_cat'];
+                            $nueva_oportunidad->servicio_oportunidad()->save($servicio_oportunidad);
+                        }
+                        
                         //Asignación a colaborador
-                        $colaborador_oportunidad = new ColaboradorOportunidad;
-                        $colaborador_oportunidad->id_colaborador = $oportunidad['id_colaborador'];
-                        $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
-                        $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
+                        if($oportunidad['id_colaborador']){
+                            
+                            $colaborador_oportunidad = new ColaboradorOportunidad;
+                            $colaborador_oportunidad->id_colaborador = $oportunidad['id_colaborador'];
+                            $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
+                            $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
+                        }
+                        
 
                         //Asignación a prospecto
                         $prospecto_oportunidad = new ProspectoOportunidad;
@@ -664,8 +672,8 @@ class ProspectosController extends Controller
 
         return Validator::make($data,[
             'nombre_oportunidad'=>'required|string|max:255',
-            'id_servicio_cat'=>'required|numeric',
-            'id_colaborador'=>'required|string|max:255'
+            //'id_servicio_cat'=>'required|numeric',
+            //'id_colaborador'=>'required|string|max:255'
         ]);
 
     }
