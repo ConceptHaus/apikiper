@@ -15,8 +15,9 @@ class CatFuentesTable extends Migration
     {
         Schema::create('cat_fuentes', function (Blueprint $table) {
             $table->increments('id_fuente');
-            $table->string('nombre');
-            $table->boolean('status');
+            $table->string('nombre')->nullable();
+            $table->string('url')->nullable();
+            $table->boolean('status')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -43,7 +43,9 @@ class Prospecto extends Model
     public function status_prospecto(){
         return $this->hasOne('App\Modelos\Prospecto\StatusProspecto','id_prospecto','id_prospecto');
     }
-
+    public function fuente(){
+        return $this->hasOne('App\Modelos\Prospecto\CatFuente','id_fuente','fuente');
+    }
     public function colaborador_prospecto(){
         return $this->hasOne('App\Modelos\Prospecto\ColaboradorProspecto','id_prospecto','id_prospecto');
     }
@@ -83,6 +85,7 @@ class Prospecto extends Model
     public function scopeGetAllProspectos($query){
         return $query->with('status_prospecto.status')
                      ->with('foto')
+                     ->with('fuente')
                      ->orderBy('created_at', 'desc')
                      ->get();
     }
@@ -91,6 +94,7 @@ class Prospecto extends Model
         return $query->with('status_prospecto.status')
                 ->with('detalle_prospecto')
                 ->with('foto')
+                ->with('fuente')
                 ->with('colaborador_prospecto.colaboradorDetalle')
                 ->with('servicio_prospecto')
                 ->with('oportunidades.oportunidad.detalle_oportunidad.status.status')
