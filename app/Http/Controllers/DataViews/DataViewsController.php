@@ -51,24 +51,6 @@ class DataViewsController extends Controller
                                 ->groupBy('users.id')
                                 ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
 
-        //
-        // $origen_prospecto = DB::table('prospectos')
-        //                         ->select(DB::raw('count(*) as fuente_count, fuente'))->groupBy('fuente')->get();
-
-    //    $origen_Maual = DB::table('prospectos')
-    //                             // ->whereBetween('prospectos.created_at', array($semana->toDateString() ,$hoy->toDateString()))
-    //                             ->where('fuente','Manual')
-    //                             ->select('fuente')->count();
-
-    //    $origen_Facebook = DB::table('prospectos')
-    //                            // ->whereBetween('prospectos.created_at', array($semana->toDateString() ,$hoy->toDateString()))
-    //                            ->where('fuente','Facebook')
-    //                            ->select('fuente')->count();
-
-    //    $origen_Google = DB::table('prospectos')
-    //                            // ->whereBetween('prospectos.created_at', array($semana->toDateString() ,$hoy->toDateString()))
-    //                            ->where('fuente','Google')
-    //                            ->select('fuente')->count();
 
         $prospectos_sin_contactar = DB::table('prospectos')
                                 ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
@@ -113,12 +95,12 @@ class DataViewsController extends Controller
 
         $oportuniades_cerradas = DB::table('oportunidades')
                                     ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
-                                    ->whereBetween('status_oportunidad.updated_at', array($semana->toDateString() ,$hoy->toDateString()))
+                                    ->whereBetween('status_oportunidad.updated_at', array($semana ,$hoy))
                                     ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
 
         $oportunidades_cotizadas =  DB::table('oportunidades')
                                     ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
-                                    ->whereBetween('status_oportunidad.updated_at', array($semana->toDateString() ,$hoy->toDateString()))
+                                    ->whereBetween('status_oportunidad.updated_at', array($semana ,$hoy))
                                     ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
 
         $colaboradores = DB::table('users')
@@ -128,38 +110,29 @@ class DataViewsController extends Controller
                                 ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
                                 ->select('users.nombre','users.apellido','detalle_colaborador.puesto','fotos_colaboradores.url_foto',DB::raw('count(*) as oportunidades_cerradas, users.id'))
                                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
-                                ->whereBetween('status_oportunidad.created_at', array($semana->toDateString() ,$hoy->toDateString()))
+                                ->whereBetween('status_oportunidad.created_at', array($semana ,$hoy))
                                 ->groupBy('users.id')
                                 ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
 
-
-        $origen_Maual = DB::table('prospectos')
-                                ->whereBetween('prospectos.created_at', array($semana->toDateString() ,$hoy->toDateString()))
-                                ->where('fuente', 'Manual')
-                                ->select('fuente')->count();
-
-       $origen_Facebook = DB::table('prospectos')
-                               ->whereBetween('prospectos.created_at', array($semana->toDateString() ,$hoy->toDateString()))
-                               ->where('fuente', 'Facebook')
-                               ->select('fuente')->count();
-
-       $origen_Google = DB::table('prospectos')
-                               ->whereBetween('prospectos.created_at', array($semana->toDateString() ,$hoy->toDateString()))
-                               ->where('fuente', 'Google')
-                               ->select('fuente')->count();
-
         $prospectos_sin_contactar = DB::table('prospectos')
                                 ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
-                                ->whereBetween('status_prospecto.updated_at', array($semana->toDateString() ,$hoy->toDateString()))
+                                ->whereBetween('status_prospecto.updated_at', array($semana ,$hoy))
                                 ->where('status_prospecto.id_cat_status_prospecto','=',1)->count();
 
         $ingresos = DB::table('oportunidades')
                     ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
                     ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
-                    ->whereBetween('detalle_oportunidad.updated_at', array($semana->toDateString() ,$hoy->toDateString()))
+                    ->whereBetween('detalle_oportunidad.updated_at', array($semana ,$hoy))
                     ->where('status_oportunidad.id_cat_status_oportunidad',2)
                     ->sum('detalle_oportunidad.valor');
-
+        
+        $origen = DB::table('prospectos')
+                    ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                    ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
+                    ->whereBetween('prospectos.created_at', array($semana ,$hoy))
+                    ->groupBy('cat_fuentes.nombre')->get();
+        
+        
         return response()->json([
             'message'=>'Success',
             'error'=>false,
@@ -169,11 +142,7 @@ class DataViewsController extends Controller
                 'prospectos_sin_contactar'=>number_format($prospectos_sin_contactar),
                 'colaboradores'=>$colaboradores,
                 'ingresos'=>number_format($ingresos,2),
-                'origen_prospecto'=>[
-                  'Manual'=>$origen_Maual,
-                  'Facebook'=>$origen_Facebook,
-                  'Google'=>$origen_Google
-                ]
+                'origen_prospecto'=>$origen
             ]
             ],200);
 
@@ -192,12 +161,12 @@ class DataViewsController extends Controller
 
         $oportuniades_cerradas = DB::table('oportunidades')
                                     ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
-                                    ->whereBetween('status_oportunidad.updated_at', array($mes->toDateString() ,$hoy->toDateString()))
+                                    ->whereBetween('status_oportunidad.updated_at', array($mes ,$hoy))
                                     ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
 
         $oportunidades_cotizadas =  DB::table('oportunidades')
                                     ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
-                                    ->whereBetween('status_oportunidad.updated_at', array($mes->toDateString() ,$hoy->toDateString()))
+                                    ->whereBetween('status_oportunidad.updated_at', array($mes ,$hoy))
                                     ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
 
         $colaboradores = DB::table('users')
@@ -207,37 +176,30 @@ class DataViewsController extends Controller
                                 ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
                                 ->select('users.nombre','users.apellido','detalle_colaborador.puesto','fotos_colaboradores.url_foto',DB::raw('count(*) as oportunidades_cerradas, users.id'))
                                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
-                                ->whereBetween('status_oportunidad.updated_at', array($mes->toDateString() ,$hoy->toDateString()))
+                                ->whereBetween('status_oportunidad.updated_at', array($mes ,$hoy))
                                 ->groupBy('users.id')
                                 ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
 
 
-        $origen_Maual = DB::table('prospectos')
-                                ->whereBetween('prospectos.created_at', array($mes->toDateString() ,$hoy->toDateString()))
-                                ->where('fuente', 'Manual')
-                                ->select('fuente')->count();
-
-        $origen_Facebook = DB::table('prospectos')
-                                ->whereBetween('prospectos.created_at', array($mes->toDateString() ,$hoy->toDateString()))
-                                ->where('fuente', 'Facebook')
-                                ->select('fuente')->count();
-
-        $origen_Google = DB::table('prospectos')
-                                ->whereBetween('prospectos.created_at', array($mes->toDateString() ,$hoy->toDateString()))
-                                ->where('fuente', 'Google')
-                                ->select('fuente')->count();
+        
 
         $prospectos_sin_contactar = DB::table('prospectos')
                                 ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
-                                // ->whereBetween('prospectos.created_at', array($mes->toDateString() ,$hoy->toDateString()))
+                                ->whereBetween('prospectos.created_at', array($mes ,$hoy))
                                 ->where('status_prospecto.id_cat_status_prospecto','=',1)->count();
 
         $ingresos = DB::table('oportunidades')
                     ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
                     ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
-                    ->whereBetween('status_oportunidad.updated_at', array($mes->toDateString() ,$hoy->toDateString()))
+                    ->whereBetween('status_oportunidad.updated_at', array($mes ,$hoy))
                     ->where('status_oportunidad.id_cat_status_oportunidad',2)
                     ->sum('detalle_oportunidad.valor');
+        
+        $origen = DB::table('prospectos')
+                    ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                    ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
+                    ->whereBetween('prospectos.created_at', array($mes ,$hoy))
+                    ->groupBy('cat_fuentes.nombre')->get();
 
         return response()->json([
             'message'=>'Success',
@@ -248,11 +210,7 @@ class DataViewsController extends Controller
                 'prospectos_sin_contactar'=>number_format($prospectos_sin_contactar),
                 'colaboradores'=>$colaboradores,
                 'ingresos'=>number_format($ingresos,2),
-                'origen_prospecto'=>[
-                  'Manual'=>$origen_Maual,
-                  'Facebook'=>$origen_Facebook,
-                  'Google'=>$origen_Google
-                ]
+                'origen_prospecto'=>$origen
             ]
             ],200);
 
@@ -271,12 +229,12 @@ class DataViewsController extends Controller
 
         $oportuniades_cerradas = DB::table('oportunidades')
                                     ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
-                                    ->whereBetween('status_oportunidad.updated_at', array($anio->toDateString() ,$hoy->toDateString()))
+                                    ->whereBetween('status_oportunidad.updated_at', array($anio ,$hoy))
                                     ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
 
         $oportunidades_cotizadas =  DB::table('oportunidades')
                                     ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
-                                    ->whereBetween('status_oportunidad.updated_at', array($anio->toDateString() ,$hoy->toDateString()))
+                                    ->whereBetween('status_oportunidad.updated_at', array($anio ,$hoy))
                                     ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
 
         $colaboradores = DB::table('users')
@@ -286,37 +244,29 @@ class DataViewsController extends Controller
                                 ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
                                 ->select('users.nombre','users.apellido','detalle_colaborador.puesto','fotos_colaboradores.url_foto',DB::raw('count(*) as oportunidades_cerradas, users.id'))
                                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
-                                ->whereBetween('status_oportunidad.updated_at', array($anio->toDateString() ,$hoy->toDateString()))
+                                ->whereBetween('status_oportunidad.updated_at', array($anio ,$hoy))
                                 ->groupBy('users.id')
                                 ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
 
 
-        $origen_Maual = DB::table('prospectos')
-                                ->whereBetween('prospectos.created_at', array($anio->toDateString() ,$hoy->toDateString()))
-                                ->where('fuente', 'Manual')
-                                ->select('fuente')->count();
-
-        $origen_Facebook = DB::table('prospectos')
-                                ->whereBetween('prospectos.created_at', array($anio->toDateString() ,$hoy->toDateString()))
-                                ->where('fuente', 'Facebook')
-                                ->select('fuente')->count();
-
-        $origen_Google = DB::table('prospectos')
-                                ->whereBetween('prospectos.created_at', array($anio->toDateString() ,$hoy->toDateString()))
-                                ->where('fuente', 'Google')
-                                ->select('fuente')->count();
 
         $prospectos_sin_contactar = DB::table('prospectos')
                                 ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
-                                // ->whereBetween('prospectos.created_at', array($anio->toDateString() ,$hoy->toDateString()))
+                                ->whereBetween('prospectos.created_at', array($anio ,$hoy))
                                 ->where('status_prospecto.id_cat_status_prospecto','=',1)->count();
 
         $ingresos = DB::table('oportunidades')
                     ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
                     ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
-                    ->whereBetween('status_oportunidad.updated_at', array($anio->toDateString() ,$hoy->toDateString()))
+                    ->whereBetween('status_oportunidad.updated_at', array($anio ,$hoy))
                     ->where('status_oportunidad.id_cat_status_oportunidad',2)
                     ->sum('detalle_oportunidad.valor');
+        
+        $origen = DB::table('prospectos')
+                    ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                    ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
+                    ->whereBetween('prospectos.created_at', array($anio ,$hoy))
+                    ->groupBy('cat_fuentes.nombre')->get();
 
         return response()->json([
             'message'=>'Correcto',
@@ -327,11 +277,7 @@ class DataViewsController extends Controller
                 'prospectos_sin_contactar'=>number_format($prospectos_sin_contactar),
                 'colaboradores'=>$colaboradores,
                 'ingresos'=>number_format($ingresos,2),
-                'origen_prospecto'=>[
-                  'Manual'=>$origen_Maual,
-                  'Facebook'=>$origen_Facebook,
-                  'Google'=>$origen_Google
-                ]
+                'origen_prospecto'=>$origen
             ]
             ],200);
 
@@ -344,23 +290,11 @@ class DataViewsController extends Controller
                                     ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
                                     ->where('status_prospecto.id_cat_status_prospecto','=',1)->count();
 
-        $origen_Maual = DB::table('prospectos')
-                                    // ->whereBetween('prospectos.created_at', array($anio->toDateString() ,$hoy->toDateString()))
-                                    ->where('fuente', 'Manual')
-                                    ->select('fuente')->count();
-
-        $origen_Facebook = DB::table('prospectos')
-                                    // ->whereBetween('prospectos.created_at', array($anio->toDateString() ,$hoy->toDateString()))
-                                    ->where('fuente', 'Facebook')
-                                    ->select('fuente')->count();
-
-        $origen_Google = DB::table('prospectos')
-                                    // ->whereBetween('prospectos.created_at', array($anio->toDateString() ,$hoy->toDateString()))
-                                    ->where('fuente', 'Google')
-                                    ->select('fuente')->count();
-        // $prospectos_fuente = DB::table('prospectos')
-        //                             ->select(DB::raw('count(*) as fuente_count, fuente'))->groupBy('fuente')->get();
-
+        
+        $origen = DB::table('prospectos')
+                    ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                    ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
+                    ->groupBy('cat_fuentes.nombre')->get();
 
         $prospectos_t= DB::table('prospectos')
                             ->join('detalle_prospecto','prospectos.id_prospecto','detalle_prospecto.id_prospecto')
@@ -386,11 +320,7 @@ class DataViewsController extends Controller
                 'prospectos'=>$prospectos,
                 'prospectos_total'=>$total_prospectos,
                 'prospectos_nocontactados'=> $nocontactados_prospectos,
-                'prospectos_fuente'=>[
-                  'Manual'=>$origen_Maual,
-                  'Facebook'=>$origen_Facebook,
-                  'Google'=>$origen_Google
-                ]
+                'prospectos_fuente'=>$origen
             ]
             ],200);
     }
@@ -403,9 +333,6 @@ class DataViewsController extends Controller
                         ->select('prospectos.id_prospecto','prospectos.nombre','prospectos.apellido','detalle_prospecto.telefono','prospectos.created_at','prospectos.fuente','cat_status_prospecto.status')
                         ->orderBy('status_prospecto.updated_at','desc')
                         ->get();
-
-
-
 
         return response()->json([
             'message'=>'Correcto',
@@ -617,7 +544,8 @@ class DataViewsController extends Controller
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','colaborador_oportunidad.id_oportunidad')
                             ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
-                            ->select(DB::raw('count(*) as fuente_count, prospectos.fuente'))->groupBy('prospectos.fuente')->get();
+                            ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                            ->select(DB::raw('count(*) as fuente_count, cat_fuentes.nombre'))->groupBy('cat_fuentes.nombre')->get();
 
         return response()->json([
             'message'=>'Correcto',
@@ -709,8 +637,9 @@ class DataViewsController extends Controller
                     ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                     ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
                     ->join('prospectos','prospectos.id_prospecto','oportunidad_prospecto.id_prospecto')
+                    ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                     ->where('status_oportunidad.id_cat_status_oportunidad',2)
-                    ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'prospectos.fuente')->groupBy('prospectos.fuente')
+                    ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'cat_fuentes.nombre')->groupBy('cat_fuentes.nombre')
                     ->get();
 
 
@@ -736,21 +665,21 @@ class DataViewsController extends Controller
                             ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',1)
-                            ->whereBetween('oportunidades.created_at', array($semana->toDateString() ,$hoy->toDateString()))
+                            ->whereBetween('oportunidades.created_at', array($semana ,$hoy))
                             ->sum('detalle_oportunidad.valor');
 
         $total_cerrador = DB::table('oportunidades')
                             ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',2)
-                            ->whereBetween('oportunidades.created_at', array($semana->toDateString() ,$hoy->toDateString()))
+                            ->whereBetween('oportunidades.created_at', array($semana ,$hoy))
                             ->sum('detalle_oportunidad.valor');
 
         $total_noviable = DB::table('oportunidades')
                             ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',3)
-                            ->whereBetween('oportunidades.created_at', array($semana->toDateString() ,$hoy->toDateString()))
+                            ->whereBetween('oportunidades.created_at', array($semana ,$hoy))
                             ->sum('detalle_oportunidad.valor');
 
         $top_3 = DB::table('users')
@@ -771,9 +700,10 @@ class DataViewsController extends Controller
                     ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                     ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
                     ->join('prospectos','prospectos.id_prospecto','oportunidad_prospecto.id_prospecto')
+                    ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                     ->where('status_oportunidad.id_cat_status_oportunidad',2)
-                    ->whereBetween('oportunidades.created_at', array($semana->toDateString() ,$hoy->toDateString()))
-                    ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'prospectos.fuente')->groupBy('prospectos.fuente')
+                    ->whereBetween('oportunidades.created_at', array($semana ,$hoy))
+                    ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'cat_fuentes.nombre')->groupBy('cat_fuentes.nombre')
                     ->get();
 
 
@@ -799,21 +729,21 @@ class DataViewsController extends Controller
                             ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',1)
-                            ->whereBetween('oportunidades.created_at', array($mes->toDateString() ,$hoy->toDateString()))
+                            ->whereBetween('oportunidades.created_at', array($mes ,$hoy))
                             ->sum('detalle_oportunidad.valor');
 
         $total_cerrador = DB::table('oportunidades')
                             ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',2)
-                            ->whereBetween('oportunidades.created_at', array($mes->toDateString() ,$hoy->toDateString()))
+                            ->whereBetween('oportunidades.created_at', array($mes ,$hoy))
                             ->sum('detalle_oportunidad.valor');
 
         $total_noviable = DB::table('oportunidades')
                             ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',3)
-                            ->whereBetween('oportunidades.created_at', array($mes->toDateString() ,$hoy->toDateString()))
+                            ->whereBetween('oportunidades.created_at', array($mes ,$hoy))
                             ->sum('detalle_oportunidad.valor');
 
         $top_3 = DB::table('users')
@@ -834,9 +764,10 @@ class DataViewsController extends Controller
                     ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                     ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
                     ->join('prospectos','prospectos.id_prospecto','oportunidad_prospecto.id_prospecto')
+                    ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                     ->where('status_oportunidad.id_cat_status_oportunidad',2)
-                    ->whereBetween('oportunidades.created_at', array($mes->toDateString() ,$hoy->toDateString()))
-                    ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'prospectos.fuente')->groupBy('prospectos.fuente')
+                    ->whereBetween('oportunidades.created_at', array($mes ,$hoy))
+                    ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'cat_fuentes.nombre')->groupBy('cat_fuentes.nombre')
                     ->get();
 
 
@@ -862,21 +793,21 @@ class DataViewsController extends Controller
                             ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',1)
-                            ->whereBetween('oportunidades.created_at', array($anio->toDateString() ,$hoy->toDateString()))
+                            ->whereBetween('oportunidades.created_at', array($anio ,$hoy))
                             ->sum('detalle_oportunidad.valor');
 
         $total_cerrador = DB::table('oportunidades')
                             ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',2)
-                            ->whereBetween('oportunidades.created_at', array($anio->toDateString() ,$hoy->toDateString()))
+                            ->whereBetween('oportunidades.created_at', array($anio ,$hoy))
                             ->sum('detalle_oportunidad.valor');
 
         $total_noviable = DB::table('oportunidades')
                             ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',3)
-                            ->whereBetween('oportunidades.created_at', array($anio->toDateString() ,$hoy->toDateString()))
+                            ->whereBetween('oportunidades.created_at', array($anio ,$hoy))
                             ->sum('detalle_oportunidad.valor');
 
         $top_3 = DB::table('users')
@@ -897,11 +828,11 @@ class DataViewsController extends Controller
                     ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                     ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
                     ->join('prospectos','prospectos.id_prospecto','oportunidad_prospecto.id_prospecto')
+                    ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                     ->where('status_oportunidad.id_cat_status_oportunidad',2)
-                    ->whereBetween('oportunidades.created_at', array($anio->toDateString() ,$hoy->toDateString()))
-                    ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'prospectos.fuente')->groupBy('prospectos.fuente')
+                    ->whereBetween('oportunidades.created_at', array($anio ,$hoy))
+                    ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'cat_fuentes.nombre')->groupBy('cat_fuentes.nombre')
                     ->get();
-
 
         return response()->json([
             'message'=>'Correcto',
