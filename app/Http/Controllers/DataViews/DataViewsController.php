@@ -55,20 +55,20 @@ class DataViewsController extends Controller
         // $origen_prospecto = DB::table('prospectos')
         //                         ->select(DB::raw('count(*) as fuente_count, fuente'))->groupBy('fuente')->get();
 
-       $origen_Maual = DB::table('prospectos')
-                                // ->whereBetween('prospectos.created_at', array($semana->toDateString() ,$hoy->toDateString()))
-                                ->where('fuente','Manual')
-                                ->select('fuente')->count();
+    //    $origen_Maual = DB::table('prospectos')
+    //                             // ->whereBetween('prospectos.created_at', array($semana->toDateString() ,$hoy->toDateString()))
+    //                             ->where('fuente','Manual')
+    //                             ->select('fuente')->count();
 
-       $origen_Facebook = DB::table('prospectos')
-                               // ->whereBetween('prospectos.created_at', array($semana->toDateString() ,$hoy->toDateString()))
-                               ->where('fuente','Facebook')
-                               ->select('fuente')->count();
+    //    $origen_Facebook = DB::table('prospectos')
+    //                            // ->whereBetween('prospectos.created_at', array($semana->toDateString() ,$hoy->toDateString()))
+    //                            ->where('fuente','Facebook')
+    //                            ->select('fuente')->count();
 
-       $origen_Google = DB::table('prospectos')
-                               // ->whereBetween('prospectos.created_at', array($semana->toDateString() ,$hoy->toDateString()))
-                               ->where('fuente','Google')
-                               ->select('fuente')->count();
+    //    $origen_Google = DB::table('prospectos')
+    //                            // ->whereBetween('prospectos.created_at', array($semana->toDateString() ,$hoy->toDateString()))
+    //                            ->where('fuente','Google')
+    //                            ->select('fuente')->count();
 
         $prospectos_sin_contactar = DB::table('prospectos')
                                 ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
@@ -79,6 +79,12 @@ class DataViewsController extends Controller
                     ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                     ->where('status_oportunidad.id_cat_status_oportunidad',2)
                     ->sum('detalle_oportunidad.valor');
+        
+        $origen = DB::table('prospectos')
+                    ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                    ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
+                    ->groupBy('cat_fuentes.nombre')->get();
+
 
         return response()->json([
             'message'=>'Success',
@@ -89,11 +95,7 @@ class DataViewsController extends Controller
                 'prospectos_sin_contactar'=>number_format($prospectos_sin_contactar),
                 'colaboradores'=>$colaboradores,
                 'ingresos'=>number_format($ingresos,2),
-                'origen_prospecto'=>[
-                  'Manual'=>$origen_Maual,
-                  'Facebook'=>$origen_Facebook,
-                  'Google'=>$origen_Google
-                ]
+                'origen_prospecto'=>$origen
             ]
             ],200);
 
