@@ -234,7 +234,9 @@ class ProspectosController extends Controller
 
     public function getProspectosNoContactado (){
       $prospectos_sin_contactar = Prospecto::join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+                                  ->join('detalle_prospecto','prospectos.id_prospecto','detalle_prospecto.id_prospecto')
                                   ->where('status_prospecto.id_cat_status_prospecto','=',1)
+                                  ->select('prospectos.id_prospecto','prospectos.nombre','prospectos.apellido','prospectos.correo','prospectos.fuente','prospectos.deleted_at','prospectos.created_at','prospectos.updated_at','status_prospecto.id_status_prospecto','status_prospecto.id_cat_status_prospecto','detalle_prospecto.whatsapp')
                                   ->orderBy('status_prospecto.updated_at', 'desc')
                                   ->get();
 
@@ -590,7 +592,7 @@ class ProspectosController extends Controller
                 'error'=>true,
                 'message'=>'El archivo no existe.'
             ]);
-            
+
     }
 
 
