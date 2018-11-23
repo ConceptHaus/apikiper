@@ -59,11 +59,12 @@ class OportunidadesController extends Controller
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('users','colaborador_oportunidad.id_colaborador','users.id')
                             ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                            ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
                             ->join('servicio_oportunidad','servicio_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
                             ->join('cat_servicios','cat_servicios.id_servicio_cat','servicio_oportunidad.id_servicio_cat')
-                            ->select('oportunidades.id_oportunidad','oportunidades.nombre_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad  as status_id','cat_status_oportunidad.status','cat_servicios.nombre as servicio','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','prospectos.fuente','users.nombre as asigando_nombre','users.apellido as asigando_apellido','oportunidades.created_at')
+                            ->select('oportunidades.id_oportunidad','oportunidades.nombre_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad  as status_id','cat_status_oportunidad.status','cat_servicios.nombre as servicio','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.nombre as fuente_url','users.nombre as asigando_nombre','users.apellido as asigando_apellido','oportunidades.created_at')
                             ->orderBy('oportunidades.created_at', 'desc')
                             ->get();
 
@@ -72,26 +73,26 @@ class OportunidadesController extends Controller
             'error'=>false,
             'data'=>[
                 'total'=>[
-                    'valor'=>$oportunidades_total,
+                    'valor'=>$oportunidades_total ,
                     'porcentaje'=>100,
                     'color'=>'#4646B9'
 
                 ],
                 'cotizadas'=>[
                     'valor'=>$oportunidades_cotizadas,
-                    'porcentaje'=>intval(round($oportunidades_cotizadas*100/$oportunidades_total)),
+                    'porcentaje'=>$this->porcentajeOportunidades($oportunidades_cotizadas,$oportunidades_total),
                     'color'=>$this->colorsOportunidades(1)
 
                 ],
                 'cerradas'=>[
                     'valor'=>$oportunidades_cerradas,
-                    'porcentaje'=>intval(round($oportunidades_cerradas*100/$oportunidades_total)),
+                    'porcentaje'=>$this->porcentajeOportunidades($oportunidades_cerradas,$oportunidades_total),
                     'color'=>$this->colorsOportunidades(2)
 
                 ],
                 'no_viables'=>[
                     'valor'=>$oportunidades_no_viables,
-                    'porcentaje'=>intval(round($oportunidades_no_viables*100/$oportunidades_total,PHP_ROUND_HALF_DOWN)),
+                    'porcentaje'=>$this->porcentajeOportunidades($oportunidades_no_viables,$oportunidades_total),
                     'color'=>$this->colorsOportunidades(3)
 
                 ],
@@ -701,6 +702,13 @@ class OportunidadesController extends Controller
     public function colorsOportunidades($id){
         $result = DB::table('cat_status_oportunidad')->select('cat_status_oportunidad.color')->where('id_cat_status_oportunidad',$id)->first();
         return $result->color;
+    }
+
+    public function porcentajeOportunidades($oportunidad, $total){
+        if($oportunidad == 0){
+            return intval($oportunidad);
+        }
+        return intval(round($oportunidad*100/$total));
     }
 
 
