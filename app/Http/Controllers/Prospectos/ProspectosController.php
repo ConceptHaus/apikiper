@@ -90,22 +90,22 @@ class ProspectosController extends Controller
 
                         
                         //Servicio de la oportunidad
-                        if($oportunidad['id_servicio_cat']){
+                        
 
                             $servicio_oportunidad = new ServicioOportunidad;
                             $servicio_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                             $servicio_oportunidad->id_servicio_cat = $oportunidad['id_servicio_cat'];
                             $nueva_oportunidad->servicio_oportunidad()->save($servicio_oportunidad);
-                        }
+                        
                         
                         //Asignación a colaborador
-                        if($oportunidad['id_colaborador']){
+                       
                             
                             $colaborador_oportunidad = new ColaboradorOportunidad;
                             $colaborador_oportunidad->id_colaborador = $oportunidad['id_colaborador'];
                             $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                             $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
-                        }
+                        
                         
 
                         //Asignación a prospecto

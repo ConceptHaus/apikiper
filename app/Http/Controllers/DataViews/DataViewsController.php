@@ -12,6 +12,7 @@ use Carbon\Carbon;
 
 
 use App\Modelos\Prospecto\Prospecto;
+use App\Modelos\Prospecto\CatFuente;
 use App\Modelos\User;
 use App\Modelos\Extras\Etiqueta;
 use App\Modelos\Oportunidad\CatServicios;
@@ -1160,6 +1161,15 @@ class DataViewsController extends Controller
       ],400);
     }
 
+    public function getFuentes(){
+        $fuentes = CatFuente::all();
+
+        return response()->json([
+            'error'=>false,
+            'message'=>'Success',
+            'data'=>$fuentes
+        ]);
+    }
     public function sendMail (Request $request){
       $data = $request->all();
       $validator = $this->validatorMail($data);

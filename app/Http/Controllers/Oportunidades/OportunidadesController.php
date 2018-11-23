@@ -66,7 +66,7 @@ class OportunidadesController extends Controller
                             ->select('oportunidades.id_oportunidad','oportunidades.nombre_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad  as status_id','cat_status_oportunidad.status','cat_servicios.nombre as servicio','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','prospectos.fuente','users.nombre as asigando_nombre','users.apellido as asigando_apellido','oportunidades.created_at')
                             ->orderBy('oportunidades.created_at', 'desc')
                             ->get();
-
+        return $oportunidades;
         return response()->json([
             'message'=>'Correcto',
             'error'=>false,
