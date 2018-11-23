@@ -149,6 +149,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/servicios','DataViews\DataViewsController@servicios');
         Route::get('/colaboradores','DataViews\DataViewsController@colaboradores');
         Route::get('/medios-contacto', 'DataViews\DataViewsController@getMedioContacto');
+        Route::get('/fuentes','DataViews\DataViewsController@getFuentes');
 
         //POST
         Route::post('/etiquetas','DataViews\DataViewsController@addEtiquetas');
