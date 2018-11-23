@@ -72,26 +72,26 @@ class OportunidadesController extends Controller
             'error'=>false,
             'data'=>[
                 'total'=>[
-                    'valor'=>$oportunidades_total,
+                    'valor'=>$oportunidades_total ,
                     'porcentaje'=>100,
                     'color'=>'#4646B9'
 
                 ],
                 'cotizadas'=>[
                     'valor'=>$oportunidades_cotizadas,
-                    'porcentaje'=>intval(round($oportunidades_cotizadas*100/$oportunidades_total)),
+                    'porcentaje'=>$this->porcentajeOportunidades($oportunidades_cotizadas,$oportunidades_total),
                     'color'=>$this->colorsOportunidades(1)
 
                 ],
                 'cerradas'=>[
                     'valor'=>$oportunidades_cerradas,
-                    'porcentaje'=>intval(round($oportunidades_cerradas*100/$oportunidades_total)),
+                    'porcentaje'=>$this->porcentajeOportunidades($oportunidades_cerradas,$oportunidades_total),
                     'color'=>$this->colorsOportunidades(2)
 
                 ],
                 'no_viables'=>[
                     'valor'=>$oportunidades_no_viables,
-                    'porcentaje'=>intval(round($oportunidades_no_viables*100/$oportunidades_total,PHP_ROUND_HALF_DOWN)),
+                    'porcentaje'=>$this->porcentajeOportunidades($oportunidades_no_viables,$oportunidades_total),
                     'color'=>$this->colorsOportunidades(3)
 
                 ],
@@ -701,6 +701,13 @@ class OportunidadesController extends Controller
     public function colorsOportunidades($id){
         $result = DB::table('cat_status_oportunidad')->select('cat_status_oportunidad.color')->where('id_cat_status_oportunidad',$id)->first();
         return $result->color;
+    }
+
+    public function porcentajeOportunidades($oportunidad, $total){
+        if($oportunidad == 0){
+            return intval($oportunidad);
+        }
+        return intval(round($oportunidad*100/$total));
     }
 
 
