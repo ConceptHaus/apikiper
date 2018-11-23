@@ -545,7 +545,7 @@ class DataViewsController extends Controller
                             ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','colaborador_oportunidad.id_oportunidad')
                             ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
                             ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
-                            ->select(DB::raw('count(*) as fuente_count, cat_fuentes.nombre'))->groupBy('cat_fuentes.nombre')->get();
+                            ->select(DB::raw('count(*) as fuente_count, cat_fuentes.nombre','cat_fuentes.url'))->groupBy('cat_fuentes.nombre')->get();
 
         return response()->json([
             'message'=>'Correcto',
@@ -639,7 +639,7 @@ class DataViewsController extends Controller
                     ->join('prospectos','prospectos.id_prospecto','oportunidad_prospecto.id_prospecto')
                     ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                     ->where('status_oportunidad.id_cat_status_oportunidad',2)
-                    ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'cat_fuentes.nombre')->groupBy('cat_fuentes.nombre')
+                    ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'cat_fuentes.nombre','cat_fuentes.url')->groupBy('cat_fuentes.nombre')
                     ->get();
 
 
@@ -703,7 +703,7 @@ class DataViewsController extends Controller
                     ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                     ->where('status_oportunidad.id_cat_status_oportunidad',2)
                     ->whereBetween('oportunidades.created_at', array($semana ,$hoy))
-                    ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'cat_fuentes.nombre')->groupBy('cat_fuentes.nombre')
+                    ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'cat_fuentes.nombre','cat_fuentes.url')->groupBy('cat_fuentes.nombre')
                     ->get();
 
 
@@ -767,7 +767,7 @@ class DataViewsController extends Controller
                     ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                     ->where('status_oportunidad.id_cat_status_oportunidad',2)
                     ->whereBetween('oportunidades.created_at', array($mes ,$hoy))
-                    ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'cat_fuentes.nombre')->groupBy('cat_fuentes.nombre')
+                    ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'cat_fuentes.nombre','cat_fuentes.url')->groupBy('cat_fuentes.nombre')
                     ->get();
 
 
@@ -831,7 +831,7 @@ class DataViewsController extends Controller
                     ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                     ->where('status_oportunidad.id_cat_status_oportunidad',2)
                     ->whereBetween('oportunidades.created_at', array($anio ,$hoy))
-                    ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'cat_fuentes.nombre')->groupBy('cat_fuentes.nombre')
+                    ->select(DB::raw('SUM(detalle_oportunidad.valor) as valor_cerrado'),'cat_fuentes.nombre','cat_fuentes.url')->groupBy('cat_fuentes.nombre')
                     ->get();
 
         return response()->json([
