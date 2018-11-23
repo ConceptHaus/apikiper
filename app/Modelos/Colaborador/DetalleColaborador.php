@@ -18,7 +18,9 @@ class DetalleColaborador extends Model
       'id_colaborador',
       'puesto',
       'telefono',
-      'fecha_nacimiento',
+      'celular',
+      'whatsapp',
+      'fecha_nacimiento'
     ];
 
     protected $hidden = [

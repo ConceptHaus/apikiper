@@ -57,17 +57,17 @@ class DataViewsController extends Controller
 
        $origen_Maual = DB::table('prospectos')
                                 // ->whereBetween('prospectos.created_at', array($semana->toDateString() ,$hoy->toDateString()))
-                                ->where('fuente', 'Manual')
+                                ->where('fuente','Manual')
                                 ->select('fuente')->count();
 
        $origen_Facebook = DB::table('prospectos')
                                // ->whereBetween('prospectos.created_at', array($semana->toDateString() ,$hoy->toDateString()))
-                               ->where('fuente', 'Facebook')
+                               ->where('fuente','Facebook')
                                ->select('fuente')->count();
 
        $origen_Google = DB::table('prospectos')
                                // ->whereBetween('prospectos.created_at', array($semana->toDateString() ,$hoy->toDateString()))
-                               ->where('fuente', 'Google')
+                               ->where('fuente','Google')
                                ->select('fuente')->count();
 
         $prospectos_sin_contactar = DB::table('prospectos')
