@@ -55,7 +55,7 @@ class DataViewsController extends Controller
         // $origen_prospecto = DB::table('prospectos')
         //                         ->select(DB::raw('count(*) as fuente_count, fuente'))->groupBy('fuente')->get();
 
-        $origen_Maual = DB::table('prospectos')
+       $origen_Maual = DB::table('prospectos')
                                 // ->whereBetween('prospectos.created_at', array($semana->toDateString() ,$hoy->toDateString()))
                                 ->where('fuente', 'Manual')
                                 ->select('fuente')->count();
