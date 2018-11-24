@@ -27,6 +27,8 @@ class DetalleColaborador extends Model
       'id_colaborador'
     ];
 
+     protected $dates = ['deleted_at'];
+
 
     public function colaborador(){
       return $this->belongsTo('App\Modelos\User','id','id_colaborador');

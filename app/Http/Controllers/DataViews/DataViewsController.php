@@ -865,6 +865,7 @@ class DataViewsController extends Controller
     public function etiquetas(){
         $etiquetas = DB::table('etiquetas')
         ->where('status',1)
+        ->whereNull('deleted_at')
         ->orderBy('created_at', 'DESC')
         ->get();
 
@@ -925,6 +926,7 @@ class DataViewsController extends Controller
 
     public function servicios(){
         $servicios = DB::table('cat_servicios')
+        ->whereNull('deleted_at')
         ->orderBy('created_at', 'DESC')
         ->get();
 
