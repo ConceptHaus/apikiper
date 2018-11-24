@@ -493,10 +493,11 @@ class DataViewsController extends Controller
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','colaborador_oportunidad.id_oportunidad')
                             ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                            ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                             ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->where('colaborador_oportunidad.id_colaborador',$id)
                             ->where('status_oportunidad.id_cat_status_oportunidad',$status)
-                            ->select(DB::raw('count(*) as fuente_count, prospectos.fuente'))->groupBy('prospectos.fuente')
+                            ->select(DB::raw('count(*) as total, cat_fuentes.nombre'),'cat_fuentes.url','cat_fuentes.status')->groupBy('cat_fuentes.nombre')
                             ->get();
 
         $oportunidades = DB::table('oportunidades')
@@ -512,6 +513,13 @@ class DataViewsController extends Controller
                             ->where('colaborador_oportunidad.id_colaborador','=',$id)
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',intval($status))
                             ->get();
+        
+        $catalogo_fuentes = DB::table('cat_fuentes')
+                            ->select('nombre','url','status')->get();
+        
+        //return $fuentes;
+        //return $this->fuentesChecker($catalogo_fuentes, $fuentes);
+
 
         return response()->json([
             'message'=>'Correcto',
@@ -1232,6 +1240,35 @@ class DataViewsController extends Controller
         ],400);
       }
 
+    }
+
+    public function FuentesChecker($catalogo,$consulta){
+
+            if(count($catalogo) > count($consulta)){
+
+                if(count($consulta) == 0){
+                    
+                    foreach($catalogo as $fuente){
+                        $fuente->total=0;
+                        
+                    }
+                    return response()->json([
+                        'catalogo'=>$catalogo
+                    ]);
+                }
+                else{
+                    
+                    return json_decode($catalogo);
+                }
+                
+
+                
+            }
+            return response()->json([
+                'consulta'=>$consulta,
+                'catalogo'=>$catalogo
+            ]);
+            
     }
 
 }
