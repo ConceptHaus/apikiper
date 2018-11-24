@@ -46,7 +46,7 @@ class ProspectosController extends Controller
                 $prospecto = new Prospecto;
                 $prospectoDetalle = new DetalleProspecto;
                 $statusProspecto = new StatusProspecto;
-                $statusProspecto->id_cat_status_prospecto = 1;
+                $statusProspecto->id_cat_status_prospecto = 2;
                 $prospecto->nombre = $request->nombre;
                 $prospecto->apellido = $request->apellido;
                 $prospecto->correo = $request->correo;
@@ -88,25 +88,25 @@ class ProspectosController extends Controller
                         $detalle_oportunidad->valor = $oportunidad['valor'];
                         $nueva_oportunidad->detalle_oportunidad()->save($detalle_oportunidad);
 
-                        
+
                         //Servicio de la oportunidad
-                        
+
 
                             $servicio_oportunidad = new ServicioOportunidad;
                             $servicio_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                             $servicio_oportunidad->id_servicio_cat = $oportunidad['id_servicio_cat'];
                             $nueva_oportunidad->servicio_oportunidad()->save($servicio_oportunidad);
-                        
-                        
+
+
                         //Asignación a colaborador
-                       
-                            
+
+
                             $colaborador_oportunidad = new ColaboradorOportunidad;
                             $colaborador_oportunidad->id_colaborador = $oportunidad['id_colaborador'];
                             $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                             $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
-                        
-                        
+
+
 
                         //Asignación a prospecto
                         $prospecto_oportunidad = new ProspectoOportunidad;

@@ -90,6 +90,7 @@ class UserController extends Controller
 
 
         return response()->json([
+            'error'=>false,
             'user'=>$this->guard()->user(),
             'detalle'=>$detalle,
             'img_perfil'=>$img,
@@ -108,13 +109,16 @@ class UserController extends Controller
         $me = User::where('id',$id_me)->first();
         $me_ext = DetalleColaborador::where('id_colaborador',$id_me)->first();
         $validator = $this->validatorUpdateMe($request->all());
+        // return $request->nombre;
         if($validator->passes()){
             try{
             DB::beginTransaction();
             $me->nombre = $request->nombre;
             $me->apellido = $request->apellido;
             $me_ext->puesto = $request->puesto;
-            $me_ext->telefono = $request->telefono;
+            $me_ext->telefono = intval(preg_replace('/[^0-9]+/', '', $request->telefono), 10);
+            $me_ext->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
+            $me_ext->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
             $me->save();
             $me->detalle()->save($me_ext);
             $meRes = User::GetOneUser($id_me);
@@ -148,7 +152,6 @@ class UserController extends Controller
         if(count($status) == 0){
 
             $empty = DB::table('cat_status_oportunidad')
-
                     ->select('id_cat_status_oportunidad','status','color')
                     ->where('id_cat_status_oportunidad',$id)
                     ->first();

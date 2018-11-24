@@ -2,7 +2,8 @@
 
 namespace App\Modelos\Colaborador;
 
-use Illuminate\Database\Eloquent\Model;use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class FotoColaborador extends Model
@@ -18,6 +19,8 @@ class FotoColaborador extends Model
       'id_colaborador',
       'url_foto',
     ];
+
+     protected $dates = ['deleted_at'];
 
     public function colaborador(){
       return $this->belongsTo('App\Modelos\User','id','id_colaborador');
