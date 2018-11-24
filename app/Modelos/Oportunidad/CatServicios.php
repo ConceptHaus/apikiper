@@ -18,6 +18,7 @@ class CatServicios extends Model
         'nombre',
         'descripcion',
     ];
+    protected $dates = ['deleted_at'];
 
     public function servicio(){
         $this->hasMany('App\Modelos\Oportunidad\ServicioOportunidad','id_servicio_cat','id_servicio_cat');
