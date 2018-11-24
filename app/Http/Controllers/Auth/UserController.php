@@ -109,6 +109,7 @@ class UserController extends Controller
         $me = User::where('id',$id_me)->first();
         $me_ext = DetalleColaborador::where('id_colaborador',$id_me)->first();
         $validator = $this->validatorUpdateMe($request->all());
+        // return $request->nombre;
         if($validator->passes()){
             try{
             DB::beginTransaction();

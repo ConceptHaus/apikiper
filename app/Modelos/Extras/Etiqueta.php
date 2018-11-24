@@ -16,6 +16,7 @@ class Etiqueta extends Model
         'nombre',
         'descripcion'
     ];
+     protected $dates = ['deleted_at'];
 
     public function prospecto(){
         return $this->belongsTo('App\Modelos\Prospecto\Prospecto','id_prospecto','id_prospecto');
