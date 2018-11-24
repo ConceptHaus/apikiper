@@ -39,6 +39,8 @@ class User extends Authenticatable implements JWTSubject
         'password', 'remember_token'
     ];
 
+     protected $dates = ['deleted_at'];
+
     public function detalle(){
         return $this->hasOne('App\Modelos\Colaborador\DetalleColaborador','id_colaborador','id');
     }
