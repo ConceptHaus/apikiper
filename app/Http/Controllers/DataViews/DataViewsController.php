@@ -871,12 +871,18 @@ class DataViewsController extends Controller
         ->orderBy('created_at', 'DESC')
         ->get();
 
+        if ($etiquetas) {
+          return response()->json([
+              'message'=>'Correcto',
+              'error'=>false,
+              'data'=>[
+                  'etiquetas'=>$etiquetas
+              ]
+              ],200);
+        }
         return response()->json([
-            'message'=>'Correcto',
-            'error'=>false,
-            'data'=>[
-                'etiquetas'=>$etiquetas
-            ]
+            'message'=>'No hay etiquetas',
+            'error'=>false
             ],200);
 
     }
@@ -888,12 +894,18 @@ class DataViewsController extends Controller
                         ->select('users.nombre','users.apellido','fotos_colaboradores.url_foto','detalle_colaborador.puesto','users.email','detalle_colaborador.telefono','users.created_at')
                         ->get();
 
+        if ($colaboradores) {
+          return response()->json([
+                      'message'=>'Correcto',
+                      'error'=>false,
+                      'data'=>[
+                          'colaboradores'=>$colaboradores
+                      ]
+                      ],200);
+        }
         return response()->json([
-                    'message'=>'Correcto',
-                    'error'=>false,
-                    'data'=>[
-                        'colaboradores'=>$colaboradores
-                    ]
+                    'message'=>'No hay colaboradores',
+                    'error'=>false
                     ],200);
     }
 
@@ -932,12 +944,18 @@ class DataViewsController extends Controller
         ->orderBy('created_at', 'DESC')
         ->get();
 
+        if ($servicios) {
+          return response()->json([
+              'message'=>'Correcto',
+              'error'=>false,
+              'data'=>[
+                  'servicios'=>$servicios
+              ]
+              ],200);
+        }
         return response()->json([
-            'message'=>'Correcto',
-            'error'=>false,
-            'data'=>[
-                'servicios'=>$servicios
-            ]
+            'message'=>'No hay servicios.',
+            'error'=>false
             ],200);
     }
 
@@ -1013,16 +1031,32 @@ class DataViewsController extends Controller
     public function deleteEtiquetas($id){
         $etiqueta  = Etiqueta::where('id_etiqueta',$id)->first();
 
-        if($etiqueta->delete()){
+        if($etiqueta){
+          try {
+            DB::beginTransaction();
+            $etiqueta->delete();
+            DB::commit();
+
+              return response()->json([
+                  'message'=>'Borrado Correctamente',
+                  'error'=>false,
+              ]);
+
+          } catch (Exception $e) {
+            DB::rollBack();
+
             return response()->json([
-                'message'=>'Borrado Correctamente',
-                'error'=>false,
-            ]);
+              'error'=>true,
+              'message'=>$e
+            ],400);
+          }
+
+
         }
         return response()->json([
-            'message'=>'Something wrong',
-            'error'=>true
-        ]);
+            'message'=>'No se encontro la etiqueta.',
+            'error'=>false
+        ],200);
 
     }
 
@@ -1064,6 +1098,7 @@ class DataViewsController extends Controller
     //PUT
     public function updateServicios(Request $request){
         $id = $request->id_servicio;
+
         try{
             DB::beginTransaction();
             $servicio = CatServicios::where('id_servicio_cat',$id)->first();
@@ -1092,16 +1127,28 @@ class DataViewsController extends Controller
     public function deleteServicios($id){
         $servicios = CatServicios::where('id_servicio_cat',$id)->first();
 
-        if($servicios->delete()){
+        if($servicios){
+          try {
+            DB::beginTransaction();
+            $servicios->delete();
+            DB::commit();
+
             return response()->json([
                 'message'=>'Borrado Correctamente',
                 'error'=>false,
-            ]);
+            ],200);
+          } catch (Exception $e) {
+            return response()->json([
+                'message'=>$e,
+                'error'=>true
+            ],400);
+          }
+
         }
         return response()->json([
-            'message'=>'Something wrong',
-            'error'=>true
-        ]);
+            'message'=>'No se encontro el servicio.',
+            'error'=>false
+        ],200);
     }
 
     public function updateStatus(Request $request){
@@ -1174,18 +1221,25 @@ class DataViewsController extends Controller
 
       return response()->json([
         'error'=>true,
-        'message'=>'Medios de contacto no obtenidos.'
+        'message'=>'No se encontro el medio de contacto.'
       ],400);
     }
 
     public function getFuentes(){
         $fuentes = CatFuente::all();
 
+        if ($fuentes) {
+          return response()->json([
+              'error'=>false,
+              'message'=>'Fuentes obtenidas correctamente.',
+              'data'=>$fuentes
+          ],200);
+        }
+
         return response()->json([
             'error'=>false,
-            'message'=>'Success',
-            'data'=>$fuentes
-        ]);
+            'message'=>'No se encontraron fuentes.'
+        ],200);
     }
     public function sendMail (Request $request){
       $data = $request->all();
