@@ -1256,9 +1256,7 @@ class DataViewsController extends Controller
                         $fuente->total=0;
 
                     }
-                    return response()->json([
-                        'catalogo'=>$catalogo
-                    ]);
+                    return $catalogo;
                 }
                 else{
                     $collection = collect($consulta);
