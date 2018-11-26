@@ -151,7 +151,7 @@ class OportunidadesController extends Controller
                     'porcentaje'=>intval(round($total*100/$total_general)),
                     'color'=>$this->colorsOportunidades($status)
                 ],
-                'fuentes'=>$this->FuentesChecker($catalogos_fuentes,$fuentes),
+                'fuentes'=>$this->FuentesChecker($catalogo_fuentes,$fuentes),
                 'oportunidades'=> $oportunidades
 
             ]
