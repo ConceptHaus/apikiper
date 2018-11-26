@@ -513,7 +513,7 @@ class DataViewsController extends Controller
                             ->where('colaborador_oportunidad.id_colaborador','=',$id)
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',intval($status))
                             ->get();
-        
+
         $catalogo_fuentes = DB::table('cat_fuentes')
                             ->select('nombre','url','status')->get();
         
@@ -559,6 +559,9 @@ class DataViewsController extends Controller
                             ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                             ->select(DB::raw('count(*) as fuente_count, cat_fuentes.nombre','cat_fuentes.url'))->groupBy('cat_fuentes.nombre')->get();
 
+        $status = DB::table('cat_status_oportunidad')
+                      ->select('id_cat_status_oportunidad as id','status','color')->get();
+
         return response()->json([
             'message'=>'Correcto',
             'error'=>false,
@@ -566,7 +569,8 @@ class DataViewsController extends Controller
                 'cotizadas'=>$oportunidades_cotizadas,
                 'cerradas'=>$oportunidades_cerradas,
                 'no_viables'=>$oportunidades_no_viables,
-                'fuentes'=>$fuentes
+                'fuentes'=>$fuentes,
+                'status'=>$status
             ]
             ],200);
 
@@ -1247,10 +1251,10 @@ class DataViewsController extends Controller
             if(count($catalogo) > count($consulta)){
 
                 if(count($consulta) == 0){
-                    
+
                     foreach($catalogo as $fuente){
                         $fuente->total=0;
-                        
+
                     }
                     return response()->json([
                         'catalogo'=>$catalogo
@@ -1275,9 +1279,9 @@ class DataViewsController extends Controller
                     }
                     return $collection->all();
                 }
-                
 
-                
+
+
             }
             return $consulta;
             
