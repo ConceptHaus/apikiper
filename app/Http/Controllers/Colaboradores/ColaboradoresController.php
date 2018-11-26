@@ -284,6 +284,11 @@ class ColaboradoresController extends Controller
 
           DB::rollBack();
 
+          return response()->json([
+            'error'=>true,
+            'message'=>$e
+          ],400);
+
         }
       }
 
@@ -306,9 +311,8 @@ class ColaboradoresController extends Controller
           DB::rollBack();
 
           return response()->json([
-            'message'=>'Ocurrio un error',
             'error'=>true,
-            'data'=>$e
+            'message'=>$e
           ],400);
 
         }

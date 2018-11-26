@@ -232,7 +232,7 @@ class OportunidadesController extends Controller
           DB::rollBack();
           return response()->json([
             'error'=>true,
-            'message'=>'Sometring is wrong'.$e
+            'message'=>$e
           ],400);
         }
 
@@ -246,11 +246,17 @@ class OportunidadesController extends Controller
 
     public function getEtiquetas($id){
         $oportunidad_etiquetas = Oportunidad::GetOportunidadEtiquetas($id);
+        if ($oportunidad_etiquetas) {
+          return response()->json([
+              'error'=>false,
+              'message'=>'Correcto',
+              'data'=>$oportunidad_etiquetas
+          ],200);
+        }
         return response()->json([
-            'message'=>'Correcto',
-            'error'=>false,
-            'data'=>$oportunidad_etiquetas
-        ],200);
+            'error'=>true,
+            'message'=>'No hay etiquetas.'
+        ],400);
     }
 
     public function addEtiquetas($request, $id){
@@ -300,14 +306,21 @@ class OportunidadesController extends Controller
 
     public function getArchivos($id){
         $oportunidad_archivos = Oportunidad::GetOportunidadArchivos($id);
-        foreach($oportunidad_archivos['archivos_oportunidad'] as $archivo){
-            $archivo['ext'] = pathinfo($archivo->nombre, PATHINFO_EXTENSION);
+        if ($oportunidad_archivos) {
+          foreach($oportunidad_archivos['archivos_oportunidad'] as $archivo){
+              $archivo['ext'] = pathinfo($archivo->nombre, PATHINFO_EXTENSION);
+          }
+          return response()->json([
+              'message'=>'Correcto',
+              'error'=>false,
+              'data'=>$oportunidad_archivos
+          ],200);
         }
+
         return response()->json([
-            'message'=>'Correcto',
-            'error'=>false,
-            'data'=>$oportunidad_archivos
-        ],200);
+            'message'=>'No hay archivos.',
+            'error'=>true
+        ],400);
     }
 
     public function addArchivos(Request $request, $id){
@@ -386,7 +399,7 @@ class OportunidadesController extends Controller
 
                 return response()->json([
                     'error'=>false,
-                    'message'=>'Successfully deleted',
+                    'message'=>'Archivo borrado correctamente.',
                 ]);
             }catch(Exception $e){
                 return resposonse()->json([
@@ -403,10 +416,17 @@ class OportunidadesController extends Controller
     }
     public function getEventos($id){
         $oportunidad_eventos = Oportunidad::GetOportunidadEventos($id);
+
+        if ($oportunidad_eventos) {
+          return response()->json([
+              'message'=>'Correcto',
+              'error'=>false,
+              'data'=>$oportunidad_eventos
+          ],200);
+        }
         return response()->json([
-            'message'=>'Correcto',
-            'error'=>false,
-            'data'=>$oportunidad_eventos
+            'message'=>'No hay eventos para esta oportunidad.',
+            'error'=>false
         ],200);
 
     }
@@ -433,7 +453,7 @@ class OportunidadesController extends Controller
                 DB::commit();
                 return response()->json([
                     'error'=>false,
-                    'message'=>'Registro Correcto',
+                    'message'=>'Evento guardado correctamente.',
                     'data'=>$evento
                 ],200);
             }catch(Exception $e){
@@ -448,10 +468,16 @@ class OportunidadesController extends Controller
 
     public function getRecordatorios($id){
         $oportunidad_recordatorios = Oportunidad::GetOportunidadRecordatorios($id);
+        if ($oportunidad_recordatorios) {
+          return response()->json([
+              'message'=>'Correcto',
+              'error'=>false,
+              'data'=>$oportunidad_recordatorios
+          ],200);
+        }
         return response()->json([
-            'message'=>'Correcto',
-            'error'=>false,
-            'data'=>$oportunidad_recordatorios
+            'message'=>'No hay recodatorios.',
+            'error'=>false
         ],200);
     }
 
