@@ -108,10 +108,16 @@ class ColaboradoresController extends Controller
     public function getAllColaboradores(){
         $colaboradores = User::GetallUsers();
 
+        if ($colaboradores) {
+          return response()->json([
+              'message'=>'Colaboradores obtenidos correctamente.',
+              'error'=>false,
+              'data'=>$colaboradores
+          ],200);
+        }
         return response()->json([
-            'message'=>'Correcto',
-            'error'=>false,
-            'data'=>$colaboradores
+            'message'=>'No se encontraron colaboradores.',
+            'error'=>false
         ],200);
     }
 
