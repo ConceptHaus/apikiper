@@ -517,9 +517,7 @@ class DataViewsController extends Controller
         $catalogo_fuentes = DB::table('cat_fuentes')
                             ->select('nombre','url','status')->get();
         
-        //return $fuentes;
-        //return $this->fuentesChecker($catalogo_fuentes, $fuentes);
-
+        
 
         return response()->json([
             'message'=>'Correcto',
@@ -531,7 +529,7 @@ class DataViewsController extends Controller
                     'porcentaje'=>$this->porcentajeOportunidades($total,$total_general),
                     'color'=>$this->colorsOportunidades($status)
                 ],
-                'fuentes'=>$fuentes,
+                'fuentes'=> $this->fuentesChecker($catalogo_fuentes, $fuentes),
                 'oportunidades'=> $oportunidades
 
             ]
@@ -1259,17 +1257,29 @@ class DataViewsController extends Controller
                     ]);
                 }
                 else{
-                    
-                    return json_decode($catalogo);
+                    $collection = collect($consulta);
+                    for($i = 0; $i<count($catalogo); $i++){
+                        $match = false;
+                        for($j=0; $j<count($consulta); $j++){
+                            
+                            if( $catalogo[$i]->nombre == $consulta[$j]->nombre ){
+                                $match = true;
+                                break;
+                            }
+                        }
+
+                        if(!$match){
+                            $catalogo[$i]->total = 0;
+                            $collection->push($catalogo[$i]);
+                        }
+                    }
+                    return $collection->all();
                 }
                 
 
                 
             }
-            return response()->json([
-                'consulta'=>$consulta,
-                'catalogo'=>$catalogo
-            ]);
+            return $consulta;
             
     }
 
