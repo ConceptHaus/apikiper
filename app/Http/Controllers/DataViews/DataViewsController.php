@@ -502,6 +502,7 @@ class DataViewsController extends Controller
 
         $oportunidades = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('users','users.id', 'colaborador_oportunidad.id_colaborador')
                             ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
                             ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
