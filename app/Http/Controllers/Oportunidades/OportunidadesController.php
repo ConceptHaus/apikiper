@@ -119,8 +119,9 @@ class OportunidadesController extends Controller
                             ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                            ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',$status)
-                            ->select(DB::raw('count(*) as fuente_count, prospectos.fuente'))->groupBy('prospectos.fuente')->get();
+                            ->select(DB::raw('count(*) as total, cat_fuentes.nombre'),'cat_fuentes.url','cat_fuentes.status')->groupBy('cat_fuentes.nombre')->get();
 
         $oportunidades = DB::table('oportunidades')
                             ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
@@ -136,6 +137,9 @@ class OportunidadesController extends Controller
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',$status)
                             ->orderBy('oportunidades.created_at','desc')
                             ->get();
+        
+        $catalogo_fuentes = DB::table('cat_fuentes')
+                            ->select('nombre','url','status')->get();
 
         return response()->json([
             'message'=>'Correcto',
@@ -147,7 +151,7 @@ class OportunidadesController extends Controller
                     'porcentaje'=>intval(round($total*100/$total_general)),
                     'color'=>$this->colorsOportunidades($status)
                 ],
-                'fuentes'=>$fuentes,
+                'fuentes'=>$this->FuentesChecker($catalogos_fuentes,$fuentes),
                 'oportunidades'=> $oportunidades
 
             ]
@@ -738,5 +742,42 @@ class OportunidadesController extends Controller
         return intval(round($oportunidad*100/$total));
     }
 
+    public function FuentesChecker($catalogo, $consulta){
+            if(count($catalogo) > count($consulta)){
+
+                if(count($consulta) == 0){
+
+                    foreach($catalogo as $fuente){
+                        $fuente->total=0;
+
+                    }
+                    return $catalogo;
+                }
+                else{
+                    $collection = collect($consulta);
+                    for($i = 0; $i<count($catalogo); $i++){
+                        $match = false;
+                        for($j=0; $j<count($consulta); $j++){
+                            
+                            if( $catalogo[$i]->nombre == $consulta[$j]->nombre ){
+                                $match = true;
+                                break;
+                            }
+                        }
+
+                        if(!$match){
+                            $catalogo[$i]->total = 0;
+                            $collection->push($catalogo[$i]);
+                        }
+                    }
+                    return $collection->all();
+                }
+
+
+
+            }
+            return $consulta;
+    
+    }
 
 }
