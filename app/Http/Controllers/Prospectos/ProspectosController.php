@@ -302,7 +302,7 @@ class ProspectosController extends Controller
                 $prospecto_oportunidad->save();
 
                 //Cambio de Status Prospecto
-                $status->cat_status_prospecto = 2;
+                $status->id_cat_status_prospecto = 2;
                 $status->save();
 
                 if($request->etiquetas){
