@@ -319,7 +319,7 @@ class OportunidadesController extends Controller
         $colaborador = $this->guard()->user();
         // return $request;
 
-        $etiquetas = EtiquetasOportunidad::where('id_oportunidad',$oportunidad->id_oportunidad);
+        $etiquetas = EtiquetasOportunidad::where('id_oportunidad',$oportunidad->id_oportunidad)->get();
 
         foreach ($etiquetas as $etiqueta_existente) {
           foreach($request->etiquetas as $etiqueta){
