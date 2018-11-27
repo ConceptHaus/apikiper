@@ -272,9 +272,17 @@ class ProspectosController extends Controller
     }
 
     public function addOportunidades(Request $request, $id){
+
         $validator = $this->validadorOportunidad($request->all());
         $prospecto = Prospecto::where('id_prospecto',$id)->first();
-        $status = StatusProspecto::where('id_prospecto',$id)->first();
+        $status_prospecto = StatusProspecto::where('id_prospecto',$id)->first();
+
+        if (!$prospecto) {
+          return response()->json([
+            'error'=>false,
+            'message'=>'No se encontro el prospecto.'
+          ],200);
+        }
 
         if($validator->passes() || $prospecto == null){
             try{
@@ -303,8 +311,20 @@ class ProspectosController extends Controller
                 $prospecto_oportunidad->save();
 
                 //Cambio de Status Prospecto
-                $status->id_cat_status_prospecto = 2;
-                $status->save();
+                $status_prospecto->id_cat_status_prospecto = 2;
+                $status_prospecto->save();
+
+                //Cambio de Status oportunidad
+                $id_oportunidad = $nueva_oportunidad->id_oportunidad;
+                $status_oportunidad = StatusOportunidad::where('id_oportunidad',$id_oportunidad)->first();
+                if (!$status_oportunidad) {
+                  $status_oportunidad = new StatusOportunidad;
+                  $status_oportunidad->id_oportunidad = $id_oportunidad;
+                }
+                $status_oportunidad->id_cat_status_oportunidad = 1;
+                $status_oportunidad->save();
+
+
 
                 if($request->etiquetas){
                     //Etiquetas de oportunidad
@@ -318,7 +338,7 @@ class ProspectosController extends Controller
                 }
                 DB::commit();
                 return response()->json([
-                        'message'=>'Registo Correcto',
+                        'message'=>'Oportunidad agregada correctamente.',
                         'error'=>false,
                         'data'=>$nueva_oportunidad,
                     ],200);
