@@ -499,7 +499,7 @@ class ProspectosController extends Controller
 
         // return $request;
 
-        if($request->etiquetas){
+        // if($request->etiquetas){
             //Etiquetas de oportunidad
             foreach($request->etiquetas as $etiqueta){
                 $etiqueta_prospecto = new EtiquetasProspecto;
@@ -509,7 +509,7 @@ class ProspectosController extends Controller
                 $etiqueta_prospecto->save();
             }
 
-        }
+        // }
         // if(isset($request->etiquetas)){
         //     foreach($request->etiquetas as $etiqueta){
         //         $validator = $this->validadorEtiqueta($etiqueta);
@@ -539,17 +539,17 @@ class ProspectosController extends Controller
         //         }
         //
         //     }
-        //     return response()->json([
-        //                 'error'=>false,
-        //                 'message'=>'Registro Correcto'
-        //             ],200);
+            return response()->json([
+                        'error'=>false,
+                        'message'=>'Registro Correcto'
+                    ],200);
         //
         // }
 
-        return response()->json([
-            'error'=>true,
-            'messages'=>'No hay etiquetas'
-        ],400);
+        // return response()->json([
+        //     'error'=>true,
+        //     'messages'=>'No hay etiquetas'
+        // ],400);
 
 
     }
