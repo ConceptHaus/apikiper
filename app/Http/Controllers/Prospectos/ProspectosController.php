@@ -497,7 +497,7 @@ class ProspectosController extends Controller
         $prospecto = Prospecto::where('id_prospecto',$id)->first();
         $colaborador = $this->guard()->user();
 
-        // return $request;
+        return $request;
 
         if(isset($request)){
             //Etiquetas de oportunidad
