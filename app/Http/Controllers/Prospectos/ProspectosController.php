@@ -501,7 +501,7 @@ class ProspectosController extends Controller
 
         if(isset($request)){
             //Etiquetas de oportunidad
-            foreach($request as $etiqueta){
+            foreach($request['etiquetas'] as $etiqueta){
                 $etiqueta_prospecto = new EtiquetasProspecto;
                 // $etiqueta_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                 $etiqueta_prospecto->id_prospecto = $prospecto->id_prospecto;

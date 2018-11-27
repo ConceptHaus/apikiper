@@ -137,7 +137,7 @@ class OportunidadesController extends Controller
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',$status)
                             ->orderBy('oportunidades.created_at','desc')
                             ->get();
-        
+
         $catalogo_fuentes = DB::table('cat_fuentes')
                             ->select('nombre','url','status')->get();
 
@@ -160,10 +160,16 @@ class OportunidadesController extends Controller
 
     public function getOneOportunidad($id){
         $oportunidad = Oportunidad::GetOneOportunidad($id);
+        if ($oportunidad != NULL) {
+          return response()->json([
+              'message'=>'Correcto',
+              'error'=>false,
+              'data'=>$oportunidad
+          ],200);
+        }
         return response()->json([
-            'message'=>'Correcto',
-            'error'=>false,
-            'data'=>$oportunidad
+            'message'=>'No se econtro la oportunidad.',
+            'error'=>false
         ],200);
     }
 
@@ -758,7 +764,7 @@ class OportunidadesController extends Controller
                     for($i = 0; $i<count($catalogo); $i++){
                         $match = false;
                         for($j=0; $j<count($consulta); $j++){
-                            
+
                             if( $catalogo[$i]->nombre == $consulta[$j]->nombre ){
                                 $match = true;
                                 break;
@@ -777,7 +783,7 @@ class OportunidadesController extends Controller
 
             }
             return $consulta;
-    
+
     }
 
 }
