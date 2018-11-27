@@ -502,10 +502,11 @@ class ProspectosController extends Controller
         if(isset($request)){
             //Etiquetas de oportunidad
             foreach($request as $etiqueta){
-                $etiqueta_oportunidad = new EtiquetasOportunidad;
-                $etiqueta_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
-                $etiqueta_oportunidad->id_etiqueta = $etiqueta['id_etiqueta'];
-                $nueva_oportunidad->etiquetas_oportunidad()->save($etiqueta_oportunidad);
+                $etiqueta_prospecto = new EtiquetasProspecto;
+                // $etiqueta_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
+                $etiqueta_prospecto->id_prospecto = $prospecto->id_prospecto;
+                $etiqueta_prospecto->id_etiqueta = $etiqueta['id_etiqueta'];
+                $etiqueta_prospecto->save();
             }
 
         }
