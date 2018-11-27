@@ -314,7 +314,7 @@ class OportunidadesController extends Controller
     //
     // }
     public function addEtiquetas(Request $request, $id){
-        //Agregar etiquetas al prospecto
+        //Agregar etiquetas aoportunidad
         $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
         $colaborador = $this->guard()->user();
 
