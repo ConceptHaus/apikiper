@@ -294,7 +294,7 @@ class DataViewsController extends Controller
 
         $origen = DB::table('prospectos')
                     ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
-                    ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
+                    ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(*) as total, cat_fuentes.nombre'))
                     ->groupBy('cat_fuentes.nombre')->get();
 
         $prospectos_t= DB::table('prospectos')
@@ -315,6 +315,9 @@ class DataViewsController extends Controller
                                 ->orderBy('prospectos.created_at','desc')
                                 ->get();
 
+        $catalogo_fuentes = DB::table('cat_fuentes')
+                            ->select('nombre','url','status')->get();
+
         return response()->json([
             'message'=>'Correcto',
             'error'=>false,
@@ -322,7 +325,7 @@ class DataViewsController extends Controller
                 'prospectos'=>$prospectos,
                 'prospectos_total'=>$total_prospectos,
                 'prospectos_nocontactados'=> $nocontactados_prospectos,
-                'prospectos_fuente'=>$origen
+                'prospectos_fuente'=>$this->FuentesChecker($catalogo_fuentes,$origen)
             ]
             ],200);
     }
