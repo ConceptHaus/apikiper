@@ -561,10 +561,13 @@ class DataViewsController extends Controller
                             ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','colaborador_oportunidad.id_oportunidad')
                             ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
                             ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
-                            ->select(DB::raw('count(*) as fuente_count, cat_fuentes.nombre','cat_fuentes.url'))->groupBy('cat_fuentes.nombre')->get();
+                            ->select(DB::raw('count(*) as total, cat_fuentes.nombre'),'cat_fuentes.url','cat_fuentes.status')->groupBy('cat_fuentes.nombre')->get();
 
         $status = DB::table('cat_status_oportunidad')
                       ->select('id_cat_status_oportunidad as id','status','color')->get();
+
+        $catalogo_fuentes = DB::table('cat_fuentes')
+                            ->select('nombre','url','status')->get();
 
         return response()->json([
             'message'=>'Correcto',
@@ -573,7 +576,7 @@ class DataViewsController extends Controller
                 'cotizadas'=>$oportunidades_cotizadas,
                 'cerradas'=>$oportunidades_cerradas,
                 'no_viables'=>$oportunidades_no_viables,
-                'fuentes'=>$fuentes,
+                'fuentes'=>$this->FuentesChecker($catalogo_fuentes, $fuentes),
                 'status'=>$status
             ]
             ],200);
