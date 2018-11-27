@@ -497,11 +497,11 @@ class ProspectosController extends Controller
         $prospecto = Prospecto::where('id_prospecto',$id)->first();
         $colaborador = $this->guard()->user();
 
-        return $request;
+        // return $request;
 
-        if(isset($request['etiquetas'])){
+        if(isset($request)){
             //Etiquetas de oportunidad
-            foreach($request['etiquetas'] as $etiqueta){
+            foreach($request as $etiqueta){
                 $etiqueta_oportunidad = new EtiquetasOportunidad;
                 $etiqueta_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                 $etiqueta_oportunidad->id_etiqueta = $etiqueta['id_etiqueta'];
