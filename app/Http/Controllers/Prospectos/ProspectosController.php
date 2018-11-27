@@ -310,6 +310,12 @@ class ProspectosController extends Controller
                 $prospecto_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                 $prospecto_oportunidad->save();
 
+                //Guarda detalle oportunidad
+                $detalle_oportunidad = new DetalleOportunidad;
+                $detalle_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
+                $detalle_oportunidad->valor = $request->valor;
+                $detalle_oportunidad->save();
+                
                 //Cambio de Status Prospecto
                 $status_prospecto->id_cat_status_prospecto = 2;
                 $status_prospecto->save();
