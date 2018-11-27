@@ -71,7 +71,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     public function scopeGetOneOportunidad($query,$id){
         return $query->with('detalle_oportunidad')
                 ->with('status_oportunidad.status')
-                ->with('servicio_oportunidad')
+                ->with('servicio_oportunidad.servicio')
                 ->with('colaborador_oportunidad.colaborador.detalle')
                 ->with('prospecto.prospecto.detalle_prospecto')
                 ->with('prospecto.prospecto.fuente')
