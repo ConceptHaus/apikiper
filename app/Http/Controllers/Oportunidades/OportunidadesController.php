@@ -317,30 +317,63 @@ class OportunidadesController extends Controller
         //Agregar etiquetas aoportunidad
         $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
         $colaborador = $this->guard()->user();
+        // return $request;
 
-          try {
-            foreach($request->etiquetas as $etiqueta){
-              DB::beginTransaction();
-                $etiqueta_oportunidad = new EtiquetasOportunidad;
-                $etiqueta_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
-                $etiqueta_oportunidad->id_etiqueta = $etiqueta['id_etiqueta'];
-                $etiqueta_oportunidad->save();
-              DB::commit();
+        $etiquetas = EtiquetasOportunidad::where('id_oportunidad',$oportunidad->id_oportunidad);
+
+        foreach ($etiquetas as $etiqueta_existente) {
+          foreach($request->etiquetas as $etiqueta){
+          if ($etiqueta_existente != $etiqueta) {
+            try {
+
+                DB::beginTransaction();
+                  $etiqueta_oportunidad = new EtiquetasOportunidad;
+                  $etiqueta_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
+                  $etiqueta_oportunidad->id_etiqueta = $etiqueta['id_etiqueta'];
+                  $etiqueta_oportunidad->save();
+                DB::commit();
+
+            } catch (Exception $e) {
+              DB::rollBack();
+              return response()->json([
+                'error'=>true,
+                'message'=>$e
+              ],400);
             }
-
-            return response()->json([
-                        'error'=>false,
-                        'message'=>'Registro Correcto',
-                        'data'=>$request
-                    ],200);
-
-          } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json([
-              'error'=>true,
-              'message'=>$e
-            ],400);
           }
+        }
+
+        }
+
+        return response()->json([
+                    'error'=>false,
+                    'message'=>'Registro Correcto',
+                    'data'=>$request
+                ],200);
+
+          // try {
+          //   foreach($request->etiquetas as $etiqueta){
+          //     DB::beginTransaction();
+          //       $etiqueta_oportunidad = new EtiquetasOportunidad;
+          //       $etiqueta_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
+          //       $etiqueta_oportunidad->id_etiqueta = $etiqueta['id_etiqueta'];
+          //       $etiqueta_oportunidad->save();
+          //     DB::commit();
+          //   }
+          //
+          //   return response()->json([
+          //               'error'=>false,
+          //               'message'=>'Registro Correcto',
+          //               'data'=>$request
+          //           ],200);
+          //
+          // } catch (Exception $e) {
+          //   DB::rollBack();
+          //   return response()->json([
+          //     'error'=>true,
+          //     'message'=>$e
+          //   ],400);
+          // }
     }
 
     public function getArchivos($id){
