@@ -336,7 +336,7 @@ class DataViewsController extends Controller
                         ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                         ->join('cat_status_prospecto','cat_status_prospecto.id_cat_status_prospecto','status_prospecto.id_cat_status_prospecto')
                         ->where('status_prospecto.id_cat_status_prospecto',$status)
-                        ->select('prospectos.id_prospecto','prospectos.nombre','prospectos.apellido','detalle_prospecto.telefono','prospectos.created_at','cat_fuentes.nombre as fuente','cat_fuentes.nombre as fuente_url','cat_status_prospecto.status')
+                        ->select('prospectos.id_prospecto','prospectos.nombre','prospectos.apellido','detalle_prospecto.telefono','prospectos.created_at','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','cat_status_prospecto.status')
                         ->orderBy('status_prospecto.updated_at','desc')
                         ->get();
 
