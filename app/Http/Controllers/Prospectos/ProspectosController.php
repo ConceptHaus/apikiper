@@ -497,62 +497,29 @@ class ProspectosController extends Controller
         $prospecto = Prospecto::where('id_prospecto',$id)->first();
         $colaborador = $this->guard()->user();
 
-        return $request->etiquetas;
-
-        // if($request->etiquetas){
-            //Etiquetas de oportunidad
+          try {
             foreach($request->etiquetas as $etiqueta){
+              DB::beginTransaction();
                 $etiqueta_prospecto = new EtiquetasProspecto;
-                // $etiqueta_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                 $etiqueta_prospecto->id_prospecto = $prospecto->id_prospecto;
                 $etiqueta_prospecto->id_etiqueta = $etiqueta['id_etiqueta'];
                 $etiqueta_prospecto->save();
+              DB::commit();
             }
 
-        // }
-        // if(isset($request->etiquetas)){
-        //     foreach($request->etiquetas as $etiqueta){
-        //         $validator = $this->validadorEtiqueta($etiqueta);
-        //         if($validator->passes()){
-        //             try{
-        //                 DB::beginTransaction();
-        //                 $etiqueta_prospecto = new EtiquetasProspecto;
-        //                 $etiqueta_prospecto->id_prospecto = $prospecto->id_prospecto;
-        //                 $etiqueta_prospecto->id_etiqueta = $etiqueta['id_etiqueta'];
-        //                 $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
-        //                 DB::commit();
-        //
-        //             }catch(Exception $e){
-        //                 DB::rollBack();
-        //                 return response()->json([
-        //                     'error'=>true,
-        //                     'message'=>$e,
-        //                 ],400);
-        //             }
-        //         }
-        //         else{
-        //             $errores = $validator->errors()->toArray();
-        //             return response()->json([
-        //                 'error'=>true,
-        //                 'messages'=>$errores
-        //             ],400);
-        //         }
-        //
-        //     }
             return response()->json([
                         'error'=>false,
                         'message'=>'Registro Correcto',
                         'data'=>$request
                     ],200);
-        //
-        // }
 
-        // return response()->json([
-        //     'error'=>true,
-        //     'messages'=>'No hay etiquetas'
-        // ],400);
-
-
+          } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+              'error'=>true,
+              'message'=>$e
+            ],400);
+          }
     }
 
     public function getArchivos($id){
