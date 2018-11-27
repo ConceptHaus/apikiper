@@ -315,7 +315,7 @@ class ProspectosController extends Controller
                 $detalle_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                 $detalle_oportunidad->valor = $request->valor;
                 $detalle_oportunidad->save();
-                
+
                 //Cambio de Status Prospecto
                 $status_prospecto->id_cat_status_prospecto = 2;
                 $status_prospecto->save();
@@ -496,41 +496,52 @@ class ProspectosController extends Controller
         //Agregar etiquetas al prospecto
         $prospecto = Prospecto::where('id_prospecto',$id)->first();
         $colaborador = $this->guard()->user();
-        if(isset($request->etiquetas)){
-            foreach($request->etiquetas as $etiqueta){
-                $validator = $this->validadorEtiqueta($etiqueta);
-                if($validator->passes()){
-                    try{
-                        DB::beginTransaction();
-                        $etiqueta_prospecto = new EtiquetasProspecto;
-                        $etiqueta_prospecto->id_prospecto = $prospecto->id_prospecto;
-                        $etiqueta_prospecto->id_etiqueta = $etiqueta['id_etiqueta'];
-                        $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
-                        DB::commit();
 
-                    }catch(Exception $e){
-                        DB::rollBack();
-                        return response()->json([
-                            'error'=>true,
-                            'message'=>$e,
-                        ],400);
-                    }
-                }
-                else{
-                    $errores = $validator->errors()->toArray();
-                    return response()->json([
-                        'error'=>true,
-                        'messages'=>$errores
-                    ],400);
-                }
-
+        if(isset($request['etiquetas'])){
+            //Etiquetas de oportunidad
+            foreach($request['etiquetas'] as $etiqueta){
+                $etiqueta_oportunidad = new EtiquetasOportunidad;
+                $etiqueta_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
+                $etiqueta_oportunidad->id_etiqueta = $etiqueta['id_etiqueta'];
+                $nueva_oportunidad->etiquetas_oportunidad()->save($etiqueta_oportunidad);
             }
-            return response()->json([
-                        'error'=>false,
-                        'message'=>'Registro Correcto'
-                    ],200);
 
         }
+        // if(isset($request->etiquetas)){
+        //     foreach($request->etiquetas as $etiqueta){
+        //         $validator = $this->validadorEtiqueta($etiqueta);
+        //         if($validator->passes()){
+        //             try{
+        //                 DB::beginTransaction();
+        //                 $etiqueta_prospecto = new EtiquetasProspecto;
+        //                 $etiqueta_prospecto->id_prospecto = $prospecto->id_prospecto;
+        //                 $etiqueta_prospecto->id_etiqueta = $etiqueta['id_etiqueta'];
+        //                 $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
+        //                 DB::commit();
+        //
+        //             }catch(Exception $e){
+        //                 DB::rollBack();
+        //                 return response()->json([
+        //                     'error'=>true,
+        //                     'message'=>$e,
+        //                 ],400);
+        //             }
+        //         }
+        //         else{
+        //             $errores = $validator->errors()->toArray();
+        //             return response()->json([
+        //                 'error'=>true,
+        //                 'messages'=>$errores
+        //             ],400);
+        //         }
+        //
+        //     }
+        //     return response()->json([
+        //                 'error'=>false,
+        //                 'message'=>'Registro Correcto'
+        //             ],200);
+        //
+        // }
 
         return response()->json([
             'error'=>true,
