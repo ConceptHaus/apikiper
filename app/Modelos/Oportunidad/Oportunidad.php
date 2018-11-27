@@ -74,6 +74,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
                 ->with('servicio_oportunidad')
                 ->with('colaborador_oportunidad.colaborador.detalle')
                 ->with('prospecto.prospecto.detalle_prospecto')
+                ->with('prospecto.prospecto.fuente')
                 ->where('id_oportunidad',$id)->first();
     }
 
