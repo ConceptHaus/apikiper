@@ -497,7 +497,7 @@ class ProspectosController extends Controller
         $prospecto = Prospecto::where('id_prospecto',$id)->first();
         $colaborador = $this->guard()->user();
 
-        // return $request;
+        return $request->etiquetas;
 
         // if($request->etiquetas){
             //Etiquetas de oportunidad
@@ -541,7 +541,8 @@ class ProspectosController extends Controller
         //     }
             return response()->json([
                         'error'=>false,
-                        'message'=>'Registro Correcto'
+                        'message'=>'Registro Correcto',
+                        'data'=>$request
                     ],200);
         //
         // }
