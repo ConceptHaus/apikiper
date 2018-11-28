@@ -64,8 +64,8 @@ class ColaboradoresController extends Controller
 
                     $colaborador_ext = new DetalleColaborador;
                     $colaborador_ext->puesto = $request->puesto;
-                    $colaborador_ext->telefono = intval(preg_replace('/[^0-9]+/', '', $request->telefono), 10);
-                    $colaborador_ext->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
+                    $colaborador_ext->telefono = $request->telefono;
+                    $colaborador_ext->celular = $request->celular;
                     $colaborador_ext->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
                     $colaborador_ext->fecha_nacimiento = $request->fecha_nacimiento;
                     $colaborador->save();
@@ -224,8 +224,8 @@ class ColaboradoresController extends Controller
             $colaborador->nombre = $request->nombre;
             $colaborador->apellido = $request->apellido;
             $colaborador_ext->puesto = $request->puesto;
-            $colaborador_ext->telefono = intval(preg_replace('/[^0-9]+/', '', $request->telefono), 10);
-            $colaborador_ext->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
+            $colaborador_ext->telefono = $request->telefono;
+            $colaborador_ext->celular = $request->celular;
             $colaborador_ext->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
             $colaborador_ext->fecha_nacimiento = $request->fecha_nacimiento;
             $colaborador->save();
