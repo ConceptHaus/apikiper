@@ -317,13 +317,13 @@ class OportunidadesController extends Controller
         //Agregar etiquetas aoportunidad
         $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
         $colaborador = $this->guard()->user();
-        
+
 
           try {
             foreach($request->etiquetas as $etiqueta){
 
                 $etiquetas = EtiquetasOportunidad::where('id_oportunidad',$oportunidad->id_oportunidad)->where('id_etiqueta',$etiqueta['id_etiqueta'])->get();
-                if ($etiquetas) {
+                if (!$etiquetas) {
                   DB::beginTransaction();
                     $etiqueta_oportunidad = new EtiquetasOportunidad;
                     $etiqueta_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
