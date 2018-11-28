@@ -323,8 +323,8 @@ class OportunidadesController extends Controller
         // return $etiquetas;
 
         foreach ($etiquetas as $etiqueta_existente) {
-          return $etiqueta_existente;
-        //   foreach($request->etiquetas as $etiqueta){
+          foreach($request->etiquetas as $etiqueta){
+            return $etiqueta;
         //   if ($etiqueta_existente->id_etiqueta != $etiqueta['id_etiqueta']) {
         //
         //     return response()->json([
@@ -347,7 +347,7 @@ class OportunidadesController extends Controller
         //     //   ],400);
         //     // }
         //   }
-        // }
+        }
 
         }
 
