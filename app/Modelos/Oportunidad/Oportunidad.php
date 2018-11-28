@@ -72,6 +72,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
         return $query->with('detalle_oportunidad')
                 ->with('status_oportunidad.status')
                 ->with('servicio_oportunidad.servicio')
+                ->with('etiquetas_oportunidad.etiqueta')
                 ->with('colaborador_oportunidad.colaborador.detalle')
                 ->with('prospecto.prospecto.detalle_prospecto')
                 ->with('prospecto.prospecto.fuente')
