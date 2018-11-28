@@ -320,27 +320,29 @@ class OportunidadesController extends Controller
         // return $request;
 
         $etiquetas = EtiquetasOportunidad::where('id_oportunidad',$oportunidad->id_oportunidad)->get();
-        return $etiquetas;
+        // return $etiquetas;
 
         foreach ($etiquetas as $etiqueta_existente) {
           foreach($request->etiquetas as $etiqueta){
           if ($etiqueta_existente->id_etiqueta != $etiqueta['id_etiqueta']) {
-            try {
-
-                DB::beginTransaction();
-                  $etiqueta_oportunidad = new EtiquetasOportunidad;
-                  $etiqueta_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
-                  $etiqueta_oportunidad->id_etiqueta = $etiqueta['id_etiqueta'];
-                  $etiqueta_oportunidad->save();
-                DB::commit();
-
-            } catch (Exception $e) {
-              DB::rollBack();
-              return response()->json([
-                'error'=>true,
-                'message'=>$e
-              ],400);
-            }
+            $existe = "existe";
+            return $existe;
+            // try {
+            //
+            //     DB::beginTransaction();
+            //       $etiqueta_oportunidad = new EtiquetasOportunidad;
+            //       $etiqueta_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
+            //       $etiqueta_oportunidad->id_etiqueta = $etiqueta['id_etiqueta'];
+            //       $etiqueta_oportunidad->save();
+            //     DB::commit();
+            //
+            // } catch (Exception $e) {
+            //   DB::rollBack();
+            //   return response()->json([
+            //     'error'=>true,
+            //     'message'=>$e
+            //   ],400);
+            // }
           }
         }
 
