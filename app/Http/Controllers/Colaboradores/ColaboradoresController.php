@@ -61,6 +61,7 @@ class ColaboradoresController extends Controller
                     $colaborador->password = bcrypt($pass);
                     $colaborador->is_admin = $request->is_admin;
                     $colaborador->status = 1;
+
                     $colaborador_ext = new DetalleColaborador;
                     $colaborador_ext->puesto = $request->puesto;
                     $colaborador_ext->telefono = intval(preg_replace('/[^0-9]+/', '', $request->telefono), 10);
@@ -69,6 +70,12 @@ class ColaboradoresController extends Controller
                     $colaborador_ext->fecha_nacimiento = $request->fecha_nacimiento;
                     $colaborador->save();
                     $colaborador->detalle()->save($colaborador_ext);
+
+                    $foto_colaborador = new FotoColaborador;
+                    $foto_colaborador->url_foto = 'https://s3.us-east-2.amazonaws.com/kiperbucket/generales/kiper-default.svg';
+
+                    $colaborador->foto()->save($foto_colaborador);
+
                     $arrayColaborador = $colaborador->toArray();
                     $arrayColaborador['pass'] = $pass;
 
