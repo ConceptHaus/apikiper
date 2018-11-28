@@ -116,8 +116,8 @@ class UserController extends Controller
             $me->nombre = $request->nombre;
             $me->apellido = $request->apellido;
             $me_ext->puesto = $request->puesto;
-            $me_ext->telefono = intval(preg_replace('/[^0-9]+/', '', $request->telefono), 10);
-            $me_ext->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
+            $me_ext->telefono = $request->telefono;
+            $me_ext->celular = $request->celular;
             $me_ext->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
             $me->save();
             $me->detalle()->save($me_ext);

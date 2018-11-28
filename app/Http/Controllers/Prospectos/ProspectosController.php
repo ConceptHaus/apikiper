@@ -50,8 +50,8 @@ class ProspectosController extends Controller
                 $prospecto->nombre = $request->nombre;
                 $prospecto->apellido = $request->apellido;
                 $prospecto->correo = $request->correo;
-                $prospectoDetalle->telefono = intval(preg_replace('/[^0-9]+/', '', $request->telefono), 10);
-                $prospectoDetalle->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
+                $prospectoDetalle->telefono = $request->telefono;
+                $prospectoDetalle->celular = $request->celular;
                 $prospectoDetalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
                 $prospectoDetalle->puesto = $request->puesto;
                 $prospectoDetalle->nota = $request->nota;
@@ -187,8 +187,8 @@ class ProspectosController extends Controller
             $prospecto->apellido = $request->apellido;
             $prospecto->fuente = $request->fuente;
             $prospecto->correo = $request->correo;
-            $detalle->telefono = intval(preg_replace('/[^0-9]+/', '', $request->telefono), 10);
-            $detalle->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
+            $detalle->telefono = $request->telefono;
+            $detalle->celular = $request->celular;
             $detalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
             $detalle->nota = $request->nota;
             $prospecto->save();
