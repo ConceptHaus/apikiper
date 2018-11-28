@@ -23,6 +23,6 @@ class EtiquetasProspecto extends Model
     }
 
     public function etiqueta(){
-        return $this->belongsTo('App\Modelos\Etiquetas\Etiqueta','id_etiqueta','id_etiqueta');
+        return $this->belongsTo('App\Modelos\Extras\Etiqueta','id_etiqueta','id_etiqueta');
     }
 }
