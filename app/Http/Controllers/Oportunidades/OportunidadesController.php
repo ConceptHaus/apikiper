@@ -325,8 +325,10 @@ class OportunidadesController extends Controller
         foreach ($etiquetas as $etiqueta_existente) {
           foreach($request->etiquetas as $etiqueta){
           if ($etiqueta_existente->id_etiqueta != $etiqueta['id_etiqueta']) {
-            $existe = "existe";
-            return $existe;
+
+            return response()->json([
+              'message'=>'entre'
+            ],200);
             // try {
             //
             //     DB::beginTransaction();
