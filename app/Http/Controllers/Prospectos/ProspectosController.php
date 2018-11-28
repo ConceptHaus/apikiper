@@ -499,12 +499,16 @@ class ProspectosController extends Controller
 
           try {
             foreach($request->etiquetas as $etiqueta){
-              DB::beginTransaction();
-                $etiqueta_prospecto = new EtiquetasProspecto;
-                $etiqueta_prospecto->id_prospecto = $prospecto->id_prospecto;
-                $etiqueta_prospecto->id_etiqueta = $etiqueta['id_etiqueta'];
-                $etiqueta_prospecto->save();
-              DB::commit();
+
+              $etiquetas = EtiquetasProspecto::where('id_prospecto',$prospecto->id_prospecto)->where('id_etiqueta',$etiqueta['id_etiqueta'])->get();
+              if (!$etiquetas) {
+                DB::beginTransaction();
+                  $etiqueta_prospecto = new EtiquetasProspecto;
+                  $etiqueta_prospecto->id_prospecto = $prospecto->id_prospecto;
+                  $etiqueta_prospecto->id_etiqueta = $etiqueta['id_etiqueta'];
+                  $etiqueta_prospecto->save();
+                DB::commit();
+              }
             }
 
             return response()->json([
