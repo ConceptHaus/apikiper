@@ -501,7 +501,7 @@ class ProspectosController extends Controller
             foreach($request->etiquetas as $etiqueta){
 
               $etiquetas = EtiquetasProspecto::where('id_prospecto',$prospecto->id_prospecto)->where('id_etiqueta',$etiqueta['id_etiqueta'])->get();
-              if (!$etiquetas) {
+              if ($etiquetas->isEmpty()) {
                 DB::beginTransaction();
                   $etiqueta_prospecto = new EtiquetasProspecto;
                   $etiqueta_prospecto->id_prospecto = $prospecto->id_prospecto;
