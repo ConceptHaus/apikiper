@@ -323,30 +323,31 @@ class OportunidadesController extends Controller
         // return $etiquetas;
 
         foreach ($etiquetas as $etiqueta_existente) {
-          foreach($request->etiquetas as $etiqueta){
-          if ($etiqueta_existente->id_etiqueta != $etiqueta['id_etiqueta']) {
-
-            return response()->json([
-              'message'=>'entre'
-            ],200);
-            // try {
-            //
-            //     DB::beginTransaction();
-            //       $etiqueta_oportunidad = new EtiquetasOportunidad;
-            //       $etiqueta_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
-            //       $etiqueta_oportunidad->id_etiqueta = $etiqueta['id_etiqueta'];
-            //       $etiqueta_oportunidad->save();
-            //     DB::commit();
-            //
-            // } catch (Exception $e) {
-            //   DB::rollBack();
-            //   return response()->json([
-            //     'error'=>true,
-            //     'message'=>$e
-            //   ],400);
-            // }
-          }
-        }
+          return $etiqueta_existente;
+        //   foreach($request->etiquetas as $etiqueta){
+        //   if ($etiqueta_existente->id_etiqueta != $etiqueta['id_etiqueta']) {
+        //
+        //     return response()->json([
+        //       'message'=>'entre'
+        //     ],200);
+        //     // try {
+        //     //
+        //     //     DB::beginTransaction();
+        //     //       $etiqueta_oportunidad = new EtiquetasOportunidad;
+        //     //       $etiqueta_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
+        //     //       $etiqueta_oportunidad->id_etiqueta = $etiqueta['id_etiqueta'];
+        //     //       $etiqueta_oportunidad->save();
+        //     //     DB::commit();
+        //     //
+        //     // } catch (Exception $e) {
+        //     //   DB::rollBack();
+        //     //   return response()->json([
+        //     //     'error'=>true,
+        //     //     'message'=>$e
+        //     //   ],400);
+        //     // }
+        //   }
+        // }
 
         }
 
