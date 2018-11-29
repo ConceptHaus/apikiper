@@ -99,6 +99,7 @@ class Prospecto extends Model
                 ->with('servicio_prospecto')
                 ->with('oportunidades.oportunidad.detalle_oportunidad.status.status')
                 ->with('medio_contacto')
+                ->with('etiquetas_prospecto.etiqueta.prospecto')
                 ->where('id_prospecto',$id)->first();
     }
 
@@ -112,7 +113,7 @@ class Prospecto extends Model
         return $query->with('eventos.detalle')->where('id_prospecto',$id)->first();
     }
     public function scopeGetProspectoEtiquetas($query,$id){
-        return $query->with('etiquetas_prospecto')->where('id_prospecto',$id)->first();
+        return $query->with('etiquetas_prospecto.etiqueta.prospecto')->where('id_prospecto',$id)->first();
     }
     public function scopeGetProspectoArchivos($query,$id){
         return $query->with('archivos_prospecto_colaborador')->where('id_prospecto',$id)->first();
