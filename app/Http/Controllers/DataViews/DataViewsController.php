@@ -1263,11 +1263,16 @@ class DataViewsController extends Controller
 
       if ($validator->passes()) {
 
-        DB::beginTransaction();
-        $prospecto = StatusProspecto::where('id_prospecto',$request->id_prospecto)->first();
-        $prospecto->id_cat_status_prospecto = 2;
-        $prospecto->save();
-        DB::commit();
+        
+        if($request->id_prospecto){
+            
+            DB::beginTransaction();
+            $prospecto = StatusProspecto::where('id_prospecto',$request->id_prospecto)->first();
+            $prospecto->id_cat_status_prospecto = 2;
+            $prospecto->save();
+            DB::commit();
+        }
+        
 
         Mailgun::send('mailing.mail', $data, function ($message) use ($data){
            // $message->tag('myTag');
