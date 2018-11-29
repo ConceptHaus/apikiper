@@ -11,13 +11,14 @@ class EtiquetasOportunidad extends Model
     use SoftDeletes;
 
     protected $table = 'etiquetas_oportunidades';
-    protected $primaryKey = 'id_etiquetas_oportunidad';
+    protected $primaryKey = 'id_etiqueta_oportunidad';
     protected $fillable = [
-        'id_etiquetas_oportunidad',
+        'id_etiqueta_oportunidad',
         'id_oportunidad',
         'id_etiqueta'
     ];
 
+    protected $dates = ['deleted_at'];
 
     public function oportunidad(){
         return $this->belongsTo('App\Modelos\Oportunidad\Oportunidad','id_oportunidad','id_oportunidad');

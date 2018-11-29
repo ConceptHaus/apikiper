@@ -526,6 +526,39 @@ class ProspectosController extends Controller
           }
     }
 
+    public function deleteEtiquetas($id_prospecto, $id_etiqueta){
+
+      $etiqueta = EtiquetasProspecto::where('id_prospecto',$id_prospecto)->where('id_etiqueta', $id_etiqueta)->first();
+
+      if ($etiqueta) {
+        try {
+          DB::beginTransaction();
+          $etiqueta->delete();
+          DB::commit();
+
+          return response()->json([
+            'error'=>false,
+            'message'=>'Etiqueta borrada correctamente'
+          ],200);
+
+        } catch (Exception $e) {
+          DB::rollBack();
+
+          return response()->json([
+            'error'=>true,
+            'message'=>$e
+          ],400);
+        }
+
+      }
+
+      return response()->json([
+        'error'=>false,
+        'message'=>'Etiqueta no encontrada.'
+      ],200);
+
+    }
+
     public function getArchivos($id){
         $prospecto_archivos = Prospecto::GetProspectoArchivos($id);
         foreach($prospecto_archivos['archivos_prospecto_colaborador'] as $archivo){

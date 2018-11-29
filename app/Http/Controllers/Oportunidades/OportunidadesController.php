@@ -348,6 +348,39 @@ class OportunidadesController extends Controller
           }
     }
 
+    public function deleteEtiquetas($id_oportunidad, $id_etiqueta){
+
+      $etiqueta = EtiquetasOportunidad::where('id_oportunidad',$id_oportunidad)->where('id_etiqueta', $id_etiqueta)->first();
+
+      if ($etiqueta) {
+        try {
+          DB::beginTransaction();
+          $etiqueta->delete();
+          DB::commit();
+
+          return response()->json([
+            'error'=>false,
+            'message'=>'Etiqueta borrada correctamente'
+          ],200);
+
+        } catch (Exception $e) {
+          DB::rollBack();
+
+          return response()->json([
+            'error'=>true,
+            'message'=>$e
+          ],400);
+        }
+
+      }
+
+      return response()->json([
+        'error'=>false,
+        'message'=>'Etiqueta no encontrada.'
+      ],200);
+
+    }
+
     public function getArchivos($id){
         $oportunidad_archivos = Oportunidad::GetOportunidadArchivos($id);
         if ($oportunidad_archivos) {
