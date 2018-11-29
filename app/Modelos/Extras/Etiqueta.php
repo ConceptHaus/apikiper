@@ -16,14 +16,14 @@ class Etiqueta extends Model
         'nombre',
         'descripcion'
     ];
-     protected $dates = ['deleted_at'];
+     protected $softCascade = ['prospecto','oportunidad'];
 
     public function prospecto(){
-        return $this->belongsTo('App\Modelos\Prospecto\Prospecto','id_prospecto','id_prospecto');
+        return $this->belongsTo('App\Modelos\Prospecto\EtiquetasProspecto','id_etiqueta','id_etiqueta');
     }
 
     public function oportunidad(){
-        return $this->belongsTo('App\Modelos\Oportunidad\Oportunidad','id_oportunidad','id_oportunidad');
+        return $this->belongsTo('App\Modelos\Oportunidad\EtiquetasOportunidad','id_etiqueta','id_etiqueta');
     }
 
 
