@@ -110,7 +110,7 @@ class Prospecto extends Model
         return $query->with('recordatorios.detalle')->where('id_prospecto',$id)->first();
     }
     public function scopeGetProspectoEventos($query,$id){
-        return $query->with('eventos.detalle')->where('id_prospecto',$id)->first();
+        return $query->with('eventos.detalle')->where('id_prospecto',$id)->get();
     }
     public function scopeGetProspectoEtiquetas($query,$id){
         return $query->with('etiquetas_prospecto.etiqueta.prospecto')->where('id_prospecto',$id)->first();

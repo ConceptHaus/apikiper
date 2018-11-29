@@ -668,7 +668,7 @@ class ProspectosController extends Controller
         $usera['email'] = $user->correo;
         $usera['nombre'] = $user->nombre;
 
-
+        
         // Mailgun::send('mailing.template_one', $usera, function ($message) {
         //     $message->tag('myTag');
         //     $message->testmode(true);
