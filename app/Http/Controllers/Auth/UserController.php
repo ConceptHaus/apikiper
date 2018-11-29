@@ -154,7 +154,7 @@ class UserController extends Controller
             $empty = DB::table('cat_status_oportunidad')
                     ->select('id_cat_status_oportunidad','status','color')
                     ->where('id_cat_status_oportunidad',$id)
-                    ->first();
+                    ->get();
             return $empty;
 
         }else{
