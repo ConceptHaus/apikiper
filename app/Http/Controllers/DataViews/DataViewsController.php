@@ -310,10 +310,14 @@ class DataViewsController extends Controller
                                     'cat_fuentes.nombre as fuente_url',
                                     'prospectos.created_at')->get();
 
-        $prospectos = Prospecto::with('detalle_prospecto')
-                                ->with('status_prospecto.status')
-                                ->orderBy('prospectos.created_at','desc')
-                                ->get();
+       $prospectos = DB::table('prospectos')
+                        ->join('detalle_prospecto','detalle_prospecto.id_prospecto','prospectos.id_prospecto')
+                        ->join('status_prospecto','status_prospecto.id_prospecto','prospectos.id_prospecto')
+                        ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                        ->join('cat_status_prospecto','cat_status_prospecto.id_cat_status_prospecto','status_prospecto.id_cat_status_prospecto')
+                        ->select('prospectos.id_prospecto','prospectos.nombre','prospectos.apellido','prospectos.correo','detalle_prospecto.telefono','prospectos.created_at','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','cat_status_prospecto.status','cat_status_prospecto.id_cat_status_prospecto as id_status')
+                        ->orderBy('status_prospecto.updated_at','desc')
+                        ->get();
 
         $catalogo_fuentes = DB::table('cat_fuentes')
                             ->select('nombre','url','status')->get();
