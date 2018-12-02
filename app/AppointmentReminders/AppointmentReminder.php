@@ -5,7 +5,7 @@ namespace App\AppointmentReminders;
 use Illuminate\Log;
 use Carbon\Carbon;
 use Twilio\Rest\Client;
-use App\Modelos\Extras\Recordatorio;
+use App\Modelos\Extras\RecordatorioProspecto;
 class AppointmentReminder
 {
     /**
@@ -15,7 +15,7 @@ class AppointmentReminder
      */
     function __construct()
     {
-        $this->appointments = Recordatorio::AppoinmentsDue()->get();
+        $this->appointments = RecordatorioProspecto::AppoinmentsDue()->get();
 
         
         $accountSid = env('TWILIO_ACCOUNT_SID');
@@ -26,11 +26,11 @@ class AppointmentReminder
     }
 
     public function sendReminders(){
-        $this->appointments->each(
-            function($appointment){
-                $this->_remindAbout($appointment);
-            }
-        );
+        //$this->appointments->each(
+        //    function($appointment){
+                $this->_remindAbout('prueba');
+          //  }
+       // );
     }
 
     /**
