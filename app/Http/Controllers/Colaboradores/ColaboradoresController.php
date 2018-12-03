@@ -265,9 +265,9 @@ class ColaboradoresController extends Controller
     }
 
     public function deleteColaborador(Request $request){
-
+      echo "antes del validador";
       $validator = $this->validatorDelete($request->all());
-
+      echo "después del validador";
       // return $request->all();
 
       $id_borrar = $request->id_borrar;
