@@ -268,6 +268,8 @@ class ColaboradoresController extends Controller
 
       $validator = $this->validatorDelete($request->all());
 
+      return $request->all();
+
       $id_borrar = $request->id_borrar;
       $id_asignar = $request->id_asignar;
 
