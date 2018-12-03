@@ -19,6 +19,8 @@ use App\Modelos\Oportunidad\CatServicios;
 use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Modelos\Prospecto\CatMedioContacto;
 use App\Modelos\Prospecto\StatusProspecto;
+
+use App\Modelos\Extras\RecordatorioProspecto;
 use Mailgun;
 use DB;
 use Mail;
@@ -1358,6 +1360,20 @@ class DataViewsController extends Controller
             }
             return $consulta;
             
+    }
+
+
+    public function reminders(){
+        $now = Carbon::now();
+        $inTenMinutes = Carbon::now()->addMinutes(10)->toDateTimeString();
+        $reminders  = RecordatorioProspecto::AppoinmentsDue();
+        //return $reminders;
+        return response()->json([
+            'now'=>$now,
+            'inten'=>$inTenMinutes,
+            'data'=>$reminders
+            
+        ]);
     }
 
 }

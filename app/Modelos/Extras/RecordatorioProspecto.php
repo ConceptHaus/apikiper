@@ -34,9 +34,10 @@ class RecordatorioProspecto extends Model
     }
 
     public function scopeAppoinmentsDue($query){
-        $now = Carbon::now();
-        $inTenMinutes = Carbon::now()->addMinutes(10);
+        $now = Carbon::now()->toDateTimeString();
+        $inTenMinutes = Carbon::now()->addMinutes(10)->toDateTimeString();
         return $query->join('detalle_recordatorio_prospecto','detalle_recordatorio_prospecto.id_recordatorio_prospecto','recordatorios_prospecto.id_recordatorio_prospecto')
-                    ->where('detalle_recordatorio_prospecto.fecha_recordatorio','>=',$now)->where('detalle_recordatorio_prospecto.fecha_recordatorio','<=',$inTenMinutes);
+                        //->whereBetween('detalle_recordatorio_prospecto.fecha_recordatorio',[$now, $inTenMinutes])->get();
+                    ->where('detalle_recordatorio_prospecto.fecha_recordatorio','>=',$now)->where('detalle_recordatorio_prospecto.fecha_recordatorio','<=',$inTenMinutes)->get();
     }
 }

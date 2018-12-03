@@ -26,11 +26,12 @@ class AppointmentReminder
     }
 
     public function sendReminders(){
-        //$this->appointments->each(
-        //    function($appointment){
-                $this->_remindAbout('prueba');
-          //  }
-       // );
+        $this->appointments->each(
+            function($appointment){
+                $this->_remindAbout($appointment);
+                //echo $appointment;
+            }
+        );
     }
 
     /**
@@ -42,13 +43,13 @@ class AppointmentReminder
      */
     private function _remindAbout($appointment)
     {
-        // $recipientName = $appointment->name;
+        //$recipientName = $appointment->name;
         // $time = Carbon::parse($appointment->when, 'UTC')
         //       ->subMinutes($appointment->timezoneOffset)
         //       ->format('g:i a');
 
-        $message = "Hello test, this is a reminder that you have an appointment at time!";
-        $this->_sendMessage('+525539487708', $message);
+        $message = "Tienes un recordatorio de >Kiper";
+        $this->_sendMessage('+525539487708', $appointment);
     }
 
     /**
