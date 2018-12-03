@@ -272,9 +272,13 @@ class ColaboradoresController extends Controller
       // // return $request->all();
       //
       $id_borrar = $request->id_borrar;
-      // echo $id_borrar;
+      echo("COLABORADOR BORRAR");
+      echo ($request->id_borrar);
       $id_asignar = $request->id_asignar;
-      // echo $id_asignar;
+      echo("COLABORADOR ASIGNADO");
+      echo ($request->id_asignar);
+      echo("COLABORADOR PRUEBA");
+      echo ($request->id_prueba);
 
       $colaborador_borrar = User::where('id',$id_borrar)->get();
       $colaborador_asignar = User::where('id',$id_asignar)->get();
