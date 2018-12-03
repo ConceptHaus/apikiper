@@ -174,5 +174,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::delete('/etiquetas/{id}','DataViews\DataViewsController@deleteEtiquetas');
         Route::delete('/servicios/{id}','DataViews\DataViewsController@deleteServicios');
 
+        Route::get('/reminders','DataViews\DataViewsController@reminders');
+
     });
 });
