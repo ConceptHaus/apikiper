@@ -668,7 +668,7 @@ class ProspectosController extends Controller
         $usera['email'] = $user->correo;
         $usera['nombre'] = $user->nombre;
 
-        
+
         // Mailgun::send('mailing.template_one', $usera, function ($message) {
         //     $message->tag('myTag');
         //     $message->testmode(true);
@@ -776,6 +776,83 @@ class ProspectosController extends Controller
     public function guard()
     {
         return Auth::guard();
+    }
+
+    public function addFoto(Request $request, $id){
+      // return $request->all();
+        $foto_prospecto = FotoProspecto::where('id_prospecto',$id)->first();
+        $prospecto = Prospectos::where('id_prospecto',$id)->first();
+
+        try{
+
+            if($request->file('image')->isValid()){
+              if ($foto_prospecto->isEmpty()) {
+                $foto_prospecto = new FotoProspecto;
+              }
+                DB::beginTransaction();
+                $foto_prospecto->id_prospecto = $prospecto->id_prospecto;
+                $foto_prospecto->url = $this->uploadFilesS3($request->image,$prospecto->id_prospecto);
+                $prospecto->foto()->save($foto_prospecto);
+                $foto_prospecto['ext'] = $request->image->getClientOriginalExtension();
+                DB::commit();
+                return response()->json([
+                    'error'=>false,
+                    'messages'=>'Foto actualizada.',
+                    'data'=>$foto_prospecto
+                ],200);
+            }
+            return response()->json([
+                'error'=>true,
+                'messages'=>'No existe foto.'
+            ],400);
+
+
+        }catch(Exception $e){
+            DB::rollback();
+            return response()->json([
+                'error'=>true,
+                'messages'=>$e
+            ],400);
+        }
+    }
+
+    public function deleteFoto($id){
+      $foto_prospecto = FotoColaborador::where('id_prospecto',$id)->first();
+
+      if ($foto_prospecto->isEmpty()) {
+        return response()->json([
+          'error'=>true,
+          'message'=>'Foto no encontrada.'
+        ],400);
+      }
+
+      try {
+        DB::beginTransaction();
+        $foto_prospecto->delete();
+        DB::commit();
+
+        return response()->json([
+          'error'=>false,
+          'message'=>'Foto elimiada correctamente.'
+        ],200);
+
+      } catch (Exception $e) {
+        DB::rollBack();
+
+        return response()->json([
+          'error'=>true,
+          'message'=>$e
+        ],400);
+      }
+
+    }
+
+    public function uploadFotoS3($file, $prospecto){
+        //Sube archivos a bucket de Amazon
+        $disk = Storage::disk('s3');
+        $path = $file->store('prospectos/foto_perfil/'.$prospecto,'s3');
+        Storage::setVisibility($path,'public');
+        return $disk->url($path);
     }
 
 

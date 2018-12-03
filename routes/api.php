@@ -58,6 +58,8 @@ Route::prefix('/v1/colaboradores')->group(function(){
             Route::get('/{id}','Colaboradores\ColaboradoresController@getOneColaborador');
             Route::put('/{id}','Colaboradores\ColaboradoresController@updateColaborador');
             Route::delete('/','Colaboradores\ColaboradoresController@deleteColaborador');
+            Route::post('/foto/{id}', 'Colaboradores\ColaboradoresController@addFoto');
+            Route::delete('/foto/{id}', 'Colaboradores\ColaboradoresController@deleteFoto');
 
         });
 });
@@ -93,6 +95,9 @@ Route::prefix('/v1/prospectos')->group(function(){
             Route::delete('{id_colaborador}/archivos/{id}','Prospectos\ProspectosController@deleteArchivos');
 
             Route::get('/{id}/mailing','Prospectos\ProspectosController@sendMailing');
+
+            Route::post('/foto/{id}', 'Prospectos\ProspectosController@addFoto');
+            Route::delete('/foto/{id}', 'Prospectos\ProspectosController@deleteFoto');
         });
 });
 
