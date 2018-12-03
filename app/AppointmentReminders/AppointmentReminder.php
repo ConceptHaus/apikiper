@@ -62,9 +62,9 @@ class AppointmentReminder
     private function _sendMessage($number, $content)
     {
         $this->twilioClient->messages->create(
-            $number,
+            'whatsapp:+5215539487708',
             array(
-                "from" => $this->sendingNumber,
+                "from" => 'whatsapp:+14155238886',
                 "body" => $content
             )
         );
