@@ -57,7 +57,7 @@ Route::prefix('/v1/colaboradores')->group(function(){
             Route::get('/', 'Colaboradores\ColaboradoresController@getAllColaboradores');
             Route::get('/{id}','Colaboradores\ColaboradoresController@getOneColaborador');
             Route::put('/{id}','Colaboradores\ColaboradoresController@updateColaborador');
-            Route::delete('/','Colaboradores\ColaboradoresController@deleteColaborador');
+            Route::post('/','Colaboradores\ColaboradoresController@deleteColaborador');
             Route::post('/foto/{id}', 'Colaboradores\ColaboradoresController@addFoto');
             Route::delete('/foto/{id}', 'Colaboradores\ColaboradoresController@deleteFoto');
 
