@@ -266,24 +266,18 @@ class ColaboradoresController extends Controller
     }
 
     public function deleteColaborador(Request $request){
-      // echo "antes del validador";
-      // $validator = $this->validatorDelete($request->all());
-      // echo "después del validador";
-      // // return $request->all();
-      //
+
+      $validator = $this->validatorDelete($request->all());
+
       $id_borrar = $request->id_borrar;
-      echo("COLABORADOR BORRAR");
-      echo ($request->id_borrar);
+
       $id_asignar = $request->id_asignar;
-      echo("COLABORADOR ASIGNADO");
-      echo ($request->id_asignar);
-      echo("COLABORADOR PRUEBA");
-      echo ($request->id_prueba);
+
 
       $colaborador_borrar = User::where('id',$id_borrar)->get();
       $colaborador_asignar = User::where('id',$id_asignar)->get();
 
-      // if ($validator->passes()) {
+      if ($validator->passes()) {
         try{
 
           DB::beginTransaction();
@@ -334,7 +328,7 @@ class ColaboradoresController extends Controller
           ],400);
 
         }
-      // }
+      }
 
 
       // if ($validator->passes()) {
@@ -362,11 +356,11 @@ class ColaboradoresController extends Controller
       //   }
       // }
 
-      // $errores = $validator->errors()->toArray();
-      // return response()->json([
-      //     'message'=>$errores,
-      //     'error'=>true,
-      // ],400);
+      $errores = $validator->errors()->toArray();
+      return response()->json([
+          'message'=>$errores,
+          'error'=>true,
+      ],400);
 
     }
 
