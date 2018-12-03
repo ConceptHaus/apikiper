@@ -303,7 +303,18 @@ class ColaboradoresController extends Controller
             $archivo_oportunidad->save();
           }
 
+          $borrar = User::where('id', $id_borrar)->first();
+          $borrar->delete();
+
           DB::commit();
+
+          return response()->json([
+              'message'=>'Borrado Correctamente',
+              'error'=>false,
+              'data'=>$id_borrar
+          ],200);
+
+
         }catch (Exception $e){
 
           DB::rollBack();
@@ -317,30 +328,30 @@ class ColaboradoresController extends Controller
       }
 
 
-      if ($validator->passes()) {
-        try{
-
-            DB::beginTransaction();
-            User::where('id', $id_borrar)->delete();
-            DB::commit();
-
-            return response()->json([
-                'message'=>'Borrado Correctamente',
-                'error'=>false,
-                'data'=>$id_borrar
-            ],200);
-
-        }catch (Exception $e){
-
-          DB::rollBack();
-
-          return response()->json([
-            'error'=>true,
-            'message'=>$e
-          ],400);
-
-        }
-      }
+      // if ($validator->passes()) {
+      //   try{
+      //
+      //       DB::beginTransaction();
+      //       User::where('id', $id_borrar)->delete();
+      //       DB::commit();
+      //
+      //       return response()->json([
+      //           'message'=>'Borrado Correctamente',
+      //           'error'=>false,
+      //           'data'=>$id_borrar
+      //       ],200);
+      //
+      //   }catch (Exception $e){
+      //
+      //     DB::rollBack();
+      //
+      //     return response()->json([
+      //       'error'=>true,
+      //       'message'=>$e
+      //     ],400);
+      //
+      //   }
+      // }
 
       $errores = $validator->errors()->toArray();
       return response()->json([
