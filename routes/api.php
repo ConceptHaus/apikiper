@@ -45,6 +45,7 @@ Route::prefix('/v1/users')->group(function(){
             Route::get('/me/prospectos','Auth\UserController@oportunidades');
             Route::put('/me', 'Auth\UserController@updateMe');
             Route::post('/logout', 'Auth\LoginController@logout');
+            Route::put('/change-password', 'Auth\UserController@changePassword');
 
         });
 });

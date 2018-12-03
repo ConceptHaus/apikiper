@@ -38,6 +38,14 @@ class UserController extends Controller
         ]);
     }
 
+    protected function validatorPassword(array $data) {
+
+      return Validator::make($data, [
+        'id_colaborador'=>'required|exists:users,id',
+        'password'=>'required|string|min:6'
+      ]);
+    }
+
 
     public function getAuthUser(Request $request){
         $id_user = $this->guard()->user()->id;
@@ -185,5 +193,39 @@ class UserController extends Controller
     public function guard()
     {
         return Auth::guard();
+    }
+
+    public function changePassword(Request $request){
+
+      $validator = $this->validatorPassword($request->all());
+
+      if ($validator->passes()) {
+        try {
+          DB::beginTransaction();
+          $colaborador = User::where('id', $request->id_colaborador)->first();
+          $colaborador->password = bcrypt($request->password);
+          $colaborador->save();
+          DB::commit();
+
+          return response()->json([
+            'error'=>false,
+            'message'=>'Contraseña actualizada correctamente.'
+          ],200);
+
+        } catch (Exception $e) {
+          DB::rollBack();
+
+          return response()->json([
+            'error'=>true,
+            'message'=>$e
+          ],400);
+        }
+      }
+
+      $errores = $validator->errors()->toArray();
+      return response()->json([
+        'error'=>true,
+        'message'=>$errores
+      ],400);
     }
 }

@@ -46,6 +46,15 @@ class ColaboradoresController extends Controller
             //'fecha_nacimiento'=> 'required|string|max:255'
         ]);
     }
+
+    protected function validatorDelete(array $data)
+    {
+        return Validator::make($data, [
+            'id_borrar' => 'required|exists:users,id',
+            'id_asignar'=> 'required|exists:users,id'
+        ]);
+    }
+
     public function registerColaborador(Request $request){
             $validator = $this->validator($request->all());
 
@@ -256,13 +265,16 @@ class ColaboradoresController extends Controller
     }
 
     public function deleteColaborador(Request $request){
+
+      $validator = $this->validatorDelete($request->all());
+
       $id_borrar = $request->id_borrar;
       $id_asignar = $request->id_asignar;
 
       $colaborador_borrar = User::where('id',$id_borrar)->get();
       $colaborador_asignar = User::where('id',$id_asignar)->get();
 
-      if ($colaborador_asignar) {
+      if ($validator->passes()) {
         try{
 
           DB::beginTransaction();
@@ -305,7 +317,7 @@ class ColaboradoresController extends Controller
       }
 
 
-      if ($colaborador_borrar) {
+      if ($validator->passes()) {
         try{
 
             DB::beginTransaction();
@@ -330,10 +342,10 @@ class ColaboradoresController extends Controller
         }
       }
 
+      $errores = $validator->errors()->toArray();
       return response()->json([
-          'message'=>'Colaborador no encontrado',
+          'message'=>$errores,
           'error'=>true,
-          'data'=>$id_borrar
       ],400);
 
     }
