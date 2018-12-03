@@ -24,6 +24,8 @@ use App\Modelos\Extras\RecordatorioProspecto;
 use Mailgun;
 use DB;
 use Mail;
+use Twilio\Rest\Client;
+
 
 class DataViewsController extends Controller
 {
@@ -1364,16 +1366,41 @@ class DataViewsController extends Controller
 
 
     public function reminders(){
-        $now = Carbon::now();
-        $inTenMinutes = Carbon::now()->addMinutes(10)->toDateTimeString();
-        $reminders  = RecordatorioProspecto::AppoinmentsDue();
-        //return $reminders;
-        return response()->json([
-            'now'=>$now,
-            'inten'=>$inTenMinutes,
-            'data'=>$reminders
+        $now = Carbon::now()->toDateTimeString();
+        $inTwentyMinutes = Carbon::now()->addMinutes(20)->toDateTimeString();
+        $reminders  = DB::table('recordatorios_prospecto')
+                            ->join('detalle_recordatorio_prospecto','detalle_recordatorio_prospecto.id_recordatorio_prospecto','recordatorios_prospecto.id_recordatorio_prospecto')
+                            ->join('users','users.id','recordatorios_prospecto.id_colaborador')
+                            ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
+                            ->join('prospectos','prospectos.id_prospecto','recordatorios_prospecto.id_prospecto')
+                            ->select('users.nombre','detalle_colaborador.whatsapp','prospectos.nombre as nombre_prospecto','detalle_recordatorio_prospecto.nota_recordatorio','detalle_recordatorio_prospecto.fecha_recordatorio')
+                            ->whereBetween('detalle_recordatorio_prospecto.fecha_recordatorio',[$now, $inTwentyMinutes])->get();
+        $accountSid = env('TWILIO_ACCOUNT_SID');
+        $authToken = env('TWILIO_AUTH_TOKEN');
+        $this->sendingNumber = env('TWILIO_NUMBER');
+        $this->twilioClient = new Client($accountSid, $authToken);
+        foreach($reminders as $appo){
+            $date = Carbon::parse($appo->fecha_recordatorio)->format('H:i');
+            $this->twilioClient->messages->create(
+                    'whatsapp:+'.$appo->whatsapp,
+                    array(
+                        "from" => 'whatsapp:+14155238886',
+                        "body" => $appo->nombre.' tienes una alerta referente a *'.$appo->nombre_prospecto.'* a las '.$date.' '.'*Nota:* _'.$appo->nota_recordatorio.'_'
+                    )
+                ); 
+        }
+       
+        return 'success';
             
-        ]);
+        
+
+        // //return $reminders;
+        // return response()->json([
+        //     'now'=>$now,
+        //     'inten'=>$inTwentyMinutes,
+        //     'data'=>$reminders
+            
+        // ]);
     }
 
 }

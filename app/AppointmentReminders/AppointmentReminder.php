@@ -5,7 +5,9 @@ namespace App\AppointmentReminders;
 use Illuminate\Log;
 use Carbon\Carbon;
 use Twilio\Rest\Client;
-use App\Modelos\Extras\RecordatorioProspecto;
+
+
+use DB;
 class AppointmentReminder
 {
     /**
@@ -14,9 +16,16 @@ class AppointmentReminder
      * @param Illuminate\Support\Collection $twilioClient The client to use to query the API
      */
     function __construct()
-    {
-        $this->appointments = RecordatorioProspecto::AppoinmentsDue()->get();
-
+    {   
+        $now = Carbon::now()->toDateTimeString();
+        $inTwentyMinutes = Carbon::now()->addMinutes(20)->toDateTimeString();
+        $this->appointments = DB::table('recordatorios_prospecto')
+                            ->join('detalle_recordatorio_prospecto','detalle_recordatorio_prospecto.id_recordatorio_prospecto','recordatorios_prospecto.id_recordatorio_prospecto')
+                            ->join('users','users.id','recordatorios_prospecto.id_colaborador')
+                            ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
+                            ->join('prospectos','prospectos.id_prospecto','recordatorios_prospecto.id_prospecto')
+                            ->select('users.nombre','detalle_colaborador.whatsapp','prospectos.nombre as nombre_prospecto','detalle_recordatorio_prospecto.nota_recordatorio','detalle_recordatorio_prospecto.fecha_recordatorio')
+                            ->whereBetween('detalle_recordatorio_prospecto.fecha_recordatorio',[$now, $inTwentyMinutes])->get();
         
         $accountSid = env('TWILIO_ACCOUNT_SID');
         $authToken = env('TWILIO_AUTH_TOKEN');
