@@ -267,11 +267,13 @@ class ColaboradoresController extends Controller
     public function deleteColaborador(Request $request){
 
       $validator = $this->validatorDelete($request->all());
-      echo $request;
+
       // return $request->all();
 
       $id_borrar = $request->id_borrar;
+      echo $id_borrar;
       $id_asignar = $request->id_asignar;
+      echo $id_asignar;
 
       $colaborador_borrar = User::where('id',$id_borrar)->get();
       $colaborador_asignar = User::where('id',$id_asignar)->get();
