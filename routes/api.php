@@ -57,7 +57,7 @@ Route::prefix('/v1/colaboradores')->group(function(){
             Route::get('/', 'Colaboradores\ColaboradoresController@getAllColaboradores');
             Route::get('/{id}','Colaboradores\ColaboradoresController@getOneColaborador');
             Route::put('/{id}','Colaboradores\ColaboradoresController@updateColaborador');
-            Route::delete('/{id_borrar}/{id_asignar}','Colaboradores\ColaboradoresController@deleteColaborador');
+            Route::delete('/','Colaboradores\ColaboradoresController@deleteColaborador');
 
         });
 });

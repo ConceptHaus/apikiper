@@ -264,15 +264,15 @@ class ColaboradoresController extends Controller
 
     }
 
-    public function deleteColaborador($id_borrar,$id_asignar){
+    public function deleteColaborador(Request $request){
       // echo "antes del validador";
       // $validator = $this->validatorDelete($request->all());
       // echo "después del validador";
       // // return $request->all();
       //
-      // $id_borrar = $request->id_borrar;
+      $id_borrar = $request->id_borrar;
       // echo $id_borrar;
-      // $id_asignar = $request->id_asignar;
+      $id_asignar = $request->id_asignar;
       // echo $id_asignar;
 
       $colaborador_borrar = User::where('id',$id_borrar)->get();
