@@ -30,7 +30,7 @@ class AppointmentReminder
        
         $this->recordatorios_oportunidades = DB::table('recordatorios_oportunidad')
                             ->join('detalle_recordatorio_op','detalle_recordatorio_op.id_recordatorio_oportunidad','recordatorios_oportunidad.id_recordatorio_oportunidad')
-                            ->join('users','users.id','recordatorios_oportunidad.id_colabordador')
+                            ->join('users','users.id','recordatorios_oportunidad.id_colaborador')
                             ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
                             ->join('oportunidades','oportunidades.id_oportunidad','recordatorios_oportunidad.id_oportunidad')
                             ->select('users.nombre','detalle_colaborador.celular','oportunidades.nombre_oportunidad','detalle_recordatorio_op.nota_recordatorio','detalle_recordatorio_op.fecha_recordatorio')
