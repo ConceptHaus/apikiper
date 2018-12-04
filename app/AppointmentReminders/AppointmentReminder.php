@@ -26,6 +26,7 @@ class AppointmentReminder
                             ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
                             ->join('prospectos','prospectos.id_prospecto','recordatorios_prospecto.id_prospecto')
                             ->select('users.nombre','detalle_colaborador.celular','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','detalle_recordatorio_prospecto.nota_recordatorio','detalle_recordatorio_prospecto.fecha_recordatorio')
+                            ->where('recordatorios_prospecto.notification_sent',0)
                             ->whereBetween('detalle_recordatorio_prospecto.fecha_recordatorio',[$now, $inTwentyMinutes])->get();
        
         $this->recordatorios_oportunidades = DB::table('recordatorios_oportunidad')
@@ -34,6 +35,7 @@ class AppointmentReminder
                             ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
                             ->join('oportunidades','oportunidades.id_oportunidad','recordatorios_oportunidad.id_oportunidad')
                             ->select('users.nombre','detalle_colaborador.celular','oportunidades.nombre_oportunidad','detalle_recordatorio_op.nota_recordatorio','detalle_recordatorio_op.fecha_recordatorio')
+                            ->where('recordatorios_oportunidad.notification_sent',0)
                             ->whereBetween('detalle_recordatorio_op.fecha_recordatorio',[$now, $inTwentyMinutes])->get();
 
 
@@ -50,6 +52,11 @@ class AppointmentReminder
         foreach($this->recordatorios_prospecto as $reminder){
                 $date = Carbon::parse($reminder->fecha_recordatorio)->format('H:i');
                 
+                DB::beginTransaction();
+                $reminder->notification_sent = 1;
+                $reminder->save();
+                DB::commit();
+
                 $this->twilioClient->messages->create(
                 '+52'.$reminder->celular,
                 array(
@@ -61,6 +68,11 @@ class AppointmentReminder
         foreach($this->recordatorios_oportunidades as $reminder){
                 $date = Carbon::parse($reminder->fecha_recordatorio)->format('H:i');
                 
+                DB::beginTransaction();
+                $reminder->notification_sent = 1;
+                $reminder->save();
+                DB::commit();
+
                 $this->twilioClient->messages->create(
                 '+52'.$reminder->celular,
                 array(
