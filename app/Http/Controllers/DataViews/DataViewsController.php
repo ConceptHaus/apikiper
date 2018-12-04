@@ -20,6 +20,7 @@ use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Modelos\Prospecto\CatMedioContacto;
 use App\Modelos\Prospecto\StatusProspecto;
 use App\Modelos\Prospecto\MedioContactoProspecto;
+use App\Modelos\Oportunidad\MedioContactoOportunidad;
 
 use App\Modelos\Extras\RecordatorioProspecto;
 use Mailgun;
@@ -1250,6 +1251,38 @@ class DataViewsController extends Controller
       ]);
     }
 
+    public function validatorMedioContactoOportunidad(array $data){
+
+      if ($data['id_mediocontacto_catalogo'] == 1) {
+        return Validator::make($data, [
+          'id_mediocontacto_catalogo'=>'required|exists:mediocontacto_catalogo,id_mediocontacto_catalogo',
+          'id_oportunidad'=>'required|exists:oportunidades,id_oportunidad',
+          'descripcion'=>'required|string|max:255'
+          // 'fecha'=>'required',
+          // 'hora'=>'required',
+          // 'lugar'=>'required|string|max:255'
+        ]);
+      }
+      if ($data['id_mediocontacto_catalogo'] == 5) {
+        return Validator::make($data, [
+          'id_mediocontacto_catalogo'=>'required|exists:mediocontacto_catalogo,id_mediocontacto_catalogo',
+          'id_oportunidad'=>'required|exists:oportunidades,id_oportunidad',
+          'descripcion'=>'required|string|max:255',
+          'fecha'=>'required',
+          'hora'=>'required',
+          'lugar'=>'required|string|max:255'
+        ]);
+      }
+
+      return Validator::make($data, [
+        'id_mediocontacto_catalogo'=>'required|exists:mediocontacto_catalogo,id_mediocontacto_catalogo',
+        'id_oportunidad'=>'required|exists:oportunidades,id_oportunidad',
+        'descripcion'=>'required|string|max:255',
+        'fecha'=>'required',
+        'hora'=>'required'
+      ]);
+    }
+
     public function guard()
     {
         return Auth::guard();
@@ -1283,6 +1316,26 @@ class DataViewsController extends Controller
       $medio_contacto=MedioContactoProspecto::where('id_prospecto',$id)
                       ->join('mediocontacto_catalogo','mediocontacto_catalogo.id_mediocontacto_catalogo','medio_contacto_prospectos.id_mediocontacto_catalogo')
                       ->get();
+
+      if ($medio_contacto->isEmpty()) {
+        return response()->json([
+          'error'=>false,
+          'message'=>'No tiene medios de contacto.'
+        ],200);
+      }
+
+      return response()->json([
+        'error'=>false,
+        'message'=>'Medios de contacto obtenidos correctamente.',
+        'data'=>$medio_contacto
+      ],200);
+    }
+
+    public function getMedioContactoOportunidad($id){
+
+      $medio_contacto = MedioContactoOportunidad::where('id_oportunidad',$id)
+                                                  ->join('mediocontacto_catalogo','mediocontacto_catalogo.id_mediocontacto_catalogo','medio_contacto_oportunidades.id_mediocontacto_catalogo')
+                                                  ->get();
 
       if ($medio_contacto->isEmpty()) {
         return response()->json([
@@ -1435,6 +1488,44 @@ class DataViewsController extends Controller
           $medio_contacto_prospecto->hora = $request->hora;
           $medio_contacto_prospecto->lugar =$request->lugar;
           $medio_contacto_prospecto->save();
+          DB::commit();
+
+          return response()->json([
+            'error'=>false,
+            'message'=>'Medio de contacto agregado correctamente.'
+          ],200);
+
+        } catch (Exception $e) {
+          DB::rollBack();
+
+          return response()->json([
+            'error'=>true,
+            'message'=>$e
+          ],400);
+        }
+      }
+      $errores = $validator->errors()->toArray();
+      return response()->json([
+        'error'=>true,
+        'message'=>$errores
+      ],400);
+    }
+
+    public function addMedioContactoOportunidad(Request $request){
+
+      $validator = $this->validatorMedioContactoOportunidad($request->all());
+
+      if ($validator->passes()) {
+        try {
+          DB::beginTransaction();
+          $medio_contacto_oportunidad = new MedioContactoOportunidad;
+          $medio_contacto_oportunidad->id_mediocontacto_catalogo = $request->id_mediocontacto_catalogo;
+          $medio_contacto_oportunidad->id_oportunidad = $request->id_oportunidad;
+          $medio_contacto_oportunidad->descripcion = $request->descripcion;
+          $medio_contacto_oportunidad->fecha = $request->fecha;
+          $medio_contacto_oportunidad->hora = $request->hora;
+          $medio_contacto_oportunidad->lugar =$request->lugar;
+          $medio_contacto_oportunidad->save();
           DB::commit();
 
           return response()->json([

@@ -22,4 +22,8 @@ class CatMedioContacto extends Model
         return $this->hasMany('App\Modelos\Prospecto\MedioContactoProspecto','id_mediocontacto_catalogo','id_mediocontacto_catalogo');
     }
 
+    public function medio_contacto_oportunidad(){
+      return $this->hasMany('App\Modelos\Oportunidad\MedioContactoOportunidad', 'id_mediocontacto_catalogo','id_mediocontacto_catalogo');
+    }
+
 }
