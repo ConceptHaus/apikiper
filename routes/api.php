@@ -162,7 +162,8 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/status','DataViews\DataViewsController@status_oportunidades');
         Route::get('/servicios','DataViews\DataViewsController@servicios');
         Route::get('/colaboradores','DataViews\DataViewsController@colaboradores');
-        Route::get('/medios-contacto', 'DataViews\DataViewsController@getMedioContacto');
+        Route::get('/medios-contacto', 'DataViews\DataViewsController@getAllMedioContacto');
+        Route::get('/medios-contacto/{id}', 'DataViews\DataViewsController@getMedioContacto');
         Route::get('/fuentes','DataViews\DataViewsController@getFuentes');
 
         //POST
