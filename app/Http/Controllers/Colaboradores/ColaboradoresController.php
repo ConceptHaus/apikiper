@@ -14,6 +14,7 @@ use App\Modelos\Oportunidad\ColaboradorOportunidad;
 use App\Modelos\Oportunidad\ArchivosOportunidadColaborador;
 use App\Modelos\Prospecto\ColaboradorProspecto;
 use App\Modelos\Prospecto\ArchivosProspectoColaborador;
+use Illuminate\Support\Facades\Storage;
 
 
 
@@ -265,20 +266,18 @@ class ColaboradoresController extends Controller
     }
 
     public function deleteColaborador(Request $request){
-      // echo "antes del validador";
-      // $validator = $this->validatorDelete($request->all());
-      // echo "después del validador";
-      // // return $request->all();
-      //
+
+      $validator = $this->validatorDelete($request->all());
+
       $id_borrar = $request->id_borrar;
-      // echo $id_borrar;
+
       $id_asignar = $request->id_asignar;
-      // echo $id_asignar;
+
 
       $colaborador_borrar = User::where('id',$id_borrar)->get();
       $colaborador_asignar = User::where('id',$id_asignar)->get();
 
-      // if ($validator->passes()) {
+      if ($validator->passes()) {
         try{
 
           DB::beginTransaction();
@@ -329,7 +328,7 @@ class ColaboradoresController extends Controller
           ],400);
 
         }
-      // }
+      }
 
 
       // if ($validator->passes()) {
@@ -357,11 +356,11 @@ class ColaboradoresController extends Controller
       //   }
       // }
 
-      // $errores = $validator->errors()->toArray();
-      // return response()->json([
-      //     'message'=>$errores,
-      //     'error'=>true,
-      // ],400);
+      $errores = $validator->errors()->toArray();
+      return response()->json([
+          'message'=>$errores,
+          'error'=>true,
+      ],400);
 
     }
 
@@ -374,5 +373,82 @@ class ColaboradoresController extends Controller
                 'telefono'=> $colaborador_ext->telefono,
                 'fecha_nacimiento'=>$colaborador_ext->fecha_nacimiento,
         ];
+    }
+
+    public function addFoto(Request $request, $id){
+      // return $request->all();
+        $foto_colaborador = FotoColaborador::where('id_colaborador',$id)->first();
+        $colaborador = User::where('id',$id)->first();
+
+        try{
+
+            if($request->file('image')->isValid()){
+              if (!$foto_colaborador) {
+                $foto_colaborador = new FotoColaborador;
+              }
+                DB::beginTransaction();
+                $foto_colaborador->id_colaborador = $colaborador->id;
+                $foto_colaborador->url_foto = $this->uploadFilesS3($request->image,$colaborador->id);
+                $colaborador->foto()->save($foto_colaborador);
+                $foto_colaborador['ext'] = $request->image->getClientOriginalExtension();
+                DB::commit();
+                return response()->json([
+                    'error'=>false,
+                    'messages'=>'Foto actualizada.',
+                    'data'=>$foto_colaborador
+                ],200);
+            }
+            return response()->json([
+                'error'=>true,
+                'messages'=>'No existe foto.'
+            ],400);
+
+
+        }catch(Exception $e){
+            DB::rollback();
+            return response()->json([
+                'error'=>true,
+                'messages'=>$e
+            ],400);
+        }
+    }
+
+    public function deleteFoto($id){
+      $foto_colaborador = FotoColaborador::where('id_colaborador',$id)->first();
+
+      if ($foto_colaborador->isEmpty()) {
+        return response()->json([
+          'error'=>true,
+          'message'=>'Foto no encontrada.'
+        ],400);
+      }
+
+      try {
+        DB::beginTransaction();
+        $foto_colaborador->delete();
+        DB::commit();
+
+        return response()->json([
+          'error'=>false,
+          'message'=>'Foto elimiada correctamente.'
+        ],200);
+
+      } catch (Exception $e) {
+        DB::rollBack();
+
+        return response()->json([
+          'error'=>true,
+          'message'=>$e
+        ],400);
+      }
+
+    }
+
+    public function uploadFilesS3($file, $colaborador){
+        //Sube archivos a bucket de Amazon
+        $disk = Storage::disk('s3');
+        $path = $file->store('colaborador/foto_perfil/'.$colaborador,'s3');
+        Storage::setVisibility($path,'public');
+        return $disk->url($path);
     }
 }

@@ -57,7 +57,9 @@ Route::prefix('/v1/colaboradores')->group(function(){
             Route::get('/', 'Colaboradores\ColaboradoresController@getAllColaboradores');
             Route::get('/{id}','Colaboradores\ColaboradoresController@getOneColaborador');
             Route::put('/{id}','Colaboradores\ColaboradoresController@updateColaborador');
-            Route::delete('/','Colaboradores\ColaboradoresController@deleteColaborador');
+            Route::post('/delete','Colaboradores\ColaboradoresController@deleteColaborador');
+            Route::post('/foto/{id}', 'Colaboradores\ColaboradoresController@addFoto');
+            Route::delete('/foto/{id}', 'Colaboradores\ColaboradoresController@deleteFoto');
 
         });
 });
@@ -93,6 +95,9 @@ Route::prefix('/v1/prospectos')->group(function(){
             Route::delete('{id_colaborador}/archivos/{id}','Prospectos\ProspectosController@deleteArchivos');
 
             Route::get('/{id}/mailing','Prospectos\ProspectosController@sendMailing');
+
+            Route::post('/foto/{id}', 'Prospectos\ProspectosController@addFoto');
+            Route::delete('/foto/{id}', 'Prospectos\ProspectosController@deleteFoto');
         });
 });
 
@@ -165,6 +170,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::post('/servicios','DataViews\DataViewsController@addServicios');
         Route::post('/mail','DataViews\DataViewsController@sendMail');
         Route::post('/status-prospecto/{id}', 'DataViews\DataViewsController@cambioStatusProspecto');
+        Route::post('/medios-contacto', 'DataViews\DataViewsController@addMedioContactoProspecto');
 
         //PUT
         Route::put('/etiquetas','DataViews\DataViewsController@updateEtiquetas');
