@@ -25,6 +25,8 @@ use App\Modelos\Extras\RecordatorioProspecto;
 use Mailgun;
 use DB;
 use Mail;
+use Twilio\Rest\Client;
+
 
 class DataViewsController extends Controller
 {
@@ -1414,18 +1416,7 @@ class DataViewsController extends Controller
     }
 
 
-    public function reminders(){
-        $now = Carbon::now();
-        $inTenMinutes = Carbon::now()->addMinutes(10)->toDateTimeString();
-        $reminders  = RecordatorioProspecto::AppoinmentsDue();
-        //return $reminders;
-        return response()->json([
-            'now'=>$now,
-            'inten'=>$inTenMinutes,
-            'data'=>$reminders
-
-        ]);
-    }
+    
 
     public function addMedioContactoProspecto(Request $request){
 
