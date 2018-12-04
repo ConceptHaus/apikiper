@@ -33,10 +33,7 @@ Route::prefix('/v1/users')->group(function(){
             Route::post('/login', 'Auth\LoginController@login');
             Route::get('/activate/{token}','Auth\UserController@activateUser');
             Route::post('/password','Auth\UserController@setPassword');
-            Route::get('/event', function () {
-                broadcast(new App\Events\EventColaborador('Hi there!'));
-                return "Event has been sent!";
-            });
+            
         });
 
         Route::middleware(['auth','cors'])->group(function(){
@@ -52,7 +49,7 @@ Route::prefix('/v1/users')->group(function(){
 
 //Colaboradores
 Route::prefix('/v1/colaboradores')->group(function(){
-        Route::middleware(['cors'])->group(function(){
+        Route::middleware(['auth','cors'])->group(function(){
             Route::post('/', 'Colaboradores\ColaboradoresController@registerColaborador');
             Route::get('/', 'Colaboradores\ColaboradoresController@getAllColaboradores');
             Route::get('/{id}','Colaboradores\ColaboradoresController@getOneColaborador');
@@ -66,7 +63,7 @@ Route::prefix('/v1/colaboradores')->group(function(){
 
 //Prospectos
 Route::prefix('/v1/prospectos')->group(function(){
-        Route::middleware(['cors'])->group(function(){
+        Route::middleware(['auth','cors'])->group(function(){
             //CRUD principal
             Route::post('/', 'Prospectos\ProspectosController@registerProspecto');
             Route::get('/','Prospectos\ProspectosController@getAllProspectos');
@@ -103,7 +100,7 @@ Route::prefix('/v1/prospectos')->group(function(){
 
 //Oportunidades
 Route::prefix('/v1/oportunidades')->group(function(){
-        Route::middleware(['cors'])->group(function(){
+        Route::middleware(['auth','cors'])->group(function(){
             //CRUD principal
             Route::get('/','Oportunidades\OportunidadesController@getAllOportunidades');
             Route::get('/status/{status}','Oportunidades\OportunidadesController@getAllOportunidadesStatus');
@@ -142,7 +139,7 @@ Route::prefix('/v1/oportunidades')->group(function(){
 //DataViews
 
 Route::prefix('/v1/generales')->group(function(){
-    Route::middleware(['cors'])->group(function(){
+    Route::middleware(['auth','cors'])->group(function(){
         Route::get('/dashboard','DataViews\DataViewsController@dashboard');
         Route::get('/dashboard/semanal','DataViews\DataViewsController@dashboardSemanal');
         Route::get('/dashboard/mensual','DataViews\DataViewsController@dashboardMensual');
