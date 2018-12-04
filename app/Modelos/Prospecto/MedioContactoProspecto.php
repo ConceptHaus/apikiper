@@ -19,8 +19,11 @@ class MedioContactoProspecto extends Model
         'id_prospecto',
         'descripcion',
         'fecha',
-        'hora'
+        'hora',
+        'lugar'
     ];
+
+    protected $dates = ['deleted_at'];
 
     public function prospecto(){
         return $this->belongsTo('App\Modelos\Prospecto\Prospecto','id_prospecto','id_prospecto');

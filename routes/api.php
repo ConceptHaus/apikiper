@@ -161,6 +161,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/colaboradores','DataViews\DataViewsController@colaboradores');
         Route::get('/medios-contacto', 'DataViews\DataViewsController@getAllMedioContacto');
         Route::get('/medios-contacto/{id}', 'DataViews\DataViewsController@getMedioContacto');
+        Route::get('/medios-contacto-oportunidad/{id}', 'DataViews\DataViewsController@getMedioContactoOportunidad');
         Route::get('/fuentes','DataViews\DataViewsController@getFuentes');
 
         //POST
@@ -169,6 +170,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::post('/mail','DataViews\DataViewsController@sendMail');
         Route::post('/status-prospecto/{id}', 'DataViews\DataViewsController@cambioStatusProspecto');
         Route::post('/medios-contacto', 'DataViews\DataViewsController@addMedioContactoProspecto');
+        Route::post('/medios-contacto-oportunidad', 'DataViews\DataViewsController@addMedioContactoOportunidad');
 
         //PUT
         Route::put('/etiquetas','DataViews\DataViewsController@updateEtiquetas');
