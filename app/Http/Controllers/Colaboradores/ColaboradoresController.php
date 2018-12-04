@@ -388,7 +388,7 @@ class ColaboradoresController extends Controller
               }
                 DB::beginTransaction();
                 $foto_colaborador->id_colaborador = $colaborador->id;
-                $foto_colaborador->url = $this->uploadFilesS3($request->image,$colaborador->id);
+                $foto_colaborador->url_foto = $this->uploadFilesS3($request->image,$colaborador->id);
                 $colaborador->foto()->save($foto_colaborador);
                 $foto_colaborador['ext'] = $request->image->getClientOriginalExtension();
                 DB::commit();

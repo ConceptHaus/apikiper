@@ -786,12 +786,12 @@ class ProspectosController extends Controller
         try{
 
             if($request->file('image')->isValid()){
-              if ($foto_prospecto->isEmpty()) {
+              if (!$foto_prospecto) {
                 $foto_prospecto = new FotoProspecto;
               }
                 DB::beginTransaction();
                 $foto_prospecto->id_prospecto = $prospecto->id_prospecto;
-                $foto_prospecto->url = $this->uploadFilesS3($request->image,$prospecto->id_prospecto);
+                $foto_prospecto->url_foto = $this->uploadFilesS3($request->image,$prospecto->id_prospecto);
                 $prospecto->foto()->save($foto_prospecto);
                 $foto_prospecto['ext'] = $request->image->getClientOriginalExtension();
                 DB::commit();
