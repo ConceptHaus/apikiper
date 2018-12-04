@@ -1219,6 +1219,28 @@ class DataViewsController extends Controller
     }
 
     public function validatorMedioContactoProspecto(array $data){
+
+      if ($data['id_mediocontacto_catalogo'] == 1) {
+        return Validator::make($data, [
+          'id_mediocontacto_catalogo'=>'required|exists:mediocontacto_catalogo,id_mediocontacto_catalogo',
+          'id_prospecto'=>'required|exists:prospectos,id_prospecto',
+          'descripcion'=>'required|string|max:255'
+          // 'fecha'=>'required',
+          // 'hora'=>'required',
+          // 'lugar'=>'required|string|max:255'
+        ]);
+      }
+      if ($data['id_mediocontacto_catalogo'] == 5) {
+        return Validator::make($data, [
+          'id_mediocontacto_catalogo'=>'required|exists:mediocontacto_catalogo,id_mediocontacto_catalogo',
+          'id_prospecto'=>'required|exists:prospectos,id_prospecto',
+          'descripcion'=>'required|string|max:255',
+          'fecha'=>'required',
+          'hora'=>'required',
+          'lugar'=>'required|string|max:255'
+        ]);
+      }
+
       return Validator::make($data, [
         'id_mediocontacto_catalogo'=>'required|exists:mediocontacto_catalogo,id_mediocontacto_catalogo',
         'id_prospecto'=>'required|exists:prospectos,id_prospecto',
@@ -1239,7 +1261,7 @@ class DataViewsController extends Controller
     }
 
     //Extras
-    public function getMedioContacto(){
+    public function getAllMedioContacto(){
       $medio_contacto = CatMedioContacto::select('id_mediocontacto_catalogo as id', 'nombre')->get();
 
       if ($medio_contacto) {
@@ -1254,6 +1276,26 @@ class DataViewsController extends Controller
         'error'=>true,
         'message'=>'No se encontro el medio de contacto.'
       ],400);
+    }
+
+    public function getMedioContacto($id){
+
+      $medio_contacto=MedioContactoProspecto::where('id_prospecto',$id)
+                      ->join('mediocontacto_catalogo','mediocontacto_catalogo.id_mediocontacto_catalogo','medio_contacto_prospectos.id_mediocontacto_catalogo')
+                      ->get();
+
+      if ($medio_contacto->isEmpty()) {
+        return response()->json([
+          'error'=>false,
+          'message'=>'No tiene medios de contacto.'
+        ],200);
+      }
+
+      return response()->json([
+        'error'=>false,
+        'message'=>'Medios de contacto obtenidos correctamente.',
+        'data'=>$medio_contacto
+      ],200);
     }
 
     public function getFuentes(){
@@ -1376,7 +1418,7 @@ class DataViewsController extends Controller
     }
 
 
-    
+
 
     public function addMedioContactoProspecto(Request $request){
 
@@ -1391,6 +1433,7 @@ class DataViewsController extends Controller
           $medio_contacto_prospecto->descripcion = $request->descripcion;
           $medio_contacto_prospecto->fecha = $request->fecha;
           $medio_contacto_prospecto->hora = $request->hora;
+          $medio_contacto_prospecto->lugar =$request->lugar;
           $medio_contacto_prospecto->save();
           DB::commit();
 
