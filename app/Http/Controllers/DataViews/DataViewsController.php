@@ -19,6 +19,7 @@ use App\Modelos\Oportunidad\CatServicios;
 use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Modelos\Prospecto\CatMedioContacto;
 use App\Modelos\Prospecto\StatusProspecto;
+use App\Modelos\Prospecto\MedioContactoProspecto;
 
 use App\Modelos\Extras\RecordatorioProspecto;
 use Mailgun;
@@ -522,8 +523,8 @@ class DataViewsController extends Controller
 
         $catalogo_fuentes = DB::table('cat_fuentes')
                             ->select('nombre','url','status')->get();
-        
-        
+
+
 
         return response()->json([
             'message'=>'Correcto',
@@ -595,7 +596,7 @@ class DataViewsController extends Controller
                         ->where('status_oportunidad.id_cat_status_oportunidad',2)
                         ->groupBy('users.email')->orderBy('valor_total','desc')->limit(10)->get();
 
-        
+
         $top_3 = DB::table('users')
                 ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
                 ->join('oportunidades','oportunidades.id_oportunidad','colaborador_oportunidad.id_oportunidad')
@@ -1215,6 +1216,16 @@ class DataViewsController extends Controller
       ]);
     }
 
+    public function validatorMedioContactoProspecto(array $data){
+      return Validator::make($data, [
+        'id_mediocontacto_catalogo'=>'required|exists:mediocontacto_catalogo,id_mediocontacto_catalogo',
+        'id_prospecto'=>'required|exists:prospectos,id_prospecto',
+        'descripcion'=>'required|string|max:255',
+        'fecha'=>'required',
+        'hora'=>'required'
+      ]);
+    }
+
     public function guard()
     {
         return Auth::guard();
@@ -1265,16 +1276,16 @@ class DataViewsController extends Controller
 
       if ($validator->passes()) {
 
-        
+
         if($request->id_prospecto){
-            
+
             DB::beginTransaction();
             $prospecto = StatusProspecto::where('id_prospecto',$request->id_prospecto)->first();
             $prospecto->id_cat_status_prospecto = 2;
             $prospecto->save();
             DB::commit();
         }
-        
+
 
         Mailgun::send('mailing.mail', $data, function ($message) use ($data){
            // $message->tag('myTag');
@@ -1340,7 +1351,7 @@ class DataViewsController extends Controller
                     for($i = 0; $i<count($catalogo); $i++){
                         $match = false;
                         for($j=0; $j<count($consulta); $j++){
-                            
+
                             if( $catalogo[$i]->nombre == $consulta[$j]->nombre ){
                                 $match = true;
                                 break;
@@ -1359,7 +1370,7 @@ class DataViewsController extends Controller
 
             }
             return $consulta;
-            
+
     }
 
 
@@ -1372,8 +1383,45 @@ class DataViewsController extends Controller
             'now'=>$now,
             'inten'=>$inTenMinutes,
             'data'=>$reminders
-            
+
         ]);
+    }
+
+    public function addMedioContactoProspecto(Request $request){
+
+      $validator = $this->validatorMedioContactoProspecto($request->all());
+
+      if ($validator->passes()) {
+        try {
+          DB::beginTransaction();
+          $medio_contacto_prospecto = new MedioContactoProspecto;
+          $medio_contacto_prospecto->id_mediocontacto_catalogo = $request->id_mediocontacto_catalogo;
+          $medio_contacto_prospecto->id_prospecto = $request->id_prospecto;
+          $medio_contacto_prospecto->descripcion = $request->descripcion;
+          $medio_contacto_prospecto->fecha = $request->fecha;
+          $medio_contacto_prospecto->hora = $request->hora;
+          $medio_contacto_prospecto->save();
+          DB::commit();
+
+          return response()->json([
+            'error'=>false,
+            'message'=>'Medio de contacto agregado correctamente.'
+          ],200);
+
+        } catch (Exception $e) {
+          DB::rollBack();
+
+          return response()->json([
+            'error'=>true,
+            'message'=>$e
+          ],400);
+        }
+      }
+      $errores = $validator->errors()->toArray();
+      return response()->json([
+        'error'=>true,
+        'message'=>$errores
+      ],400);
     }
 
 }

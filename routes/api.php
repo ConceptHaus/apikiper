@@ -170,6 +170,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::post('/servicios','DataViews\DataViewsController@addServicios');
         Route::post('/mail','DataViews\DataViewsController@sendMail');
         Route::post('/status-prospecto/{id}', 'DataViews\DataViewsController@cambioStatusProspecto');
+        Route::post('/medios-contacto', 'DataViews\DataViewsController@addMedioContactoProspecto');
 
         //PUT
         Route::put('/etiquetas','DataViews\DataViewsController@updateEtiquetas');

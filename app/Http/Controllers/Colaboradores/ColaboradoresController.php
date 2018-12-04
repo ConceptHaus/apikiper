@@ -383,7 +383,7 @@ class ColaboradoresController extends Controller
         try{
 
             if($request->file('image')->isValid()){
-              if ($foto_colaborador->isEmpty()) {
+              if (!$foto_colaborador) {
                 $foto_colaborador = new FotoColaborador;
               }
                 DB::beginTransaction();
