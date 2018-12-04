@@ -1280,7 +1280,9 @@ class DataViewsController extends Controller
 
     public function getMedioContacto($id){
 
-      $medio_contacto=MedioContactoProspecto::where('id_prospecto',$id)->get();
+      $medio_contacto=MedioContactoProspecto::where('id_prospecto',$id)
+                      ->join('mediocontacto_catalogo','mediocontacto_catalogo.id_mediocontacto_catalogo','medio_contacto_prospectos.id_mediocontacto_catalogo')
+                      ->get();
 
       if ($medio_contacto->isEmpty()) {
         return response()->json([
@@ -1416,7 +1418,7 @@ class DataViewsController extends Controller
     }
 
 
-    
+
 
     public function addMedioContactoProspecto(Request $request){
 
