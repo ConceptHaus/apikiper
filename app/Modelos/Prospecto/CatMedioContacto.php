@@ -16,6 +16,7 @@ class CatMedioContacto extends Model
     protected $fillable = [
         'id_mediocontacto_catalogo',
         'nombre',
+        'color'
     ];
 
     public function medio_contacto(){

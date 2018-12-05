@@ -1295,7 +1295,7 @@ class DataViewsController extends Controller
 
     //Extras
     public function getAllMedioContacto(){
-      $medio_contacto = CatMedioContacto::select('id_mediocontacto_catalogo as id', 'nombre')->get();
+      $medio_contacto = CatMedioContacto::select('id_mediocontacto_catalogo as id', 'nombre','color')->get();
 
       if ($medio_contacto) {
         return response()->json([
