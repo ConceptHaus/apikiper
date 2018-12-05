@@ -909,6 +909,28 @@ class DataViewsController extends Controller
 
     }
 
+    public function getEtiquetasAjustes(){
+      $etiquetas = DB::table('etiquetas')
+      // ->where('status',1)
+      ->whereNull('deleted_at')
+      ->orderBy('created_at', 'DESC')
+      ->get();
+
+      if ($etiquetas) {
+        return response()->json([
+            'message'=>'Correcto',
+            'error'=>false,
+            'data'=>[
+                'etiquetas'=>$etiquetas
+            ]
+            ],200);
+      }
+      return response()->json([
+          'message'=>'No hay etiquetas',
+          'error'=>false
+          ],200);
+    }
+
     public function colaboradores(){
         $colaboradores = DB::table('users')
                         ->join('detalle_colaborador','users.id','detalle_colaborador.id_colaborador')

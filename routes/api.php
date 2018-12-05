@@ -33,7 +33,7 @@ Route::prefix('/v1/users')->group(function(){
             Route::post('/login', 'Auth\LoginController@login');
             Route::get('/activate/{token}','Auth\UserController@activateUser');
             Route::post('/password','Auth\UserController@setPassword');
-            
+
         });
 
         Route::middleware(['auth','cors'])->group(function(){
@@ -163,6 +163,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/medios-contacto/{id}', 'DataViews\DataViewsController@getMedioContacto');
         Route::get('/medios-contacto-oportunidad/{id}', 'DataViews\DataViewsController@getMedioContactoOportunidad');
         Route::get('/fuentes','DataViews\DataViewsController@getFuentes');
+        Route::get('/etiquetas/ajustes', 'DataViews\DataViewsController@getEtiquetasAjustes');
 
         //POST
         Route::post('/etiquetas','DataViews\DataViewsController@addEtiquetas');
