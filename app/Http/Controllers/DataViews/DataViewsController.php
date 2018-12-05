@@ -1003,6 +1003,27 @@ class DataViewsController extends Controller
             'error'=>false
             ],200);
     }
+    public function serviciosAjustes(){
+        $servicios = DB::table('cat_servicios')
+        // ->where('status', 1)
+        ->whereNull('deleted_at')
+        ->orderBy('created_at', 'DESC')
+        ->get();
+
+        if ($servicios) {
+          return response()->json([
+              'message'=>'Correcto',
+              'error'=>false,
+              'data'=>[
+                  'servicios'=>$servicios
+              ]
+              ],200);
+        }
+        return response()->json([
+            'message'=>'No hay servicios.',
+            'error'=>false
+            ],200);
+    }
 
     //POST
     public function addEtiquetas(Request $request){
