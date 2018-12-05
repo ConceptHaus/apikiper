@@ -984,6 +984,7 @@ class DataViewsController extends Controller
 
     public function servicios(){
         $servicios = DB::table('cat_servicios')
+        ->where('status', 1)
         ->whereNull('deleted_at')
         ->orderBy('created_at', 'DESC')
         ->get();
