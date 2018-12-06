@@ -416,12 +416,12 @@ class ColaboradoresController extends Controller
     public function deleteFoto($id){
       $foto_colaborador = FotoColaborador::where('id_colaborador',$id)->first();
 
-      if ($foto_colaborador->isEmpty()) {
-        return response()->json([
-          'error'=>true,
-          'message'=>'Foto no encontrada.'
-        ],400);
-      }
+      // if ($foto_colaborador->isEmpty()) {
+      //   return response()->json([
+      //     'error'=>true,
+      //     'message'=>'Foto no encontrada.'
+      //   ],400);
+      // }
 
       try {
         DB::beginTransaction();
