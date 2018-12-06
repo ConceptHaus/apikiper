@@ -26,7 +26,6 @@ use App\Modelos\Extras\RecordatorioProspecto;
 use Mailgun;
 use DB;
 use Mail;
-use Twilio\Rest\Client;
 
 
 class DataViewsController extends Controller

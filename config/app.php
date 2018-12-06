@@ -237,7 +237,8 @@ return [
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
         'Google' => PulkitJalan\Google\Facades\Google::class,
         'LaravelGmail' => Dacastro4\LaravelGmail\Facade\LaravelGmail::class,
-        'Mailgun' => Bogardo\Mailgun\Facades\Mailgun::class
+        'Mailgun' => Bogardo\Mailgun\Facades\Mailgun::class,
+        'Keygen' => Keygen\Keygen::class
 
 
     ],

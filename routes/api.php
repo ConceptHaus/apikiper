@@ -183,4 +183,18 @@ Route::prefix('/v1/generales')->group(function(){
         Route::delete('/servicios/{id}','DataViews\DataViewsController@deleteServicios');
 
     });
+
+
+});
+
+Route::prefix('/v1/forms')->group(function(){
+    Route::middleware(['auth','cors'])->group(function(){
+        Route::post('/new','Forms\FormsController@addNew');
+        Route::get('/','Forms\FormsController@getAll');
+        Route::get('/{id}','Forms\FormsController@getOne');
+    });
+    Route::middleware(['api','cors'])->group(function(){
+        Route::post('register','Forms\FormsController@registerProspecto');
+    });
+
 });
