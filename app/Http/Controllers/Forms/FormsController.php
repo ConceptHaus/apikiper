@@ -26,7 +26,7 @@ class FormsController extends Controller
     
     public function addNew(Request $request){
         $validator = $this->validatorForm($request->all());
-         $key =  Keygen::alphanum(16)->generate();
+         $key =  Keygen::alphanum(32)->generate();
          $url_success = $request->url_success;
          $url_error = $request->url_error;
          $nombre_form = $request->nombre; 
@@ -90,6 +90,59 @@ class FormsController extends Controller
             'data'=>$form,
             'url'=>URL::to('/api/v1/forms/register').'?'.$form->token
         ]);
+    }
+
+    public function registerProspecto(Request $request){
+        $token = $request->query('token');
+        $verify = IntegracionForm::where('token',$token)->first();
+        
+        $nombre = $request->nombre;
+        $apellido = $request->apellido;
+        $empresa = $request->empresa;
+        $email = $request->correo;
+        $telefono = $request->telefono;
+        $mensaje = $request->mensaje;
+        $fuente = $request->fuente;
+
+        
+        if($verify){
+            
+            try{
+                
+                DB::beginTransaction();
+
+                $prospecto = new Prospecto();
+                $prospecto->nombre = $nombre;
+                $prospecto->apellido = $nombre;
+                $prospecto->correo = $email;  
+                $prospecto->fuente = $fuente;  
+                $prospecto->save();
+                
+                $detalleProspecto = new DetalleProspecto();
+                $detalleProspecto->empresa = $empresa;
+                $detalleProspecto->telefono = $telefono;
+                $detalleProspecto->nota = $mensaje;
+                $prospecto->detalle_prospecto()->save($detalleProspecto);
+
+                $verify->total += 1;
+                $verify->save();
+
+                DB::commit();
+                
+                return redirect()->away($verify->url_success);
+
+            }catch(Exception $e){
+                
+                DB::rollBack();
+                
+                return redirect()->away($verify->url_error);
+
+            }
+            
+        
+        }
+        
+        return redirect()->away($verify->url_error);
     }
 
     public function validatorForm(array $data){
