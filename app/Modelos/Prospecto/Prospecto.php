@@ -31,9 +31,9 @@ class Prospecto extends Model
       'etiquetas_prospecto',
       'medio_contacto',
       'archivos_prospecto_colaborador',
-      // 'eventos',
-      // 'recordatorios',
-      // 'oportunidades'
+      'eventos',
+      'recordatorios',
+      'oportunidades'
     ];
 
     public function detalle_prospecto(){
