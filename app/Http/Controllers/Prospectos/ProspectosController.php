@@ -215,12 +215,16 @@ class ProspectosController extends Controller
     public function deleteProspecto($id){
 
       $prospecto = Prospecto::where('id_prospecto',$id)->first();
-      // return $prospecto;
+      $op = ProspectoOportunidad::where('id_prospecto',$id)->get();
+      // return $op;
       if ($prospecto) {
 
         try{
 
           DB::beginTransaction();
+          foreach ($op as $opor) {
+            Oportunidad::where('id_oportunidad',$opor->id_oportunidad)->delete();
+          }
           Prospecto::where('id_prospecto', $id)->delete();
           DB::commit();
 
