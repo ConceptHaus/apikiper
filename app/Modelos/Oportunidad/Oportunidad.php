@@ -26,10 +26,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
       'detalle_oportunidad',
       'servicio_oportunidad',
       'colaborador_oportunidad',
-      // 'etiquetas_oportunidad',
+      'etiquetas_oportunidad',
       'archivos_oportunidad',
-      // 'recordatorios',
-      // 'eventos',
+      'recordatorios',
+      'eventos',
     ];
 
     public function status_oportunidad(){
