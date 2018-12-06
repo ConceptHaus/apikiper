@@ -158,6 +158,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/etiquetas','DataViews\DataViewsController@etiquetas');
         Route::get('/status','DataViews\DataViewsController@status_oportunidades');
         Route::get('/servicios','DataViews\DataViewsController@servicios');
+        Route::get('/servicios/ajustes','DataViews\DataViewsController@serviciosAjustes');
         Route::get('/colaboradores','DataViews\DataViewsController@colaboradores');
         Route::get('/medios-contacto', 'DataViews\DataViewsController@getAllMedioContacto');
         Route::get('/medios-contacto/{id}', 'DataViews\DataViewsController@getMedioContacto');
