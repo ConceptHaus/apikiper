@@ -164,7 +164,7 @@ class OportunidadesController extends Controller
 
     public function getOneOportunidad($id){
         $oportunidad = Oportunidad::GetOneOportunidad($id);
-        if ($oportunidad != NULL) {
+        if ($oportunidad) {
           return response()->json([
               'message'=>'Correcto',
               'error'=>false,
