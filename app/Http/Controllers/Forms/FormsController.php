@@ -103,7 +103,7 @@ class FormsController extends Controller
         $email = $request->correo;
         $telefono = $request->telefono;
         $mensaje = $request->mensaje;
-        $fuente = 4;
+        $fuente = 2;
 
 
         if($verify){
