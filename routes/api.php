@@ -195,7 +195,7 @@ Route::prefix('/v1/forms')->group(function(){
         Route::get('/{id}','Forms\FormsController@getOne');
     });
     Route::middleware(['api','cors'])->group(function(){
-        Route::post('register','Forms\FormsController@registerProspecto');
+        Route::post('/register','Forms\FormsController@registerProspecto');
     });
 
 });

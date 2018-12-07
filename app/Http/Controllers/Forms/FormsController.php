@@ -23,19 +23,19 @@ use Twilio\Rest\Client;
 
 class FormsController extends Controller
 {
-    
+
     public function addNew(Request $request){
         $validator = $this->validatorForm($request->all());
          $key =  Keygen::alphanum(32)->generate();
          $url_success = $request->url_success;
          $url_error = $request->url_error;
-         $nombre_form = $request->nombre; 
+         $nombre_form = $request->nombre;
         if($validator->passes()){
-            
+
             try{
-                 
+
                 DB::beginTransaction();
-                
+
                 $newForm = New IntegracionForm();
                 $newForm->token = $key;
                 $newForm->url_success = $url_success;
@@ -44,7 +44,7 @@ class FormsController extends Controller
                 $newForm->save();
 
                 DB::commit();
-                
+
                 return response()->json([
                     'error'=>false,
                     'messages'=>'Successfully created',
@@ -59,7 +59,7 @@ class FormsController extends Controller
 
                 ],400);
             }
-           
+
 
         }
         $errors = $validator->errors()->toArray();
@@ -80,7 +80,7 @@ class FormsController extends Controller
             'data'=>$allForms
         ]);
     }
-    
+
     public function getOne($id){
         $form = IntegracionForm::where('id_integracion_forms',$id)->first();
 
@@ -88,36 +88,37 @@ class FormsController extends Controller
             'error'=>false,
             'messages'=>'Success',
             'data'=>$form,
-            'url'=>URL::to('/api/v1/forms/register').'?'.$form->token
+            'url'=>URL::to('/api/v1/forms/register').'?token='.$form->token
         ]);
     }
 
     public function registerProspecto(Request $request){
+      // return $request->query('token');
         $token = $request->query('token');
         $verify = IntegracionForm::where('token',$token)->first();
-        
+
         $nombre = $request->nombre;
         $apellido = $request->apellido;
         $empresa = $request->empresa;
         $email = $request->correo;
         $telefono = $request->telefono;
         $mensaje = $request->mensaje;
-        $fuente = $request->fuente;
+        $fuente = 4;
 
-        
+
         if($verify){
-            
+
             try{
-                
+
                 DB::beginTransaction();
 
                 $prospecto = new Prospecto();
                 $prospecto->nombre = $nombre;
                 $prospecto->apellido = $nombre;
-                $prospecto->correo = $email;  
-                $prospecto->fuente = $fuente;  
+                $prospecto->correo = $email;
+                $prospecto->fuente = $fuente;
                 $prospecto->save();
-                
+
                 $detalleProspecto = new DetalleProspecto();
                 $detalleProspecto->empresa = $empresa;
                 $detalleProspecto->telefono = $telefono;
@@ -128,20 +129,20 @@ class FormsController extends Controller
                 $verify->save();
 
                 DB::commit();
-                
+
                 return redirect()->away($verify->url_success);
 
             }catch(Exception $e){
-                
+
                 DB::rollBack();
-                
+
                 return redirect()->away($verify->url_error);
 
             }
-            
-        
+
+
         }
-        
+
         return redirect()->away($verify->url_error);
     }
 
