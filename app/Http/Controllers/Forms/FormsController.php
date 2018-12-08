@@ -146,6 +146,79 @@ class FormsController extends Controller
         return redirect()->away($verify->url_error);
     }
 
+    public function updateForm(Request $request){
+
+      $validator = $this->validatorUpdate($request->all());
+
+      if ($validator->passes()) {
+        try {
+          DB::beginTransaction();
+          $form = IntegracionForm::where('id_integracion_forms',$request->id)->first();
+          $form->url_success = $request->url_success;
+          $form->url_error = $request->url_error;
+          $form->nombre = $request->nombre;
+          $form->save();
+          DB::commit();
+
+          return response()->json([
+            'error'=>false,
+            'message'=>'Integración actualizada correctamente.'
+          ],200);
+
+        } catch (Exception $e) {
+          DB::rollBack();
+
+          return response()->json([
+            'error'=>true,
+            'message'=>$e
+          ],400);
+
+        }
+      }
+
+      $errors = $validator->errors()->toArray();
+
+      return response()->json([
+        'error'=>true,
+        'message'=>$errors
+      ],400);
+
+    }
+
+    public function deleteForm($id){
+
+        try {
+          DB::beginTransaction();
+          $form = IntegracionForm::where('id_integracion_forms',$id)->first();
+          $form->delete();
+          DB::commit();
+
+          return response()->json([
+            'error'=>false,
+            'message'=>'Integración borrada correctamente.'
+          ],200);
+
+        } catch (Exception $e) {
+
+          DB::rollBack();
+
+          return response()->json([
+            'error'=>true,
+            'message'=>$e
+          ],400);
+        }
+
+    }
+
+    public function validatorUpdate(array $data){
+      return Validator::make($data, [
+        'id'=>'required|exists:integracion_forms,id_integracion_forms',
+        'nombre'=>'required|string',
+        'url_success'=>'required|string',
+        'url_error'=>'required|string'
+      ]);
+    }
+
     public function validatorForm(array $data){
         return Validator::make($data, [
             'nombre'=>'required|string',

@@ -193,6 +193,8 @@ Route::prefix('/v1/forms')->group(function(){
         Route::post('/new','Forms\FormsController@addNew');
         Route::get('/','Forms\FormsController@getAll');
         Route::get('/{id}','Forms\FormsController@getOne');
+        Route::put('/update','Forms\FormsController@updateForm');
+        Route::delete('/{id}','Forms\FormsController@deleteForm');
     });
     Route::middleware(['api','cors'])->group(function(){
         Route::post('/register','Forms\FormsController@registerProspecto');
