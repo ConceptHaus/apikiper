@@ -17,7 +17,7 @@ class CreateTableImagesMailings extends Migration
             $table->increments('id_image');
             $table->integer('id_mailing')->unsigned();
             $table->foreign('id_mailing')->references('id_mailing')->on('mailings')->onDelete('cascade');
-            $table->bolean('is_logo');
+            $table->boolean('is_logo');
             $table->string('url');
             $table->timestamps();
         });
