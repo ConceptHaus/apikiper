@@ -16,7 +16,7 @@ class CreateTableDetalleMailings extends Migration
         Schema::create('detalle_mailings', function (Blueprint $table) {
             $table->increments('id_detalle');
             $table->integer('id_mailing')->unsigned();
-            $table->foreign('is_mailing')->references('id_mailing')->on('mailings')->onDelete('cascade');
+            $table->foreign('id_mailing')->references('id_mailing')->on('mailings')->onDelete('cascade');
             $table->string('subject');
             $table->string('preview_text');
             $table->string('text_body');
