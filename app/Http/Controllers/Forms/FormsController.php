@@ -115,7 +115,7 @@ class FormsController extends Controller
 
                 $prospecto = new Prospecto();
                 $prospecto->nombre = $nombre;
-                $prospecto->apellido = $nombre;
+                $prospecto->apellido = $apellido;
                 $prospecto->correo = $email;
                 $prospecto->fuente = $fuente;
                 $prospecto->save();
