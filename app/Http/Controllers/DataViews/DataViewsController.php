@@ -134,6 +134,7 @@ class DataViewsController extends Controller
 
         $origen = DB::table('prospectos')
                     ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                    ->where('prospectos.deleted_at',null)
                     ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
                     ->whereBetween('prospectos.created_at', array($semana ,$hoy))
                     ->groupBy('cat_fuentes.nombre')->get();
@@ -203,6 +204,7 @@ class DataViewsController extends Controller
 
         $origen = DB::table('prospectos')
                     ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                    ->where('prospectos.deleted_at',null)
                     ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
                     ->whereBetween('prospectos.created_at', array($mes ,$hoy))
                     ->groupBy('cat_fuentes.nombre')->get();
@@ -270,6 +272,7 @@ class DataViewsController extends Controller
 
         $origen = DB::table('prospectos')
                     ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                    ->where('prospectos.deleted_at',null)
                     ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
                     ->whereBetween('prospectos.created_at', array($anio ,$hoy))
                     ->groupBy('cat_fuentes.nombre')->get();
