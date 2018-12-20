@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 use App\Modelos\Prospecto\Prospecto;
+use App\Modelos\Prospecto\StatusProspecto;
 use App\Modelos\Prospecto\DetalleProspecto;
 use App\Modelos\Extras\IntegracionForm;
 
@@ -114,7 +115,7 @@ class FormsController extends Controller
 
                 $prospecto = new Prospecto();
                 $prospecto->nombre = $nombre;
-                $prospecto->apellido = $nombre;
+                $prospecto->apellido = $apellido;
                 $prospecto->correo = $email;
                 $prospecto->fuente = $fuente;
                 $prospecto->save();
@@ -124,6 +125,10 @@ class FormsController extends Controller
                 $detalleProspecto->telefono = $telefono;
                 $detalleProspecto->nota = $mensaje;
                 $prospecto->detalle_prospecto()->save($detalleProspecto);
+
+                $status = new StatusProspecto();
+                $status->id_cat_status_prospecto = 2;
+                $prospecto->status_prospecto()->save($status);
 
                 $verify->total += 1;
                 $verify->save();
