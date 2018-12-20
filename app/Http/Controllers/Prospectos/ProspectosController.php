@@ -254,6 +254,7 @@ class ProspectosController extends Controller
                                   ->join('detalle_prospecto','prospectos.id_prospecto','detalle_prospecto.id_prospecto')
                                   ->join('cat_fuentes','prospectos.fuente','cat_fuentes.id_fuente')
                                   ->where('status_prospecto.id_cat_status_prospecto','=',2)
+                                  ->whereNull('deleted_at')
                                   ->select('prospectos.id_prospecto','prospectos.nombre','prospectos.apellido','prospectos.correo','cat_fuentes.nombre as fuente','cat_fuentes.id_fuente as id_fuente','cat_fuentes.url as url_fuente','prospectos.deleted_at','prospectos.created_at','prospectos.updated_at','status_prospecto.id_status_prospecto','status_prospecto.id_cat_status_prospecto','detalle_prospecto.whatsapp')
                                   ->orderBy('status_prospecto.updated_at', 'desc')
                                   ->get();
