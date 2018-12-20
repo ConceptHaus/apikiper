@@ -296,12 +296,14 @@ class DataViewsController extends Controller
         $total_prospectos = Prospecto::all()->count();
 
         $nocontactados_prospectos = DB::table('prospectos')
+                                    ->where('prospectos.deleted_at',null)
                                     ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
                                     ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
 
 
         $origen = DB::table('prospectos')
                     ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                    ->where('prospectos.deleted_at',null)
                     ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(*) as total, cat_fuentes.nombre'))
                     ->groupBy('cat_fuentes.nombre')->get();
 
@@ -309,6 +311,7 @@ class DataViewsController extends Controller
                             ->join('detalle_prospecto','prospectos.id_prospecto','detalle_prospecto.id_prospecto')
                             ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
                             ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                            ->where('prospectos.deleted_at',null)
                             ->select('prospectos.id_prospecto',
                                     'prospectos.nombre',
                                     'prospectos.apellido',
@@ -319,6 +322,7 @@ class DataViewsController extends Controller
                                     'prospectos.created_at')->get();
 
         $prospectos = Prospecto::with('detalle_prospecto')
+                                ->where('prospectos.deleted_at',null)
                                 ->with('status_prospecto.status')
                                 ->orderBy('prospectos.created_at','desc')
                                 ->get();
