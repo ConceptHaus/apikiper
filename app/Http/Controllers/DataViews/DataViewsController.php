@@ -1528,10 +1528,12 @@ class DataViewsController extends Controller
     public function addMedioContactoProspecto(Request $request){
 
       $validator = $this->validatorMedioContactoProspecto($request->all());
+      $colaborador = $this->guard()->user();
 
       if ($validator->passes()) {
         try {
           DB::beginTransaction();
+          
           $medio_contacto_prospecto = new MedioContactoProspecto;
           $medio_contacto_prospecto->id_mediocontacto_catalogo = $request->id_mediocontacto_catalogo;
           $medio_contacto_prospecto->id_prospecto = $request->id_prospecto;
@@ -1540,6 +1542,19 @@ class DataViewsController extends Controller
           $medio_contacto_prospecto->hora = $request->hora;
           $medio_contacto_prospecto->lugar =$request->lugar;
           $medio_contacto_prospecto->save();
+
+          if($medio_contacto_prospecto->id_mediocontacto_catalogo == 6){
+                $recordatorio = new RecordatorioProspecto;
+                $recordatorio->id_colaborador = $colaborador->id;
+                $recordatorio->id_prospecto = $prospecto->id_prospecto;
+                $recordatorio->save();
+                $detalle_recordatorio = new DetalleRecordatorioProspecto;
+                $detalle_recordatorio->id_recordatorio_prospecto = $recordatorio->id_recordatorio_prospecto;
+                $detalle_recordatorio->fecha_recordatorio = $request->fecha;
+                $detalle_recordatorio->hora_recordatorio = $request->hora;
+                $detalle_recordatorio->nota_recordatorio = $request->descripcion;
+                $recordatorio->detalle()->save($detalle_recordatorio);
+          }
           DB::commit();
 
           return response()->json([

@@ -191,6 +191,8 @@ class ProspectosController extends Controller
             $detalle->celular = $request->celular;
             $detalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
             $detalle->nota = $request->nota;
+            $detalle->puesto = $request->puesto;
+            $detalle->empresa = $request->empresa;
             $prospecto->save();
             $detalle->save();
             DB::commit();
