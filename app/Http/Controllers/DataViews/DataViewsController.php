@@ -23,6 +23,8 @@ use App\Modelos\Prospecto\MedioContactoProspecto;
 use App\Modelos\Oportunidad\MedioContactoOportunidad;
 
 use App\Modelos\Extras\RecordatorioProspecto;
+use App\Modelos\Extras\DetalleRecordatorioProspecto;
+
 use Mailgun;
 use DB;
 use Mail;
@@ -1546,7 +1548,7 @@ class DataViewsController extends Controller
           if($medio_contacto_prospecto->id_mediocontacto_catalogo == 6){
                 $recordatorio = new RecordatorioProspecto;
                 $recordatorio->id_colaborador = $colaborador->id;
-                $recordatorio->id_prospecto = $prospecto->id_prospecto;
+                $recordatorio->id_prospecto = $request->id_prospecto;
                 $recordatorio->save();
                 $detalle_recordatorio = new DetalleRecordatorioProspecto;
                 $detalle_recordatorio->id_recordatorio_prospecto = $recordatorio->id_recordatorio_prospecto;
