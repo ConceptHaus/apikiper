@@ -385,6 +385,7 @@ class DataViewsController extends Controller
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',3)->count();
 
         $oportunidades = DB::table('oportunidades')
+                            ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','colaborador_oportunidad.id_oportunidad')
                             ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
@@ -394,7 +395,7 @@ class DataViewsController extends Controller
                             ->join('servicio_oportunidad','servicio_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
                             ->join('cat_servicios','cat_servicios.id_servicio_cat','servicio_oportunidad.id_servicio_cat')
                             ->where('colaborador_oportunidad.id_colaborador','=',$id)
-                            ->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','cat_status_oportunidad.status','cat_servicios.nombre as servicio','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.nombre as fuente_url','oportunidades.created_at')
+                            ->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','detalle_oportunidad.valor','cat_status_oportunidad.status','cat_servicios.nombre as servicio','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.nombre as fuente_url','oportunidades.created_at')
                             ->orderBy('oportunidades.created_at','desc')
                             ->get();
 
@@ -440,6 +441,7 @@ class DataViewsController extends Controller
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',3)->count();
 
         $oportunidades = DB::table('oportunidades')
+                            ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','colaborador_oportunidad.id_oportunidad')
                             ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
@@ -450,7 +452,7 @@ class DataViewsController extends Controller
                             ->join('cat_servicios','cat_servicios.id_servicio_cat','servicio_oportunidad.id_servicio_cat')
                             ->join('users','users.id', 'colaborador_oportunidad.id_colaborador')
                             ->where('colaborador_oportunidad.id_colaborador','=',$id)
-                            ->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','cat_status_oportunidad.status','cat_status_oportunidad.color as color_status','cat_status_oportunidad.id_cat_status_oportunidad as id_status','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.nombre as fuente_url','oportunidades.created_at','users.id as id_colaborador', 'users.nombre as asignado_nombre', 'users.apellido as asignado_apellido')
+                            ->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','detalle_oportunidad.valor','cat_status_oportunidad.status','cat_status_oportunidad.color as color_status','cat_status_oportunidad.id_cat_status_oportunidad as id_status','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.nombre as fuente_url','oportunidades.created_at','users.id as id_colaborador', 'users.nombre as asignado_nombre', 'users.apellido as asignado_apellido')
                             ->orderBy('status_oportunidad.updated_at','desc')
                             ->get();
 
