@@ -3,14 +3,14 @@
 namespace App\Modelos\Mailing;
 
 use Illuminate\Database\Eloquent\Model;
-use Alsofronie\Uuid\UuidModelTrait;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Alsofronie\Uuid\UuidModelTrait;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Mailings extends Model
 {
-    use UuidModelTrait;
-    use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
-    use SoftDeletes;
+    // use UuidModelTrait;
+    // use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
+    // use SoftDeletes;
 
     protected $table = 'mailings';
     protected $primaryKey = 'id_mailing';
@@ -20,11 +20,11 @@ class Mailings extends Model
     ];
 
     public function detalle (){
-      return $this->belongsTo('App\Modelos\DetalleMailings','id_mailing','id_mailing');
+      return $this->belongsTo('App\Modelos\Mailing\DetalleMailings','id_mailing','id_mailing');
     }
 
     public function imagenes(){
-      return $this->belongsTo('App\Modelos\ImagesMailings','id_mailing','id_mailing');
+      return $this->belongsTo('App\Modelos\Mailing\ImagesMailings','id_mailing','id_mailing');
     }
 
     public function scopeGetAll ($query){

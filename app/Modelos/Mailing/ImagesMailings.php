@@ -3,16 +3,16 @@
 namespace App\Modelos\Mailing;
 
 use Illuminate\Database\Eloquent\Model;
-use Alsofronie\Uuid\UuidModelTrait;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Alsofronie\Uuid\UuidModelTrait;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ImagesMailings extends Model
 {
-    use UuidModelTrait;
-    use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
-    use SoftDeletes;
+    // use UuidModelTrait;
+    // use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
+    // use SoftDeletes;
 
-    protected $table = 'images_mailing';
+    protected $table = 'images_mailings';
     protected $primaryKey = 'id_imagen';
 
     protected $fillable = [

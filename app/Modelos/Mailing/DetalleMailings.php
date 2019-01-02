@@ -3,14 +3,14 @@
 namespace App\Modelos\Mailing;
 
 use Illuminate\Database\Eloquent\Model;
-use Alsofronie\Uuid\UuidModelTrait;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Alsofronie\Uuid\UuidModelTrait;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DetalleMailings extends Model
 {
-    use UuidModelTrait;
-    use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
-    use SoftDeletes;
+    // use UuidModelTrait;
+    // use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
+    // use SoftDeletes;
 
     protected $table = 'detalle_mailings';
     protected $primaryKey = 'id_detalle';
