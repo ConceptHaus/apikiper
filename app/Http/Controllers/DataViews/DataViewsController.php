@@ -12,13 +12,13 @@ use Carbon\Carbon;
 
 
 use App\Modelos\Prospecto\Prospecto;
+use App\Modelos\Prospecto\StatusProspecto;
 use App\Modelos\Prospecto\CatFuente;
 use App\Modelos\User;
 use App\Modelos\Extras\Etiqueta;
 use App\Modelos\Oportunidad\CatServicios;
 use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Modelos\Prospecto\CatMedioContacto;
-use App\Modelos\Prospecto\StatusProspecto;
 use App\Modelos\Prospecto\MedioContactoProspecto;
 use App\Modelos\Oportunidad\MedioContactoOportunidad;
 
@@ -1546,6 +1546,10 @@ class DataViewsController extends Controller
           $medio_contacto_prospecto->hora = $request->hora;
           $medio_contacto_prospecto->lugar =$request->lugar;
           $medio_contacto_prospecto->save();
+
+          $status = StatusProspecto::where('id_prospecto',$request->id_prospecto)->first();
+          $status->id_cat_status_prospecto = 1;
+          $status->save();
 
           if($medio_contacto_prospecto->id_mediocontacto_catalogo == 6){
                 $recordatorio = new RecordatorioProspecto;
