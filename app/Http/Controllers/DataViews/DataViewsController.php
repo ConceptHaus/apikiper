@@ -1436,9 +1436,21 @@ class DataViewsController extends Controller
         if($request->id_prospecto){
 
             DB::beginTransaction();
+            $statusProspecto = new StatusProspecto;
+            $statusProspecto->id_cat_status_prospecto = 1;
+            
+            $medio_contacto = new MedioContactoProspecto;
+            $medio_contacto->id_mediocontacto_catalogo = 4;
+            $medio_contacto->id_prospecto = $request->id_prospecto;
+            $medio_contacto->descripcion = 'Se envió correo desde Kiper.';
+            $medio_contacto->fecha = Carbon::now();
+            $medio_contacto->hora = Carbon::parse(Carbon::now())->format('H:i');
+            
             $prospecto = StatusProspecto::where('id_prospecto',$request->id_prospecto)->first();
-            $prospecto->id_cat_status_prospecto = 2;
+            $prospecto->id_cat_status_prospecto = 1;
             $prospecto->save();
+            $medio_contacto->save();
+
             DB::commit();
         }
 

@@ -31,6 +31,7 @@ use App\Modelos\Prospecto\StatusProspecto;
 use DB;
 use Mail;
 use Mailgun;
+use Carbon\Carbon;
 class ProspectosController extends Controller
 {
     public function registerProspecto(Request $request){
@@ -72,8 +73,12 @@ class ProspectosController extends Controller
                     }
                 }
                 if($oportunidades != null){
+
                     //Crear oportunidades
                     foreach($oportunidades as $oportunidad){
+                        
+                        $statusProspecto->id_cat_status_prospecto = 1;
+                        $prospecto->status_prospecto()->save($statusProspecto);
 
                         //Datos generales oportunidad
                         $nueva_oportunidad = new Oportunidad;
