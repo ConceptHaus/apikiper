@@ -20,11 +20,11 @@ class Mailings extends Model
     ];
 
     public function detalle (){
-      return $this->belongsTo('App\Modelos\Mailing\DetalleMailings','id_mailing','id_mailing');
+      return $this->hasOne('App\Modelos\Mailing\DetalleMailings','id_mailing','id_mailing');
     }
 
     public function imagenes(){
-      return $this->belongsTo('App\Modelos\Mailing\ImagesMailings','id_mailing','id_mailing');
+      return $this->hasMany('App\Modelos\Mailing\ImagesMailings','id_mailing','id_mailing');
     }
 
     public function scopeGetAll ($query){
