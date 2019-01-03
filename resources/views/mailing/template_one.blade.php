@@ -3,7 +3,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Kiper Template</title>
+        <title>{{$asunto}}</title>
 
     <style type="text/css">
 		p{
@@ -131,7 +131,7 @@
 			text-align:center;
 		}
 		#templateHeader{
-			background-color:#5d737e;
+			background-color:{{$color}};
 			background-image:none;
 			background-repeat:no-repeat;
 			background-position:center;
@@ -199,7 +199,7 @@
 			text-decoration:underline;
 		}
 		#templateFooter{
-			background-color:#5d737e;
+			background-color:{{$color}};
 			background-image:none;
 			background-repeat:no-repeat;
 			background-position:center;
@@ -430,9 +430,9 @@
             <table class="mcnCaptionRightTextContentContainer" align="right" border="0" cellpadding="0" cellspacing="0" width="264">
                 <tbody><tr>
                     <td valign="top" class="mcnTextContent">
-                        <h1 class="null" style="margin-top: 15px; text-align: left;"><span style="color:#E43D30"><span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif">{{ $asunto }}</span></span></h1>
+                        <h1 class="null" style="margin-top: 15px; text-align: left;"><span style="color:{{$color_fuente}}"><span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif">{{ $asunto }}</span></span></h1>
 
-<div style="text-align: left;"><span style="font-size:19px"><span style="font-family:times new roman,times,baskerville,georgia,serif">&nbsp; &nbsp; &nbsp; Subtítulo.</span></span></div>
+<div style="text-align: left;"><span style="font-size:19px"><span style="font-family:times new roman,times,baskerville,georgia,serif">&nbsp; &nbsp; &nbsp; {{$subtitulo}}</span></span></div>
 
                     </td>
                 </tr>
@@ -515,8 +515,7 @@
                     <tbody><tr>
 
                         <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px;">
-
-                            {{ $contenido }}
+                          {!! $contenido !!}
                         </td>
                     </tr>
                 </tbody></table>
@@ -541,11 +540,11 @@
     <tbody class="mcnButtonBlockOuter">
         <tr>
             <td style="padding-top:0; padding-right:18px; padding-bottom:18px; padding-left:18px;" valign="top" align="center" class="mcnButtonBlockInner">
-                <table border="0" cellpadding="0" cellspacing="0" class="mcnButtonContentContainer" style="border-collapse: separate !important;border-radius: 3px;background-color: #E43D30;">
+                <table border="0" cellpadding="0" cellspacing="0" class="mcnButtonContentContainer" style="border-collapse: separate !important;border-radius: 3px;background-color: {{$color_cta}};">
                     <tbody>
                         <tr>
                             <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Helvetica; font-size: 18px; padding: 18px;">
-                                <a class="mcnButton " title="ENVIAR" href="" target="_blank" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">ENVIAR</a>
+                                <a class="mcnButton " title="{{$cta_nombre}}" href="" target="_blank" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">{{$cta_nombre}}</a>
                             </td>
                         </tr>
                     </tbody>

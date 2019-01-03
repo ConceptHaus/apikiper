@@ -19,7 +19,11 @@ class DetalleMailings extends Model
         'subject',
         'preview_text',
         'text_body',
-        'cta'
+        'cta_nombre',
+        'cta_url',
+        'color',
+        'color_fuente',
+        'color_cta'
     ];
 
     public function mailing (){
