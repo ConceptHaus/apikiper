@@ -125,6 +125,7 @@ class DataViewsController extends Controller
         $prospectos_sin_contactar = DB::table('prospectos')
                                 ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
                                 ->whereBetween('status_prospecto.updated_at', array($semana ,$hoy))
+                                ->where('status_prospecto.deleted_at',null)
                                 ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
 
         $ingresos = DB::table('oportunidades')
@@ -195,6 +196,7 @@ class DataViewsController extends Controller
         $prospectos_sin_contactar = DB::table('prospectos')
                                 ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
                                 ->whereBetween('prospectos.created_at', array($mes ,$hoy))
+                                ->where('status_prospecto.deleted_at',null)
                                 ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
 
         $ingresos = DB::table('oportunidades')
@@ -263,6 +265,7 @@ class DataViewsController extends Controller
         $prospectos_sin_contactar = DB::table('prospectos')
                                 ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
                                 ->whereBetween('prospectos.created_at', array($anio ,$hoy))
+                                ->where('status_prospecto.deleted_at',null)
                                 ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
 
         $ingresos = DB::table('oportunidades')

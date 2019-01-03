@@ -9,7 +9,7 @@ use Illuminate\Http\Response;
 use App\Modelos\Mailing\Mailings;
 use App\Modelos\Mailing\DetalleMailings;
 use App\Modelos\Mailing\ImagesMailings;
-
+use Mailgun;
 
 class MailingController extends Controller
 {
