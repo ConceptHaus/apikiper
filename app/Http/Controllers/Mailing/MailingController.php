@@ -10,6 +10,10 @@ use App\Modelos\Mailing\Mailings;
 use App\Modelos\Mailing\DetalleMailings;
 use App\Modelos\Mailing\ImagesMailings;
 use Illuminate\Support\Facades\Validator;
+use App\Modelos\Prospecto\Prospecto;
+use App\Modelos\Prospecto\StatusProspecto;
+
+
 use Mailgun;
 use DB;
 
@@ -50,21 +54,67 @@ class MailingController extends Controller
         $campana->detalle()->save($mailing);
         DB::commit();
 
+        //Query para obtener lista de remitentes
+        if($request->servicio == 0 && $request->etiqueta == 0){
+          $remitentes = DB::table('prospectos')
+                        ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                        ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                        ->where('status_oportunidad.id_cat_status_oportunidad',$request->status)
+                        ->select('prospectos.correo','prospectos.nombre')->distinct()->get();
+          
+
+        }else{
+          if($request->servicio != 0){
+
+            $remitentes = DB::table('prospectos')
+                        ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                        ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                        ->join('servicio_oportunidad','servicio_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                        ->where('status_oportunidad.id_cat_status_oportunidad',$request->status)
+                        ->where('servicio_oportunidad.id_servicio_cat',$request->servicio)
+                        ->select('prospectos.correo','prospectos.nombre')->distinct()->get();
+            
+            
+          }
+          elseif($request->etiqueta != 0){
+               $remitentes = DB::table('prospectos')
+                        ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                        ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                        ->join('etiquetas_oportunidades','etiquetas_oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                        ->where('status_oportunidad.id_cat_status_oportunidad',$request->status)
+                        ->where('etiquetas_oportunidades.id_etiqueta',$request->etiqueta)
+                        ->select('prospectos.correo','prospectos.nombre')->distinct()->get();
+
+              
+          }
+          
+          $send_contacts = array();
+          foreach ($remitentes as $remitente) {
+              array_push($send_contacts, [$remitente->correo =>['name'=>$remitente->nombre]]);
+          }
+          
+          $send_contacts = $send_contacts[0];
+        }
+        
         $detalle = DetalleMailings::where('id_detalle',$mailing->id_detalle)->first();
 
         $datosMail['contenido'] = $request->descripcion;
         $datosMail['asunto'] = $request->titulo;
-        $datosMail['email'] = ['sergio@concepthaus.mx' => ['name'=>'Sergio'],'paola@concepthaus.mx'=> ['name'=>'Paola'],'javier@concepthaus.mx'=> ['name'=>'Javier'],'liz@concepthaus.mx'=> ['name'=>'Liz'],'sergirams@gmail.com'=> ['name'=>'Sergio']];
+        $datosMail['email'] = $send_contacts;
         $datosMail['color'] = $request->color;
         $datosMail['color_fuente'] = $detalle->color_fuente;
         $datosMail['subtitulo'] = $detalle->subtitle;
         $datosMail['cta_nombre'] = $detalle->cta_nombre;
         $datosMail['color_cta'] = $detalle->color_cta;
-
+        $datosMail['cta_link'] = $detalle->cta_url;
+        $datosMail['titulo_campana'] = $campana->titulo_campana;
         Mailgun::send('mailing.template_one', $datosMail, function($message) use ($datosMail){
-            // $message->to($datosMail['email']);
-            $message->to('javier@concepthaus.mx','Javier');
-            $message->subject($datosMail['asunto']);
+              $message->to($datosMail['email']);
+              $message->subject($datosMail['asunto']);
+              $message->trackClicks(true);
+              $message->trackOpens(true);
+              $message->tag($datosMail['titulo_campana']);
+
           });
 
         return response()->json([

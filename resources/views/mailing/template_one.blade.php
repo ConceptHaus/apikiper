@@ -544,7 +544,7 @@
                     <tbody>
                         <tr>
                             <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Helvetica; font-size: 18px; padding: 18px;">
-                                <a class="mcnButton " title="{{$cta_nombre}}" href="" target="_blank" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">{{$cta_nombre}}</a>
+							<a class="mcnButton " title="{{$cta_nombre}}" href="{{$cta_link}}" target="_blank" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">{{$cta_nombre}}</a>
                             </td>
                         </tr>
                     </tbody>
