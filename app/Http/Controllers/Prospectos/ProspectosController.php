@@ -729,7 +729,7 @@ class ProspectosController extends Controller
 
         return Validator::make($data,[
             'nombre'=>'required|string|max:255',
-            'apellido'=>'required|string|max:255',
+            //'apellido'=>'required|string|max:255',
             'correo'=>'required|string|email|max:255|unique:prospectos',
 
         ]);
