@@ -1527,12 +1527,12 @@ class DataViewsController extends Controller
         return intval(round($oportunidad*100/$total));
     }
 
-    public function cambioStatusProspecto ($id, $status){
+    public function cambioStatusProspecto ($id, Request $request){
 
       try {
         DB::beginTransaction();
         $statusProspecto = StatusProspecto::where('id_prospecto',$id);
-        $statusProspecto->id_cat_status_prospecto = $status;
+        $statusProspecto->id_cat_status_prospecto = $request->status;
         $statusProspecto->save();
         DB::commit();
       }catch (Exception $e) {
