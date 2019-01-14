@@ -28,6 +28,7 @@ use App\Modelos\Extras\DetalleRecordatorioProspecto;
 use App\Modelos\Extras\DetalleEvento;
 use App\Modelos\Oportunidad\StatusOportunidad;
 use App\Modelos\Prospecto\StatusProspecto;
+use App\Modelos\Prospecto\CatStatusProspecto;
 
 use DB;
 use Mail;
@@ -727,6 +728,14 @@ class ProspectosController extends Controller
         ]]);
     }
 
+    public function getStatus(){
+        $status = CatStatusProspecto::all();
+
+        return response()->json([
+            'error'=>false,
+            'data'=>$status
+        ]);
+    }
     //Functiones auxiliares
     public function validadorProspectos(array $data){
 

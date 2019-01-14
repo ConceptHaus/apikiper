@@ -95,6 +95,8 @@ Route::prefix('/v1/prospectos')->group(function(){
 
             Route::post('/foto/{id}', 'Prospectos\ProspectosController@addFoto');
             Route::delete('/foto/{id}', 'Prospectos\ProspectosController@deleteFoto');
+
+            Route::get('/status/all','Prospectos\ProspectosController@getStatus');
         });
 });
 
