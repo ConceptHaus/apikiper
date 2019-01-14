@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+//use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 
@@ -1531,10 +1532,14 @@ class DataViewsController extends Controller
 
       try {
         DB::beginTransaction();
-        $statusProspecto = StatusProspecto::where('id_prospecto',$id);
-        $statusProspecto->id_cat_status_prospecto = $request->status;
+        $statusProspecto = StatusProspecto::where('id_prospecto',$id)->first();
+        $statusProspecto->id_cat_status_prospecto = intval($request->status);
         $statusProspecto->save();
         DB::commit();
+        return response()->json([
+            'error'=>false,
+            'message'=>'El status ha cambiado.'
+        ],200);
       }catch (Exception $e) {
         DB::rollBack();
 

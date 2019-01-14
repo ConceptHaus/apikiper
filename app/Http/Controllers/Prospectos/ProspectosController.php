@@ -9,6 +9,7 @@ use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+//use Illuminate\Support\Facades\Log;
 
 use App\Modelos\User;
 use App\Modelos\Prospecto\Prospecto;
@@ -134,6 +135,7 @@ class ProspectosController extends Controller
 
                 }
                 DB::commit();
+                //Log::channel('slack')->info('Funciona el registro de prospectos.'.' - '.env('APP_NAME'));
                 return response()->json([
                         'message'=>'Registro Correcto',
                         'error'=>false,
@@ -141,6 +143,7 @@ class ProspectosController extends Controller
                     ],200);
             }catch(Exception $e){
                 DB::rollBack();
+                //Log::channel('slack')->error('No se pudo registrar el prospescto, revísame.'.' - '.env('APP_NAME'));
                 return response()->json([
                     'message'=>$e,
                     'error'=>true,
