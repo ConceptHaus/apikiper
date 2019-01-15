@@ -1610,7 +1610,7 @@ class DataViewsController extends Controller
       $auth = $this->guard()->user();
       $validator = $this->validatorMedioContactoProspecto($request->all());
       $colaborador = $this->guard()->user();
-
+      $prospecto = Prospecto::where('id_prospecto',$request->id_prospecto)->first();
       if ($validator->passes()) {
         try {
           DB::beginTransaction();
@@ -1627,7 +1627,7 @@ class DataViewsController extends Controller
           $status = StatusProspecto::where('id_prospecto',$request->id_prospecto)->first();
           $status->id_cat_status_prospecto = 1;
           $status->save();
-
+          DB::commit();
           if($medio_contacto_prospecto->id_mediocontacto_catalogo == 6){
                 $recordatorio = new RecordatorioProspecto;
                 $recordatorio->id_colaborador = $colaborador->id;
@@ -1640,11 +1640,23 @@ class DataViewsController extends Controller
                 $detalle_recordatorio->nota_recordatorio = $request->descripcion;
                 $recordatorio->detalle()->save($detalle_recordatorio);
           }
-          DB::commit();
+         
+          
+          $details_medio = MedioContactoProspecto::with('medio_contacto')->where('id_medio_contacto_prospecto',$medio_contacto_prospecto->id_medio_contacto_prospecto)->first();
+          //Historial
+          
+                
+            activity('prospecto')
+                ->performedOn($prospecto)
+                ->causedBy($auth)
+                ->withProperties(['accion'=>$details_medio->medio_contacto->nombre,'color'=>$details_medio->medio_contacto->color])
+                ->log(':causer.nombre :causer.apellido contactó vía :properties.accion a :subject.nombre :subject.apellido .');
+          
+
 
           return response()->json([
             'error'=>false,
-            'message'=>'Medio de contacto agregado correctamente.'
+            'message'=>'Medio de contacto agregago exitósamente.'
           ],200);
 
         } catch (Exception $e) {

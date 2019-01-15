@@ -228,7 +228,7 @@ class OportunidadesController extends Controller
     }
 
     public function deleteOportunidad($id){
-
+      $auth = $this->guard()->user();
       $oportunidad = Oportunidad::GetOneOportunidad($id);
 
       if ($oportunidad) {
@@ -237,6 +237,13 @@ class OportunidadesController extends Controller
           DB::beginTransaction();
           Oportunidad::where('id_oportunidad',$id)->delete();
           DB::commit();
+            
+          //Historial
+            activity('oportunidad')
+                ->performedOn($oportunidad)
+                ->causedBy($auth)
+                ->withProperties(['accion'=>'eliminó','color'=>'#f42c50'])
+                ->log(':causer.nombre :causer.apellido :properties.accion :subject.nombre_oportunidad .');
 
           return response()->json([
             'error'=>false,
@@ -732,6 +739,8 @@ class OportunidadesController extends Controller
     }
 
     public function updateStatus(Request $request,$id){
+        $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
+        $auth = $this->guard()->user();
         $status = $request->status;
         try{
             DB::beginTransaction();
@@ -740,6 +749,13 @@ class OportunidadesController extends Controller
             $oportunidad_status->save();
             DB::commit();
 
+            activity('oportunidad')
+                ->performedOn($oportunidad)
+                ->causedBy($auth)
+                ->withProperties(['accion'=>'cambió','color'=>'#7ac5ff'])
+                ->useLog('colaborador')
+                ->log(':causer.nombre :causer.apellido cambió de status :subject.nombre_oportunidad .');
+                
             return response()->json([
                 'error'=>false,
                 'message'=>'Registro Correcto',
