@@ -15,6 +15,7 @@ use App\Modelos\Oportunidad\ArchivosOportunidadColaborador;
 use App\Modelos\Prospecto\ColaboradorProspecto;
 use App\Modelos\Prospecto\ArchivosProspectoColaborador;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 
 
@@ -58,7 +59,7 @@ class ColaboradoresController extends Controller
 
     public function registerColaborador(Request $request){
             $validator = $this->validator($request->all());
-
+            $auth = $this->guard()->user();
             if($validator->passes()){
                  try{
 
@@ -98,6 +99,15 @@ class ColaboradoresController extends Controller
                    });
 
                     DB::commit();
+                    //Historial
+                        activity()
+                                ->performedOn($colaborador)
+                                ->causedBy($auth)
+                                ->withProperties(['accion'=>'agregó','color'=>'#39ce5f'])
+                                ->useLog('colaborador')
+                                ->log(':causer.nombre :causer.apellido :properties.accion un nuevo colaborador.');
+                                
+
                     return response()->json([
                         'message'=>'Registro Correcto',
                         'error'=>false,
@@ -219,7 +229,7 @@ class ColaboradoresController extends Controller
     }
 
     public function updateColaborador(Request $request){
-
+        $auth = $this->guard()->user();
         $validator = $this->validatorUpdate($request->all());
 
         if($validator->passes()){
@@ -241,6 +251,15 @@ class ColaboradoresController extends Controller
             $colaborador->detalle()->save($colaborador_ext);
             $colaboradorRes = User::GetOneUser($id_colaborador);
             DB::commit();
+
+            //Historial
+                activity()
+                    ->performedOn($colaborador)
+                    ->causedBy($auth)
+                    ->withProperties(['accion'=>'editó','color'=>'#ffcf4c'])
+                    ->useLog('colaborador')
+                    ->log(':causer.nombre :causer.apellido :properties.accion el perfil de un colaborador.');
+                                
             return response()->json([
                 'message'=>'Correcto',
                 'error'=>false,
@@ -266,7 +285,7 @@ class ColaboradoresController extends Controller
     }
 
     public function deleteColaborador(Request $request){
-
+      $auth = $this->guard()->user();
       $validator = $this->validatorDelete($request->all());
 
       $id_borrar = $request->id_borrar;
@@ -310,6 +329,13 @@ class ColaboradoresController extends Controller
           $borrar->delete();
 
           DB::commit();
+            //Historial
+                activity()
+                    ->performedOn($borrar)
+                    ->causedBy($auth)
+                    ->withProperties(['accion'=>'eliminó','color'=>'#f42c50'])
+                    ->useLog('colaborador')
+                    ->log(':causer.nombre :causer.apellido :properties.accion a un colaborador.');
 
           return response()->json([
               'message'=>'Borrado Correctamente',
@@ -450,5 +476,10 @@ class ColaboradoresController extends Controller
         $path = $file->store('colaborador/foto_perfil/'.$colaborador,'s3');
         Storage::setVisibility($path,'public');
         return $disk->url($path);
+    }
+
+    public function guard()
+    {
+        return Auth::guard();
     }
 }

@@ -6,6 +6,8 @@ use Illuminate\Log;
 use Carbon\Carbon;
 use Twilio\Rest\Client;
 
+use App\Modelos\Extras\RecordatorioProspecto;
+use App\Modelos\Extras\RecordatorioOportunidad;
 
 use DB;
 class AppointmentReminder
@@ -25,7 +27,7 @@ class AppointmentReminder
                             ->join('users','users.id','recordatorios_prospecto.id_colaborador')
                             ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
                             ->join('prospectos','prospectos.id_prospecto','recordatorios_prospecto.id_prospecto')
-                            ->select('users.nombre','detalle_colaborador.celular','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','detalle_recordatorio_prospecto.nota_recordatorio','detalle_recordatorio_prospecto.fecha_recordatorio')
+                            ->select('recordatorios_prospecto.id_recordatorio_prospecto','users.nombre','detalle_colaborador.celular','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','detalle_recordatorio_prospecto.nota_recordatorio','detalle_recordatorio_prospecto.fecha_recordatorio')
                             ->where('recordatorios_prospecto.notification_sent',0)
                             ->whereBetween('detalle_recordatorio_prospecto.fecha_recordatorio',[$now, $inTwentyMinutes])->get();
        
@@ -34,7 +36,7 @@ class AppointmentReminder
                             ->join('users','users.id','recordatorios_oportunidad.id_colaborador')
                             ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
                             ->join('oportunidades','oportunidades.id_oportunidad','recordatorios_oportunidad.id_oportunidad')
-                            ->select('users.nombre','detalle_colaborador.celular','oportunidades.nombre_oportunidad','detalle_recordatorio_op.nota_recordatorio','detalle_recordatorio_op.fecha_recordatorio')
+                            ->select('recordatorios_oportunidad.id_recordatorio_oportunidad','users.nombre','detalle_colaborador.celular','oportunidades.nombre_oportunidad','detalle_recordatorio_op.nota_recordatorio','detalle_recordatorio_op.fecha_recordatorio')
                             ->where('recordatorios_oportunidad.notification_sent',0)
                             ->whereBetween('detalle_recordatorio_op.fecha_recordatorio',[$now, $inTwentyMinutes])->get();
 
@@ -53,8 +55,9 @@ class AppointmentReminder
                 $date = Carbon::parse($reminder->fecha_recordatorio)->format('H:i');
                 
                 DB::beginTransaction();
-                $reminder->notification_sent = 1;
-                $reminder->save();
+                $recordatorio = RecordatorioProspecto::where('id_recordatorio_prospecto',$reminder->id_recordatorio_prospecto)->first();
+                $recordatorio->notification_sent = 1;
+                $recordatorio->save();
                 DB::commit();
 
                 $this->twilioClient->messages->create(
@@ -69,8 +72,9 @@ class AppointmentReminder
                 $date = Carbon::parse($reminder->fecha_recordatorio)->format('H:i');
                 
                 DB::beginTransaction();
-                $reminder->notification_sent = 1;
-                $reminder->save();
+                $recordatorio = RecordatorioOportunidad::where('id_recordatorio_oportunidad',$reminder->id_recordatorio_oportunidad)->first();
+                $recordatorio->notification_sent = 1;
+                $recordatorio->save();
                 DB::commit();
 
                 $this->twilioClient->messages->create(
@@ -81,7 +85,13 @@ class AppointmentReminder
                 ));
         }
 
-        
+        return response()->json([
+            'error'=>false,
+            'mensajes_enviados_op'=>DB::table('recordatorios_oportunidad')
+                                    ->where('recordatorios_oportunidad.notification_sent',1)->get(),
+            'mensajes_enviado_pros'=> DB::table('recordatorios_prospecto')
+                                    ->where('recordatorios_prospecto.notification_sent',1)->get()
+        ]);
     }
 
     

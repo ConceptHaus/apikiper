@@ -37,6 +37,8 @@ use Carbon\Carbon;
 class ProspectosController extends Controller
 {
     public function registerProspecto(Request $request){
+        $auth = $this->guard()->user();
+
         $validator = $this->validadorProspectos($request->all());
         $oportunidades = $request->oportunidades;
         $etiquetas = $request->etiquetas;
@@ -136,7 +138,14 @@ class ProspectosController extends Controller
 
                 }
                 DB::commit();
-                //Log::channel('slack')->info('Funciona el registro de prospectos.'.' - '.env('APP_NAME'));
+                //Historial
+                    activity()
+                            ->performedOn($prospecto)
+                            ->causedBy($auth)
+                            ->withProperties(['accion'=>'agregó','color'=>'#39ce5f'])
+                            ->useLog('prospecto')
+                            ->log(':causer.nombre :causer.apellido :properties.accion un nuevo prospecto.');
+
                 return response()->json([
                         'message'=>'Registro Correcto',
                         'error'=>false,
@@ -186,8 +195,9 @@ class ProspectosController extends Controller
     }
 
     public function updateProspecto(Request $request, $id){
-            $prospecto = Prospecto::where('id_prospecto',$id)->first();
-            $detalle = DetalleProspecto::where('id_prospecto',$id)->first();
+        $auth = $this->guard()->user();
+        $prospecto = Prospecto::where('id_prospecto',$id)->first();
+        $detalle = DetalleProspecto::where('id_prospecto',$id)->first();
 
         try{
 
@@ -205,6 +215,15 @@ class ProspectosController extends Controller
             $prospecto->save();
             $detalle->save();
             DB::commit();
+
+            //Historial
+            activity()
+                ->performedOn($prospecto)
+                ->causedBy($auth)
+                ->withProperties(['accion'=>'editó','color'=>'#ffcf4c'])
+                ->useLog('prospecto')
+                ->log(':causer.nombre :causer.apellido :properties.accion el perfil de un prospecto.');
+                             
             return response()->json([
                 'error'=>false,
                 'message'=>'Actualizado Correctamente',
@@ -224,7 +243,8 @@ class ProspectosController extends Controller
     }
 
     public function deleteProspecto($id){
-
+      
+      $auth = $this->guard()->user();  
       $prospecto = Prospecto::where('id_prospecto',$id)->first();
       $op = ProspectoOportunidad::where('id_prospecto',$id)->get();
       // return $op;
@@ -232,17 +252,26 @@ class ProspectosController extends Controller
 
         try{
 
-          DB::beginTransaction();
-          foreach ($op as $opor) {
-            Oportunidad::where('id_oportunidad',$opor->id_oportunidad)->delete();
-          }
-          Prospecto::where('id_prospecto', $id)->delete();
-          DB::commit();
+            DB::beginTransaction();
+            foreach ($op as $opor) {
+                Oportunidad::where('id_oportunidad',$opor->id_oportunidad)->delete();
+            }
+            Prospecto::where('id_prospecto', $id)->delete();
+            DB::commit();
 
-          return response()->json([
-              'error'=>false,
-              'message'=>'Prospecto borrado correctamente.'
-          ],200);
+            //Historial
+            activity()
+                ->performedOn($prospecto)
+                ->causedBy($auth)
+                ->withProperties(['accion'=>'eliminó','color'=>'#f42c50'])
+                ->useLog('prospecto')
+                ->log(':causer.nombre :causer.apellido :properties.accion a un prospecto.');
+
+
+            return response()->json([
+                'error'=>false,
+                'message'=>'Prospecto borrado correctamente.'
+            ],200);
 
         }catch (Exception $e){
 
@@ -288,7 +317,7 @@ class ProspectosController extends Controller
     }
 
     public function addOportunidades(Request $request, $id){
-
+        $auth = $this->guard()->user();
         $validator = $this->validadorOportunidad($request->all());
         $prospecto = Prospecto::where('id_prospecto',$id)->first();
         $status_prospecto = StatusProspecto::where('id_prospecto',$id)->first();
@@ -359,6 +388,15 @@ class ProspectosController extends Controller
 
                 }
                 DB::commit();
+
+                //Historial
+                activity()
+                        ->performedOn($nueva_oportunidad)
+                        ->causedBy($auth)
+                        ->withProperties(['accion'=>'agregó','color'=>'#39ce5f'])
+                        ->useLog('oportunidad')
+                        ->log(':causer.nombre :causer.apellido :properties.accion una nueva oportunidad.');
+                                
                 return response()->json([
                         'message'=>'Oportunidad agregada correctamente.',
                         'error'=>false,

@@ -112,46 +112,60 @@ class UserController extends Controller
 
     }
 
-    public function updateME(Request $request){
+    public function updateMe(Request $request){
+        $auth = $this->guard()->user();
         $id_me = $this->guard()->user()->id;
         $me = User::where('id',$id_me)->first();
         $me_ext = DetalleColaborador::where('id_colaborador',$id_me)->first();
         $validator = $this->validatorUpdateMe($request->all());
-        // return $request->nombre;
+        
+        
         if($validator->passes()){
             try{
-            DB::beginTransaction();
-            $me->nombre = $request->nombre;
-            $me->apellido = $request->apellido;
-            $me_ext->puesto = $request->puesto;
-            $me_ext->telefono = $request->telefono;
-            $me_ext->celular = $request->celular;
-            $me_ext->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
-            $me->save();
-            $me->detalle()->save($me_ext);
-            $meRes = User::GetOneUser($id_me);
-            DB::commit();
-            return response()->json([
-                'message'=>'Success',
-                'error'=>false,
-                'data'=>$meRes
-                ]);
+                
+                DB::beginTransaction();
+                $me->nombre = $request->nombre;
+                $me->apellido = $request->apellido;
+                $me_ext->puesto = $request->puesto;
+                $me_ext->telefono = $request->telefono;
+                $me_ext->celular = $request->celular;
+                $me_ext->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
+                $me->save();
+                $me->detalle()->save($me_ext);
+                $meRes = User::GetOneUser($id_me);
+                DB::commit();
+                
+                //Historial
+                activity()
+                        ->performedOn($me)
+                        ->causedBy($auth)
+                        ->withProperties(['accion'=>'editó','color'=>'#ffcf4c'])
+                        ->useLog('perfil_colaborador')
+                        ->log(':causer.nombre :causer.apellido :properties.accion su perfil.');
+                        
+
+                return response()->json([
+                    'message'=>'Success',
+                    'error'=>false,
+                    'data'=>$meRes
+                    ]);
 
             }catch(Exception $e){
+                
                 DB::rollBack();
                 return response()->json([
-                    'message'=>$e,
-                    'error'=>true
-                ],400);
+                        'message'=>$e,
+                        'error'=>true
+                    ],400);
             }
         }
 
         $errores = $validator->errors()->toArray();
 
             return response()->json([
-                'error'=>true,
-                'messages'=> $errores
-            ],400);
+                    'error'=>true,
+                    'messages'=> $errores
+                ],400);
 
     }
 

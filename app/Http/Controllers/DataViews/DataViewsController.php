@@ -102,12 +102,6 @@ class DataViewsController extends Controller
         //Ingresos
         //Origen Prospecto
         //Historial
-        activity()
-            ->performedOn(Prospecto::with('fuente')->where('fuente',2)->first())
-            ->causedBy($this->guard()->user())
-            ->inLog('dashboard')
-            ->withProperties(['accion' => 'borró','color'=>'#000'])
-            ->log(':causer.nombre ha visto el Dashboard y :properties.accion informacion de :subject.nombre :subject.apellido proveniente de :subject.fuente.nombre');
         $inicioSemana = Carbon::now()->startOfWeek();
         $finSemana = Carbon::now()->endOfWeek();
         $period = CarbonPeriod::create($inicioSemana->toDateString(), $finSemana->toDateString());
@@ -242,7 +236,8 @@ class DataViewsController extends Controller
                 'colaboradores'=>$colaboradores,
                 'ingresos'=>number_format($ingresos,2),
                 'origen_prospecto'=>$origen,
-                'mes'=>$finMes
+                'activity'=>Activity::all()->last()->whereBetween('created_at',array($inicioMes ,$finMes))->get(),
+
             ]
             ],200);
 
@@ -314,8 +309,7 @@ class DataViewsController extends Controller
                 'colaboradores'=>$colaboradores,
                 'ingresos'=>number_format($ingresos,2),
                 'origen_prospecto'=>$origen,
-                'i_año'=>$inicioAnio,
-                'f_año'=>$finAnio
+                'activity'=>Activity::all()->last()->whereBetween('created_at',array($inicioAnio ,$finAnio))->get(),
             ]
             ],200);
 
@@ -1481,6 +1475,7 @@ class DataViewsController extends Controller
         ],200);
     }
     public function sendMail (Request $request){
+      $auth = $this->guard()->user();
       $data = $request->all();
       $validator = $this->validatorMail($data);
 
@@ -1490,8 +1485,8 @@ class DataViewsController extends Controller
         if($request->id_prospecto){
 
             DB::beginTransaction();
-            $statusProspecto = new StatusProspecto;
-            $statusProspecto->id_cat_status_prospecto = 1;
+            $prospecto = Prospecto::where('id_prospecto',$request->id_prospecto)->first();
+            
             
             $medio_contacto = new MedioContactoProspecto;
             $medio_contacto->id_mediocontacto_catalogo = 4;
@@ -1500,13 +1495,14 @@ class DataViewsController extends Controller
             $medio_contacto->fecha = Carbon::now();
             $medio_contacto->hora = Carbon::parse(Carbon::now())->format('H:i');
             
-            $prospecto = StatusProspecto::where('id_prospecto',$request->id_prospecto)->first();
-            $prospecto->id_cat_status_prospecto = 1;
-            $prospecto->save();
+            $statusProspecto = StatusProspecto::where('id_prospecto',$request->id_prospecto)->first();
+            $statusProspecto->id_cat_status_prospecto = 1;
+            $statusProspecto->save();
             $medio_contacto->save();
 
             DB::commit();
         }
+
 
 
         Mailgun::send('mailing.mail', $data, function ($message) use ($data){
@@ -1517,6 +1513,14 @@ class DataViewsController extends Controller
            $message->to($data['email_para'],$data['nombre_para']);
        });
 
+       //Historial
+        activity()
+                ->performedOn($prospecto)
+                ->causedBy($auth)
+                ->withProperties(['accion'=>'envió','color'=>'#7ac5ff'])
+                ->useLog('prospecto')
+                ->log(':causer.nombre :causer.apellido :properties.accion un correo a :subject.nombre :subject.apellido');
+                
        return response()->json([
          'error'=>false,
          'message'=>'Mail enviado correctamente',
@@ -1603,7 +1607,7 @@ class DataViewsController extends Controller
 
 
     public function addMedioContactoProspecto(Request $request){
-
+      $auth = $this->guard()->user();
       $validator = $this->validatorMedioContactoProspecto($request->all());
       $colaborador = $this->guard()->user();
 
