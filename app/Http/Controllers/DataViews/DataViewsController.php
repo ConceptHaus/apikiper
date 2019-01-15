@@ -151,7 +151,14 @@ class DataViewsController extends Controller
                     ->whereBetween('prospectos.created_at', array($inicioSemana ,$finSemana))
                     ->groupBy('cat_fuentes.nombre')->get();
 
+        if(Activity::all()->last() != null){
 
+            $activity = Activity::all()->last()->whereBetween('created_at',array($inicioSemana ,$finSemana))->get();
+        }else{
+            
+            $activity = null;
+        }
+        
         return response()->json([
             'message'=>'Success',
             'error'=>false,
@@ -162,7 +169,7 @@ class DataViewsController extends Controller
                 'colaboradores'=>$colaboradores,
                 'ingresos'=>number_format($ingresos,2),
                 'origen_prospecto'=>$origen,
-                'activity'=>Activity::all()->last()->whereBetween('created_at',array($inicioSemana ,$finSemana))->get(),
+                'activity'=>$activity
 
             ]
             ],200);
@@ -226,6 +233,14 @@ class DataViewsController extends Controller
                     ->whereBetween('prospectos.created_at', array($inicioMes ,$finMes))
                     ->groupBy('cat_fuentes.nombre')->get();
 
+        if(Activity::all()->last() != null){
+
+            $activity = Activity::all()->last()->whereBetween('created_at',array($inicioMes ,$finMes))->get();
+        }else{
+            
+            $activity = null;
+        }
+
         return response()->json([
             'message'=>'Success',
             'error'=>false,
@@ -236,7 +251,7 @@ class DataViewsController extends Controller
                 'colaboradores'=>$colaboradores,
                 'ingresos'=>number_format($ingresos,2),
                 'origen_prospecto'=>$origen,
-                'activity'=>Activity::all()->last()->whereBetween('created_at',array($inicioMes ,$finMes))->get(),
+                'activity'=>$activity
 
             ]
             ],200);
@@ -299,6 +314,14 @@ class DataViewsController extends Controller
                     ->whereBetween('prospectos.created_at', array($inicioAnio ,$finAnio))
                     ->groupBy('cat_fuentes.nombre')->get();
 
+        if(Activity::all()->last() != null){
+
+            $activity = Activity::all()->last()->whereBetween('created_at',array($inicioAnio ,$finAnio))->get();
+        }else{
+            
+            $activity = null;
+        }
+        
         return response()->json([
             'message'=>'Correcto',
             'error'=>false,
@@ -309,7 +332,7 @@ class DataViewsController extends Controller
                 'colaboradores'=>$colaboradores,
                 'ingresos'=>number_format($ingresos,2),
                 'origen_prospecto'=>$origen,
-                'activity'=>Activity::all()->last()->whereBetween('created_at',array($inicioAnio ,$finAnio))->get(),
+                'activity'=>$activity
             ]
             ],200);
 
