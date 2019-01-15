@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\CausesActivity;
 
 
 use Alsofronie\Uuid\UuidModelTrait;
@@ -18,6 +19,7 @@ class User extends Authenticatable implements JWTSubject
     use Notifiable;
     use UuidModelTrait;
     use softDeletes;
+    use CausesActivity;
     use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
 
     // protected $dates = ['deleted_at'];

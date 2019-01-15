@@ -9,6 +9,8 @@ use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 //use Illuminate\Support\Facades\Log;
+use Spatie\Activitylog\Models\Activity;
+
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 
@@ -100,6 +102,12 @@ class DataViewsController extends Controller
         //Ingresos
         //Origen Prospecto
         //Historial
+        activity()
+            ->performedOn(Prospecto::with('fuente')->where('fuente',2)->first())
+            ->causedBy($this->guard()->user())
+            ->inLog('dashboard')
+            ->withProperties(['accion' => 'borró','color'=>'#000'])
+            ->log(':causer.nombre ha visto el Dashboard y :properties.accion informacion de :subject.nombre :subject.apellido proveniente de :subject.fuente.nombre');
         $inicioSemana = Carbon::now()->startOfWeek();
         $finSemana = Carbon::now()->endOfWeek();
         $period = CarbonPeriod::create($inicioSemana->toDateString(), $finSemana->toDateString());
@@ -160,7 +168,8 @@ class DataViewsController extends Controller
                 'colaboradores'=>$colaboradores,
                 'ingresos'=>number_format($ingresos,2),
                 'origen_prospecto'=>$origen,
-                'semana'=>$period->toArray()
+                'activity'=>Activity::all()->last()->whereBetween('created_at',array($inicioSemana ,$finSemana))->get(),
+
             ]
             ],200);
 
