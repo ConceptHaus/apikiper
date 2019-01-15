@@ -107,7 +107,8 @@ class UserController extends Controller
                 'status_2'=>$this->statusEmpty($status_2,2),
                 'status_3'=>$this->statusEmpty($status_3,3)
             ],
-            'recordatorios'=>$recordatorios
+            'recordatorios'=>$recordatorios,
+            'activity'=>$this->guard()->user()->actions
         ],200);
 
     }

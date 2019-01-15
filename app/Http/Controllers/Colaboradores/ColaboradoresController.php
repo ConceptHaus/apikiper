@@ -210,7 +210,8 @@ class ColaboradoresController extends Controller
               'status_2'=>$this->statusEmpty($status_2,2),
               'status_3'=>$this->statusEmpty($status_3,3)
           ],
-          'recordatorios'=>$recordatorios
+          'recordatorios'=>$recordatorios,
+          'activity'=>$user->actions
       ],200);
     }
 
