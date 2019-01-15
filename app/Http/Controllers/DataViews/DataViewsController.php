@@ -10,10 +10,11 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 //use Illuminate\Support\Facades\Log;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\CalendarLinks\Link;
 
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
-
+use DateTime;
 
 use App\Modelos\Prospecto\Prospecto;
 use App\Modelos\Prospecto\StatusProspecto;
@@ -25,7 +26,8 @@ use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Modelos\Prospecto\CatMedioContacto;
 use App\Modelos\Prospecto\MedioContactoProspecto;
 use App\Modelos\Oportunidad\MedioContactoOportunidad;
-
+use App\Modelos\Extras\EventoProspecto;
+use App\Modelos\Extras\DetalleEventoProspecto;
 use App\Modelos\Extras\RecordatorioProspecto;
 use App\Modelos\Extras\DetalleRecordatorioProspecto;
 
@@ -1644,24 +1646,33 @@ class DataViewsController extends Controller
           $medio_contacto_prospecto->descripcion = $request->descripcion;
           $medio_contacto_prospecto->fecha = $request->fecha;
           $medio_contacto_prospecto->hora = $request->hora;
-          $medio_contacto_prospecto->lugar =$request->lugar;
+          $medio_contacto_prospecto->lugar = $request->lugar;
           $medio_contacto_prospecto->save();
 
           $status = StatusProspecto::where('id_prospecto',$request->id_prospecto)->first();
           $status->id_cat_status_prospecto = 1;
           $status->save();
           DB::commit();
-          if($medio_contacto_prospecto->id_mediocontacto_catalogo == 6){
-                $recordatorio = new RecordatorioProspecto;
-                $recordatorio->id_colaborador = $colaborador->id;
-                $recordatorio->id_prospecto = $request->id_prospecto;
-                $recordatorio->save();
-                $detalle_recordatorio = new DetalleRecordatorioProspecto;
-                $detalle_recordatorio->id_recordatorio_prospecto = $recordatorio->id_recordatorio_prospecto;
-                $detalle_recordatorio->fecha_recordatorio = $request->fecha;
-                $detalle_recordatorio->hora_recordatorio = $request->hora;
-                $detalle_recordatorio->nota_recordatorio = $request->descripcion;
-                $recordatorio->detalle()->save($detalle_recordatorio);
+          if($medio_contacto_prospecto->id_mediocontacto_catalogo == 5){
+                $evento = new EventoProspecto;
+                $evento->id_colaborador = $colaborador->id;
+                $evento->id_prospecto = $request->id_prospecto;
+                $evento->save();
+                $detalle_evento = new DetalleEventoProspecto;
+                $detalle_evento->id_evento_prospecto = $evento->id_evento_prospecto;
+                $detalle_evento->fecha_evento = $request->fecha;
+                $detalle_evento->hora_evento = $request->hora;
+                $detalle_evento->nota_evento = $request->descripcion;
+                $detalle_evento->lugar_evento = $request->lugar;
+                $evento->detalle()->save($detalle_evento);
+                
+                $time = Carbon::parse($detalle_evento->fecha_evento);
+                //return response()->json($time);
+                $link = Link::create('Evento Kiper', $time,$time)
+                        ->description($detalle_evento->nota_evento)
+                        ->address($detalle_evento->lugar_evento);
+          }else{
+              $link = null;
           }
          
           
@@ -1679,7 +1690,10 @@ class DataViewsController extends Controller
 
           return response()->json([
             'error'=>false,
-            'message'=>'Medio de contacto agregago exitósamente.'
+            'message'=>'Medio de contacto agregago exitósamente.',
+            'links'=>['google'=>$link->google(),
+                                  'outlook'=>$link->webOutlook(),
+                                  'ics'=>$link->ics()]
           ],200);
 
         } catch (Exception $e) {

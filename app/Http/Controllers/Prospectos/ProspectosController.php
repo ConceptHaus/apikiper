@@ -9,7 +9,7 @@ use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-//use Illuminate\Support\Facades\Log;
+use Spatie\CalendarLinks\Link;
 
 use App\Modelos\User;
 use App\Modelos\Prospecto\Prospecto;
@@ -29,6 +29,7 @@ use App\Modelos\Extras\DetalleEvento;
 use App\Modelos\Oportunidad\StatusOportunidad;
 use App\Modelos\Prospecto\StatusProspecto;
 use App\Modelos\Prospecto\CatStatusProspecto;
+
 
 use DB;
 use Mail;
@@ -505,11 +506,18 @@ class ProspectosController extends Controller
                 $detalle_evento->lugar_evento = $request->lugar_evento;
                 $evento->detalle()->save($detalle_evento);
 
+                $link = Link::create('Evento Kiper', $detalle_evento->fecha_evento,$detalle_evento->fecha_evento)
+                        ->description($detalle_evento->nota_evento)
+                        ->address($request->lugar_evento);
+
                 DB::commit();
                 return response()->json([
                         'message'=>'Registro Correcto',
                         'error'=>false,
                         'data'=>$evento,
+                        'links'=>['google'=>$link->google(),
+                                  'outlook'=>$link->webOutlook(),
+                                  'ics'=>$link->ics()]
                     ],200);
 
 
