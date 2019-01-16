@@ -143,7 +143,7 @@ class ProspectosController extends Controller
                     activity()
                             ->performedOn($prospecto)
                             ->causedBy($auth)
-                            ->withProperties(['accion'=>'agregó','color'=>'#39ce5f'])
+                            ->withProperties(['accion'=>'Agregó','color'=>'#39ce5f'])
                             ->useLog('prospecto')
                             ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion un nuevo prospecto. </span>');
 
@@ -221,7 +221,7 @@ class ProspectosController extends Controller
             activity()
                 ->performedOn($prospecto)
                 ->causedBy($auth)
-                ->withProperties(['accion'=>'editó','color'=>'#ffcf4c'])
+                ->withProperties(['accion'=>'Editó','color'=>'#ffcf4c'])
                 ->useLog('prospecto')
                 ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion el perfil de un prospecto.</span>');
                              
@@ -264,7 +264,7 @@ class ProspectosController extends Controller
             activity()
                 ->performedOn($prospecto)
                 ->causedBy($auth)
-                ->withProperties(['accion'=>'eliminó','color'=>'#f42c50'])
+                ->withProperties(['accion'=>'Eliminó','color'=>'#f42c50'])
                 ->useLog('prospecto')
                 ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion a un prospecto.</span>');
 
@@ -394,7 +394,7 @@ class ProspectosController extends Controller
                 activity()
                         ->performedOn($nueva_oportunidad)
                         ->causedBy($auth)
-                        ->withProperties(['accion'=>'agregó','color'=>'#39ce5f'])
+                        ->withProperties(['accion'=>'Agregó','color'=>'#39ce5f'])
                         ->useLog('oportunidad')
                         ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion una nueva oportunidad. </span>');
                                 

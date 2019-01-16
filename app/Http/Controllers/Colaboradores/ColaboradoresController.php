@@ -103,7 +103,7 @@ class ColaboradoresController extends Controller
                         activity()
                                 ->performedOn($colaborador)
                                 ->causedBy($auth)
-                                ->withProperties(['accion'=>'agregó','color'=>'#39ce5f'])
+                                ->withProperties(['accion'=>'Agregó','color'=>'#39ce5f'])
                                 ->useLog('colaborador')
                                 ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion un nuevo colaborador.</span>');
                                 
@@ -257,7 +257,7 @@ class ColaboradoresController extends Controller
                 activity()
                     ->performedOn($colaborador)
                     ->causedBy($auth)
-                    ->withProperties(['accion'=>'editó','color'=>'#ffcf4c'])
+                    ->withProperties(['accion'=>'Editó','color'=>'#ffcf4c'])
                     ->useLog('colaborador')
                     ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion el perfil de un colaborador.</span>');
                                 
@@ -334,7 +334,7 @@ class ColaboradoresController extends Controller
                 activity()
                     ->performedOn($borrar)
                     ->causedBy($auth)
-                    ->withProperties(['accion'=>'eliminó','color'=>'#f42c50'])
+                    ->withProperties(['accion'=>'Eliminó','color'=>'#f42c50'])
                     ->useLog('colaborador')
                     ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion a un colaborador.</span>');
 

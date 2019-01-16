@@ -1542,7 +1542,7 @@ class DataViewsController extends Controller
         activity()
                 ->performedOn($prospecto)
                 ->causedBy($auth)
-                ->withProperties(['accion'=>'envió','color'=>'#7ac5ff'])
+                ->withProperties(['accion'=>'Envió','color'=>'#7ac5ff'])
                 ->useLog('prospecto')
                 ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion un correo a :subject.nombre :subject.apellido </span>');
                 
@@ -1684,7 +1684,7 @@ class DataViewsController extends Controller
                 ->performedOn($prospecto)
                 ->causedBy($auth)
                 ->withProperties(['accion'=>$details_medio->medio_contacto->nombre,'color'=>$details_medio->medio_contacto->color])
-                ->log(':causer.nombre :causer.apellido contactó vía :properties.accion a :subject.nombre :subject.apellido .');
+                ->log(':causer.nombre :causer.apellido<br> <span class="histroial_status"> Contactó vía :properties.accion a :subject.nombre :subject.apellido .</span>');
           
 
 

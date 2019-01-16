@@ -242,8 +242,8 @@ class OportunidadesController extends Controller
             activity('oportunidad')
                 ->performedOn($oportunidad)
                 ->causedBy($auth)
-                ->withProperties(['accion'=>'eliminó','color'=>'#f42c50'])
-                ->log(':causer.nombre :causer.apellido :properties.accion :subject.nombre_oportunidad .');
+                ->withProperties(['accion'=>'Eliminó','color'=>'#f42c50'])
+                ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion :subject.nombre_oportunidad .</span>');
 
           return response()->json([
             'error'=>false,
@@ -752,9 +752,9 @@ class OportunidadesController extends Controller
             activity('oportunidad')
                 ->performedOn($oportunidad)
                 ->causedBy($auth)
-                ->withProperties(['accion'=>'cambió','color'=>'#7ac5ff'])
+                ->withProperties(['accion'=>'Cambió','color'=>'#7ac5ff'])
                 ->useLog('colaborador')
-                ->log(':causer.nombre :causer.apellido cambió de status :subject.nombre_oportunidad .');
+                ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> Cambió de status :subject.nombre_oportunidad .</span>');
                 
             return response()->json([
                 'error'=>false,

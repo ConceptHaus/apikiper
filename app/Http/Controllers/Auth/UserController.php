@@ -140,7 +140,7 @@ class UserController extends Controller
                 activity()
                         ->performedOn($me)
                         ->causedBy($auth)
-                        ->withProperties(['accion'=>'editó','color'=>'#ffcf4c'])
+                        ->withProperties(['accion'=>'Editó','color'=>'#ffcf4c'])
                         ->useLog('perfil_colaborador')
                         ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion su perfil. </span>');
                         
