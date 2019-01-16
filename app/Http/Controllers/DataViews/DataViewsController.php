@@ -687,8 +687,8 @@ class DataViewsController extends Controller
                 ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                 ->whereNull('oportunidades.deleted_at')
                 ->whereNull('colaborador_oportunidad.deleted_at')
-                ->select('users.id','users.nombre','users.apellido','fotos_colaboradores.url_foto',DB::raw('count(*) as cerradas, users.email'))
                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
+                ->select('users.id','users.nombre','users.apellido','fotos_colaboradores.url_foto',DB::raw('count(*) as cerradas, users.email'))
                 ->groupBy('users.email')->orderBy('cerradas','desc')->limit(3)->get();
 
 
