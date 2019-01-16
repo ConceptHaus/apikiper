@@ -155,7 +155,7 @@ class DataViewsController extends Controller
 
         if(Activity::all()->last() != null){
 
-            $activity = Activity::all()->last()->whereBetween('created_at',array($inicioSemana ,$finSemana))->get();
+            $activity = Activity::all()->last()->whereBetween('created_at',array($inicioSemana ,$finSemana))->orderBy('created_at','desc')->get();
         }else{
             
             $activity = null;
@@ -237,7 +237,7 @@ class DataViewsController extends Controller
 
         if(Activity::all()->last() != null){
 
-            $activity = Activity::all()->last()->whereBetween('created_at',array($inicioMes ,$finMes))->get();
+            $activity = Activity::all()->last()->whereBetween('created_at',array($inicioMes ,$finMes))->orderBy('created_at','desc')->get();
         }else{
             
             $activity = null;
@@ -318,7 +318,7 @@ class DataViewsController extends Controller
 
         if(Activity::all()->last() != null){
 
-            $activity = Activity::all()->last()->whereBetween('created_at',array($inicioAnio ,$finAnio))->get();
+            $activity = Activity::all()->last()->whereBetween('created_at',array($inicioAnio ,$finAnio))->orderBy('created_at','desc')->get();
         }else{
             
             $activity = null;
@@ -1685,7 +1685,7 @@ class DataViewsController extends Controller
                 ->performedOn($prospecto)
                 ->causedBy($auth)
                 ->withProperties(['accion'=>$details_medio->medio_contacto->nombre,'color'=>$details_medio->medio_contacto->color])
-                ->log(':causer.nombre :causer.apellido<br> <span class="histroial_status"> Contactó vía :properties.accion a :subject.nombre :subject.apellido .</span>');
+                ->log(':causer.nombre :causer.apellido<br> <span class="histroial_status"> Contactó vía :properties.accion a :subject.nombre :subject.apellido </span>');
           
 
 
