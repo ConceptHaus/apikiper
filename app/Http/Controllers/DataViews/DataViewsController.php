@@ -115,10 +115,12 @@ class DataViewsController extends Controller
         $oportuniades_cerradas = DB::table('oportunidades')
                                     ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                                     ->whereBetween('status_oportunidad.updated_at', array($inicioSemana ,$finSemana))
+                                    ->whereNull('oportunidades.deleted_at')
                                     ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
 
         $oportunidades_cotizadas =  DB::table('oportunidades')
                                     ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                                    ->whereNull('oportunidades.deleted_at')
                                     ->whereBetween('status_oportunidad.updated_at', array($inicioSemana ,$finSemana))
                                     ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
 
@@ -128,6 +130,7 @@ class DataViewsController extends Controller
                                 ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
                                 ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
                                 ->select('users.nombre','users.apellido','detalle_colaborador.puesto','fotos_colaboradores.url_foto',DB::raw('count(*) as oportunidades_cerradas, users.id'))
+                                ->whereNull('colaborador_oportunidad.deleted_at')
                                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
                                 ->whereBetween('status_oportunidad.updated_at', array($inicioSemana ,$finSemana))
                                 ->groupBy('users.id')
@@ -193,11 +196,13 @@ class DataViewsController extends Controller
 
         $oportuniades_cerradas = DB::table('oportunidades')
                                     ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                                    ->whereNull('oportunidades.deleted_at')
                                     ->whereBetween('status_oportunidad.updated_at', array($inicioMes ,$finMes))
                                     ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
 
         $oportunidades_cotizadas =  DB::table('oportunidades')
                                     ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                                    ->whereNull('oportunidades.deleted_at')
                                     ->whereBetween('status_oportunidad.updated_at', array($inicioMes ,$finMes))
                                     ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
 
@@ -207,6 +212,7 @@ class DataViewsController extends Controller
                                 ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
                                 ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
                                 ->select('users.nombre','users.apellido','detalle_colaborador.puesto','fotos_colaboradores.url_foto',DB::raw('count(*) as oportunidades_cerradas, users.id'))
+                                ->whereNull('colaborador_oportunidad.deleted_at')
                                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
                                 ->whereBetween('status_oportunidad.updated_at', array($inicioMes ,$finMes))
                                 ->groupBy('users.id')
@@ -275,11 +281,13 @@ class DataViewsController extends Controller
 
         $oportuniades_cerradas = DB::table('oportunidades')
                                     ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                                    ->whereNull('oportunidades.deleted_at')
                                     ->whereBetween('status_oportunidad.updated_at', array($inicioAnio ,$finAnio))
                                     ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
 
         $oportunidades_cotizadas =  DB::table('oportunidades')
                                     ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                                    ->whereNull('oportunidades.deleted_at')
                                     ->whereBetween('status_oportunidad.updated_at', array($inicioAnio ,$finAnio))
                                     ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
 
@@ -289,6 +297,7 @@ class DataViewsController extends Controller
                                 ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
                                 ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
                                 ->select('users.nombre','users.apellido','detalle_colaborador.puesto','fotos_colaboradores.url_foto',DB::raw('count(*) as oportunidades_cerradas, users.id'))
+                                ->whereNull('colaborador_oportunidad.deleted_at')
                                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
                                 ->whereBetween('status_oportunidad.updated_at', array($inicioAnio ,$finAnio))
                                 ->groupBy('users.id')
@@ -466,23 +475,27 @@ class DataViewsController extends Controller
 
         $oportunidades_total = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->whereNull('oportunidades.deleted_at')
                             ->where('colaborador_oportunidad.id_colaborador',$id)->count();
 
         $oportunidades_cotizadas = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->whereNull('oportunidades.deleted_at')
                             ->where('colaborador_oportunidad.id_colaborador','=',$id)
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
 
         $oportunidades_cerradas = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->whereNull('oportunidades.deleted_at')
                             ->where('colaborador_oportunidad.id_colaborador','=',$id)
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
 
         $oportunidades_no_viables = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->whereNull('oportunidades.deleted_at')
                             ->where('colaborador_oportunidad.id_colaborador','=',$id)
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',3)->count();
 
@@ -1662,7 +1675,23 @@ class DataViewsController extends Controller
           $status->id_cat_status_prospecto = 1;
           $status->save();
           DB::commit();
-          if($medio_contacto_prospecto->id_mediocontacto_catalogo == 5){
+          
+         
+          
+          $details_medio = MedioContactoProspecto::with('medio_contacto')->where('id_medio_contacto_prospecto',$medio_contacto_prospecto->id_medio_contacto_prospecto)->first();
+          //Historial
+          
+                
+            activity('prospecto')
+                ->performedOn($prospecto)
+                ->causedBy($auth)
+                ->withProperties(['accion'=>$details_medio->medio_contacto->nombre,'color'=>$details_medio->medio_contacto->color])
+                ->log(':causer.nombre :causer.apellido<br> <span class="histroial_status"> Contactó vía :properties.accion a :subject.nombre :subject.apellido </span>');
+          
+
+          
+            if($medio_contacto_prospecto->id_mediocontacto_catalogo == 5){
+                
                 $evento = new EventoProspecto;
                 $evento->id_colaborador = $colaborador->id;
                 $evento->id_prospecto = $request->id_prospecto;
@@ -1680,31 +1709,26 @@ class DataViewsController extends Controller
                 $link = Link::create('Evento Kiper', $time,$time)
                         ->description($detalle_evento->nota_evento)
                         ->address($detalle_evento->lugar_evento);
-          }else{
-              
-                $link = null;
-          }
-         
-          
-          $details_medio = MedioContactoProspecto::with('medio_contacto')->where('id_medio_contacto_prospecto',$medio_contacto_prospecto->id_medio_contacto_prospecto)->first();
-          //Historial
-          
                 
-            activity('prospecto')
-                ->performedOn($prospecto)
-                ->causedBy($auth)
-                ->withProperties(['accion'=>$details_medio->medio_contacto->nombre,'color'=>$details_medio->medio_contacto->color])
-                ->log(':causer.nombre :causer.apellido<br> <span class="histroial_status"> Contactó vía :properties.accion a :subject.nombre :subject.apellido </span>');
+                return response()->json([
+                    'error'=>false,
+                    'message'=>'Medio de contacto agregago exitósamente.',
+                    'links'=>['google'=>$link->google(),
+                                          'outlook'=>$link->webOutlook(),
+                                          'ics'=>$link->ics()]
+                 ],200);
+
+            }else{
+                
+               return response()->json([
+                    'error'=>false,
+                    'message'=>'Medio de contacto agregago exitósamente.',
+                ],200);
+
+            }
+
+
           
-
-
-          return response()->json([
-            'error'=>false,
-            'message'=>'Medio de contacto agregago exitósamente.',
-            // 'links'=>['google'=>$link->google(),
-            //                       'outlook'=>$link->webOutlook(),
-            //                       'ics'=>$link->ics()]
-          ],200);
 
         } catch (Exception $e) {
           DB::rollBack();
