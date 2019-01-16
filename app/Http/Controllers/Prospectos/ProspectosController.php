@@ -647,7 +647,7 @@ class ProspectosController extends Controller
                             $archivo_prospecto = new ArchivosProspectoColaborador;
                             $archivo_prospecto->id_prospecto = $prospecto->id_prospecto;
                             $archivo_prospecto->id_colaborador = $colaborador->id;
-                            $archivo_prospecto->nombre = 'prospecto_file_'.time().'.'.$request->image->getClientOriginalExtension();
+                            $archivo_prospecto->nombre = $request->image->getClientOriginalName();
                             // if(isset($file['desc'])){
                             //     $archivo_prospecto->desc = $file['desc'];
                             // }
