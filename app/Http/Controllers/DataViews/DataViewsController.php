@@ -1672,7 +1672,8 @@ class DataViewsController extends Controller
                         ->description($detalle_evento->nota_evento)
                         ->address($detalle_evento->lugar_evento);
           }else{
-              $link = null;
+              
+                $link = null;
           }
          
           
@@ -1691,9 +1692,9 @@ class DataViewsController extends Controller
           return response()->json([
             'error'=>false,
             'message'=>'Medio de contacto agregago exitósamente.',
-            'links'=>['google'=>$link->google(),
-                                  'outlook'=>$link->webOutlook(),
-                                  'ics'=>$link->ics()]
+            // 'links'=>['google'=>$link->google(),
+            //                       'outlook'=>$link->webOutlook(),
+            //                       'ics'=>$link->ics()]
           ],200);
 
         } catch (Exception $e) {
