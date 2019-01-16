@@ -1567,13 +1567,22 @@ class DataViewsController extends Controller
     }
 
     public function cambioStatusProspecto ($id, Request $request){
-
+        $prospecto = Prospecto::where('id_prospecto',$id)->first();
+        $auth = $this->guard()->user();
       try {
         DB::beginTransaction();
         $statusProspecto = StatusProspecto::where('id_prospecto',$id)->first();
         $statusProspecto->id_cat_status_prospecto = intval($request->status);
         $statusProspecto->save();
         DB::commit();
+
+        activity('prospecto')
+                ->performedOn($prospecto)
+                ->causedBy($auth)
+                ->withProperties(['accion'=>'Cambió','color'=>'#7ac5ff'])
+                ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> Cambió de status a :subject.nombre :subject.apellido </span>');
+                
+
         return response()->json([
             'error'=>false,
             'message'=>'El status ha cambiado.'

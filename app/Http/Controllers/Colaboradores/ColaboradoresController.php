@@ -100,11 +100,10 @@ class ColaboradoresController extends Controller
 
                     DB::commit();
                     //Historial
-                        activity()
+                        activity('colaborador')
                                 ->performedOn($colaborador)
                                 ->causedBy($auth)
                                 ->withProperties(['accion'=>'Agregó','color'=>'#39ce5f'])
-                                ->useLog('colaborador')
                                 ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion un nuevo colaborador.</span>');
                                 
 

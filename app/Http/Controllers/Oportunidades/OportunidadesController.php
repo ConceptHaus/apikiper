@@ -619,7 +619,8 @@ class OportunidadesController extends Controller
 
 
         $detalle = DetalleOportunidad::where('id_oportunidad',$id)->first();
-
+        $auth = $this->guard()->user();
+        $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
         try{
 
             DB::beginTransaction();
@@ -631,6 +632,11 @@ class OportunidadesController extends Controller
             $detalle->valor = $valor;
             $detalle->save();
             DB::commit();
+            activity('oportunidad')
+                ->performedOn($oportunidad)
+                ->causedBy($auth)
+                ->withProperties(['accion'=>'Cambió','color'=>'#7ac5ff'])
+                ->log(':causer.nombre :causer.apellido <br><span class="histroial_status"> :properties.accion el valor de :subject.nombre_oportunidad </span>');
 
             return response()->json([
                 'error'=>false,
@@ -753,7 +759,6 @@ class OportunidadesController extends Controller
                 ->performedOn($oportunidad)
                 ->causedBy($auth)
                 ->withProperties(['accion'=>'Cambió','color'=>'#7ac5ff'])
-                ->useLog('colaborador')
                 ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> Cambió de status :subject.nombre_oportunidad </span>');
                 
             return response()->json([
