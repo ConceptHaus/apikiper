@@ -1544,7 +1544,7 @@ class DataViewsController extends Controller
                 ->causedBy($auth)
                 ->withProperties(['accion'=>'envió','color'=>'#7ac5ff'])
                 ->useLog('prospecto')
-                ->log(':causer.nombre :causer.apellido :properties.accion un correo a :subject.nombre :subject.apellido');
+                ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion un correo a :subject.nombre :subject.apellido </span>');
                 
        return response()->json([
          'error'=>false,

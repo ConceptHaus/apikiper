@@ -145,7 +145,7 @@ class ProspectosController extends Controller
                             ->causedBy($auth)
                             ->withProperties(['accion'=>'agregó','color'=>'#39ce5f'])
                             ->useLog('prospecto')
-                            ->log(':causer.nombre :causer.apellido :properties.accion un nuevo prospecto.');
+                            ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion un nuevo prospecto. </span>');
 
                 return response()->json([
                         'message'=>'Registro Correcto',
@@ -223,7 +223,7 @@ class ProspectosController extends Controller
                 ->causedBy($auth)
                 ->withProperties(['accion'=>'editó','color'=>'#ffcf4c'])
                 ->useLog('prospecto')
-                ->log(':causer.nombre :causer.apellido :properties.accion el perfil de un prospecto.');
+                ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion el perfil de un prospecto.</span>');
                              
             return response()->json([
                 'error'=>false,
@@ -266,7 +266,7 @@ class ProspectosController extends Controller
                 ->causedBy($auth)
                 ->withProperties(['accion'=>'eliminó','color'=>'#f42c50'])
                 ->useLog('prospecto')
-                ->log(':causer.nombre :causer.apellido :properties.accion a un prospecto.');
+                ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion a un prospecto.</span>');
 
 
             return response()->json([
@@ -396,7 +396,7 @@ class ProspectosController extends Controller
                         ->causedBy($auth)
                         ->withProperties(['accion'=>'agregó','color'=>'#39ce5f'])
                         ->useLog('oportunidad')
-                        ->log(':causer.nombre :causer.apellido :properties.accion una nueva oportunidad.');
+                        ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion una nueva oportunidad. </span>');
                                 
                 return response()->json([
                         'message'=>'Oportunidad agregada correctamente.',

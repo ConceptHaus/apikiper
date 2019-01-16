@@ -105,7 +105,7 @@ class ColaboradoresController extends Controller
                                 ->causedBy($auth)
                                 ->withProperties(['accion'=>'agregó','color'=>'#39ce5f'])
                                 ->useLog('colaborador')
-                                ->log(':causer.nombre :causer.apellido :properties.accion un nuevo colaborador.');
+                                ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion un nuevo colaborador.</span>');
                                 
 
                     return response()->json([
@@ -259,7 +259,7 @@ class ColaboradoresController extends Controller
                     ->causedBy($auth)
                     ->withProperties(['accion'=>'editó','color'=>'#ffcf4c'])
                     ->useLog('colaborador')
-                    ->log(':causer.nombre :causer.apellido :properties.accion el perfil de un colaborador.');
+                    ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion el perfil de un colaborador.</span>');
                                 
             return response()->json([
                 'message'=>'Correcto',
@@ -336,7 +336,7 @@ class ColaboradoresController extends Controller
                     ->causedBy($auth)
                     ->withProperties(['accion'=>'eliminó','color'=>'#f42c50'])
                     ->useLog('colaborador')
-                    ->log(':causer.nombre :causer.apellido :properties.accion a un colaborador.');
+                    ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion a un colaborador.</span>');
 
           return response()->json([
               'message'=>'Borrado Correctamente',
