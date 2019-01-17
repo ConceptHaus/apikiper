@@ -49,17 +49,28 @@ class DataViewsController extends Controller
 
         $oportuniades_cerradas = DB::table('oportunidades')
                                     ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
-                                    ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
+                                    ->wherenull('oportunidades.deleted_at')
+                                    ->wherenull('status_oportunidad.deleted_at')
+                                    ->where('status_oportunidad.id_cat_status_oportunidad','=',2)
+                                    ->count();
 
         $oportunidades_cotizadas =  DB::table('oportunidades')
                                     ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
-                                    ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
+                                    ->wherenull('oportunidades.deleted_at')
+                                    ->wherenull('status_oportunidad.deleted_at')
+                                    ->where('status_oportunidad.id_cat_status_oportunidad','=',1)
+                                    ->count();
 
         $colaboradores = DB::table('users')
                                 ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
                                 ->join('fotos_colaboradores','users.id','fotos_colaboradores.id_colaborador')
                                 ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
                                 ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                                ->wherenull('detalle_colaborador.deleted_at')
+                                ->wherenull('users.deleted_at')
+                                ->wherenull('fotos_colaboradores.deleted_at')
+                                ->wherenull('colaborador_oportunidad.deleted_at')
+                                ->wherenull('status_oportunidad.deleted_at')
                                 ->select('users.nombre','users.apellido','detalle_colaborador.puesto','fotos_colaboradores.url_foto',DB::raw('count(*) as oportunidades_cerradas, users.id'))
                                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
                                 ->groupBy('users.id')
@@ -68,16 +79,23 @@ class DataViewsController extends Controller
 
         $prospectos_sin_contactar = DB::table('prospectos')
                                 ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+                                ->wherenull('prospectos.deleted_at')
+                                ->wherenull('status_prospecto.deleted_at')
                                 ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
 
         $ingresos = DB::table('oportunidades')
                     ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
                     ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                    ->wherenull('oportunidades.deleted_at')
+                    ->wherenull('detalle_oportunidad.deleted_at')
+                    ->wherenull('status_oportunidad.deleted_at')
                     ->where('status_oportunidad.id_cat_status_oportunidad',2)
                     ->sum('detalle_oportunidad.valor');
 
         $origen = DB::table('prospectos')
                     ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                    ->wherenull('prospectos.deleted_at')
+                    ->wherenull('cat_fuentes.deleted_at')
                     ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
                     ->groupBy('cat_fuentes.nombre')->get();
 
@@ -108,56 +126,15 @@ class DataViewsController extends Controller
         $finSemana = Carbon::now()->endOfWeek();
         $period = CarbonPeriod::create($inicioSemana->toDateString(), $finSemana->toDateString());
 
-
         $semana = new Carbon('last week');
         $hoy = new Carbon('now');
 
-        $oportuniades_cerradas = DB::table('oportunidades')
-                                    ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
-                                    ->whereBetween('status_oportunidad.updated_at', array($inicioSemana ,$finSemana))
-                                    ->whereNull('oportunidades.deleted_at')
-                                    ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
-
-        $oportunidades_cotizadas =  DB::table('oportunidades')
-                                    ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
-                                    ->whereNull('oportunidades.deleted_at')
-                                    ->whereBetween('status_oportunidad.updated_at', array($inicioSemana ,$finSemana))
-                                    ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
-
+        $oportuniades_cerradas = $this->oportunidades_por_periodo_por_status($inicioSemana,$finSemana,2);
+        $oportunidades_cotizadas = $this->oportunidades_por_periodo_por_status($inicioSemana,$finSemana,1);
         $colaboradores = $this->dashboard_colaboradores_periodo($inicioSemana,$finSemana);
-        /*
-        $colaboradores = DB::table('users')
-                                ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
-                                ->join('fotos_colaboradores','users.id','fotos_colaboradores.id_colaborador')
-                                ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
-                                ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
-                                ->whereNull('colaborador_oportunidad.deleted_at')
-                                ->where('status_oportunidad.id_cat_status_oportunidad',2)
-                                ->whereBetween('status_oportunidad.updated_at', array($inicioSemana ,$finSemana))
-                                ->select('users.nombre','users.apellido','detalle_colaborador.puesto','fotos_colaboradores.url_foto',DB::raw('count(*) as oportunidades_cerradas, users.id'))
-                                ->groupBy('users.id')
-                                ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
-        */
-
-        $prospectos_sin_contactar = DB::table('prospectos')
-                                ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
-                                ->whereBetween('status_prospecto.created_at', array($inicioSemana ,$finSemana))
-                                ->where('status_prospecto.deleted_at',null)
-                                ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
-
-        $ingresos = DB::table('oportunidades')
-                    ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
-                    ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
-                    ->whereBetween('detalle_oportunidad.updated_at', array($inicioSemana ,$finSemana))
-                    ->where('status_oportunidad.id_cat_status_oportunidad',2)
-                    ->sum('detalle_oportunidad.valor');
-
-        $origen = DB::table('prospectos')
-                    ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
-                    ->where('prospectos.deleted_at',null)
-                    ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
-                    ->whereBetween('prospectos.created_at', array($inicioSemana ,$finSemana))
-                    ->groupBy('cat_fuentes.nombre')->get();
+        $prospectos_sin_contactar = $this->prospectos_por_periodo_por_status($inicioSemana,$finSemana,2);
+        $ingresos = $this->ingresos_por_periodo_por_status($inicioSemana,$finSemana,2);
+        $origen = $this->origen_por_periodo($inicioSemana, $finSemana);
 
         if(Activity::all()->last() != null){
 
@@ -197,54 +174,13 @@ class DataViewsController extends Controller
         $mes = new Carbon('last month');
         $hoy = new Carbon('now');
 
-        $oportuniades_cerradas = DB::table('oportunidades')
-                                    ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
-                                    ->whereNull('oportunidades.deleted_at')
-                                    ->whereBetween('status_oportunidad.updated_at', array($inicioMes ,$finMes))
-                                    ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
-
-        $oportunidades_cotizadas =  DB::table('oportunidades')
-                                    ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
-                                    ->whereNull('oportunidades.deleted_at')
-                                    ->whereBetween('status_oportunidad.updated_at', array($inicioMes ,$finMes))
-                                    ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
+        $oportuniades_cerradas = $this->oportunidades_por_periodo_por_status($inicioMes, $finMes, 2);
+        $oportunidades_cotizadas =  $this->oportunidades_por_periodo_por_status($inicioMes, $finMes, 1);
         $colaboradores = $this->dashboard_colaboradores_periodo($inicioMes,$finMes);
-        /*
-        $colaboradores = DB::table('users')
-                                ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
-                                ->join('fotos_colaboradores','users.id','fotos_colaboradores.id_colaborador')
-                                ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
-                                ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
-                                ->select('users.nombre','users.apellido','detalle_colaborador.puesto','fotos_colaboradores.url_foto',DB::raw('count(*) as oportunidades_cerradas, users.id'))
-                                ->whereNull('colaborador_oportunidad.deleted_at')
-                                ->where('status_oportunidad.id_cat_status_oportunidad',2)
-                                ->whereBetween('status_oportunidad.updated_at', array($inicioMes ,$finMes))
-                                ->groupBy('users.id')
-                                ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
-        */
-
-
-
-        $prospectos_sin_contactar = DB::table('prospectos')
-                                ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
-                                ->whereBetween('prospectos.created_at', array($inicioMes ,$finMes))
-                                ->where('status_prospecto.deleted_at',null)
-                                ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
-
-        $ingresos = DB::table('oportunidades')
-                    ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
-                    ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
-                    ->whereBetween('status_oportunidad.updated_at', array($inicioMes ,$finMes))
-                    ->where('status_oportunidad.id_cat_status_oportunidad',2)
-                    ->sum('detalle_oportunidad.valor');
-
-        $origen = DB::table('prospectos')
-                    ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
-                    ->where('prospectos.deleted_at',null)
-                    ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
-                    ->whereBetween('prospectos.created_at', array($inicioMes ,$finMes))
-                    ->groupBy('cat_fuentes.nombre')->get();
-
+        $prospectos_sin_contactar = $this->prospectos_por_periodo_por_status($inicioMes, $finMes, 2);
+        $ingresos = $this->ingresos_por_periodo_por_status($inicioMes, $finMes, 2);
+        $origen = $this->origen_por_periodo($inicioMes, $finMes);
+        
         if(Activity::all()->last() != null){
 
             $activity = Activity::all()->last()->whereBetween('created_at',array($inicioMes ,$finMes))->orderBy('created_at','desc')->get();
@@ -283,53 +219,12 @@ class DataViewsController extends Controller
         $anio = new Carbon('last year');
         $hoy = new Carbon('now');
 
-        $oportuniades_cerradas = DB::table('oportunidades')
-                                    ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
-                                    ->whereNull('oportunidades.deleted_at')
-                                    ->whereBetween('status_oportunidad.updated_at', array($inicioAnio ,$finAnio))
-                                    ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
-
-        $oportunidades_cotizadas =  DB::table('oportunidades')
-                                    ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
-                                    ->whereNull('oportunidades.deleted_at')
-                                    ->whereBetween('status_oportunidad.updated_at', array($inicioAnio ,$finAnio))
-                                    ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
-        
+        $oportuniades_cerradas = $this->oportunidades_por_periodo_por_status($inicioAnio, $finAnio, 2);
+        $oportunidades_cotizadas =  $this->oportunidades_por_periodo_por_status($inicioAnio, $finAnio, 1);
         $colaboradores = $this->dashboard_colaboradores_periodo($inicioAnio,$finAnio);
-        /*
-        $colaboradores = DB::table('users')
-                                ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
-                                ->join('fotos_colaboradores','users.id','fotos_colaboradores.id_colaborador')
-                                ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
-                                ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
-                                ->select('users.nombre','users.apellido','detalle_colaborador.puesto','fotos_colaboradores.url_foto',DB::raw('count(*) as oportunidades_cerradas, users.id'))
-                                ->whereNull('colaborador_oportunidad.deleted_at')
-                                ->where('status_oportunidad.id_cat_status_oportunidad',2)
-                                ->whereBetween('status_oportunidad.updated_at', array($inicioAnio ,$finAnio))
-                                ->groupBy('users.id')
-                                ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
-        */
-
-
-        $prospectos_sin_contactar = DB::table('prospectos')
-                                ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
-                                ->whereBetween('prospectos.created_at', array($inicioAnio ,$finAnio))
-                                ->where('status_prospecto.deleted_at',null)
-                                ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
-
-        $ingresos = DB::table('oportunidades')
-                    ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
-                    ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
-                    ->whereBetween('status_oportunidad.updated_at', array($inicioAnio ,$finAnio))
-                    ->where('status_oportunidad.id_cat_status_oportunidad',2)
-                    ->sum('detalle_oportunidad.valor');
-
-        $origen = DB::table('prospectos')
-                    ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
-                    ->where('prospectos.deleted_at',null)
-                    ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
-                    ->whereBetween('prospectos.created_at', array($inicioAnio ,$finAnio))
-                    ->groupBy('cat_fuentes.nombre')->get();
+        $prospectos_sin_contactar = $this->prospectos_por_periodo_por_status($inicioAnio, $finAnio, 2);
+        $ingresos = $this->ingresos_por_periodo_por_status($inicioAnio, $finAnio, 2);
+        $origen = $this->origen_por_periodo($inicioAnio, $finAnio);
 
         if(Activity::all()->last() != null){
 
@@ -356,41 +251,30 @@ class DataViewsController extends Controller
     }
 
     public function prospectos(){
+
         $total_prospectos = Prospecto::all()->count();
 
         $nocontactados_prospectos = DB::table('prospectos')
-                                    ->where('prospectos.deleted_at',null)
                                     ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+                                    ->wherenull('prospectos.deleted_at')
+                                    ->wherenull('prospectos.deleted_at')
                                     ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
 
 
         $origen = DB::table('prospectos')
                     ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
-                    ->where('prospectos.deleted_at',null)
+                    ->wherenull('prospectos.deleted_at')
                     ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(*) as total, cat_fuentes.nombre'))
                     ->groupBy('cat_fuentes.nombre')->get();
 
-        $prospectos_t= DB::table('prospectos')
-                            ->join('detalle_prospecto','prospectos.id_prospecto','detalle_prospecto.id_prospecto')
-                            ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
-                            ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
-                            ->where('prospectos.deleted_at',null)
-                            ->select('prospectos.id_prospecto',
-                                    'prospectos.nombre',
-                                    'prospectos.apellido',
-                                    'prospectos.correo',
-                                    'detalle_prospecto.telefono',
-                                    'cat_fuentes.nombre as fuente_nombre',
-                                    'cat_fuentes.nombre as fuente_url',
-                                    'prospectos.created_at')->get();
-
         $prospectos = Prospecto::with('detalle_prospecto')
-                                ->where('prospectos.deleted_at',null)
+                                ->wherenull('prospectos.deleted_at')
                                 ->with('status_prospecto.status')
                                 ->orderBy('prospectos.created_at','desc')
                                 ->get();
 
         $catalogo_fuentes = DB::table('cat_fuentes')
+                            ->wherenull('cat_fuentes.deleted_at')
                             ->select('nombre','url','status')->get();
 
         return response()->json([
@@ -411,6 +295,8 @@ class DataViewsController extends Controller
                         ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                         ->join('cat_status_prospecto','cat_status_prospecto.id_cat_status_prospecto','status_prospecto.id_cat_status_prospecto')
                         ->whereNull('prospectos.deleted_at')
+                        ->whereNull('detalle_prospecto.deleted_at')
+                        ->whereNull('status_prospecto.deleted_at')
                         ->where('status_prospecto.id_cat_status_prospecto',$status)
                         ->select('prospectos.id_prospecto','prospectos.nombre','prospectos.apellido','prospectos.correo','detalle_prospecto.telefono','detalle_prospecto.empresa','detalle_prospecto.whatsapp','prospectos.created_at','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','cat_status_prospecto.status','cat_status_prospecto.id_cat_status_prospecto as id_status')
                         ->orderBy('status_prospecto.updated_at','desc')
@@ -424,26 +310,15 @@ class DataViewsController extends Controller
     }
     public function oportunidadesByUser($id){
         $oportunidades_total = DB::table('oportunidades')
+                            ->whereNull('oportunidades.deleted_at')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->where('colaborador_oportunidad.id_colaborador','=',$id)->count();
 
-        $oportunidades_cotizadas = DB::table('oportunidades')
-                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
-                            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
-                            ->where('colaborador_oportunidad.id_colaborador','=',$id)
-                            ->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
+        $oportunidades_cotizadas = $this->oportunidades_por_colaborador_por_status($id,1);
 
-        $oportunidades_cerradas = DB::table('oportunidades')
-                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
-                            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
-                            ->where('colaborador_oportunidad.id_colaborador','=',$id)
-                            ->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
-
-        $oportunidades_no_viables = DB::table('oportunidades')
-                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
-                            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
-                            ->where('colaborador_oportunidad.id_colaborador','=',$id)
-                            ->where('status_oportunidad.id_cat_status_oportunidad','=',3)->count();
+        $oportunidades_cerradas = $this->oportunidades_por_colaborador_por_status($id,2);
+                    
+        $oportunidades_no_viables = $this->oportunidades_por_colaborador_por_status($id,3);
 
         $oportunidades = DB::table('oportunidades')
                             ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
@@ -484,26 +359,11 @@ class DataViewsController extends Controller
                             ->whereNull('oportunidades.deleted_at')
                             ->where('colaborador_oportunidad.id_colaborador',$id)->count();
 
-        $oportunidades_cotizadas = DB::table('oportunidades')
-                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
-                            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
-                            ->whereNull('oportunidades.deleted_at')
-                            ->where('colaborador_oportunidad.id_colaborador','=',$id)
-                            ->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
+        $oportunidades_cotizadas = $this->oportunidades_por_colaborador_por_status($id,1);
 
-        $oportunidades_cerradas = DB::table('oportunidades')
-                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
-                            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
-                            ->whereNull('oportunidades.deleted_at')
-                            ->where('colaborador_oportunidad.id_colaborador','=',$id)
-                            ->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
+        $oportunidades_cerradas = $this->oportunidades_por_colaborador_por_status($id,2);
 
-        $oportunidades_no_viables = DB::table('oportunidades')
-                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
-                            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
-                            ->whereNull('oportunidades.deleted_at')
-                            ->where('colaborador_oportunidad.id_colaborador','=',$id)
-                            ->where('status_oportunidad.id_cat_status_oportunidad','=',3)->count();
+        $oportunidades_no_viables = $this->oportunidades_por_colaborador_por_status($id,3);
 
         $oportunidades = DB::table('oportunidades')
                             ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
@@ -518,6 +378,13 @@ class DataViewsController extends Controller
                             ->join('users','users.id', 'colaborador_oportunidad.id_colaborador')
                             ->where('colaborador_oportunidad.id_colaborador','=',$id)
                             ->whereNull('oportunidades.deleted_at')
+                            ->whereNull('detalle_oportunidad.deleted_at')
+                            ->whereNull('colaborador_oportunidad.deleted_at')
+                            ->whereNull('oportunidad_prospecto.deleted_at')
+                            ->whereNull('prospectos.deleted_at')
+                            ->whereNull('status_oportunidad.deleted_at')
+                            ->whereNull('servicio_oportunidad.deleted_at')
+                            ->whereNull('users.deleted_at')
                             ->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','detalle_oportunidad.valor','cat_status_oportunidad.status','cat_status_oportunidad.color as color_status','cat_status_oportunidad.id_cat_status_oportunidad as id_status','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.nombre as fuente_url','oportunidades.created_at','users.id as id_colaborador', 'users.nombre as asignado_nombre', 'users.apellido as asignado_apellido')
                             ->orderBy('status_oportunidad.updated_at','desc')
                             ->get();
@@ -568,10 +435,15 @@ class DataViewsController extends Controller
                             ->first();
         $total_general = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->wherenull('oportunidades.deleted_at')
+                            ->wherenull('colaborador_oportunidad.deleted_at')
                             ->where('colaborador_oportunidad.id_colaborador',$id)->count();
         $total = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->wherenull('oportunidades.deleted_at')
+                            ->wherenull('colaborador_oportunidad.deleted_at')
+                            ->wherenull('status_oportunidad.deleted_at')
                             ->where('colaborador_oportunidad.id_colaborador','=',$id)
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',intval($status))->count();
 
@@ -583,6 +455,11 @@ class DataViewsController extends Controller
                             ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->where('colaborador_oportunidad.id_colaborador',$id)
                             ->where('status_oportunidad.id_cat_status_oportunidad',$status)
+                            ->whereNull('oportunidades.deleted_at')
+                            ->wherenull('colaborador_oportunidad.deleted_at')
+                            ->wherenull('oportunidad_prospecto.deleted_at')
+                            ->wherenull('prospectos.deleted_at')
+                            ->wherenull('status_oportunidad.deleted_at')
                             ->select(DB::raw('count(*) as total, cat_fuentes.nombre'),'cat_fuentes.url','cat_fuentes.status')->groupBy('cat_fuentes.nombre')
                             ->get();
 
@@ -597,13 +474,20 @@ class DataViewsController extends Controller
                             ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
                             ->join('servicio_oportunidad','servicio_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
                             ->join('cat_servicios','cat_servicios.id_servicio_cat','servicio_oportunidad.id_servicio_cat')
-                            ->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','detalle_oportunidad.valor','cat_status_oportunidad.status','cat_status_oportunidad.id_cat_status_oportunidad as id_status','cat_status_oportunidad.color as color_status','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','users.id as id_colaborador','users.nombre as asignado_nombre', 'users.apellido as asignado_apellido','oportunidades.created_at')
-                            ->where('colaborador_oportunidad.id_colaborador','=',$id)
                             ->whereNull('oportunidades.deleted_at')
+                            ->wherenull('colaborador_oportunidad.deleted_at')
+                            ->wherenull('detalle_oportunidad.deleted_at')
+                            ->wherenull('users.deleted_at')
+                            ->wherenull('oportunidad_prospecto.deleted_at')
+                            ->wherenull('prospectos.deleted_at')
+                            ->wherenull('status_oportunidad.deleted_at')
+                            ->wherenull('servicio_oportunidad.deleted_at')->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','detalle_oportunidad.valor','cat_status_oportunidad.status','cat_status_oportunidad.id_cat_status_oportunidad as id_status','cat_status_oportunidad.color as color_status','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','users.id as id_colaborador','users.nombre as asignado_nombre', 'users.apellido as asignado_apellido','oportunidades.created_at')
+                            ->where('colaborador_oportunidad.id_colaborador','=',$id)
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',intval($status))
                             ->get();
 
         $catalogo_fuentes = DB::table('cat_fuentes')
+                            ->whereNull('cat_fuentes.deleted_at')
                             ->select('nombre','url','status')->get();
 
 
@@ -626,23 +510,11 @@ class DataViewsController extends Controller
     }
 
     public function estadisticas_oportunidad(){
-        $oportunidades_cotizadas = DB::table('oportunidades')
-                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
-                            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
-                            ->whereNull('oportunidades.deleted_at')
-                            ->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
+        $oportunidades_cotizadas = $this->oportunidades_por_status(1);
 
-        $oportunidades_cerradas = DB::table('oportunidades')
-                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
-                            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
-                            ->whereNull('oportunidades.deleted_at')
-                            ->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
+        $oportunidades_cerradas = $this->oportunidades_por_status(2);
 
-        $oportunidades_no_viables = DB::table('oportunidades')
-                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
-                            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
-                            ->whereNull('oportunidades.deleted_at')
-                            ->where('status_oportunidad.id_cat_status_oportunidad','=',3)->count();
+        $oportunidades_no_viables = $this->oportunidades_por_status(3);
 
         $fuentes = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
@@ -650,8 +522,10 @@ class DataViewsController extends Controller
                             ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
                             ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                             ->whereNull('oportunidades.deleted_at')
-                            ->select(DB::raw('count(*) as total, cat_fuentes.nombre'),'cat_fuentes.url','cat_fuentes.status')->groupBy('cat_fuentes.nombre')->get();
-                            
+                            ->whereNull('colaborador_oportunidad.deleted_at')
+                            ->whereNull('oportunidad_prospecto.deleted_at')
+                            ->whereNull('prospectos.deleted_at')
+                            ->select(DB::raw('count(*) as total, cat_fuentes.nombre'),'cat_fuentes.url','cat_fuentes.status')->groupBy('cat_fuentes.nombre')->get();    
 
         $status = DB::table('cat_status_oportunidad')
                       ->select('id_cat_status_oportunidad as id','status','color')->get();
@@ -685,18 +559,6 @@ class DataViewsController extends Controller
                         ->where('status_oportunidad.id_cat_status_oportunidad',2)
                         ->groupBy('users.email')->orderBy('valor_total','desc')->limit(10)->get();
 
-        /*
-        $top_3 = DB::table('users')
-                ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
-                ->join('oportunidades','oportunidades.id_oportunidad','colaborador_oportunidad.id_oportunidad')
-                ->join('fotos_colaboradores','fotos_colaboradores.id_colaborador','users.id')
-                ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
-                ->whereNull('oportunidades.deleted_at')
-                ->whereNull('colaborador_oportunidad.deleted_at')
-                ->where('status_oportunidad.id_cat_status_oportunidad',2)
-                ->select('users.id','users.nombre','users.apellido','fotos_colaboradores.url_foto',DB::raw('count(*) as cerradas, users.email'))
-                ->groupBy('users.email')->orderBy('cerradas','desc')->limit(3)->get();
-        */
         $selects = array(
             'users.apellido as apellido',
             'count(colaborador_oportunidad.id_colaborador_oportunidad) as cerradas',
@@ -749,6 +611,8 @@ class DataViewsController extends Controller
             ->join('detalle_colaborador','users.id','detalle_colaborador.id_colaborador')
             ->whereNull('users.deleted_at')
             ->whereNull('fotos_colaboradores.deleted_at')
+            ->wherenull('colaborador_oportunidad.deleted_at')
+            ->wherenull('detalle_colaborador.deleted_at')
             ->select('users.id', 'fotos_colaboradores.url_foto as foto', 'users.email as email', 'detalle_colaborador.whatsapp as telefono')
             ->groupBy('users.id')
             ->get();
@@ -1123,6 +987,9 @@ class DataViewsController extends Controller
         $colaboradores = DB::table('users')
                         ->join('detalle_colaborador','users.id','detalle_colaborador.id_colaborador')
                         ->join('fotos_colaboradores','fotos_colaboradores.id_colaborador','users.id')
+                        ->wherenull('users.deleted_at')
+                        ->wherenull('detalle_colaborador.deleted_at')
+                        ->wherenull('fotos.colaboradores.deleted_at')
                         ->select('users.nombre','users.apellido','fotos_colaboradores.url_foto','detalle_colaborador.puesto','users.email','detalle_colaborador.telefono','users.created_at')
                         ->get();
 
@@ -1920,5 +1787,70 @@ class DataViewsController extends Controller
             ->orderBy('oportunidades_cerradas','desc')
             ->limit(5)
             ->get();
+    }
+
+    public function oportunidades_por_periodo_por_status($inicio, $fin, $status)
+    {
+        return DB::table('oportunidades')
+            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+            ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
+            ->whereNull('oportunidades.deleted_at')
+            ->wherenull('status_oportunidad.deleted_at')
+            ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',$status)->count();
+    }
+
+    public function prospectos_por_periodo_por_status($inicio, $fin, $status)
+    {
+        return DB::table('prospectos')
+            ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+            ->wherenull('prospectos.deleted_at')
+            ->wherenull('status_prospecto.deleted_at')
+            ->whereBetween('status_prospecto.created_at', array($inicio ,$fin))
+            ->where('status_prospecto.id_cat_status_prospecto','=',$status)->count();
+    }
+
+    public function ingresos_por_periodo_por_status($inicio, $fin, $status)
+    {
+        return DB::table('oportunidades')
+            ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
+            ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+            ->wherenull('oportunidades.deleted_at')
+            ->wherenull('detalle_oportunidad.deleted_at')
+            ->wherenull('status_oportunidad.deleted_at')
+            ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
+            ->where('status_oportunidad.id_cat_status_oportunidad',$status)
+            ->sum('detalle_oportunidad.valor');
+            
+    }
+
+    public function origen_por_periodo($inicio, $fin)
+    {
+        return DB::table('prospectos')
+            ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+            ->wherenull('prospectos.deleted_at')
+            ->wherenull('cat_fuentes.deleted_at')
+            ->where('prospectos.deleted_at',null)
+            ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
+            ->whereBetween('prospectos.created_at', array($inicio ,$fin))
+            ->groupBy('cat_fuentes.nombre')->get();
+    }
+
+    public function oportunidades_por_colaborador_por_status($id,$status){
+        return DB::table('oportunidades')
+            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+            ->whereNull('oportunidades.deleted_at')
+            ->where('colaborador_oportunidad.id_colaborador','=',$id)
+            ->where('status_oportunidad.id_cat_status_oportunidad','=',$status)->count();
+    }
+
+    public function oportunidades_por_status($status){
+        return DB::table('oportunidades')
+            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+            ->whereNull('oportunidades.deleted_at')
+            ->whereNull('colaborador_oportunidad.deleted_at')
+            ->whereNull('status_oportunidad.deleted_at')
+            ->where('status_oportunidad.id_cat_status_oportunidad','=',$status)->count();
     }
 }
