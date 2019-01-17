@@ -1689,7 +1689,7 @@ class DataViewsController extends Controller
             ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
             ->wherenull('prospectos.deleted_at')
             ->wherenull('status_prospecto.deleted_at')
-            ->whereBetween('status_prospecto.created_at', array($inicio ,$fin))
+            ->whereBetween('status_prospecto.updated_at', array($inicio ,$fin))
             ->where('status_prospecto.id_cat_status_prospecto','=',$status)->count();
     }
 
@@ -1715,7 +1715,7 @@ class DataViewsController extends Controller
             ->wherenull('cat_fuentes.deleted_at')
             ->where('prospectos.deleted_at',null)
             ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
-            ->whereBetween('prospectos.created_at', array($inicio ,$fin))
+            ->whereBetween('prospectos.updated_at', array($inicio ,$fin))
             ->groupBy('cat_fuentes.nombre')->get();
     }
 
@@ -1777,7 +1777,7 @@ class DataViewsController extends Controller
             ->wherenull('fotos_colaboradores.deleted_at')
             ->wherenull('oportunidades.deleted_at')
             ->where('status_oportunidad.id_cat_status_oportunidad','=',2)
-            ->whereBetween('detalle_oportunidad.created_at', array($inicio ,$fin))
+            ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
             ->select('users.id','users.nombre','users.apellido','fotos_colaboradores.url_foto','detalle_colaborador.puesto',DB::raw('sum(detalle_oportunidad.valor) as total_ingresos'))
             ->groupBy('users.id')
             ->orderBy('total_ingresos','desc')
@@ -1798,7 +1798,7 @@ class DataViewsController extends Controller
             ->wherenull('oportunidad_prospecto.deleted_at')
             ->wherenull('prospectos.deleted_at')
             ->where('status_oportunidad.id_cat_status_oportunidad',2)
-            ->whereBetween('detalle_oportunidad.created_at', array($inicio ,$fin))
+            ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
             ->select(DB::raw('SUM(detalle_oportunidad.valor) as total'),'cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status')->groupBy('cat_fuentes.nombre')
             ->get();
     }
