@@ -14,7 +14,8 @@ use App\Modelos\Colaborador\FotoColaborador;
 use DB;
 use Mail;
 
-
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+use RuntimeException;
 class UserController extends Controller
 {
     protected function validatorUpdate(array $data)
@@ -158,6 +159,7 @@ class UserController extends Controller
             }catch(Exception $e){
                 
                 DB::rollBack();
+                Bugsnag::notifyException(new RuntimeException("El usuario no pudo editar su perfil"));
                 return response()->json([
                         'message'=>$e,
                         'error'=>true
@@ -233,7 +235,7 @@ class UserController extends Controller
 
         } catch (Exception $e) {
           DB::rollBack();
-
+          Bugsnag::notifyException(new RuntimeException("El usuario no pudo cambiar su contraseña"));
           return response()->json([
             'error'=>true,
             'message'=>$e

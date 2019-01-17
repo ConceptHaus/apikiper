@@ -10,6 +10,9 @@ use App\Http\Requests;
 use DB;
 use Mail;
 
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+use RuntimeException;
+
 use App\Modelos\User;
 
 class LoginController extends Controller
@@ -69,7 +72,7 @@ class LoginController extends Controller
             return response()->json(['message' => 'Successfully logged out'],200);
         
         }catch(Exception $e){
-        
+            Bugsnag::notifyException(new RuntimeException("El usuario no pudo hacer login"));
             return response()->json([
                 'message'=>$e,
                 'error'=>true

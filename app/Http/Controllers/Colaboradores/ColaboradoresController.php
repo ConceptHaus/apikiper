@@ -107,6 +107,7 @@ class ColaboradoresController extends Controller
                                 ->withProperties(['accion'=>'Agregó','color'=>'#39ce5f'])
                                 ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion un nuevo colaborador.</span>');
                                 
+                    
 
                     return response()->json([
                         'message'=>'Registro Correcto',
@@ -116,6 +117,7 @@ class ColaboradoresController extends Controller
 
                 }catch(Excpetion $e){
                     DB::rollBack();
+                    Bugsnag::notifyException(new RuntimeException("No se pudo agregar un colaborador"));
                     return response()->json([
                         'message'=>$e,
                         'error'=>true
@@ -273,6 +275,7 @@ class ColaboradoresController extends Controller
 
             }catch(Exception $e){
                 DB::rollBack();
+                Bugsnag::notifyException(new RuntimeException("El usuario no pudo editar el perfil de un colaborador"));
                 return response()->json([
                     'message'=>$e,
                     'error'=>true
@@ -352,7 +355,7 @@ class ColaboradoresController extends Controller
         }catch (Exception $e){
 
           DB::rollBack();
-
+          Bugsnag::notifyException(new RuntimeException("El usuario no borrar a un colaborador"));   
           return response()->json([
             'error'=>true,
             'message'=>$e
@@ -360,32 +363,6 @@ class ColaboradoresController extends Controller
 
         }
       }
-
-
-      // if ($validator->passes()) {
-      //   try{
-      //
-      //       DB::beginTransaction();
-      //       User::where('id', $id_borrar)->delete();
-      //       DB::commit();
-      //
-      //       return response()->json([
-      //           'message'=>'Borrado Correctamente',
-      //           'error'=>false,
-      //           'data'=>$id_borrar
-      //       ],200);
-      //
-      //   }catch (Exception $e){
-      //
-      //     DB::rollBack();
-      //
-      //     return response()->json([
-      //       'error'=>true,
-      //       'message'=>$e
-      //     ],400);
-      //
-      //   }
-      // }
 
       $errores = $validator->errors()->toArray();
       return response()->json([
@@ -466,7 +443,7 @@ class ColaboradoresController extends Controller
 
       } catch (Exception $e) {
         DB::rollBack();
-
+        Bugsnag::notifyException(new RuntimeException("El usuario no pudo borrar foto de perfil"));
         return response()->json([
           'error'=>true,
           'message'=>$e

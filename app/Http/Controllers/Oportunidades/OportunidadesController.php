@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\UploadFile;
-
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+use RuntimeException;
 
 use App\Modelos\User;
 use App\Modelos\Prospecto\Prospecto;
@@ -212,6 +213,7 @@ class OportunidadesController extends Controller
 
         }catch(Exception $e){
             DB::rollBack();
+            Bugsnag::notifyException(new RuntimeException("No se pudo actualizar una oportunidad"));
             return response()->json([
                 'error'=>true,
                 'message'=>$e,
@@ -253,6 +255,7 @@ class OportunidadesController extends Controller
         } catch (Exception $e) {
 
           DB::rollBack();
+          Bugsnag::notifyException(new RuntimeException("No se pudo eliminar una oportunidad"));
           return response()->json([
             'error'=>true,
             'message'=>$e
@@ -282,50 +285,7 @@ class OportunidadesController extends Controller
         ],400);
     }
 
-    // public function addEtiquetas($request, $id){
-    //     $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
-    //     $colaborador = $this->guard()->user();
-    //     if(isset($request)){
-    //         foreach($request as $etiqueta){
-    //             $validator = $this->validadorEtiqueta($etiqueta);
-    //             if($validator->passes()){
-    //                 try{
-    //                     DB::beginTransaction();
-    //                         $etiqueta_oportunidad = new EtiquetasOportunidad;
-    //                         $etiqueta_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
-    //                         $etiqueta_oportunidad->id_etiqueta = $etiqueta['id_etiqueta'];
-    //                         $oportunidad->etiquetas_oportunidad()->save($etiqueta_oportunidad);
-    //                     DB::commit();
-    //
-    //                 }catch(Exception $e){
-    //                     DB::rollBack();
-    //                     return response()->json([
-    //                         'error'=>true,
-    //                         'message'=>$e,
-    //                     ],400);
-    //                 }
-    //             }
-    //             else{
-    //                 $errores = $validator->errors()->toArray();
-    //                 return response()->json([
-    //                     'error'=>true,
-    //                     'messages'=>$errores
-    //                 ],400);
-    //             }
-    //         }
-    //         return response()->json([
-    //                     'error'=>false,
-    //                     'message'=>'Registo Correctamente'
-    //                 ],200);
-    //
-    //     }
-    //     return response()->json([
-    //         'error'=>true,
-    //         'messages'=>'No hay etiquetas',
-    //         'data'=>$request
-    //     ],400);
-    //
-    // }
+    
     public function addEtiquetas(Request $request, $id){
         //Agregar etiquetas aoportunidad
         $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
@@ -354,6 +314,7 @@ class OportunidadesController extends Controller
 
           } catch (Exception $e) {
             DB::rollBack();
+            Bugsnag::notifyException(new RuntimeException("No se pudo agregar una etiqueta en oportunidad"));
             return response()->json([
               'error'=>true,
               'message'=>$e
@@ -378,7 +339,7 @@ class OportunidadesController extends Controller
 
         } catch (Exception $e) {
           DB::rollBack();
-
+          Bugsnag::notifyException(new RuntimeException("No se pudo eliminar una etiqueta en oportunidad"));
           return response()->json([
             'error'=>true,
             'message'=>$e
@@ -451,7 +412,7 @@ class OportunidadesController extends Controller
                         ],400);
 
              }catch(Exception $e){
-
+                Bugsnag::notifyException(new RuntimeException("No se pudo agregar un archivo en oportunidad"));
                 return response()->json([
                         'error'=>true,
                         'messages'=>$e
@@ -459,24 +420,6 @@ class OportunidadesController extends Controller
              }
 
 
-         //       }else{
-                    // $errores = $validator->errors()->toArray();
-                    // return response()->json([
-                    //     'error'=>true,
-                    //     'messages'=>$errores
-                    // ],400);
-           //     }
-
-          //  }
-            // return response()->json([
-            //     'error'=>false,
-            //     'messages'=>'Succesfully register'
-            // ],200);
-        //}
-        // return response()->json([
-        //     'error'=>true,
-        //     'messages'=>'No hay archivos'
-        // ],400);
     }
 
     public function deleteArchivos($oportunidad,$id){
@@ -492,6 +435,7 @@ class OportunidadesController extends Controller
                     'message'=>'Archivo borrado correctamente.',
                 ]);
             }catch(Exception $e){
+                Bugsnag::notifyException(new RuntimeException("No se pudo eliminar un archivo en oportunidad"));
                 return resposonse()->json([
                     'error'=>true,
                     'message'=>$e
@@ -548,6 +492,7 @@ class OportunidadesController extends Controller
                 ],200);
             }catch(Exception $e){
                 DB::rollBack();
+                Bugsnag::notifyException(new RuntimeException("No se pudo crear un evento en oportunidad"));
                 return response()->json([
                     'error'=>true,
                     'message'=>$e
@@ -600,6 +545,7 @@ class OportunidadesController extends Controller
 
             }catch(Exception $e){
                 DB::rollBack();
+                Bugsnag::notifyException(new RuntimeException("No se pudo crear un recordatorio en oportunidad"));
                 return response()->json([
                     'error'=>true,
                     'message'=>$e
@@ -645,7 +591,7 @@ class OportunidadesController extends Controller
             ],200);
 
         }catch(Exception $e){
-
+            Bugsnag::notifyException(new RuntimeException("No se pudo cambiar el valor de una oportunidad"));
             return response()->json([
                 'error'=>true,
                 'messages'=>$e
@@ -692,6 +638,7 @@ class OportunidadesController extends Controller
         ],200);
        }catch(Exception $e){
             DB::rollBack();
+            Bugsnag::notifyException(new RuntimeException("No se pudo agregar un servicio a una oportunidad"));
             return response()->json([
                     'error'=>true,
                     'message'=>$e
@@ -769,6 +716,7 @@ class OportunidadesController extends Controller
 
         }catch(Exception $e){
             DB::rollBack();
+            Bugsnag::notifyException(new RuntimeException("No se pudo  cambiar el status de una oportunidad"));
             return response()->json([
                 'error'=>true,
                 'messages'=>$e

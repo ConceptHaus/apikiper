@@ -8,9 +8,10 @@ use Illuminate\Http\Response;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-//use Illuminate\Support\Facades\Log;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\CalendarLinks\Link;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+use RuntimeException;
 
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
@@ -1234,6 +1235,7 @@ class DataViewsController extends Controller
                 ],200);
             }catch(Exception $e){
                 DB::rollBack();
+                Bugsnag::notifyException(new RuntimeException("No se pudo crear una etiqueta"));
                 return response()->json([
                     'error'=>true,
                     'message'=>$e
@@ -1274,6 +1276,7 @@ class DataViewsController extends Controller
 
         }catch(Exception $e){
             DB::rollBack();
+            Bugsnag::notifyException(new RuntimeException("No se pudo editar una etiqueta"));
             return response()->json([
                 'error'=>true,
                 'message'=>$e
@@ -1298,7 +1301,7 @@ class DataViewsController extends Controller
 
           } catch (Exception $e) {
             DB::rollBack();
-
+            Bugsnag::notifyException(new RuntimeException("No se pudo eliminar una etiqueta"));
             return response()->json([
               'error'=>true,
               'message'=>$e
@@ -1336,6 +1339,7 @@ class DataViewsController extends Controller
 
             }catch(Exception $e){
                 DB::rollBack();
+                Bugsnag::notifyException(new RuntimeException("No se pudo crear un servicio"));
                 return response()->json([
                     'error'=>true,
                     'message'=>$e
@@ -1370,6 +1374,7 @@ class DataViewsController extends Controller
 
         }catch(Exception $e){
             DB::rollBack();
+            Bugsnag::notifyException(new RuntimeException("No se pudo editar un servicio"));
             return response()->json([
                 'error'=>true,
                 'message'=>$e
@@ -1392,6 +1397,8 @@ class DataViewsController extends Controller
                 'error'=>false,
             ],200);
           } catch (Exception $e) {
+            DB::rollBack();
+            Bugsnag::notifyException(new RuntimeException("No se pudo borrar un servicio"));  
             return response()->json([
                 'message'=>$e,
                 'error'=>true
@@ -1424,6 +1431,7 @@ class DataViewsController extends Controller
 
         }catch(Exception $e){
             DB::rollBack();
+            Bugsnag::notifyException(new RuntimeException("No se pudo actualizar el status de una oportunidad"));  
             return response()->json([
                 'error'=>true,
                 'message'=>$e
@@ -1689,7 +1697,7 @@ class DataViewsController extends Controller
         ],200);
       }catch (Exception $e) {
         DB::rollBack();
-
+        Bugsnag::notifyException(new RuntimeException("No se pudo cambiar el status de un prospecto"));  
         return response()->json([
           'error'=>true,
           'message'=>$e
@@ -1819,7 +1827,7 @@ class DataViewsController extends Controller
 
         } catch (Exception $e) {
           DB::rollBack();
-
+          Bugsnag::notifyException(new RuntimeException("No se pudo crear un seguimiento en Prospecto"));  
           return response()->json([
             'error'=>true,
             'message'=>$e
@@ -1857,7 +1865,7 @@ class DataViewsController extends Controller
 
         } catch (Exception $e) {
           DB::rollBack();
-
+          Bugsnag::notifyException(new RuntimeException("No se pudo crear un seguimiento en Oportunidad"));
           return response()->json([
             'error'=>true,
             'message'=>$e
