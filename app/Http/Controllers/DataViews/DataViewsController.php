@@ -689,7 +689,7 @@ class DataViewsController extends Controller
                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
                 ->groupBy('users.email')->orderBy('cerradas','desc')->limit(3)->get();
 
-
+        /*
         $colaboradores = DB::table('users')
                 ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
                 ->join('detalle_colaborador','detalle_colaborador.id_colaborador', 'users.id')
@@ -698,6 +698,55 @@ class DataViewsController extends Controller
                 ->select('users.id','users.nombre','users.apellido','users.email','detalle_colaborador.telefono','fotos_colaboradores.url_foto',DB::raw('count(status_oportunidad.id_cat_status_oportunidad) as total'),DB::raw('count(status_oportunidad.id_cat_status_oportunidad = 2) as cerradas'), DB::raw('count(status_oportunidad.id_cat_status_oportunidad = 1) as cotizadas'))
                 ->groupBy('users.id')
                 ->get();
+        */
+
+        $selects = array(
+            'users.id as id_colaborador',
+            'CONCAT(users.nombre," ",users.apellido) as colaborador',
+            'COUNT(colaborador_oportunidad.id_colaborador_oportunidad) AS asignados'  
+        );
+
+        $users = DB::table('users')
+            ->join('colaborador_oportunidad', 'colaborador_oportunidad.id_colaborador','users.id')
+            ->join('fotos_colaboradores','users.id','fotos_colaboradores.id_colaborador')
+            ->join('detalle_colaborador','users.id','detalle_colaborador.id_colaborador')
+            ->whereNull('users.deleted_at')
+            ->select('users.id', 'fotos_colaboradores.url_foto as foto', 'users.email as email', 'detalle_colaborador.telefono as telefono')
+            ->groupBy('users.id')
+            ->get();
+
+        $colaboradores = array();
+
+        foreach($users as $user)
+        {
+            $oportunidades_asignadas = DB::table('oportunidades')
+                ->join('colaborador_oportunidad','oportunidades.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                ->join('users','colaborador_oportunidad.id_colaborador','users.id')
+                ->whereNull('oportunidades.deleted_at')
+                ->whereNull('colaborador_oportunidad.deleted_at')
+                ->whereNull('users.deleted_at')
+                ->where('users.id','=',$user->id)
+                ->selectRaw(implode(',', $selects))
+                ->groupBy('users.id')
+                ->first();
+
+            $oportunidades_cotizadas = $this->grafica_por_status(1,$user->id);
+            $oportunidades_cerradas = $this->grafica_por_status(2,$user->id);
+            $oportunidades_no_viables = $this->grafica_por_status(3,$user->id);
+            
+            array_push($colaboradores,['colaborador_id' => $oportunidades_asignadas->id_colaborador,
+                'colaborador_foto' => $user->foto,
+                'colaborador_nombre' => $oportunidades_asignadas->colaborador,
+                'oportunidades_asignadas' => ($oportunidades_asignadas) ? $oportunidades_asignadas->asignados : 0,
+                'cotizados' => ($oportunidades_cotizadas) ? $oportunidades_cotizadas->asignados : 0,
+                'cerrados' => ($oportunidades_cerradas) ? $oportunidades_cerradas->asignados : 0,
+                'no_viables' => ($oportunidades_no_viables) ? $oportunidades_no_viables->asignados : 0,
+                'total_por_cerrar' => ($oportunidades_cotizadas) ? $oportunidades_cotizadas->valor : 0,
+                'total_cerrado' => ($oportunidades_cerradas) ? $oportunidades_cerradas->valor : 0,
+                'colaborador_correo' => $user->email,
+                'colaborador_telefono' => $user->telefono            
+            ]);
+        }
 
         return response()->json([
             'message'=>'Correcto',
@@ -1782,6 +1831,28 @@ class DataViewsController extends Controller
         'error'=>true,
         'message'=>$errores
       ],400);
+    }
+
+    public function grafica_por_status($status,$id){
+        $selects = array(
+            'SUM(detalle_oportunidad.valor) AS valor',
+            'COUNT(colaborador_oportunidad.id_colaborador_oportunidad) AS asignados'
+        );
+        return DB::table('oportunidades')
+                ->join('colaborador_oportunidad','oportunidades.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                ->join('users','colaborador_oportunidad.id_colaborador','users.id')
+                ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                ->whereNull('oportunidades.deleted_at')
+                ->whereNull('colaborador_oportunidad.deleted_at')
+                ->whereNull('users.deleted_at')
+                ->whereNull('detalle_oportunidad.deleted_at')
+                ->whereNull('status_oportunidad.deleted_at')
+                ->where('status_oportunidad.id_cat_status_oportunidad','=',$status)
+                ->where('users.id','=',$id)
+                ->selectRaw(implode(',', $selects))
+                ->groupBy('users.id')
+                ->first();
     }
 
 }
