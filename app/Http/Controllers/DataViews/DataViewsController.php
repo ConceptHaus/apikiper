@@ -703,13 +703,16 @@ class DataViewsController extends Controller
             'users.email as email',
             'users.id as id',
             'users.nombre as nombre',
-            'fotos_colaboradores.url_foto as url_foto'
+            'fotos_colaboradores.url_foto as url_foto',
+            'detalle_colaborador.puesto as puesto'
         );
         $top_3 = DB::table('users')
             ->join('fotos_colaboradores','fotos_colaboradores.id_colaborador','users.id')
             ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
             ->join('oportunidades','oportunidades.id_oportunidad','colaborador_oportunidad.id_oportunidad')
             ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+            ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
+            ->wherenull('detalle_colaborador.deleted_at')
             ->wherenull('users.deleted_at')
             ->wherenull('fotos_colaboradores.deleted_at')
             ->wherenull('colaborador_oportunidad.deleted_at')
