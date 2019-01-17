@@ -1757,7 +1757,7 @@ class DataViewsController extends Controller
             ->whereNull('status_oportunidad.deleted_at')
             ->whereNull('oportunidades.deleted_at')
             ->where('status_oportunidad.id_cat_status_oportunidad','=',$status)
-            ->whereBetween('detalle_oportunidad.created_at', array($inicio ,$fin))
+            ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
             ->sum('detalle_oportunidad.valor');
     }
 
