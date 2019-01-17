@@ -685,7 +685,7 @@ class DataViewsController extends Controller
                         ->where('status_oportunidad.id_cat_status_oportunidad',2)
                         ->groupBy('users.email')->orderBy('valor_total','desc')->limit(10)->get();
 
-
+        /*
         $top_3 = DB::table('users')
                 ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
                 ->join('oportunidades','oportunidades.id_oportunidad','colaborador_oportunidad.id_oportunidad')
@@ -696,7 +696,32 @@ class DataViewsController extends Controller
                 ->where('status_oportunidad.id_cat_status_oportunidad',2)
                 ->select('users.id','users.nombre','users.apellido','fotos_colaboradores.url_foto',DB::raw('count(*) as cerradas, users.email'))
                 ->groupBy('users.email')->orderBy('cerradas','desc')->limit(3)->get();
-
+        */
+        $selects = array(
+            'users.apellido as apellido',
+            'count(colaborador_oportunidad.id_colaborador_oportunidad) as cerradas',
+            'users.email as email',
+            'users.id as id',
+            'users.nombre as nombre',
+            'fotos_colaboradores.url_foto as url_foto'
+        );
+        $top_3 = DB::table('users')
+            ->join('fotos_colaboradores','fotos_colaboradores.id_colaborador','users.id')
+            ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
+            ->join('oportunidades','oportunidades.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+            ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+            ->wherenull('users.deleted_at')
+            ->wherenull('fotos_colaboradores.deleted_at')
+            ->wherenull('colaborador_oportunidad.deleted_at')
+            ->wherenull('oportunidades.deleted_at')
+            ->wherenull('status_oportunidad.deleted_at')
+            ->where('status_oportunidad.id_cat_status_oportunidad','=','2')
+            ->selectRaw(implode(',', $selects))
+            ->groupBy('users.id')
+            ->orderBy('cerradas','desc')
+            ->limit(3)
+            ->get();
+            ;
         /*
         $colaboradores = DB::table('users')
                 ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
