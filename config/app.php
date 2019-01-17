@@ -167,6 +167,7 @@ return [
         Dacastro4\LaravelGmail\LaravelGmailServiceProvider::class,
         Bogardo\Mailgun\MailgunServiceProvider::class,
         Askedio\SoftCascade\Providers\GenericServiceProvider::class,
+        Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
 
 
         /*
