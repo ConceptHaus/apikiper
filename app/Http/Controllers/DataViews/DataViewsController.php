@@ -129,10 +129,10 @@ class DataViewsController extends Controller
                                 ->join('fotos_colaboradores','users.id','fotos_colaboradores.id_colaborador')
                                 ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
                                 ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                                // ->whereNull('colaborador_oportunidad.deleted_at')
+                                // ->where('status_oportunidad.id_cat_status_oportunidad',2)
+                                // ->whereBetween('status_oportunidad.updated_at', array($inicioSemana ,$finSemana))
                                 ->select('users.nombre','users.apellido','detalle_colaborador.puesto','fotos_colaboradores.url_foto',DB::raw('count(*) as oportunidades_cerradas, users.id'))
-                                ->whereNull('colaborador_oportunidad.deleted_at')
-                                ->where('status_oportunidad.id_cat_status_oportunidad',2)
-                                ->whereBetween('status_oportunidad.updated_at', array($inicioSemana ,$finSemana))
                                 ->groupBy('users.id')
                                 ->orderBy('oportunidades_cerradas','desc')->limit(5)->get();
 
