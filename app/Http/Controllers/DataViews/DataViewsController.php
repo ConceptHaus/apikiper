@@ -748,6 +748,7 @@ class DataViewsController extends Controller
             ->join('fotos_colaboradores','users.id','fotos_colaboradores.id_colaborador')
             ->join('detalle_colaborador','users.id','detalle_colaborador.id_colaborador')
             ->whereNull('users.deleted_at')
+            ->whereNull('fotos_colaboradores.deleted_at')
             ->select('users.id', 'fotos_colaboradores.url_foto as foto', 'users.email as email', 'detalle_colaborador.whatsapp as telefono')
             ->groupBy('users.id')
             ->get();
