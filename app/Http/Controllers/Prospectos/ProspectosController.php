@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Spatie\CalendarLinks\Link;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+use RuntimeException;
 
 use App\Modelos\User;
 use App\Modelos\Prospecto\Prospecto;
@@ -154,7 +156,7 @@ class ProspectosController extends Controller
                     ],200);
             }catch(Exception $e){
                 DB::rollBack();
-                //Log::channel('slack')->error('No se pudo registrar el prospescto, revísame.'.' - '.env('APP_NAME'));
+                Bugsnag::notifyException(new RuntimeException("No se pudo crear un prospecto, revísame :("));
                 return response()->json([
                     'message'=>$e,
                     'error'=>true,
@@ -234,6 +236,7 @@ class ProspectosController extends Controller
                 ]
             ],200);
         }catch(Exception $e){
+            Bugsnag::notifyException(new RuntimeException("No se pudo actualizar un prospecto"));
             return response()->json([
                 'error'=>true,
                 'message'=>$e,
@@ -277,6 +280,7 @@ class ProspectosController extends Controller
         }catch (Exception $e){
 
           DB::rollback();
+          Bugsnag::notifyException(new RuntimeException("No se pudo eliminar un prospecto"));
           return response()->json([
               'error'=>true,
               'message'=>'Something is wrong' .$e
@@ -406,6 +410,7 @@ class ProspectosController extends Controller
 
             }catch(Exception $e){
                 DB::rollBack();
+                Bugsnag::notifyException(new RuntimeException("No se pudo crear una oportunidad"));
                     return response()->json([
                         'message'=>$e,
                         'error'=>true,
@@ -459,6 +464,7 @@ class ProspectosController extends Controller
 
             }catch(Exception $e){
                 DB::rollBack();
+                Bugsnag::notifyException(new RuntimeException("No se pudo crear un recordatorio en prospecto"));
                 return response()->json([
                     'error'=>true,
                     'message'=>$e,
@@ -523,6 +529,7 @@ class ProspectosController extends Controller
 
             }catch(Exception $e){
                 DB::rollBack();
+                Bugsnag::notifyException(new RuntimeException("No se pudo crear un evento"));
                 return response()->json([
                     'error'=>true,
                     'message'=>$e,
@@ -581,6 +588,7 @@ class ProspectosController extends Controller
 
           } catch (Exception $e) {
             DB::rollBack();
+            Bugsnag::notifyException(new RuntimeException("No se pudo agregar una etiqueta a un prospecto"));
             return response()->json([
               'error'=>true,
               'message'=>$e
@@ -605,7 +613,7 @@ class ProspectosController extends Controller
 
         } catch (Exception $e) {
           DB::rollBack();
-
+          Bugsnag::notifyException(new RuntimeException("No se pudo eliminar una etiqueta de un prospecto"));
           return response()->json([
             'error'=>true,
             'message'=>$e
@@ -669,30 +677,13 @@ class ProspectosController extends Controller
 
                     }catch(Exception $e){
                         DB::rollback();
+                        Bugsnag::notifyException(new RuntimeException("No se pudo agregar un archivo en prospecto"));
                         return response()->json([
                             'error'=>true,
                             'messages'=>$e
                         ],400);
                     }
-            //     }else{
-            //         $errores = $validator->errors()->toArray();
-            //         return response()->json([
-            //             'error'=>true,
-            //             'messages'=>$errores
-            //         ],400);
-            //     }
-            // }
-
-            // return response()->json([
-            //     'error'=>false,
-            //     'messages'=>'Succesfully register'
-            // ],200);
-        // }
-
-        // return response()->json([
-        //     'error'=>true,
-        //     'messages'=>'No hay archivos'
-        // ],400);
+            
 
     }
 
@@ -710,6 +701,7 @@ class ProspectosController extends Controller
                 ]);
 
                 }catch(Exception $e){
+                    Bugsnag::notifyException(new RuntimeException("No se pudo eliminar un archivo en prospecto"));
                     return response()->json([
                         'error'=>true,
                         'message'=>$e

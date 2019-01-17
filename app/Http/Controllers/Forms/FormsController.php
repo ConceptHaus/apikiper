@@ -22,6 +22,8 @@ use Keygen;
 use URL;
 use Twilio\Rest\Client;
 
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+use RuntimeException;
 class FormsController extends Controller
 {
 
@@ -54,6 +56,7 @@ class FormsController extends Controller
 
             }catch(Exception $e){
                 DB::rollBack();
+                Bugsnag::notifyException(new RuntimeException("No se pudo crear una integración"));
                 return response()->json([
                     'error'=>true,
                     'messages'=>$e
@@ -140,7 +143,7 @@ class FormsController extends Controller
             }catch(Exception $e){
 
                 DB::rollBack();
-
+                Bugsnag::notifyException(new RuntimeException("La integración no está registrando prospectos"));
                 return redirect()->away($verify->url_error);
 
             }
@@ -172,7 +175,7 @@ class FormsController extends Controller
 
         } catch (Exception $e) {
           DB::rollBack();
-
+          Bugsnag::notifyException(new RuntimeException("No se pudo actualizar una integración"));
           return response()->json([
             'error'=>true,
             'message'=>$e
@@ -206,7 +209,7 @@ class FormsController extends Controller
         } catch (Exception $e) {
 
           DB::rollBack();
-
+          Bugsnag::notifyException(new RuntimeException("No se pudo eliminar una integración"));
           return response()->json([
             'error'=>true,
             'message'=>$e

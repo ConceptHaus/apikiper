@@ -1,7 +1,10 @@
 {
     "name": "laravel/laravel",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "type": "project",
     "require": {
@@ -9,6 +12,7 @@
         "alsofronie/eloquent-uuid": "dev-master",
         "askedio/laravel-soft-cascade": "5.5.15",
         "bogardo/mailgun": "^5.0",
+        "bugsnag/bugsnag-laravel": "^2.0",
         "dacastro4/laravel-gmail": "^0.6.0",
         "darkaonline/l5-swagger": "5.5.*",
         "doctrine/common": "2.7.0",
@@ -55,8 +59,7 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": [
-            ]
+            "dont-discover": []
         }
     },
     "scripts": {
