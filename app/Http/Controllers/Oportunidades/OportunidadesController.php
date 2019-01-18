@@ -129,7 +129,7 @@ class OportunidadesController extends Controller
         $total = DB::table('oportunidades')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->wherenull('oportunidades.deleted_at')
-                            ->wherenull('colaborador_oportunidad.deleted_at')
+                            ->wherenull('status_oportunidad.deleted_at')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',$status)->count();
 
         $fuentes = DB::table('oportunidades')
