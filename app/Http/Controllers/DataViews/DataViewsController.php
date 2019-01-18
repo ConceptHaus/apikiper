@@ -1861,7 +1861,7 @@ class DataViewsController extends Controller
                     ->where('status_oportunidad.id_cat_status_oportunidad', '=', $status)
                     ->where('etiquetas.id_etiqueta', '=', $etiqueta)
                     ->where('cat_servicios.id_servicio_cat', '=', $servicio)
-                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'), 'cat_status_oportunidad.status as status', 'etiquetas.nombre as etiqueta', 'cat_servicios.nombre as servicio')
+                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'))
                     ->groupBy('prospectos.fuente')
                     ->get();
                 array_push($oportunidad_fuente_mes, $meses[$i-1], $consulta);
@@ -1896,7 +1896,7 @@ class DataViewsController extends Controller
                     ->whereBetween('status_oportunidad.updated_at',array($inicioMes, $finMes))
                     ->where('status_oportunidad.id_cat_status_oportunidad', '=', $status)
                     ->where('etiquetas.id_etiqueta', '=', $etiqueta)
-                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'), 'cat_status_oportunidad.status as status', 'etiquetas.nombre as etiqueta')
+                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'))
                     ->groupBy('prospectos.fuente')
                     ->get();
                 array_push($oportunidad_fuente_mes, $meses[$i-1], $consulta);
@@ -1931,7 +1931,7 @@ class DataViewsController extends Controller
                     ->whereBetween('status_oportunidad.updated_at',array($inicioMes, $finMes))
                     ->where('status_oportunidad.id_cat_status_oportunidad', '=', $status)
                     ->where('cat_servicios.id_servicio_cat', '=', $servicio)
-                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'), 'cat_status_oportunidad.status as status', 'cat_servicios.nombre as servicio')
+                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'))
                     ->groupBy('prospectos.fuente')
                     ->get();
                 array_push($oportunidad_fuente_mes, $meses[$i-1], $consulta);
@@ -1956,6 +1956,8 @@ class DataViewsController extends Controller
                     ->join('cat_servicios','cat_servicios.id_servicio_cat','servicio_oportunidad.id_servicio_cat')
                     ->join('etiquetas_oportunidades', 'etiquetas_oportunidades.id_oportunidad', 'oportunidades.id_oportunidad')
                     ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_oportunidades.id_etiqueta')
+                    ->join('status_oportunidad', 'status_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
+                    ->wherenull('status_oportunidad.deleted_at')
                     ->wherenull('oportunidades.deleted_at')
                     ->wherenull('oportunidad_prospecto.deleted_at')
                     ->wherenull('prospectos.deleted_at')
@@ -1963,10 +1965,10 @@ class DataViewsController extends Controller
                     ->wherenull('cat_servicios.deleted_at')
                     ->wherenull('etiquetas_oportunidades.deleted_at')
                     ->wherenull('etiquetas.deleted_at')
-                    ->whereBetween('servicio_oportunidad.updated_at',array($inicioMes, $finMes))
+                    ->whereBetween('status_oportunidad.updated_at',array($inicioMes, $finMes))
                     ->where('cat_servicios.id_servicio_cat', '=', $servicio)
                     ->where('etiquetas.id_etiqueta', '=', $etiqueta)
-                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'), 'cat_servicios.nombre as servicio', 'etiquetas.nombre as etiqueta')
+                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'))
                     ->groupBy('prospectos.fuente')
                     ->get();
                 array_push($oportunidad_fuente_mes, $meses[$i-1], $consulta);
@@ -1996,7 +1998,7 @@ class DataViewsController extends Controller
                     ->wherenull('cat_status_oportunidad.deleted_at')
                     ->whereBetween('status_oportunidad.updated_at',array($inicioMes, $finMes))
                     ->where('status_oportunidad.id_cat_status_oportunidad', '=', $status)
-                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'), 'cat_status_oportunidad.status as status')
+                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'))
                     ->groupBy('prospectos.fuente')
                     ->get();
                 array_push($oportunidad_fuente_mes, $meses[$i-1], $consulta);
@@ -2019,14 +2021,16 @@ class DataViewsController extends Controller
                     ->join('cat_fuentes', 'prospectos.fuente','cat_fuentes.id_fuente')
                     ->join('etiquetas_oportunidades', 'etiquetas_oportunidades.id_oportunidad', 'oportunidades.id_oportunidad')
                     ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_oportunidades.id_etiqueta')
+                    ->join('status_oportunidad', 'status_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
+                    ->wherenull('status_oportunidad.deleted_at')
                     ->wherenull('oportunidades.deleted_at')
                     ->wherenull('oportunidad_prospecto.deleted_at')
                     ->wherenull('prospectos.deleted_at')
                     ->wherenull('etiquetas_oportunidades.deleted_at')
                     ->wherenull('etiquetas.deleted_at')
-                    ->whereBetween('etiquetas_oportunidades.updated_at',array($inicioMes, $finMes))
+                    ->whereBetween('status_oportunidad.updated_at',array($inicioMes, $finMes))
                     ->where('etiquetas.id_etiqueta', '=', $etiqueta)
-                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'), 'etiquetas.nombre as etiqueta')
+                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'))
                     ->groupBy('prospectos.fuente')
                     ->get();
                 array_push($oportunidad_fuente_mes, $meses[$i-1], $consulta);
@@ -2049,14 +2053,16 @@ class DataViewsController extends Controller
                     ->join('cat_fuentes', 'prospectos.fuente','cat_fuentes.id_fuente')
                     ->join('servicio_oportunidad', 'servicio_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
                     ->join('cat_servicios','cat_servicios.id_servicio_cat','servicio_oportunidad.id_servicio_cat')
+                    ->join('status_oportunidad', 'status_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
+                    ->wherenull('status_oportunidad.deleted_at')
                     ->wherenull('oportunidades.deleted_at')
                     ->wherenull('oportunidad_prospecto.deleted_at')
                     ->wherenull('prospectos.deleted_at')
                     ->wherenull('servicio_oportunidad.deleted_at')
                     ->wherenull('cat_servicios.deleted_at')
-                    ->whereBetween('servicio_oportunidad.updated_at',array($inicioMes, $finMes))
+                    ->whereBetween('status_oportunidad.updated_at',array($inicioMes, $finMes))
                     ->where('cat_servicios.id_servicio_cat', '=', $servicio)
-                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'), 'cat_servicios.nombre as servicio')
+                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'))
                     ->groupBy('prospectos.fuente')
                     ->get();
                 array_push($oportunidad_fuente_mes, $meses[$i-1], $consulta);
