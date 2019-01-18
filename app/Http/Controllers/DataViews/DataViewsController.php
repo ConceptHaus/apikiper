@@ -133,7 +133,6 @@ class DataViewsController extends Controller
         $oportuniades_cerradas = $this->oportunidades_por_periodo_por_status($inicioSemana,$finSemana,2);
         $oportunidades_cotizadas = $this->oportunidades_por_periodo_por_status($inicioSemana,$finSemana,1);
         $colaboradores = $this->dashboard_colaboradores_periodo($inicioSemana,$finSemana);
-        //$prospectos_sin_contactar = $this->prospectos_por_periodo_por_status($inicioSemana,$finSemana,2);
         $prospectos_sin_contactar = $this->prospectos_sin_contactar();
         $ingresos = $this->ingresos_por_periodo_por_status($inicioSemana,$finSemana,2);
         $origen = $this->origen_por_periodo($inicioSemana, $finSemana);
@@ -179,7 +178,7 @@ class DataViewsController extends Controller
         $oportuniades_cerradas = $this->oportunidades_por_periodo_por_status($inicioMes, $finMes, 2);
         $oportunidades_cotizadas =  $this->oportunidades_por_periodo_por_status($inicioMes, $finMes, 1);
         $colaboradores = $this->dashboard_colaboradores_periodo($inicioMes,$finMes);
-        $prospectos_sin_contactar = $this->prospectos_por_periodo_por_status($inicioMes, $finMes, 2);
+        $prospectos_sin_contactar = $this->prospectos_sin_contactar();
         $ingresos = $this->ingresos_por_periodo_por_status($inicioMes, $finMes, 2);
         $origen = $this->origen_por_periodo($inicioMes, $finMes);
         
@@ -224,7 +223,7 @@ class DataViewsController extends Controller
         $oportuniades_cerradas = $this->oportunidades_por_periodo_por_status($inicioAnio, $finAnio, 2);
         $oportunidades_cotizadas =  $this->oportunidades_por_periodo_por_status($inicioAnio, $finAnio, 1);
         $colaboradores = $this->dashboard_colaboradores_periodo($inicioAnio,$finAnio);
-        $prospectos_sin_contactar = $this->prospectos_por_periodo_por_status($inicioAnio, $finAnio, 2);
+        $prospectos_sin_contactar = $this->prospectos_sin_contactar();
         $ingresos = $this->ingresos_por_periodo_por_status($inicioAnio, $finAnio, 2);
         $origen = $this->origen_por_periodo($inicioAnio, $finAnio);
 
