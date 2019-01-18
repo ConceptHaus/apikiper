@@ -44,16 +44,19 @@ class OportunidadesController extends Controller
         $oportunidades_cotizadas = DB::table('oportunidades')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->whereNull('oportunidades.deleted_at')
+                            ->whereNull('status_oportunidad.deleted_at')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
 
         $oportunidades_cerradas = DB::table('oportunidades')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->whereNull('oportunidades.deleted_at')
+                            ->whereNull('status_oportunidad.deleted_at')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
 
         $oportunidades_no_viables = DB::table('oportunidades')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->whereNull('oportunidades.deleted_at')
+                            ->whereNull('status_oportunidad.deleted_at')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',3)->count();
 
 
@@ -632,6 +635,7 @@ class OportunidadesController extends Controller
 
             $new_object = DB::table('cat_servicios')->where('id_servicio_cat',$servicio->id_servicio_cat)
             ->where('status',1)
+            ->whereNull('cat_servicios.deleted_at')
             ->select('id_servicio_cat','nombre','descripcion')->first();
 
             $new_object->id_servicio_oportunidad = $servicio->id_servicio_oportunidad;
@@ -802,7 +806,7 @@ class OportunidadesController extends Controller
     }
 
     public function colorsOportunidades($id){
-        $result = DB::table('cat_status_oportunidad')->select('cat_status_oportunidad.color')->where('id_cat_status_oportunidad',$id)->first();
+        $result = DB::table('cat_status_oportunidad')->wherenull('cat_status_oportunidad.deleted_at')->select('cat_status_oportunidad.color')->where('id_cat_status_oportunidad',$id)->first();
         return $result->color;
     }
 
