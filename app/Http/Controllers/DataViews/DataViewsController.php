@@ -719,11 +719,11 @@ class DataViewsController extends Controller
       $semana = new Carbon('last week');
       $hoy = new Carbon('now');
 
-        $total_cotizado = $this->valor_oportunidades_por_periodo_por_status($inicioSemana, $finSemana, 1);
+        $total_cotizado = $this->ingresos_por_periodo_por_status($inicioSemana, $finSemana, 1);
 
-        $total_cerrador = $this->valor_oportunidades_por_periodo_por_status($inicioSemana, $finSemana, 2);
+        $total_cerrador = $this->ingresos_por_periodo_por_status($inicioSemana, $finSemana, 2);
 
-        $total_noviable = $this->valor_oportunidades_por_periodo_por_status($inicioSemana, $finSemana, 3);
+        $total_noviable = $this->ingresos_por_periodo_por_status($inicioSemana, $finSemana, 3);
 
         $top_3 = $this->valor_top_3_por_periodo($inicioSemana, $finSemana);
 
@@ -752,11 +752,11 @@ class DataViewsController extends Controller
       $mes = new Carbon('last month');
       $hoy = new Carbon('now');
 
-      $total_cotizado = $this->valor_oportunidades_por_periodo_por_status($inicioMes, $finMes, 1);
+      $total_cotizado = $this->ingresos_por_periodo_por_status($inicioMes, $finMes, 1);
 
-      $total_cerrador = $this->valor_oportunidades_por_periodo_por_status($inicioMes, $finMes, 2);
+      $total_cerrador = $this->ingresos_por_periodo_por_status($inicioMes, $finMes, 2);
 
-      $total_noviable = $this->valor_oportunidades_por_periodo_por_status($inicioMes, $finMes, 3);
+      $total_noviable = $this->ingresos_por_periodo_por_status($inicioMes, $finMes, 3);
 
       $top_3 = $this->valor_top_3_por_periodo($inicioMes, $finMes);
 
