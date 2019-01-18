@@ -572,7 +572,7 @@ class DataViewsController extends Controller
             'fotos_colaboradores.url_foto as url_foto',
             'detalle_colaborador.puesto as puesto'
         );
-        $top_5 = DB::table('users')
+        $top_3 = DB::table('users')
             ->join('fotos_colaboradores','fotos_colaboradores.id_colaborador','users.id')
             ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
             ->join('oportunidades','oportunidades.id_oportunidad','colaborador_oportunidad.id_oportunidad')
@@ -588,7 +588,7 @@ class DataViewsController extends Controller
             ->selectRaw(implode(',', $selects))
             ->groupBy('users.id')
             ->orderBy('cerradas','desc')
-            ->limit(5)
+            ->limit(3)
             ->get();
             ;
 
@@ -648,7 +648,7 @@ class DataViewsController extends Controller
             'error'=>false,
             'data'=>[
                 'ventas'=>$users_ventas,
-                'top_5'=>$top_5,
+                'top_3'=>$top_3,
                 'colaboradores'=>$colaboradores
             ]
             ],200);
@@ -663,7 +663,7 @@ class DataViewsController extends Controller
 
         $total_noviable = $this->valor_oportunidades_por_status(3);
 
-        $top_5 = DB::table('users')
+        $top_3 = DB::table('users')
                     ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
                     ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
                     ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
@@ -679,7 +679,7 @@ class DataViewsController extends Controller
                     ->select('users.id','users.nombre','users.apellido','fotos_colaboradores.url_foto','detalle_colaborador.puesto',DB::raw('sum(detalle_oportunidad.valor) as total_ingresos'))
                     ->groupBy('users.id')
                     ->orderBy('total_ingresos','desc')
-                    ->limit(5)
+                    ->limit(3)
                     ->get();
 
         $fuentes = DB::table('oportunidades')
@@ -706,7 +706,7 @@ class DataViewsController extends Controller
                 'total_cotizado'=>number_format($total_cotizado,2),
                 'total_cerrador'=>number_format($total_cerrador,2),
                 'total_noviable'=>number_format($total_noviable,2),
-                'top_5'=>$top_5,
+                'top_3'=>$top_3,
                 'fuentes'=>$this->FuentesChecker($catalogo_fuentes,$fuentes)
             ]
 
@@ -725,7 +725,7 @@ class DataViewsController extends Controller
 
         $total_noviable = $this->ingresos_por_periodo_por_status($inicioSemana, $finSemana, 3);
 
-        $top_5 = $this->valor_top_5_por_periodo($inicioSemana, $finSemana);
+        $top_3 = $this->valor_top_3_por_periodo($inicioSemana, $finSemana);
 
         $fuentes = $this->valor_fuentes_por_periodo($inicioSemana, $finSemana);
 
@@ -739,7 +739,7 @@ class DataViewsController extends Controller
                 'total_cotizado'=>number_format($total_cotizado,2),
                 'total_cerrador'=>number_format($total_cerrador,2),
                 'total_noviable'=>number_format($total_noviable,2),
-                'top_5'=>$top_5,
+                'top_3'=>$top_3,
                 'fuentes'=>$this->FuentesChecker($catalogo_fuentes,$fuentes)
             ]
 
@@ -758,7 +758,7 @@ class DataViewsController extends Controller
 
       $total_noviable = $this->ingresos_por_periodo_por_status($inicioMes, $finMes, 3);
 
-      $top_5 = $this->valor_top_5_por_periodo($inicioMes, $finMes);
+      $top_3 = $this->valor_top_3_por_periodo($inicioMes, $finMes);
 
       $fuentes = $this->valor_fuentes_por_periodo($inicioMes, $finMes);
 
@@ -772,7 +772,7 @@ class DataViewsController extends Controller
                 'total_cotizado'=>number_format($total_cotizado,2),
                 'total_cerrador'=>number_format($total_cerrador,2),
                 'total_noviable'=>number_format($total_noviable,2),
-                'top_5'=>$top_5,
+                'top_3'=>$top_3,
                 'fuentes'=>$this->FuentesChecker($catalogo_fuentes,$fuentes)
             ]
 
@@ -791,7 +791,7 @@ class DataViewsController extends Controller
 
         $total_noviable = $this->valor_oportunidades_por_periodo_por_status($inicioAnio, $finAnio, 3);
 
-        $top_5 = $this->valor_top_5_por_periodo($inicioAnio, $finAnio);
+        $top_3 = $this->valor_top_3_por_periodo($inicioAnio, $finAnio);
 
         $fuentes = $this->valor_fuentes_por_periodo($inicioAnio, $finAnio);
 
@@ -804,7 +804,7 @@ class DataViewsController extends Controller
                 'total_cotizado'=>number_format($total_cotizado,2),
                 'total_cerrador'=>number_format($total_cerrador,2),
                 'total_noviable'=>number_format($total_noviable,2),
-                'top_5'=>$top_5,
+                'top_3'=>$top_3,
                 'fuentes'=>$this->FuentesChecker($catalogo_fuentes,$fuentes)
             ]
 
@@ -1761,7 +1761,7 @@ class DataViewsController extends Controller
             ->sum('detalle_oportunidad.valor');
     }
 
-    public function valor_top_5_por_periodo($inicio, $fin){
+    public function valor_top_3_por_periodo($inicio, $fin){
         return DB::table('users')
             ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
             ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
@@ -1781,7 +1781,7 @@ class DataViewsController extends Controller
             ->select('users.id','users.nombre','users.apellido','fotos_colaboradores.url_foto','detalle_colaborador.puesto',DB::raw('sum(detalle_oportunidad.valor) as total_ingresos'))
             ->groupBy('users.id')
             ->orderBy('total_ingresos','desc')
-            ->limit(5)
+            ->limit(3)
             ->get();
     }
 
