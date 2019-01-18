@@ -168,7 +168,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/fuentes','DataViews\DataViewsController@getFuentes');
         Route::get('/etiquetas/ajustes', 'DataViews\DataViewsController@getEtiquetasAjustes');
 
-        Route::get('/mes', 'DataViews\DataViewsController@oportunidades_por_fuente_por_mes');
+        Route::post('/mes', 'DataViews\DataViewsController@oportunidades_por_fuente_por_mes');
 
         //POST
         Route::post('/etiquetas','DataViews\DataViewsController@addEtiquetas');

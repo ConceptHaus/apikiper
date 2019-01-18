@@ -1809,37 +1809,285 @@ class DataViewsController extends Controller
             ->wherenull('status_prospecto.deleted_at')
             ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
     }
-    public function oportunidades_por_fuente_por_mes()
+    public function oportunidades_por_fuente_por_mes(Request $request)
     {
+        $meses = array('Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
         $finMes = Carbon::now();
         $inicioMes = Carbon::now();
 
         $mes_actual = Carbon::now()->month;
-
+        $mes_actual = 12;
         $oportunidad_fuente_mes = array();
-        for($i = 1; $i <= $mes_actual; $i++)
+
+        if(isset($request->status))
+            $status = $request->status;
+
+        if(isset($request->etiqueta))
+            $etiqueta = $request->etiqueta;
+
+        if(isset($request->servicio))
+            $servicio = $request->servicio;
+
+        if(isset($status) && isset($etiqueta) && isset($servicio))
         {
-            $finMes->month = $i;
-            $finMes = $finMes->endOfMonth();
-            $inicioMes->month = $i;
-            $inicioMes = $inicioMes->startOfMonth();
-            
-            $meses = array('Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-            
-            $consulta = DB::table('oportunidades')
-                ->join('oportunidad_prospecto','oportunidades.id_oportunidad','oportunidad_prospecto.id_oportunidad')
-                ->join('prospectos', 'oportunidad_prospecto.id_prospecto', 'prospectos.id_prospecto')
-                ->join('cat_fuentes', 'prospectos.fuente','cat_fuentes.id_fuente')
-                ->wherenull('oportunidades.deleted_at')
-                ->wherenull('oportunidad_prospecto.deleted_at')
-                ->wherenull('prospectos.deleted_at')
-                ->whereBetween('oportunidades.updated_at',array($inicioMes, $finMes))
-                ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'))
-                ->groupBy('prospectos.fuente')
-                ->get();
-            array_push($oportunidad_fuente_mes, $meses[$i-1], $consulta);
+            for($i = 1; $i <= $mes_actual; $i++)
+            {
+                $finMes->month = $i;
+                $finMes = $finMes->endOfMonth();
+                $inicioMes->month = $i;
+                $inicioMes = $inicioMes->startOfMonth();
+                
+                
+                $consulta = DB::table('oportunidades')
+                    ->join('oportunidad_prospecto','oportunidades.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                    ->join('prospectos', 'oportunidad_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                    ->join('cat_fuentes', 'prospectos.fuente','cat_fuentes.id_fuente')
+                    ->join('status_oportunidad', 'status_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
+                    ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                    ->join('etiquetas_oportunidades', 'etiquetas_oportunidades.id_oportunidad', 'oportunidades.id_oportunidad')
+                    ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_oportunidades.id_etiqueta')
+                    ->join('servicio_oportunidad', 'servicio_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
+                    ->join('cat_servicios','cat_servicios.id_servicio_cat','servicio_oportunidad.id_servicio_cat')
+                    ->wherenull('oportunidades.deleted_at')
+                    ->wherenull('oportunidad_prospecto.deleted_at')
+                    ->wherenull('prospectos.deleted_at')
+                    ->wherenull('status_oportunidad.deleted_at')
+                    ->wherenull('cat_status_oportunidad.deleted_at')
+                    ->wherenull('etiquetas_oportunidades.deleted_at')
+                    ->wherenull('etiquetas.deleted_at')
+                    ->wherenull('servicio_oportunidad.deleted_at')
+                    ->wherenull('cat_servicios.deleted_at')
+                    ->whereBetween('status_oportunidad.updated_at',array($inicioMes, $finMes))
+                    ->where('status_oportunidad.id_cat_status_oportunidad', '=', $status)
+                    ->where('etiquetas.id_etiqueta', '=', $etiqueta)
+                    ->where('cat_servicios.id_servicio_cat', '=', $servicio)
+                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'), 'cat_status_oportunidad.status as status', 'etiquetas.nombre as etiqueta', 'cat_servicios.nombre as servicio')
+                    ->groupBy('prospectos.fuente')
+                    ->get();
+                array_push($oportunidad_fuente_mes, $meses[$i-1], $consulta);
+            }
+            return $oportunidad_fuente_mes;
         }
-        return $oportunidad_fuente_mes;
+        elseif(isset($status) && isset($etiqueta))
+        {
+            for($i = 1; $i <= $mes_actual; $i++)
+            {
+                $finMes->month = $i;
+                $finMes = $finMes->endOfMonth();
+                $inicioMes->month = $i;
+                $inicioMes = $inicioMes->startOfMonth();
+                
+                
+                $consulta = DB::table('oportunidades')
+                    ->join('oportunidad_prospecto','oportunidades.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                    ->join('prospectos', 'oportunidad_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                    ->join('cat_fuentes', 'prospectos.fuente','cat_fuentes.id_fuente')
+                    ->join('status_oportunidad', 'status_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
+                    ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                    ->join('etiquetas_oportunidades', 'etiquetas_oportunidades.id_oportunidad', 'oportunidades.id_oportunidad')
+                    ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_oportunidades.id_etiqueta')
+                    ->wherenull('oportunidades.deleted_at')
+                    ->wherenull('oportunidad_prospecto.deleted_at')
+                    ->wherenull('prospectos.deleted_at')
+                    ->wherenull('status_oportunidad.deleted_at')
+                    ->wherenull('cat_status_oportunidad.deleted_at')
+                    ->wherenull('etiquetas_oportunidades.deleted_at')
+                    ->wherenull('etiquetas.deleted_at')
+                    ->whereBetween('status_oportunidad.updated_at',array($inicioMes, $finMes))
+                    ->where('status_oportunidad.id_cat_status_oportunidad', '=', $status)
+                    ->where('etiquetas.id_etiqueta', '=', $etiqueta)
+                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'), 'cat_status_oportunidad.status as status', 'etiquetas.nombre as etiqueta')
+                    ->groupBy('prospectos.fuente')
+                    ->get();
+                array_push($oportunidad_fuente_mes, $meses[$i-1], $consulta);
+            }
+            return $oportunidad_fuente_mes;
+        }
+        elseif(isset($status) && isset($servicio))
+        {
+            for($i = 1; $i <= $mes_actual; $i++)
+            {
+                $finMes->month = $i;
+                $finMes = $finMes->endOfMonth();
+                $inicioMes->month = $i;
+                $inicioMes = $inicioMes->startOfMonth();
+                
+                
+                $consulta = DB::table('oportunidades')
+                    ->join('oportunidad_prospecto','oportunidades.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                    ->join('prospectos', 'oportunidad_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                    ->join('cat_fuentes', 'prospectos.fuente','cat_fuentes.id_fuente')
+                    ->join('status_oportunidad', 'status_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
+                    ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                    ->join('servicio_oportunidad', 'servicio_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
+                    ->join('cat_servicios','cat_servicios.id_servicio_cat','servicio_oportunidad.id_servicio_cat')
+                    ->wherenull('oportunidades.deleted_at')
+                    ->wherenull('oportunidad_prospecto.deleted_at')
+                    ->wherenull('prospectos.deleted_at')
+                    ->wherenull('status_oportunidad.deleted_at')
+                    ->wherenull('cat_status_oportunidad.deleted_at')
+                    ->wherenull('servicio_oportunidad.deleted_at')
+                    ->wherenull('cat_servicios.deleted_at')
+                    ->whereBetween('status_oportunidad.updated_at',array($inicioMes, $finMes))
+                    ->where('status_oportunidad.id_cat_status_oportunidad', '=', $status)
+                    ->where('cat_servicios.id_servicio_cat', '=', $servicio)
+                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'), 'cat_status_oportunidad.status as status', 'cat_servicios.nombre as servicio')
+                    ->groupBy('prospectos.fuente')
+                    ->get();
+                array_push($oportunidad_fuente_mes, $meses[$i-1], $consulta);
+            }
+            return $oportunidad_fuente_mes;
+        }
+        elseif(isset($etiqueta) && isset($servicio))
+        {
+            for($i = 1; $i <= $mes_actual; $i++)
+            {
+                $finMes->month = $i;
+                $finMes = $finMes->endOfMonth();
+                $inicioMes->month = $i;
+                $inicioMes = $inicioMes->startOfMonth();
+                
+                
+                $consulta = DB::table('oportunidades')
+                    ->join('oportunidad_prospecto','oportunidades.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                    ->join('prospectos', 'oportunidad_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                    ->join('cat_fuentes', 'prospectos.fuente','cat_fuentes.id_fuente')
+                    ->join('servicio_oportunidad', 'servicio_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
+                    ->join('cat_servicios','cat_servicios.id_servicio_cat','servicio_oportunidad.id_servicio_cat')
+                    ->join('etiquetas_oportunidades', 'etiquetas_oportunidades.id_oportunidad', 'oportunidades.id_oportunidad')
+                    ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_oportunidades.id_etiqueta')
+                    ->wherenull('oportunidades.deleted_at')
+                    ->wherenull('oportunidad_prospecto.deleted_at')
+                    ->wherenull('prospectos.deleted_at')
+                    ->wherenull('servicio_oportunidad.deleted_at')
+                    ->wherenull('cat_servicios.deleted_at')
+                    ->wherenull('etiquetas_oportunidades.deleted_at')
+                    ->wherenull('etiquetas.deleted_at')
+                    ->whereBetween('servicio_oportunidad.updated_at',array($inicioMes, $finMes))
+                    ->where('cat_servicios.id_servicio_cat', '=', $servicio)
+                    ->where('etiquetas.id_etiqueta', '=', $etiqueta)
+                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'), 'cat_servicios.nombre as servicio', 'etiquetas.nombre as etiqueta')
+                    ->groupBy('prospectos.fuente')
+                    ->get();
+                array_push($oportunidad_fuente_mes, $meses[$i-1], $consulta);
+            }
+            return $oportunidad_fuente_mes;
+        }
+        elseif(isset($status))
+        {
+            for($i = 1; $i <= $mes_actual; $i++)
+            {
+                $finMes->month = $i;
+                $finMes = $finMes->endOfMonth();
+                $inicioMes->month = $i;
+                $inicioMes = $inicioMes->startOfMonth();
+                
+                
+                $consulta = DB::table('oportunidades')
+                    ->join('oportunidad_prospecto','oportunidades.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                    ->join('prospectos', 'oportunidad_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                    ->join('cat_fuentes', 'prospectos.fuente','cat_fuentes.id_fuente')
+                    ->join('status_oportunidad', 'status_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
+                    ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                    ->wherenull('oportunidades.deleted_at')
+                    ->wherenull('oportunidad_prospecto.deleted_at')
+                    ->wherenull('prospectos.deleted_at')
+                    ->wherenull('status_oportunidad.deleted_at')
+                    ->wherenull('cat_status_oportunidad.deleted_at')
+                    ->whereBetween('status_oportunidad.updated_at',array($inicioMes, $finMes))
+                    ->where('status_oportunidad.id_cat_status_oportunidad', '=', $status)
+                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'), 'cat_status_oportunidad.status as status')
+                    ->groupBy('prospectos.fuente')
+                    ->get();
+                array_push($oportunidad_fuente_mes, $meses[$i-1], $consulta);
+            }
+            return $oportunidad_fuente_mes;
+        }
+        elseif(isset($etiqueta))
+        {
+            for($i = 1; $i <= $mes_actual; $i++)
+            {
+                $finMes->month = $i;
+                $finMes = $finMes->endOfMonth();
+                $inicioMes->month = $i;
+                $inicioMes = $inicioMes->startOfMonth();
+                
+                
+                $consulta = DB::table('oportunidades')
+                    ->join('oportunidad_prospecto','oportunidades.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                    ->join('prospectos', 'oportunidad_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                    ->join('cat_fuentes', 'prospectos.fuente','cat_fuentes.id_fuente')
+                    ->join('etiquetas_oportunidades', 'etiquetas_oportunidades.id_oportunidad', 'oportunidades.id_oportunidad')
+                    ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_oportunidades.id_etiqueta')
+                    ->wherenull('oportunidades.deleted_at')
+                    ->wherenull('oportunidad_prospecto.deleted_at')
+                    ->wherenull('prospectos.deleted_at')
+                    ->wherenull('etiquetas_oportunidades.deleted_at')
+                    ->wherenull('etiquetas.deleted_at')
+                    ->whereBetween('etiquetas_oportunidades.updated_at',array($inicioMes, $finMes))
+                    ->where('etiquetas.id_etiqueta', '=', $etiqueta)
+                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'), 'etiquetas.nombre as etiqueta')
+                    ->groupBy('prospectos.fuente')
+                    ->get();
+                array_push($oportunidad_fuente_mes, $meses[$i-1], $consulta);
+            }
+            return $oportunidad_fuente_mes;
+        }
+        elseif(isset($servicio))
+        {
+            for($i = 1; $i <= $mes_actual; $i++)
+            {
+                $finMes->month = $i;
+                $finMes = $finMes->endOfMonth();
+                $inicioMes->month = $i;
+                $inicioMes = $inicioMes->startOfMonth();
+                
+                
+                $consulta = DB::table('oportunidades')
+                    ->join('oportunidad_prospecto','oportunidades.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                    ->join('prospectos', 'oportunidad_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                    ->join('cat_fuentes', 'prospectos.fuente','cat_fuentes.id_fuente')
+                    ->join('servicio_oportunidad', 'servicio_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
+                    ->join('cat_servicios','cat_servicios.id_servicio_cat','servicio_oportunidad.id_servicio_cat')
+                    ->wherenull('oportunidades.deleted_at')
+                    ->wherenull('oportunidad_prospecto.deleted_at')
+                    ->wherenull('prospectos.deleted_at')
+                    ->wherenull('servicio_oportunidad.deleted_at')
+                    ->wherenull('cat_servicios.deleted_at')
+                    ->whereBetween('servicio_oportunidad.updated_at',array($inicioMes, $finMes))
+                    ->where('cat_servicios.id_servicio_cat', '=', $servicio)
+                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'), 'cat_servicios.nombre as servicio')
+                    ->groupBy('prospectos.fuente')
+                    ->get();
+                array_push($oportunidad_fuente_mes, $meses[$i-1], $consulta);
+            }
+            return $oportunidad_fuente_mes;
+        }
+        else
+        {
+            for($i = 1; $i <= $mes_actual; $i++)
+            {
+                $finMes->month = $i;
+                $finMes = $finMes->endOfMonth();
+                $inicioMes->month = $i;
+                $inicioMes = $inicioMes->startOfMonth();
+                
+                
+                $consulta = DB::table('oportunidades')
+                    ->join('oportunidad_prospecto','oportunidades.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                    ->join('prospectos', 'oportunidad_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                    ->join('cat_fuentes', 'prospectos.fuente','cat_fuentes.id_fuente')
+                    ->wherenull('oportunidades.deleted_at')
+                    ->wherenull('oportunidad_prospecto.deleted_at')
+                    ->wherenull('prospectos.deleted_at')
+                    ->whereBetween('oportunidades.updated_at',array($inicioMes, $finMes))
+                    ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'))
+                    ->groupBy('prospectos.fuente')
+                    ->get();
+                array_push($oportunidad_fuente_mes, $meses[$i-1], $consulta);
+            }
+            return $oportunidad_fuente_mes;
+        }
     }
 
 }
