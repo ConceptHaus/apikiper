@@ -59,6 +59,9 @@ class MailingController extends Controller
           $remitentes = DB::table('prospectos')
                         ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
                         ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                        ->whereNull('prospectos.deleted_at')
+                        ->whereNull('oportunidad_prospecto.deleted_at')
+                        ->whereNull('status_oportunidad.deleted_at')
                         ->where('status_oportunidad.id_cat_status_oportunidad',$request->status)
                         ->select('prospectos.correo','prospectos.nombre')->distinct()->get();
           
@@ -70,6 +73,10 @@ class MailingController extends Controller
                         ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
                         ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
                         ->join('servicio_oportunidad','servicio_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                        ->whereNull('prospectos.deleted_at')
+                        ->whereNull('oportunidad_prospecto.deleted_at')
+                        ->whereNull('status_oportunidad.deleted_at')
+                        ->whereNull('servicio_oportunidad.deleted_at')
                         ->where('status_oportunidad.id_cat_status_oportunidad',$request->status)
                         ->where('servicio_oportunidad.id_servicio_cat',$request->servicio)
                         ->select('prospectos.correo','prospectos.nombre')->distinct()->get();
@@ -81,6 +88,10 @@ class MailingController extends Controller
                         ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
                         ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
                         ->join('etiquetas_oportunidades','etiquetas_oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                        ->whereNull('prospectos.deleted_at')
+                        ->whereNull('oportunidad_prospecto.deleted_at')
+                        ->whereNull('status_oportunidad.deleted_at')
+                        ->whereNull('etiquetas_oportunidades.deleted_at')
                         ->where('status_oportunidad.id_cat_status_oportunidad',$request->status)
                         ->where('etiquetas_oportunidades.id_etiqueta',$request->etiqueta)
                         ->select('prospectos.correo','prospectos.nombre')->distinct()->get();
