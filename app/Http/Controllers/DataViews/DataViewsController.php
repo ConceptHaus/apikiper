@@ -1809,4 +1809,37 @@ class DataViewsController extends Controller
             ->wherenull('status_prospecto.deleted_at')
             ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
     }
+    public function oportunidades_por_fuente_por_mes()
+    {
+        $finMes = Carbon::now();
+        $inicioMes = Carbon::now();
+
+        $mes_actual = Carbon::now()->month;
+
+        $oportunidad_fuente_mes = array();
+        for($i = 1; $i <= 12; $i++)
+        {
+            $finMes->month = $i;
+            $finMes = $finMes->endOfMonth();
+            $inicioMes->month = $i;
+            $inicioMes = $inicioMes->startOfMonth();
+            
+            $meses = array('Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+            
+            $consulta = DB::table('oportunidades')
+                ->join('oportunidad_prospecto','oportunidades.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                ->join('prospectos', 'oportunidad_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                ->join('cat_fuentes', 'prospectos.fuente','cat_fuentes.id_fuente')
+                ->wherenull('oportunidades.deleted_at')
+                ->wherenull('oportunidad_prospecto.deleted_at')
+                ->wherenull('prospectos.deleted_at')
+                ->whereBetween('oportunidades.updated_at',array($inicioMes, $finMes))
+                ->select('cat_fuentes.id_fuente', 'cat_fuentes.nombre as nombre_fuente', DB::raw('count(*) as cantidad'))
+                ->groupBy('prospectos.fuente')
+                ->get();
+            array_push($oportunidad_fuente_mes, $meses[$i-1], $consulta);
+        }
+        return $oportunidad_fuente_mes;
+    }
+
 }
