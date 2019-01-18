@@ -588,7 +588,7 @@ class DataViewsController extends Controller
             ->selectRaw(implode(',', $selects))
             ->groupBy('users.id')
             ->orderBy('cerradas','desc')
-            ->limit(3)
+            ->limit(5)
             ->get();
             ;
 
@@ -679,7 +679,7 @@ class DataViewsController extends Controller
                     ->select('users.id','users.nombre','users.apellido','fotos_colaboradores.url_foto','detalle_colaborador.puesto',DB::raw('sum(detalle_oportunidad.valor) as total_ingresos'))
                     ->groupBy('users.id')
                     ->orderBy('total_ingresos','desc')
-                    ->limit(3)
+                    ->limit(5)
                     ->get();
 
         $fuentes = DB::table('oportunidades')
@@ -1781,7 +1781,7 @@ class DataViewsController extends Controller
             ->select('users.id','users.nombre','users.apellido','fotos_colaboradores.url_foto','detalle_colaborador.puesto',DB::raw('sum(detalle_oportunidad.valor) as total_ingresos'))
             ->groupBy('users.id')
             ->orderBy('total_ingresos','desc')
-            ->limit(3)
+            ->limit(5)
             ->get();
     }
 
