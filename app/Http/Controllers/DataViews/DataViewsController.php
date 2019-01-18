@@ -133,7 +133,8 @@ class DataViewsController extends Controller
         $oportuniades_cerradas = $this->oportunidades_por_periodo_por_status($inicioSemana,$finSemana,2);
         $oportunidades_cotizadas = $this->oportunidades_por_periodo_por_status($inicioSemana,$finSemana,1);
         $colaboradores = $this->dashboard_colaboradores_periodo($inicioSemana,$finSemana);
-        $prospectos_sin_contactar = $this->prospectos_por_periodo_por_status($inicioSemana,$finSemana,2);
+        //$prospectos_sin_contactar = $this->prospectos_por_periodo_por_status($inicioSemana,$finSemana,2);
+        $prospectos_sin_contactar = $this->prospectos_sin_contactar();
         $ingresos = $this->ingresos_por_periodo_por_status($inicioSemana,$finSemana,2);
         $origen = $this->origen_por_periodo($inicioSemana, $finSemana);
 
@@ -1801,5 +1802,12 @@ class DataViewsController extends Controller
             ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
             ->select(DB::raw('SUM(detalle_oportunidad.valor) as total'),'cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status')->groupBy('cat_fuentes.nombre')
             ->get();
+    }
+    public function prospectos_sin_contactar(){
+        return DB::table('prospectos')
+            ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+            ->wherenull('prospectos.deleted_at')
+            ->wherenull('status_prospecto.deleted_at')
+            ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
     }
 }
