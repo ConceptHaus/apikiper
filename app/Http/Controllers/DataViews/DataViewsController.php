@@ -510,7 +510,7 @@ class DataViewsController extends Controller
             ],200);
     }
 
-    public function estadisticas_oportunidad(){
+    public function estadisticas_oportunidad(Request $request){
         $oportunidades_cotizadas = $this->oportunidades_por_status(1);
 
         $oportunidades_cerradas = $this->oportunidades_por_status(2);
@@ -530,10 +530,11 @@ class DataViewsController extends Controller
 
         $status = DB::table('cat_status_oportunidad')
                       ->select('id_cat_status_oportunidad as id','status','color')->get();
-
         $catalogo_fuentes = DB::table('cat_fuentes')
                             ->select('nombre','url','status')->get();
 
+
+        $oportunidades_por_fuente = $this->oportunidades_por_fuente_por_mes($request);
         return response()->json([
             'message'=>'Correcto',
             'error'=>false,
@@ -542,7 +543,8 @@ class DataViewsController extends Controller
                 'cerradas'=>$oportunidades_cerradas,
                 'no_viables'=>$oportunidades_no_viables,
                 'fuentes'=>$this->FuentesChecker($catalogo_fuentes, $fuentes),
-                'status'=>$status
+                'status'=>$status,
+                'oportunidades_por_fuente'=>$oportunidades_por_fuente
             ]
             ],200);
 
