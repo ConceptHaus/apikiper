@@ -1817,7 +1817,7 @@ class DataViewsController extends Controller
         $mes_actual = Carbon::now()->month;
 
         $oportunidad_fuente_mes = array();
-        for($i = 1; $i <= 12; $i++)
+        for($i = 1; $i <= $mes_actual; $i++)
         {
             $finMes->month = $i;
             $finMes = $finMes->endOfMonth();
