@@ -14,9 +14,7 @@ class UpdateDetalleMailingsTable extends Migration
     public function up()
     {
         Schema::table('detalle_mailings', function (Blueprint $table){
-            $table->dropColumn('opcion_servicio');
-            $table->dropColumn('opcion_etiqueta');
-            $table->dropColumn('opcion_status');
+            
             $table->integer('opcion_servicio')->unsigned()->default(1);
             $table->foreign('opcion_servicio')->references('id_servicio_cat')->on('cat_servicios')->onDelete('cascade');
             //ligado con la tabla de cat_servicios
