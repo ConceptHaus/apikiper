@@ -30,6 +30,11 @@ class MailingController extends Controller
 
       $campaña = $request->all();
 
+      if($request->image1 == null || $request->image2)
+      {
+        return response('Alguna imagen se encuentra vacía, completa el campo', 400);
+      }
+
       try {
         DB::beginTransaction();
         $campana = new Mailings;
@@ -77,6 +82,8 @@ class MailingController extends Controller
         if($request->color_lineas){
           $mailing->color_lineas = $request->color_lineas;
         }
+
+        
 
         //Query para obtener lista de remitentes
         if($request->opcionServicio == 0 && $request->opcionEtiqueta == 0)
