@@ -146,11 +146,11 @@ class MailingController extends Controller
           $campana->enviados = $numero_remitentes;
           $campana->save();
           $campana->detalle()->save($mailing);
-          if(isset($request->image1))
+          if(isset($request->image))
           {
             $image1 = new ImagesMailings();
             $image1->url = $this->uploadFilesS3($request->image1,$campana->id_prospecto,1);
-            $campana->imagenes()->save($image1);
+            $campana->imagenes()->save($image);
             $datosMail['image1'] = $image1->url;
           }
           if(isset($request->image2))
