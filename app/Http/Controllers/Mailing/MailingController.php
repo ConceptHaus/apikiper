@@ -149,14 +149,14 @@ class MailingController extends Controller
           if(isset($request->image1))
           {
             $image1 = new ImagesMailings();
-            $image1->url = $this->uploadFilesS3($request->image1,$campana->id_prospecto,1);
+            $image1->url = $this->uploadFilesS3($request->image1,$campana->id_mailing,1);
             $campana->imagenes()->save($image1);
             $datosMail['image1'] = $image1->url;
           }
           if(isset($request->image2))
           {
             $image2 = new ImagesMailings();
-            $image2->url = $this->uploadFilesS3($request->image2,$campana->id_prospecto,2);
+            $image2->url = $this->uploadFilesS3($request->image2,$campana->id_mailing,2);
             $campana->imagenes()->save($image2);
             $datosMail['image2'] = $image2->url;
           }
