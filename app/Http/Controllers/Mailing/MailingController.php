@@ -207,11 +207,13 @@ class MailingController extends Controller
             'error'=>false
           ],200);
         }
+        DB::rolback();
         return response()->json([
           'message'=>'No hay remitentes.',
           'error'=>true
         ],400);
       } catch (Exception $e) {
+        DB::rolback();
         return response()->json([
           'message'=>$e,
           'error'=>true
