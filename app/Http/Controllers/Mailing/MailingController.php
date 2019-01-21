@@ -146,7 +146,6 @@ class MailingController extends Controller
           $campana->enviados = $numero_remitentes;
           $campana->save();
           $campana->detalle()->save($mailing);
-          
           if(isset($request->image1))
           {
             $image1 = new ImagesMailings();
