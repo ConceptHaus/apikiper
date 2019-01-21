@@ -28,7 +28,7 @@ class Mailings extends Model
     }
 
     public function scopeGetAll ($query){
-      return $query->orderBy('created_at', 'DESC')->get();
+      return $query->with('detalle', 'imagenes')->orderBy('created_at', 'DESC')->get();
     }
 
     public function scopeGetOne ($query, $id){
