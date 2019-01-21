@@ -146,11 +146,12 @@ class MailingController extends Controller
           $campana->enviados = $numero_remitentes;
           $campana->save();
           $campana->detalle()->save($mailing);
-          if(isset($request->image))
+          
+          if(isset($request->image1))
           {
             $image1 = new ImagesMailings();
             $image1->url = $this->uploadFilesS3($request->image1,$campana->id_prospecto,1);
-            $campana->imagenes()->save($image);
+            $campana->imagenes()->save($image1);
             $datosMail['image1'] = $image1->url;
           }
           if(isset($request->image2))
@@ -160,12 +161,10 @@ class MailingController extends Controller
             $campana->imagenes()->save($image2);
             $datosMail['image2'] = $image2->url;
           }
-          //DB::commit();
-          DB::rollback();
-
+          DB::commit();
+          
           $send_contacts = array();
           foreach ($remitentes as $remitente) {
-            //array_push($send_contacts, [$remitente->correo =>['name'=>$remitente->nombre]]);
             array_push($send_contacts, [$remitente->correo => ['name'=>$remitente->nombre]]);
           }
           
