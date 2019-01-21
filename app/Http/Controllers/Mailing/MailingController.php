@@ -32,7 +32,7 @@ class MailingController extends Controller
 
       if($request->image1 == null || $request->image2)
       {
-        return response('Alguna imagen se encuentra vacía, completa el campo', 400);
+        return response('No ingresaste alguna imagen, completa el campo', 400);
       }
 
       try {
