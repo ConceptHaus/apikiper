@@ -36,8 +36,7 @@ class MailingController extends Controller
       }
       */
       return response()->json([
-        'image1'=>$request->image1,
-        'image2'=>$request->image2
+        'REQUEST'=>$request
       ],400);
 
       try {
