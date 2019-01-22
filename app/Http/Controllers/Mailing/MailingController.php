@@ -29,11 +29,16 @@ class MailingController extends Controller
     public function addNew(Request $request){
 
       $campaña = $request->all();
-
+      /*
       if($request->image1 == null || $request->image2)
       {
         return response('No ingresaste alguna imagen, completa el campo', 400);
       }
+      */
+      return esponse()->json([
+        'image1'=>$request->image1,
+        'image2'=>$request->image2
+      ],400);
 
       try {
         DB::beginTransaction();
