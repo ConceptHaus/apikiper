@@ -11,6 +11,7 @@ use App\Modelos\Mailing\DetalleMailings;
 use App\Modelos\Mailing\ImagesMailings;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\File;
 use App\Modelos\Prospecto\Prospecto;
 use App\Modelos\Prospecto\StatusProspecto;
 
