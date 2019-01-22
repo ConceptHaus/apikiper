@@ -29,11 +29,11 @@ class MailingController extends Controller
 
     public function addNew(Request $request){
 
-      return $request->file('image1');
-      /*return response()->json([
-        'request'=>$request->all(),
+      return response()->json([
+        'error'=>true,
+        'request'=>$request->all()
       ],400);
-      */
+      
       $campaña = $request->all();
       /*
       if($request->image1 == null || $request->image2)
@@ -41,9 +41,7 @@ class MailingController extends Controller
         return response('No ingresaste alguna imagen, completa el campo', 400);
       }
       */
-      return response()->json([
-        'REQUEST'=>$request->all()
-      ],400);
+      
 
       try {
         DB::beginTransaction();
@@ -165,14 +163,14 @@ class MailingController extends Controller
           $campana->detalle()->save($mailing);
           
 
-          if(isset($request->image1))
+          if($request->file('image1')->isValid())
           {
             $image1 = new ImagesMailings();
             $image1->url = $this->uploadFilesS3($request->image1,$campana->id_mailing,1);
             $campana->imagenes()->save($image1);
             $datosMail['image1'] = $image1->url;
           }
-          if(isset($request->image2))
+          if($request->file('image2')->isValid())
           {
             $image2 = new ImagesMailings();
             $image2->url = $this->uploadFilesS3($request->image2,$campana->id_mailing,2);
@@ -228,7 +226,8 @@ class MailingController extends Controller
         DB::rolback();
         return response()->json([
           'message'=>$e,
-          'error'=>true
+          'error'=>true,
+          'request'=>$request->all()
         ],400);
       }
 
