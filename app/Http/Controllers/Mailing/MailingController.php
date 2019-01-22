@@ -27,11 +27,11 @@ class MailingController extends Controller
     //   ]);
     // }
 
-    public function addNew($file, $file2, Request $request){
+    public function addNew(Request $request){
 
       return response()->json([
-        'image1'=>$file,
-        'image2'=>$file2
+        'image1'=>$request->file,
+        'image2'=>$request->file2
       ],400);
 
       $campaña = $request->all();
