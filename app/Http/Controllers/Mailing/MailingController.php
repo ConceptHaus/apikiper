@@ -32,7 +32,7 @@ class MailingController extends Controller
 
       if($request->image1 == null || $request->image2)
       {
-        //return response('No ingresaste alguna imagen, completa el campo', 400);
+        return response('No ingresaste alguna imagen, completa el campo', 400);
       }
 
       try {
@@ -153,7 +153,7 @@ class MailingController extends Controller
           $campana->enviados = $numero_remitentes;
           $campana->save();
           $campana->detalle()->save($mailing);
-          /*
+          
           if(isset($request->image1))
           {
             $image1 = new ImagesMailings();
@@ -167,7 +167,7 @@ class MailingController extends Controller
             $image2->url = $this->uploadFilesS3($request->image2,$campana->id_mailing,2);
             $campana->imagenes()->save($image2);
             $datosMail['image2'] = $image2->url;
-          }*/
+          }
           DB::commit();
           
           $send_contacts = array();
