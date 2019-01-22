@@ -36,7 +36,7 @@ class MailingController extends Controller
       }
       */
       return response()->json([
-        'REQUEST'=>$request
+        'REQUEST'=>$request->all()
       ],400);
 
       try {
