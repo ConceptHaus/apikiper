@@ -394,7 +394,7 @@ class ColaboradoresController extends Controller
     }
 
     public function addFoto(Request $request, $id){
-        return $request->all();
+        //return $request->all();
         $foto_colaborador = FotoColaborador::where('id_colaborador',$id)->first();
         $colaborador = User::where('id',$id)->first();
 
