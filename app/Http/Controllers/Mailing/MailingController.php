@@ -29,11 +29,12 @@ class MailingController extends Controller
 
     public function addNew(Request $request){
 
+      /*
       return response()->json([
         'error'=>true,
         'request'=>$request->all()
       ],400);
-      
+      */
       $campaña = $request->all();
       /*
       if($request->image1 == null || $request->image2)
@@ -163,6 +164,8 @@ class MailingController extends Controller
           $campana->detalle()->save($mailing);
           
 
+          //guarda la imagen, debemos corregir error en angular para enviar los datos
+          /*
           if($request->file('image1')->isValid())
           {
             $image1 = new ImagesMailings();
@@ -177,6 +180,19 @@ class MailingController extends Controller
             $campana->imagenes()->save($image2);
             $datosMail['image2'] = $image2->url;
           }
+          */
+          
+          //sin almacenar la imagen
+          $image1 = new ImagesMailings();
+          $image1->url = "https://kiperbucket.s3.us-east-2.amazonaws.com/mailing/imagenes/1131/TU0ErC2cx1FBrSpDM02QNF9ZahqKJlYSZuYcZzgt.png";
+          $campana->imagenes()->save($image1);
+          $datosMail['image1'] = $image1->url;
+          
+          $image2 = new ImagesMailings();
+          $image2->url = "https://kiperbucket.s3.us-east-2.amazonaws.com/mailing/imagenes/1132/AlS4MdbOGcSvmE0LrRq6wSi3xv3H9OY80tO3MDwU.png";
+          $campana->imagenes()->save($image2);
+          $datosMail['image2'] = $image2->url;
+          
           DB::commit();
           
           $send_contacts = array();
