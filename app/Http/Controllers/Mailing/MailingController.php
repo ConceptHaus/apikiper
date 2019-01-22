@@ -30,8 +30,7 @@ class MailingController extends Controller
     public function addNew(Request $request){
 
       return response()->json([
-        'image1'=>$request->file,
-        'image2'=>$request->file2
+        'request'=>$request->all(),
       ],400);
 
       $campaña = $request->all();
