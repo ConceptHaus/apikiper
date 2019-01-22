@@ -35,7 +35,7 @@ class MailingController extends Controller
         return response('No ingresaste alguna imagen, completa el campo', 400);
       }
       */
-      return esponse()->json([
+      return response()->json([
         'image1'=>$request->image1,
         'image2'=>$request->image2
       ],400);
