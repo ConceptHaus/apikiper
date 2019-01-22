@@ -29,10 +29,11 @@ class MailingController extends Controller
 
     public function addNew(Request $request){
 
-      return response()->json([
+      return $request->file('image1');
+      /*return response()->json([
         'request'=>$request->all(),
       ],400);
-
+      */
       $campaña = $request->all();
       /*
       if($request->image1 == null || $request->image2)
@@ -163,6 +164,7 @@ class MailingController extends Controller
           $campana->save();
           $campana->detalle()->save($mailing);
           
+
           if(isset($request->image1))
           {
             $image1 = new ImagesMailings();
