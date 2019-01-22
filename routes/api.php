@@ -152,6 +152,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('oportunidades/{id}','DataViews\DataViewsController@oportunidadesByUser');
         Route::get('mis-oportunidades/{status}','DataViews\DataViewsController@mis_oportunidades_status');
         Route::get('/estadisticas/oportunidades','DataViews\DataViewsController@estadisticas_oportunidad');
+        Route::post('/estadisticas/oportunidades','DataViews\DataViewsController@estadisticas_oportunidad_grafica');
         Route::get('/estadisticas/colaboradores','DataViews\DataViewsController@estadisticas_colaborador');
         Route::get('/estadisticas/finanzas','DataViews\DataViewsController@estadisticas_finanzas');
         Route::get('/estadisticas/finanzas/semanal','DataViews\DataViewsController@estadisticas_finanzas_semanal');

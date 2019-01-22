@@ -165,7 +165,7 @@
 			text-decoration:underline;
 		}
 		#templateBody{
-			background-color:#FFFFFF;
+			background-color:{{$fondo_general}};
 			background-image:none;
 			background-repeat:no-repeat;
 			background-position:center;
@@ -187,7 +187,7 @@
 			padding-bottom:0;
 		}
 		.bodyContainer .mcnTextContent,.bodyContainer .mcnTextContent p{
-			color:#808080;
+			color:{{$color_fuente}};
 			font-family:Helvetica;
 			font-size:16px;
 			line-height:150%;
@@ -419,10 +419,11 @@
                     <td class="mcnCaptionRightImageContent" align="center" valign="top">
 
 
-
-                        <img alt="" src="https://gallery.mailchimp.com/766ee0c962d543c02140cdccb/images/a02171ce-9bc1-4b83-b641-423f0239ffff.png" width="120" style="max-width:120px;" class="mcnImage">
-
-
+						<!--
+                        <img alt="" src="https://gallery.mailchimp.com/766ee0c962d543c02140cdccb/images/a02171ce-9bc1-4b83-b641-423f0239ffff.png" width="120" style="max-width:120px;" class="mcnImage"> -->
+						@if(isset($image1))
+						<img alt="" src="{{$image1}}" width="120" style="max-width:120px;" class="mcnImage">
+						@endif
 
                     </td>
                 </tr>
@@ -430,9 +431,9 @@
             <table class="mcnCaptionRightTextContentContainer" align="right" border="0" cellpadding="0" cellspacing="0" width="264">
                 <tbody><tr>
                     <td valign="top" class="mcnTextContent">
-                        <h1 class="null" style="margin-top: 15px; text-align: left;"><span style="color:{{$color_fuente}}"><span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif">{{ $asunto }}</span></span></h1>
+                        <h1 class="null" style="margin-top: 15px; text-align: left;"><span style="color:{{$color_titulo}}!important"><span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif">{{ $asunto }}</span></span></h1>
 
-<div style="text-align: left;"><span style="font-size:19px"><span style="font-family:times new roman,times,baskerville,georgia,serif">&nbsp; &nbsp; &nbsp; {{$subtitulo}}</span></span></div>
+<div style="text-align: left;"><span style="font-size:19px"><span style="font-family:times new roman,times,baskerville,georgia,serif; color:{{$color_subtitulo}}!important">&nbsp; &nbsp; &nbsp; {{$subtitulo}}</span></span></div>
 
                     </td>
                 </tr>
@@ -469,9 +470,12 @@
                         <tbody><tr>
                             <td class="mcnImageContent" valign="top" style="padding-right: 0px; padding-left: 0px; padding-top: 0; padding-bottom: 0; text-align:center;">
 
-
+										<!--
                                         <img align="center" alt="" src="https://gallery.mailchimp.com/766ee0c962d543c02140cdccb/images/239b660a-ed08-4381-94eb-c785a2519f8e.png" width="600" style="max-width:800px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage">
-
+										-->
+										@if(isset($image2))
+                                        <img align="center" alt="" src="{{$image2}}" width="600" style="max-width:800px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage">
+										@endif
 
                             </td>
                         </tr>
@@ -514,7 +518,7 @@
                 <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%; min-width:100%;" width="100%" class="mcnTextContentContainer">
                     <tbody><tr>
 
-                        <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px;">
+                        <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px; color:{{$color_fuente}}!important;">
                           {!! $contenido !!}
                         </td>
                     </tr>
@@ -540,11 +544,11 @@
     <tbody class="mcnButtonBlockOuter">
         <tr>
             <td style="padding-top:0; padding-right:18px; padding-bottom:18px; padding-left:18px;" valign="top" align="center" class="mcnButtonBlockInner">
-                <table border="0" cellpadding="0" cellspacing="0" class="mcnButtonContentContainer" style="border-collapse: separate !important;border-radius: 3px;background-color: {{$color_cta}};">
+                <table border="0" cellpadding="0" cellspacing="0" class="mcnButtonContentContainer" style="border-collapse: separate !important;border-radius: 3px;background-color: {{$fondo_cta}}!important;">
                     <tbody>
                         <tr>
-                            <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Helvetica; font-size: 18px; padding: 18px;">
-							<a class="mcnButton " title="{{$cta_nombre}}" href="{{$cta_link}}" target="_blank" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">{{$cta_nombre}}</a>
+                            <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Helvetica; font-size: 18px; padding: 18px; color: {{$color_cta}}!important;">
+							<a class="mcnButton " href="{{$cta_link}}" title="{{$cta_nombre}}"  target="_blank" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none; ">{{$cta_nombre}}</a>
                             </td>
                         </tr>
                     </tbody>
