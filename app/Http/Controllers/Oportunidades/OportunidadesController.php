@@ -89,14 +89,13 @@ class OportunidadesController extends Controller
             $porcentaje_cotizadas = 0;
             $porcentaje_cerradas = 0;
             $porcentaje_no_viables = 0;
-            $porcentaje_total = 0;
         }
         else
         {
-            $porcentaje_cotizadas = porcentajeOportunidades($oportunidades_cotizadas,$oportunidades_total);
-            $porcentaje_cerradas = porcentajeOportunidades($oportunidades_cerradas,$oportunidades_total);
-            $porcentaje_no_viables = porcentajeOportunidades($oportunidades_no_viables,$oportunidades_total);    
-            $porcentaje_total = porcentajeOportunidades($total,$oportunidades_total);    
+            $porcentaje_cotizadas =$this.porcentajeOportunidades($oportunidades_cotizadas,$oportunidades_total);
+            $porcentaje_cerradas = $this.porcentajeOportunidades($oportunidades_cerradas,$oportunidades_total);
+            $porcentaje_no_viables = $this.porcentajeOportunidades($oportunidades_no_viables,$oportunidades_total);    
+           
         }
         
         return response()->json([
@@ -191,7 +190,7 @@ class OportunidadesController extends Controller
         if($total_general == 0)
             $porcentaje_total = 0;
         else
-            $porcentaje_total = porcentajeOportunidades($total,$total_general);
+            $porcentaje_total = $this.porcentajeOportunidades($total,$total_general);
         return response()->json([
             'message'=>'Correcto',
             'error'=>false,
