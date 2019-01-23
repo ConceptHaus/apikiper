@@ -89,12 +89,14 @@ class OportunidadesController extends Controller
             $porcentaje_cotizadas = 0;
             $porcentaje_cerradas = 0;
             $porcentaje_no_viables = 0;
+            $porcentaje_total = 0;
         }
         else
         {
             $porcentaje_cotizadas = porcentajeOportunidades($oportunidades_cotizadas,$oportunidades_total);
             $porcentaje_cerradas = porcentajeOportunidades($oportunidades_cerradas,$oportunidades_total);
             $porcentaje_no_viables = porcentajeOportunidades($oportunidades_no_viables,$oportunidades_total);    
+            $porcentaje_total = porcentajeOportunidades($total,$oportunidades_total);    
         }
         
         return response()->json([
@@ -186,7 +188,10 @@ class OportunidadesController extends Controller
 
         $catalogo_fuentes = DB::table('cat_fuentes')
                             ->select('nombre','url','status')->get();
-
+        if($oportunidades_total == 0)
+            $porcentaje_total = 0;
+        else
+            $porcentaje_total = porcentajeOportunidades($total,$oportunidades_total);
         return response()->json([
             'message'=>'Correcto',
             'error'=>false,
@@ -194,7 +199,7 @@ class OportunidadesController extends Controller
                 'status'=>$nombre_status->nombre,
                 'total'=>[
                     'valor'=>$total,
-                    'porcentaje'=>intval(round($total*100/$total_general)),
+                    'porcentaje'=>porcentaje_total,
                     'color'=>$this->colorsOportunidades($status)
                 ],
                 'fuentes'=>$this->FuentesChecker($catalogo_fuentes,$fuentes),
