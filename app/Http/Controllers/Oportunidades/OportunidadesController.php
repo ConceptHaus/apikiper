@@ -814,6 +814,8 @@ class OportunidadesController extends Controller
         if($oportunidad == 0){
             return intval($oportunidad);
         }
+        if($total == 0)
+            return intval(0);
         return intval(round($oportunidad*100/$total));
     }
 
