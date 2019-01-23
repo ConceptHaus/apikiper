@@ -188,10 +188,10 @@ class OportunidadesController extends Controller
 
         $catalogo_fuentes = DB::table('cat_fuentes')
                             ->select('nombre','url','status')->get();
-        if($oportunidades_total == 0)
+        if($total_general == 0)
             $porcentaje_total = 0;
         else
-            $porcentaje_total = porcentajeOportunidades($total,$oportunidades_total);
+            $porcentaje_total = porcentajeOportunidades($total,$total_general);
         return response()->json([
             'message'=>'Correcto',
             'error'=>false,
