@@ -199,7 +199,7 @@ class OportunidadesController extends Controller
                 'status'=>$nombre_status->nombre,
                 'total'=>[
                     'valor'=>$total,
-                    'porcentaje'=>porcentaje_total,
+                    'porcentaje'=>$porcentaje_total,
                     'color'=>$this->colorsOportunidades($status)
                 ],
                 'fuentes'=>$this->FuentesChecker($catalogo_fuentes,$fuentes),
