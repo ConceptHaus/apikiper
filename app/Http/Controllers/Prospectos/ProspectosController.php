@@ -631,6 +631,12 @@ class ProspectosController extends Controller
 
     public function getArchivos($id){
         $prospecto_archivos = Prospecto::GetProspectoArchivos($id);
+        if(count($prospecto_archivos) <= 0)
+        return response()->json([
+            'message'=>'Correcto',
+            'error'=>false,
+            'data'=>null
+        ],200);
         foreach($prospecto_archivos['archivos_prospecto_colaborador'] as $archivo){
             $archivo['ext'] = pathinfo($archivo->nombre, PATHINFO_EXTENSION);
         }
