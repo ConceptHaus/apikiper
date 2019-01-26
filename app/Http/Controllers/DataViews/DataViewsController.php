@@ -8,6 +8,8 @@ use Illuminate\Http\Response;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
 use Spatie\Activitylog\Models\Activity;
 use Spatie\CalendarLinks\Link;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
@@ -1638,7 +1640,23 @@ class DataViewsController extends Controller
             'message'=>'No se encontraron fuentes.'
         ],200);
     }
+    public function uploadFilesS3($file){
+        //Sube archivos a bucket de Amazon
+        $disk = Storage::disk('s3');
+        $path = $file->store('temporales','s3');
+        Storage::setVisibility($path,'public');
+        return $disk->url($path);
+    }
+
+    public function after ($palabra, $inthat)
+    {
+        if (!is_bool(strpos($inthat, $palabra)))
+        return substr($inthat, strpos($inthat,$palabra)+strlen($palabra));
+    }
+
     public function sendMail (Request $request){
+      
+      
       $auth = $this->guard()->user();
       $data = $request->all();
       $validator = $this->validatorMail($data);
@@ -1668,14 +1686,41 @@ class DataViewsController extends Controller
         }
 
 
-
-        Mailgun::send('mailing.mail', $data, function ($message) use ($data){
-           // $message->tag('myTag');
-           $message->from($data['email_de'],$data['nombre_de']);
-           // $message->testmode(true);
-           $message->subject($data['asunto']);
-           $message->to($data['email_para'],$data['nombre_para']);
-       });
+        if(isset($request->fileToUpload))
+        {
+            $archivos = $request->fileToUpload;
+            $archivoUrl = array();
+            for($x = 0; $x < count($archivos); $x++)
+            {
+                $url = $this->uploadFilesS3($archivos[$x]);
+                array_push($archivoUrl, $url);
+            }
+            Mailgun::send('mailing.mail', $data, function ($message) use ($data, $archivos,$request, $archivoUrl){
+                $message->from($data['email_de'],$data['nombre_de']);
+                $message->subject($data['asunto']);
+                $message->to($data['email_para'],$data['nombre_para']);
+                
+                for($x = 0; $x < count($archivos); $x++)
+                {
+                    $message->attach($archivoUrl[$x], $request->fileToUpload[$x]->getClientOriginalName());
+                }   
+            });
+            for($x = 0; $x < count($archivos); $x++)
+            {
+                Storage::disk('s3')->delete('temporales/'.$this->after ('temporales/', $archivoUrl[$x]));
+            }
+        }
+        else
+        {
+            Mailgun::send('mailing.mail', $data, function ($message) use ($data){
+                // $message->tag('myTag');
+                $message->from($data['email_de'],$data['nombre_de']);
+                // $message->testmode(true);
+                $message->subject($data['asunto']);
+                $message->to($data['email_para'],$data['nombre_para']);
+            });
+        }
+       
 
        //Historial
         activity()
@@ -1688,6 +1733,7 @@ class DataViewsController extends Controller
        return response()->json([
          'error'=>false,
          'message'=>'Mail enviado correctamente',
+         'url' => $archivoUrl
        ],200);
       }
 
@@ -1957,7 +2003,6 @@ class DataViewsController extends Controller
             ->selectRaw(implode(',', $selects))
             ->groupBy('users.id')
             ->orderBy('oportunidades_cerradas','desc')
-            ->limit(5)
             ->get();
     }
 
