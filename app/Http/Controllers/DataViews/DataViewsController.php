@@ -1986,17 +1986,24 @@ class DataViewsController extends Controller
             'fotos_colaboradores.url_foto as url_foto',
             'count(colaborador_oportunidad.id_colaborador_oportunidad) as oportunidades_cerradas'
         );
-        return $users = DB::table('users')
+        return  DB::table('users')
             ->join('detalle_colaborador', 'users.id', 'detalle_colaborador.id_colaborador')
             ->join('colaborador_oportunidad','users.id','colaborador_oportunidad.id_colaborador')
             ->join('fotos_colaboradores', 'users.id', 'fotos_colaboradores.id_colaborador')
             ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad', 'status_oportunidad.id_oportunidad')
-            ->join('oportunidades','oportunidades.id_oportunidad', 'colaborador_oportunidad.id_oportunidad')
-            
+            ->join('oportunidades', 'colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+            ->wherenull('oportunidades.deleted_at')
+            ->wherenull('status_oportunidad.deleted_at')
+            ->wherenull('users.deleted_at')
+            ->wherenull('detalle_colaborador.deleted_at')
+            ->wherenull('colaborador_oportunidad.deleted_at')
+            ->wherenull('fotos_colaboradores.deleted_at')
+            ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
             ->where('status_oportunidad.id_cat_status_oportunidad', '=', '2')
             ->selectRaw(implode(',', $selects))
             ->groupBy('users.id')
             ->orderBy('oportunidades_cerradas','desc')
+            ->limit(5)
             ->get();
     }
 
