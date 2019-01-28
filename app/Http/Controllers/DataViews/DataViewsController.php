@@ -2003,6 +2003,7 @@ class DataViewsController extends Controller
             ->selectRaw(implode(',', $selects))
             ->groupBy('users.id')
             ->orderBy('oportunidades_cerradas','desc')
+            ->limit(2)
             ->get();
     }
 
