@@ -16,7 +16,8 @@ class CatStatusProspecto extends Model
     protected $fillable = [
         'id_cat_status_prospecto',
         'status',
-        'descripcion'
+        'descripcion',
+        'color'
     ];
 
     public function status(){
