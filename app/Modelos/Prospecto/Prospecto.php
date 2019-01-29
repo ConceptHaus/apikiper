@@ -92,6 +92,7 @@ class Prospecto extends Model
 
     public function scopeGetOneProspecto($query,$id){
         return $query->with('status_prospecto.status')
+                
                 ->with('detalle_prospecto')
                 ->with('foto')
                 ->with('fuente')

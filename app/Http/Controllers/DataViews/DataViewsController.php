@@ -27,7 +27,9 @@ use App\Modelos\Extras\Etiqueta;
 use App\Modelos\Oportunidad\CatServicios;
 use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Modelos\Prospecto\CatMedioContacto;
+use App\Modelos\Prospecto\CatStatusProspecto;
 use App\Modelos\Prospecto\MedioContactoProspecto;
+use App\Modelos\Prospecto\ColaboradorProspecto;
 use App\Modelos\Oportunidad\MedioContactoOportunidad;
 use App\Modelos\Extras\EventoProspecto;
 use App\Modelos\Extras\DetalleEventoProspecto;
@@ -301,7 +303,7 @@ class DataViewsController extends Controller
                         ->whereNull('detalle_prospecto.deleted_at')
                         ->whereNull('status_prospecto.deleted_at')
                         ->where('status_prospecto.id_cat_status_prospecto',$status)
-                        ->select('prospectos.id_prospecto','prospectos.nombre','prospectos.apellido','prospectos.correo','detalle_prospecto.telefono','detalle_prospecto.empresa','detalle_prospecto.whatsapp','prospectos.created_at','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','cat_status_prospecto.status','cat_status_prospecto.id_cat_status_prospecto as id_status')
+                        ->select('prospectos.id_prospecto','prospectos.nombre','prospectos.apellido','prospectos.correo','detalle_prospecto.telefono','detalle_prospecto.empresa','detalle_prospecto.whatsapp','prospectos.created_at','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','cat_status_prospecto.status','cat_status_prospecto.id_cat_status_prospecto as id_status', 'cat_status_prospecto.color as color')
                         ->orderBy('status_prospecto.updated_at','desc')
                         ->get();
 
@@ -1655,8 +1657,6 @@ class DataViewsController extends Controller
     }
 
     public function sendMail (Request $request){
-      
-      
       $auth = $this->guard()->user();
       $data = $request->all();
       $validator = $this->validatorMail($data);
@@ -1682,6 +1682,22 @@ class DataViewsController extends Controller
             $statusProspecto->save();
             $medio_contacto->save();
 
+            $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto', $request->id_prospecto)->first();
+            if($colaborador_prospecto)
+            {
+                if($colaborador_prospecto->id_colaborador != $auth->id)
+                {
+                    $colaborador_prospecto->id_colaborador = $auth->id;
+                    $colaborador_prospecto->save();
+                }
+            }
+            else
+            {
+                $colaborador_prospecto = new ColaboradorProspecto;
+                $colaborador_prospecto->id_colaborador = $auth->id;
+                $colaborador_prospecto->id_prospecto = $request->id_prospecto;
+                $colaborador_prospecto->save();
+            }
             DB::commit();
         }
 
@@ -1733,7 +1749,6 @@ class DataViewsController extends Controller
        return response()->json([
          'error'=>false,
          'message'=>'Mail enviado correctamente',
-         'url' => $archivoUrl
        ],200);
       }
 
@@ -1846,6 +1861,25 @@ class DataViewsController extends Controller
           $status = StatusProspecto::where('id_prospecto',$request->id_prospecto)->first();
           $status->id_cat_status_prospecto = 1;
           $status->save();
+
+          $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto', $request->id_prospecto)->first();
+            if($colaborador_prospecto)
+            {
+                if($colaborador_prospecto->id_colaborador != $auth->id)
+                {
+                    $colaborador_prospecto->id_colaborador = $auth->id;
+                    $colaborador_prospecto->save();
+                }
+            }
+            else
+            {
+                $colaborador_prospecto = new ColaboradorProspecto;
+                $colaborador_prospecto->id_colaborador = $auth->id;
+                $colaborador_prospecto->id_prospecto = $request->id_prospecto;
+                $colaborador_prospecto->save();
+            }
+
+
           DB::commit();
           
          
@@ -2142,6 +2176,48 @@ class DataViewsController extends Controller
             ->wherenull('prospectos.deleted_at')
             ->wherenull('status_prospecto.deleted_at')
             ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
+    }
+
+    public function prospectosColaborador(){
+        
+       
+        $prospecto_por_status = array();
+        
+        $estados = CatStatusProspecto::all();
+
+        foreach($estados as $estado)
+        {
+            
+
+            $consulta = DB::table('prospectos')
+                    ->join('status_prospecto', 'status_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                    ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', 'status_prospecto.id_cat_status_prospecto')
+                    ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                    ->join('users', 'users.id', 'colaborador_prospecto.id_colaborador')
+                    ->join('detalle_colaborador', 'detalle_colaborador.id_colaborador', 'users.id')
+                    ->whereNull('detalle_colaborador.deleted_at')
+                    ->whereNull('users.deleted_at')
+                    ->whereNull('colaborador_prospecto.deleted_at')
+                    ->whereNull('cat_status_prospecto.deleted_at')
+                    ->whereNull('status_prospecto.deleted_at')
+                    ->whereNull('prospectos.deleted_at')
+                    ->where('status_prospecto.id_cat_status_prospecto', '=', $estado->id_cat_status_prospecto)
+                    ->select(DB::raw('count(*) as total'), 'cat_status_prospecto.status', 'cat_status_prospecto.color', 'users.nombre', 'users.apellido')
+                    ->groupBy('users.id')
+                    
+                    ->get();
+
+            array_push($prospecto_por_status, $consulta);
+        }
+
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>[
+                'prospecto_por_status'=>$prospecto_por_status,
+                'cantidad'=>count($prospecto_por_status)
+            ]
+            ],200);
     }
 
 }

@@ -148,6 +148,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/dashboard/anual','DataViews\DataViewsController@dashboardAnual');
         Route::get('/prospectos','DataViews\DataViewsController@prospectos');
         Route::get('/prospectos/{status}','DataViews\DataViewsController@prospectosstatus');
+        Route::get('/prospectos-colaborador','DataViews\DataViewsController@prospectosColaborador');
         Route::get('/mis-oportunidades','DataViews\DataViewsController@misOportunidades');
         Route::get('oportunidades/{id}','DataViews\DataViewsController@oportunidadesByUser');
         Route::get('mis-oportunidades/{status}','DataViews\DataViewsController@mis_oportunidades_status');
