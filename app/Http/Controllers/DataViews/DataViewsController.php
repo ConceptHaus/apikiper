@@ -903,7 +903,9 @@ class DataViewsController extends Controller
             ->get();
 
         $colaboradores = array();
-
+        
+        $status = CatStatusOportunidad::all();
+        
         foreach($users as $user)
         {
             $oportunidades_asignadas = DB::table('oportunidades')
@@ -919,21 +921,26 @@ class DataViewsController extends Controller
 
             $oportunidades_cotizadas = $this->grafica_por_status(1,$user->id);
             $oportunidades_cerradas = $this->grafica_por_status(2,$user->id);
-            $oportunidades_no_viables = $this->grafica_por_status(3,$user->id);
+            $total_estado = Array();
+            foreach($status as $estado)
+            {
+                $aux = $this->grafica_por_status($estado->id_cat_status_oportunidad, $user->id);
+                array_push($total_estado, ($aux) ? $aux->asignados : 0);
+            }
             
             array_push($colaboradores,['colaborador_id' => $oportunidades_asignadas->id_colaborador,
                 'colaborador_foto' => $user->foto,
                 'colaborador_nombre' => $oportunidades_asignadas->colaborador,
                 'oportunidades_asignadas' => ($oportunidades_asignadas) ? $oportunidades_asignadas->asignados : 0,
-                'cotizados' => ($oportunidades_cotizadas) ? $oportunidades_cotizadas->asignados : 0,
-                'cerrados' => ($oportunidades_cerradas) ? $oportunidades_cerradas->asignados : 0,
-                'no_viables' => ($oportunidades_no_viables) ? $oportunidades_no_viables->asignados : 0,
                 'total_por_cerrar' => ($oportunidades_cotizadas) ? $oportunidades_cotizadas->valor : 0,
                 'total_cerrado' => ($oportunidades_cerradas) ? $oportunidades_cerradas->valor : 0,
                 'colaborador_correo' => $user->email,
-                'colaborador_telefono' => $user->telefono            
+                'colaborador_telefono' => $user->telefono,
+                'total_estado' => $total_estado
             ]);
         }
+
+        $status = CatStatusOportunidad::all();
 
         return response()->json([
             'message'=>'Correcto',
@@ -941,7 +948,8 @@ class DataViewsController extends Controller
             'data'=>[
                 'ventas'=>$users_ventas,
                 'top_3'=>$top_3,
-                'colaboradores'=>$colaboradores
+                'colaboradores'=>$colaboradores,
+                'status' => $status
             ]
             ],200);
 
@@ -2185,37 +2193,57 @@ class DataViewsController extends Controller
         
         $estados = CatStatusProspecto::all();
 
-        foreach($estados as $estado)
-        {
-            
+        $colaboradores = ColaboradorProspecto::join('users', 'colaborador_prospecto.id_colaborador', 'users.id')
+            ->wherenull('colaborador_prospecto.deleted_at')
+            ->join('status_prospecto', 'status_prospecto.id_prospecto', 'colaborador_prospecto.id_prospecto')
+            ->whereNull('status_prospecto.deleted_at')
+            ->join('prospectos', 'prospectos.id_prospecto', 'status_prospecto.id_prospecto', 'colaborador_prospecto.id_prospecto')
+            ->whereNull('prospectos.deleted_at')
+            ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', 'status_prospecto.id_cat_status_prospecto')
+            ->wherenull('cat_status_prospecto.deleted_at')
+            ->join('detalle_colaborador', 'detalle_colaborador.id_colaborador', 'users.id')
+            ->wherenull('detalle_colaborador.deleted_at')
+            ->join('fotos_colaboradores', 'fotos_colaboradores.id_colaborador', 'users.id')
+            ->whereNull('fotos_colaboradores.deleted_at')
+            ->select('users.id as id_usuario', 'users.nombre as nombre', 'users.apellido as apellido', 'detalle_colaborador.puesto as puesto', 'fotos_colaboradores.url_foto as foto')
+            ->groupBy('users.id')
+            ->get();            
 
-            $consulta = DB::table('prospectos')
-                    ->join('status_prospecto', 'status_prospecto.id_prospecto', 'prospectos.id_prospecto')
-                    ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', 'status_prospecto.id_cat_status_prospecto')
-                    ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', 'prospectos.id_prospecto')
-                    ->join('users', 'users.id', 'colaborador_prospecto.id_colaborador')
-                    ->join('detalle_colaborador', 'detalle_colaborador.id_colaborador', 'users.id')
-                    ->whereNull('detalle_colaborador.deleted_at')
-                    ->whereNull('users.deleted_at')
-                    ->whereNull('colaborador_prospecto.deleted_at')
-                    ->whereNull('cat_status_prospecto.deleted_at')
+        foreach($colaboradores as $colaborador)
+        {
+            $status = array();
+            foreach($estados as $estado)
+            {
+                $consulta = ColaboradorProspecto::join('users', 'colaborador_prospecto.id_colaborador', 'users.id')
+                    ->wherenull('colaborador_prospecto.deleted_at')
+                    ->join('status_prospecto', 'status_prospecto.id_prospecto', 'colaborador_prospecto.id_prospecto')
                     ->whereNull('status_prospecto.deleted_at')
+                    ->join('prospectos', 'prospectos.id_prospecto', 'status_prospecto.id_prospecto', 'colaborador_prospecto.id_prospecto')
                     ->whereNull('prospectos.deleted_at')
-                    ->where('status_prospecto.id_cat_status_prospecto', '=', $estado->id_cat_status_prospecto)
-                    ->select(DB::raw('count(*) as total'), 'cat_status_prospecto.status', 'cat_status_prospecto.color', 'users.nombre', 'users.apellido')
-                    ->groupBy('users.id')
-                    
+                    ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', 'status_prospecto.id_cat_status_prospecto')
+                    ->wherenull('cat_status_prospecto.deleted_at')
+                    ->join('detalle_colaborador', 'detalle_colaborador.id_colaborador', 'users.id')
+                    ->wherenull('detalle_colaborador.deleted_at')
+                    ->join('fotos_colaboradores', 'fotos_colaboradores.id_colaborador', 'users.id')
+                    ->whereNull('fotos_colaboradores.deleted_at')
+                    ->where('users.id', '=', $colaborador->id_usuario)
+                    ->where('cat_status_prospecto.id_cat_status_prospecto','=',$estado->id_cat_status_prospecto)
+                    ->select(DB::raw('concat(users.nombre, " ", users.apellido) as colaborador_nombre' ), DB::raw('count(status_prospecto.id_status_prospecto) as total'), 'cat_status_prospecto.status as status', 'cat_status_prospecto.color as color')
                     ->get();
 
-            array_push($prospecto_por_status, $consulta);
+                array_push($status,  $consulta);
+            }
+            array_push($prospecto_por_status,  $status);
         }
+        
 
         return response()->json([
             'message'=>'Success',
             'error'=>false,
             'data'=>[
                 'prospecto_por_status'=>$prospecto_por_status,
-                'cantidad'=>count($prospecto_por_status)
+                'estados'=>$estados,
+                'colaboradores'=>$colaboradores
             ]
             ],200);
     }
