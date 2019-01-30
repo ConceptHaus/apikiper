@@ -203,18 +203,7 @@ class UserController extends Controller
         }
     }
 
-    public function EmptyGenericStatus($status){
-        //if(count($status) == 0){
-
-            $empty = DB::table('cat_status_oportunidad')
-                    ->select('id_cat_status_oportunidad','status','color')
-                    ->get();
-            return $empty;
-
-        //}else{
-            //return $empty;
-        //}
-    }
+ 
     
        /**
      * Get the token array structure.

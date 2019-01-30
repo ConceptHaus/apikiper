@@ -202,16 +202,29 @@ class ColaboradoresController extends Controller
                           ->select('cat_status_oportunidad.id_cat_status_oportunidad','cat_status_oportunidad.color',DB::raw('count(*) as total, cat_status_oportunidad.status'))->groupBy('cat_status_oportunidad.status')
                           ->get();
 
+       $status_genericos = DB::table('oportunidades')
+                                    ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                                    ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                                    ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                                    ->whereNull('oportunidades.deleted_at')
+                                    ->where('colaborador_oportunidad.id_colaborador',$id_user)
+                                    ->select('cat_status_oportunidad.id_cat_status_oportunidad','cat_status_oportunidad.color',DB::raw('count(*) as total, cat_status_oportunidad.status'))->groupBy('cat_status_oportunidad.status')
+                                    ->get();
+        $catalogo_status = DB::table('cat_status_oportunidad')
+                    ->select('id_cat_status_oportunidad','status','color')
+                    ->get();
 
-      $recordatorios = DB::table('recordatorios_prospecto')
+        $recordatorios = DB::table('recordatorios_prospecto')
                       ->join('detalle_recordatorio_prospecto','detalle_recordatorio_prospecto.id_recordatorio_prospecto','recordatorios_prospecto.id_recordatorio_prospecto')
                       ->where('recordatorios_prospecto.id_colaborador',$id_user)
                       ->whereNull('recordatorios_prospecto.deleted_at')
                       ->whereNull('detalle_recordatorio_prospecto.deleted_at')
                       ->orderBy('detalle_recordatorio_prospecto.fecha_recordatorio', 'desc')
                       ->get();
+
       $detalle = DetalleColaborador::where('id_colaborador',$id_user)
                       ->first();
+                      
       $img = FotoColaborador::where('id_colaborador', $id_user)
                       ->select('url_foto')
                       ->first();
@@ -221,6 +234,7 @@ class ColaboradoresController extends Controller
           'user'=>$user,
           'detalle'=>$detalle,
           'img_perfil'=>$img,
+          'status'=>$this->StatusChecker($catalogo_status,$status_genericos),
           'oportunidades'=>[
               'status_1'=>$this->statusEmpty($status_1,1),
               'status_2'=>$this->statusEmpty($status_2,2),
@@ -474,4 +488,44 @@ class ColaboradoresController extends Controller
     {
         return Auth::guard();
     }
+
+    public function StatusChecker($catalogo,$consulta){
+
+            if(count($catalogo) > count($consulta)){
+
+                if(count($consulta) == 0){
+
+                    foreach($catalogo as $fuente){
+                        $fuente->total=0;
+
+                    }
+                    return $catalogo;
+                }
+                else{
+                    $collection = collect($consulta);
+                    for($i = 0; $i<count($catalogo); $i++){
+                        $match = false;
+                        for($j=0; $j<count($consulta); $j++){
+
+                            if( $catalogo[$i]->status == $consulta[$j]->status ){
+                                $match = true;
+                                break;
+                            }
+                        }
+
+                        if(!$match){
+                            $catalogo[$i]->total = 0;
+                            $collection->push($catalogo[$i]);
+                        }
+                    }
+                    return $collection->all();
+                }
+
+
+
+            }
+            return $consulta;
+
+    }
+
 }

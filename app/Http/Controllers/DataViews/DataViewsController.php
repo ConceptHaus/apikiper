@@ -528,8 +528,13 @@ class DataViewsController extends Controller
                             ->whereNull('prospectos.deleted_at')
                             ->select(DB::raw('count(*) as total, cat_fuentes.nombre'),'cat_fuentes.url','cat_fuentes.status')->groupBy('cat_fuentes.nombre')->get();    
 
+        $catalogo_status = DB::table('cat_status_oportunidad')
+                    ->select('id_cat_status_oportunidad as id','status','color')
+                    ->get();
+
         $status = DB::table('cat_status_oportunidad')
                       ->select('id_cat_status_oportunidad as id','status','color')->get();
+
         $catalogo_fuentes = DB::table('cat_fuentes')
                             ->select('nombre','url','status')->get();
 
@@ -538,11 +543,12 @@ class DataViewsController extends Controller
             'message'=>'Correcto',
             'error'=>false,
             'data'=>[
-                'cotizadas'=>$oportunidades_cotizadas,
-                'cerradas'=>$oportunidades_cerradas,
-                'no_viables'=>$oportunidades_no_viables,
+                'status'=>$this->StatusChecker($catalogo_status,$this->oportunidades_status_genericos()),
+                //'cotizadas'=>$oportunidades_cotizadas,
+                //'cerradas'=>$oportunidades_cerradas,
+                //'no_viables'=>$oportunidades_no_viables,
                 'fuentes'=>$this->FuentesChecker($catalogo_fuentes, $fuentes),
-                'status'=>$status,
+                //'status'=>$status,
             ]
             ],200);
 
@@ -1185,11 +1191,16 @@ class DataViewsController extends Controller
                         ->where('id_cat_status_oportunidad',3)
                         ->select('id_cat_status_oportunidad as id', 'status as nombre','descripcion','color')
                         ->first();
+        
+        $catalogo_status = DB::table('cat_status_oportunidad')
+                    ->select('id_cat_status_oportunidad as id','status as nombre','color')
+                    ->get();
 
         return response()->json([
                     'message'=>'Correcto',
                     'error'=>false,
                     'data'=>[
+                        'status'=>$catalogo_status,
                         'status_1'=>$status_1,
                         'status_2'=>$status_2,
                         'status_3'=>$status_3
@@ -2026,6 +2037,17 @@ class DataViewsController extends Controller
             ->where('status_oportunidad.id_cat_status_oportunidad','=',$status)->count();
     }
 
+    public function oportunidades_status_genericos(){
+        return DB::table('oportunidades')
+                    ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                    ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                    ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                    ->whereNull('oportunidades.deleted_at')
+                    ->select('cat_status_oportunidad.id_cat_status_oportunidad as id','cat_status_oportunidad.color',DB::raw('count(*) as total, cat_status_oportunidad.status'))->groupBy('cat_status_oportunidad.status')
+                    ->get();
+            
+    }
+
     public function valor_oportunidades_por_status($status){
         return DB::table('oportunidades')
             ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
@@ -2096,6 +2118,44 @@ class DataViewsController extends Controller
             ->wherenull('prospectos.deleted_at')
             ->wherenull('status_prospecto.deleted_at')
             ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
+    }
+    public function StatusChecker($catalogo,$consulta){
+
+            if(count($catalogo) > count($consulta)){
+
+                if(count($consulta) == 0){
+
+                    foreach($catalogo as $fuente){
+                        $fuente->total=0;
+
+                    }
+                    return $catalogo;
+                }
+                else{
+                    $collection = collect($consulta);
+                    for($i = 0; $i<count($catalogo); $i++){
+                        $match = false;
+                        for($j=0; $j<count($consulta); $j++){
+
+                            if( $catalogo[$i]->status == $consulta[$j]->status ){
+                                $match = true;
+                                break;
+                            }
+                        }
+
+                        if(!$match){
+                            $catalogo[$i]->total = 0;
+                            $collection->push($catalogo[$i]);
+                        }
+                    }
+                    return $collection->all();
+                }
+
+
+
+            }
+            return $consulta;
+
     }
 
 }
