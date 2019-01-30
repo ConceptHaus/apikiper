@@ -220,6 +220,22 @@ class ProspectosController extends Controller
             $detalle->puesto = $request->puesto;
             $detalle->empresa = $request->empresa;
             $prospecto->save();
+            $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto', $request->id_prospecto)->first();
+            if($colaborador_prospecto)
+            {
+                if($colaborador_prospecto->id_colaborador != $auth->id)
+                {
+                    $colaborador_prospecto->id_colaborador = $auth->id;
+                    $colaborador_prospecto->save();
+                }
+            }
+            else
+            {
+                $colaborador_prospecto = new ColaboradorProspecto;
+                $colaborador_prospecto->id_colaborador = $auth->id;
+                $colaborador_prospecto->id_prospecto = $request->id_prospecto;
+                $colaborador_prospecto->save();
+            }
             $detalle->save();
             DB::commit();
 
