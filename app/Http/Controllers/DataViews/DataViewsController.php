@@ -1793,6 +1793,23 @@ class DataViewsController extends Controller
         $statusProspecto = StatusProspecto::where('id_prospecto',$id)->first();
         $statusProspecto->id_cat_status_prospecto = intval($request->status);
         $statusProspecto->save();
+
+        $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto', $id)->first();
+        if($colaborador_prospecto)
+        {
+            if($colaborador_prospecto->id_colaborador != $auth->id)
+            {
+                $colaborador_prospecto->id_colaborador = $auth->id;
+                $colaborador_prospecto->save();
+            }
+        }
+        else
+        {
+            $colaborador_prospecto = new ColaboradorProspecto;
+            $colaborador_prospecto->id_colaborador = $auth->id;
+            $colaborador_prospecto->id_prospecto = $id;
+            $colaborador_prospecto->save();
+        }
         DB::commit();
 
         activity('prospecto')
