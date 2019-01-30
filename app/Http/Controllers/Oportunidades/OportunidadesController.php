@@ -84,6 +84,20 @@ class OportunidadesController extends Controller
                             ->orderBy('oportunidades.created_at', 'desc')
                             ->get();
 
+        if($oportunidades_total == 0)
+        {
+            $porcentaje_cotizadas = 0;
+            $porcentaje_cerradas = 0;
+            $porcentaje_no_viables = 0;
+        }
+        else
+        {
+            $porcentaje_cotizadas =$this->porcentajeOportunidades($oportunidades_cotizadas,$oportunidades_total);
+            $porcentaje_cerradas = $this->porcentajeOportunidades($oportunidades_cerradas,$oportunidades_total);
+            $porcentaje_no_viables = $this->porcentajeOportunidades($oportunidades_no_viables,$oportunidades_total);    
+           
+        }
+        
         return response()->json([
             'message'=>'Correcto',
             'error'=>false,
@@ -96,19 +110,19 @@ class OportunidadesController extends Controller
                 ],
                 'cotizadas'=>[
                     'valor'=>$oportunidades_cotizadas,
-                    'porcentaje'=>$this->porcentajeOportunidades($oportunidades_cotizadas,$oportunidades_total),
+                    'porcentaje'=>$porcentaje_cerradas,
                     'color'=>$this->colorsOportunidades(1)
 
                 ],
                 'cerradas'=>[
                     'valor'=>$oportunidades_cerradas,
-                    'porcentaje'=>$this->porcentajeOportunidades($oportunidades_cerradas,$oportunidades_total),
+                    'porcentaje'=>$oportunidades_cerradas,
                     'color'=>$this->colorsOportunidades(2)
 
                 ],
                 'no_viables'=>[
                     'valor'=>$oportunidades_no_viables,
-                    'porcentaje'=>$this->porcentajeOportunidades($oportunidades_no_viables,$oportunidades_total),
+                    'porcentaje'=>$porcentaje_no_viables,
                     'color'=>$this->colorsOportunidades(3)
 
                 ],
@@ -173,7 +187,10 @@ class OportunidadesController extends Controller
 
         $catalogo_fuentes = DB::table('cat_fuentes')
                             ->select('nombre','url','status')->get();
-
+        if($total_general == 0)
+            $porcentaje_total = 0;
+        else
+            $porcentaje_total = $this->porcentajeOportunidades($total,$total_general);
         return response()->json([
             'message'=>'Correcto',
             'error'=>false,
@@ -181,7 +198,7 @@ class OportunidadesController extends Controller
                 'status'=>$nombre_status->nombre,
                 'total'=>[
                     'valor'=>$total,
-                    'porcentaje'=>intval(round($total*100/$total_general)),
+                    'porcentaje'=>$porcentaje_total,
                     'color'=>$this->colorsOportunidades($status)
                 ],
                 'fuentes'=>$this->FuentesChecker($catalogo_fuentes,$fuentes),
@@ -814,6 +831,8 @@ class OportunidadesController extends Controller
         if($oportunidad == 0){
             return intval($oportunidad);
         }
+        if($total == 0)
+            return intval(0);
         return intval(round($oportunidad*100/$total));
     }
 

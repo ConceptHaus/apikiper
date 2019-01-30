@@ -11,6 +11,7 @@ use App\Modelos\Mailing\DetalleMailings;
 use App\Modelos\Mailing\ImagesMailings;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\File;
 use App\Modelos\Prospecto\Prospecto;
 use App\Modelos\Prospecto\StatusProspecto;
 
@@ -27,14 +28,19 @@ class MailingController extends Controller
     // }
 
     public function addNew(Request $request){
-
-      $campaña = $request->all();
-
-      if($request->image1 == null || $request->image2)
-      {
-        return response('No ingresaste alguna imagen, completa el campo', 400);
-      }
-
+      if($request->opcionEtiqueta == 'undefined')
+        $opcion_etiqueta = 0;
+      else
+        $opcion_etiqueta = $request->opcionEtiqueta;
+      if($request->opcionServicio == 'undefined')
+        $opcion_servicio = 0;
+      else
+        $opcion_servicio = $request->opcionServicio;
+      if($request->opcionEstatus == 'undefined')
+        $opcion_estatus = 0;
+      else
+        $opcion_estatus = $request->opcionEstatus;
+      
       try {
         DB::beginTransaction();
         $campana = new Mailings;
@@ -44,49 +50,82 @@ class MailingController extends Controller
         $mailing->subject = $request->titulo;
         $mailing->subtitle = $request->subtitulo;
         $mailing->preview_text = "";
-        $mailing->text_body = $request->descripcion;
-        if ($request->nombre_boton) {
+        
+        if($request->description == 'undefined')
+          $mailing->text_body = null;
+        else
+          $mailing->text_body = $request->descripcion;
+        
+        if($request->nombre_boton == 'undefined')
+          $mailing->cta_nombre = null;
+        else
           $mailing->cta_nombre = $request->nombre_boton;
-        }
-        $mailing->cta_url = $request->url_boton;
-        if ($request->color_fuente) {
+
+        if($request->url_boton == 'undefined')
+          $mailing->cta_url = null;
+        else
+          $mailing->cta_url = $request->url_boton;
+        
+        if($request->color_fuente == 'undefined')
+          $mailing->color_fuente = null;
+        else
           $mailing->color_fuente = $request->color_fuente;
-        }
-        if ($request->color_cta) {
+        
+        if ($request->color_cta == 'undefined')
+          $mailing->color_cta = null;
+        else
           $mailing->color_cta = $request->color_cta;
-        }
-        if($request->opcionEstatus)
+        
+        if($opcion_estatus)
         {
-          $mailing->opcion_status = $request->opcionEstatus;
+          $mailing->opcion_status = $opcion_estatus;
         }      
-        if($request->opcionEtiqueta)
+        if($opcion_etiqueta)
         {
-          $mailing->opcion_etiqueta = $request->opcionEtiqueta;
+          $mailing->opcion_etiqueta =  $opcion_etiqueta;
         }
-        if($request->opcionServicio)
+        if($opcion_servicio)
         {
-          $mailing->opcion_servicio = $request->opcionServicio;
+          $mailing->opcion_servicio =  $opcion_servicio;
         }
-        if($request->fondo_general){
+        
+        if($request->fondo_general == 'undefined'){
+          $mailing->fondo_general = null;
+        }
+        else
           $mailing->fondo_general = $request->fondo_general;
-        }
-        if($request->fondo_boton){
-          $mailing->fondo_cta = $request->fondo_boton;
-        }
-        if($request->color_titulo){
-          $mailing->color_titulo = $request->color_titulo; 
-        }
-        if($request->color_subtitulo){
-          $mailing->color_subtitulo = $request->color_subtitulo;
-        }
-        if($request->color_lineas){
-          $mailing->color_lineas = $request->color_lineas;
-        }
 
         
+        if($request->fondo_boton == 'undefined'){
+          $mailing->fondo_cta = null;
+        }
+        else
+          $mailing->fondo_cta = $request->fondo_boton;
+
+        
+        if($request->color_titulo == 'undefined'){
+          $mailing->color_titulo = null; 
+        }
+        else
+          $mailing->color_titulo = $request->color_titulo; 
+
+        
+        if($request->color_subtitulo){
+          $mailing->color_subtitulo = null;
+        }
+        else
+          $mailing->color_subtitulo = $request->color_subtitulo;
+
+        
+        if($request->color_lineas){
+          $mailing->color_lineas = null;
+        }
+        else
+          $mailing->color_lineas = $request->color_lineas;
+
 
         //Query para obtener lista de remitentes
-        if($request->opcionServicio == 0 && $request->opcionEtiqueta == 0)
+        if($opcion_servicio == 0 && $opcion_etiqueta == 0)
         {
           $remitentes = DB::table('prospectos')
                         ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
@@ -94,12 +133,12 @@ class MailingController extends Controller
                         ->whereNull('prospectos.deleted_at')
                         ->whereNull('oportunidad_prospecto.deleted_at')
                         ->whereNull('status_oportunidad.deleted_at')
-                        ->where('status_oportunidad.id_cat_status_oportunidad',$request->opcionEstatus)
+                        ->where('status_oportunidad.id_cat_status_oportunidad',$opcion_estatus)
                         ->select('prospectos.correo','prospectos.nombre')->distinct()->get();
         }
         else
         {
-          if($request->opcionServicio != 0 && $request->opcionEtiqueta != 0)
+          if($opcion_servicio != 0 && $opcion_etiqueta != 0)
           {
             $remitentes = DB::table('prospectos')
                         ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
@@ -111,12 +150,12 @@ class MailingController extends Controller
                         ->whereNull('status_oportunidad.deleted_at')
                         ->whereNull('servicio_oportunidad.deleted_at')
                         ->whereNull('etiquetas_oportunidades.deleted_at')
-                        ->where('status_oportunidad.id_cat_status_oportunidad',$request->opcionEstatus)
-                        ->where('servicio_oportunidad.id_servicio_cat',$request->opcionServicio)
-                        ->where('etiquetas_oportunidades.id_etiqueta',$request->opcionEtiqueta)
+                        ->where('status_oportunidad.id_cat_status_oportunidad',$opcion_estatus)
+                        ->where('servicio_oportunidad.id_servicio_cat',$opcion_servicio)
+                        ->where('etiquetas_oportunidades.id_etiqueta',$opcion_etiqueta)
                         ->select('prospectos.correo','prospectos.nombre')->distinct()->get(); 
           }
-          elseif($request->opcionServicio != 0)
+          elseif($opcion_servicio != 0)
           {
             $remitentes = DB::table('prospectos')
                         ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
@@ -126,11 +165,11 @@ class MailingController extends Controller
                         ->whereNull('oportunidad_prospecto.deleted_at')
                         ->whereNull('status_oportunidad.deleted_at')
                         ->whereNull('servicio_oportunidad.deleted_at')
-                        ->where('status_oportunidad.id_cat_status_oportunidad',$request->opcionEstatus)
-                        ->where('servicio_oportunidad.id_servicio_cat',$request->opcionServicio)
+                        ->where('status_oportunidad.id_cat_status_oportunidad',$opcion_estatus)
+                        ->where('servicio_oportunidad.id_servicio_cat',$opcion_servicio)
                         ->select('prospectos.correo','prospectos.nombre')->distinct()->get(); 
           }
-          elseif($request->opcionEtiqueta != 0)
+          elseif($opcion_etiqueta != 0)
           {
             $remitentes = DB::table('prospectos')
                         ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
@@ -140,8 +179,8 @@ class MailingController extends Controller
                         ->whereNull('oportunidad_prospecto.deleted_at')
                         ->whereNull('status_oportunidad.deleted_at')
                         ->whereNull('etiquetas_oportunidades.deleted_at')
-                        ->where('status_oportunidad.id_cat_status_oportunidad',$request->opcionEstatus)
-                        ->where('etiquetas_oportunidades.id_etiqueta',$request->opcionEtiqueta)
+                        ->where('status_oportunidad.id_cat_status_oportunidad',$opcion_estatus)
+                        ->where('etiquetas_oportunidades.id_etiqueta',$opcion_etiqueta)
                         ->select('prospectos.correo','prospectos.nombre','prospectos.id_prospecto')->distinct()->get();  
           }
         }
@@ -154,20 +193,24 @@ class MailingController extends Controller
           $campana->save();
           $campana->detalle()->save($mailing);
           
-          if(isset($request->image1))
+
+          //guarda la imagen, debemos corregir error en angular para enviar los datos
+          
+          if($request->file('image1')->isValid())
           {
             $image1 = new ImagesMailings();
             $image1->url = $this->uploadFilesS3($request->image1,$campana->id_mailing,1);
             $campana->imagenes()->save($image1);
             $datosMail['image1'] = $image1->url;
           }
-          if(isset($request->image2))
+          if($request->file('image2')->isValid())
           {
             $image2 = new ImagesMailings();
             $image2->url = $this->uploadFilesS3($request->image2,$campana->id_mailing,2);
             $campana->imagenes()->save($image2);
             $datosMail['image2'] = $image2->url;
           }
+          
           DB::commit();
           
           $send_contacts = array();
@@ -217,7 +260,8 @@ class MailingController extends Controller
         DB::rolback();
         return response()->json([
           'message'=>$e,
-          'error'=>true
+          'error'=>true,
+          'request'=>$request->all()
         ],400);
       }
 

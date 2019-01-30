@@ -18,6 +18,7 @@ use App\Modelos\Prospecto\Prospecto;
 use App\Modelos\Prospecto\DetalleProspecto;
 use App\Modelos\Prospecto\EtiquetasProspecto;
 use App\Modelos\Prospecto\ArchivosProspectoColaborador;
+use App\Modelos\Prospecto\ColaboradorProspecto;
 use App\Modelos\Oportunidad\Oportunidad;
 use App\Modelos\Oportunidad\DetalleOportunidad;
 use App\Modelos\Oportunidad\EtiquetasOportunidad;
@@ -54,6 +55,7 @@ class ProspectosController extends Controller
                 $prospecto = new Prospecto;
                 $prospectoDetalle = new DetalleProspecto;
                 $statusProspecto = new StatusProspecto;
+                $colaborador_prospecto = new ColaboradorProspecto;
                 $statusProspecto->id_cat_status_prospecto = 2;
                 $prospecto->nombre = $request->nombre;
                 $prospecto->apellido = $request->apellido;
@@ -68,6 +70,8 @@ class ProspectosController extends Controller
                 $prospecto->save();
                 $prospecto->status_prospecto()->save($statusProspecto);
                 $prospecto->detalle_prospecto()->save($prospectoDetalle);
+                $colaborador_prospecto->id_colaborador = $auth->id;
+                $prospecto->colaborador_prospecto()->save($colaborador_prospecto);
                 if($etiquetas != null){
                     //Crear etiquetas
 
@@ -298,9 +302,14 @@ class ProspectosController extends Controller
       $prospectos_sin_contactar = Prospecto::join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
                                   ->join('detalle_prospecto','prospectos.id_prospecto','detalle_prospecto.id_prospecto')
                                   ->join('cat_fuentes','prospectos.fuente','cat_fuentes.id_fuente')
+                                  ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', 'status_prospecto.id_cat_status_prospecto')
                                   ->where('status_prospecto.id_cat_status_prospecto','=',2)
                                   ->whereNull('deleted_at')
-                                  ->select('prospectos.id_prospecto','prospectos.nombre','prospectos.apellido','prospectos.correo','cat_fuentes.nombre as fuente','cat_fuentes.id_fuente as id_fuente','cat_fuentes.url as url_fuente','prospectos.deleted_at','prospectos.created_at','prospectos.updated_at','status_prospecto.id_status_prospecto','status_prospecto.id_cat_status_prospecto','detalle_prospecto.whatsapp')
+                                  ->whereNull('status_prospecto.deleted_at')
+                                  ->whereNull('detalle_prospecto.deleted_at')
+                                  ->whereNull('cat_fuentes.deleted_at')
+                                  ->whereNull('cat_status_prospecto.deleted_at')
+                                  ->select('prospectos.id_prospecto','prospectos.nombre','prospectos.apellido','prospectos.correo','cat_fuentes.nombre as fuente','cat_fuentes.id_fuente as id_fuente','cat_fuentes.url as url_fuente','prospectos.deleted_at','prospectos.created_at','prospectos.updated_at','status_prospecto.id_status_prospecto','status_prospecto.id_cat_status_prospecto','detalle_prospecto.whatsapp', 'cat_status_prospecto.color as color')
                                   ->orderBy('status_prospecto.updated_at', 'desc')
                                   ->get();
 
@@ -631,6 +640,12 @@ class ProspectosController extends Controller
 
     public function getArchivos($id){
         $prospecto_archivos = Prospecto::GetProspectoArchivos($id);
+        if(count($prospecto_archivos) <= 0)
+        return response()->json([
+            'message'=>'Correcto',
+            'error'=>false,
+            'data'=>null
+        ],200);
         foreach($prospecto_archivos['archivos_prospecto_colaborador'] as $archivo){
             $archivo['ext'] = pathinfo($archivo->nombre, PATHINFO_EXTENSION);
         }

@@ -8,6 +8,8 @@ use Illuminate\Http\Response;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
 use Spatie\Activitylog\Models\Activity;
 use Spatie\CalendarLinks\Link;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
@@ -25,7 +27,9 @@ use App\Modelos\Extras\Etiqueta;
 use App\Modelos\Oportunidad\CatServicios;
 use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Modelos\Prospecto\CatMedioContacto;
+use App\Modelos\Prospecto\CatStatusProspecto;
 use App\Modelos\Prospecto\MedioContactoProspecto;
+use App\Modelos\Prospecto\ColaboradorProspecto;
 use App\Modelos\Oportunidad\MedioContactoOportunidad;
 use App\Modelos\Extras\EventoProspecto;
 use App\Modelos\Extras\DetalleEventoProspecto;
@@ -299,7 +303,7 @@ class DataViewsController extends Controller
                         ->whereNull('detalle_prospecto.deleted_at')
                         ->whereNull('status_prospecto.deleted_at')
                         ->where('status_prospecto.id_cat_status_prospecto',$status)
-                        ->select('prospectos.id_prospecto','prospectos.nombre','prospectos.apellido','prospectos.correo','detalle_prospecto.telefono','detalle_prospecto.empresa','detalle_prospecto.whatsapp','prospectos.created_at','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','cat_status_prospecto.status','cat_status_prospecto.id_cat_status_prospecto as id_status')
+                        ->select('prospectos.id_prospecto','prospectos.nombre','prospectos.apellido','prospectos.correo','detalle_prospecto.telefono','detalle_prospecto.empresa','detalle_prospecto.whatsapp','prospectos.created_at','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','cat_status_prospecto.status','cat_status_prospecto.id_cat_status_prospecto as id_status', 'cat_status_prospecto.color as color')
                         ->orderBy('status_prospecto.updated_at','desc')
                         ->get();
 
@@ -905,7 +909,9 @@ class DataViewsController extends Controller
             ->get();
 
         $colaboradores = array();
-
+        
+        $status = CatStatusOportunidad::all();
+        
         foreach($users as $user)
         {
             $oportunidades_asignadas = DB::table('oportunidades')
@@ -921,21 +927,26 @@ class DataViewsController extends Controller
 
             $oportunidades_cotizadas = $this->grafica_por_status(1,$user->id);
             $oportunidades_cerradas = $this->grafica_por_status(2,$user->id);
-            $oportunidades_no_viables = $this->grafica_por_status(3,$user->id);
+            $total_estado = Array();
+            foreach($status as $estado)
+            {
+                $aux = $this->grafica_por_status($estado->id_cat_status_oportunidad, $user->id);
+                array_push($total_estado, ($aux) ? $aux->asignados : 0);
+            }
             
             array_push($colaboradores,['colaborador_id' => $oportunidades_asignadas->id_colaborador,
                 'colaborador_foto' => $user->foto,
                 'colaborador_nombre' => $oportunidades_asignadas->colaborador,
                 'oportunidades_asignadas' => ($oportunidades_asignadas) ? $oportunidades_asignadas->asignados : 0,
-                'cotizados' => ($oportunidades_cotizadas) ? $oportunidades_cotizadas->asignados : 0,
-                'cerrados' => ($oportunidades_cerradas) ? $oportunidades_cerradas->asignados : 0,
-                'no_viables' => ($oportunidades_no_viables) ? $oportunidades_no_viables->asignados : 0,
                 'total_por_cerrar' => ($oportunidades_cotizadas) ? $oportunidades_cotizadas->valor : 0,
                 'total_cerrado' => ($oportunidades_cerradas) ? $oportunidades_cerradas->valor : 0,
                 'colaborador_correo' => $user->email,
-                'colaborador_telefono' => $user->telefono            
+                'colaborador_telefono' => $user->telefono,
+                'total_estado' => $total_estado
             ]);
         }
+
+        $status = CatStatusOportunidad::all();
 
         return response()->json([
             'message'=>'Correcto',
@@ -943,7 +954,8 @@ class DataViewsController extends Controller
             'data'=>[
                 'ventas'=>$users_ventas,
                 'top_3'=>$top_3,
-                'colaboradores'=>$colaboradores
+                'colaboradores'=>$colaboradores,
+                'status' => $status
             ]
             ],200);
 
@@ -1649,6 +1661,20 @@ class DataViewsController extends Controller
             'message'=>'No se encontraron fuentes.'
         ],200);
     }
+    public function uploadFilesS3($file){
+        //Sube archivos a bucket de Amazon
+        $disk = Storage::disk('s3');
+        $path = $file->store('temporales','s3');
+        Storage::setVisibility($path,'public');
+        return $disk->url($path);
+    }
+
+    public function after ($palabra, $inthat)
+    {
+        if (!is_bool(strpos($inthat, $palabra)))
+        return substr($inthat, strpos($inthat,$palabra)+strlen($palabra));
+    }
+
     public function sendMail (Request $request){
       $auth = $this->guard()->user();
       $data = $request->all();
@@ -1675,18 +1701,61 @@ class DataViewsController extends Controller
             $statusProspecto->save();
             $medio_contacto->save();
 
+            $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto', $request->id_prospecto)->first();
+            if($colaborador_prospecto)
+            {
+                if($colaborador_prospecto->id_colaborador != $auth->id)
+                {
+                    $colaborador_prospecto->id_colaborador = $auth->id;
+                    $colaborador_prospecto->save();
+                }
+            }
+            else
+            {
+                $colaborador_prospecto = new ColaboradorProspecto;
+                $colaborador_prospecto->id_colaborador = $auth->id;
+                $colaborador_prospecto->id_prospecto = $request->id_prospecto;
+                $colaborador_prospecto->save();
+            }
             DB::commit();
         }
 
 
-
-        Mailgun::send('mailing.mail', $data, function ($message) use ($data){
-           // $message->tag('myTag');
-           $message->from($data['email_de'],$data['nombre_de']);
-           // $message->testmode(true);
-           $message->subject($data['asunto']);
-           $message->to($data['email_para'],$data['nombre_para']);
-       });
+        if(isset($request->fileToUpload))
+        {
+            $archivos = $request->fileToUpload;
+            $archivoUrl = array();
+            for($x = 0; $x < count($archivos); $x++)
+            {
+                $url = $this->uploadFilesS3($archivos[$x]);
+                array_push($archivoUrl, $url);
+            }
+            Mailgun::send('mailing.mail', $data, function ($message) use ($data, $archivos,$request, $archivoUrl){
+                $message->from($data['email_de'],$data['nombre_de']);
+                $message->subject($data['asunto']);
+                $message->to($data['email_para'],$data['nombre_para']);
+                
+                for($x = 0; $x < count($archivos); $x++)
+                {
+                    $message->attach($archivoUrl[$x], $request->fileToUpload[$x]->getClientOriginalName());
+                }   
+            });
+            for($x = 0; $x < count($archivos); $x++)
+            {
+                Storage::disk('s3')->delete('temporales/'.$this->after ('temporales/', $archivoUrl[$x]));
+            }
+        }
+        else
+        {
+            Mailgun::send('mailing.mail', $data, function ($message) use ($data){
+                // $message->tag('myTag');
+                $message->from($data['email_de'],$data['nombre_de']);
+                // $message->testmode(true);
+                $message->subject($data['asunto']);
+                $message->to($data['email_para'],$data['nombre_para']);
+            });
+        }
+       
 
        //Historial
         activity()
@@ -1811,6 +1880,25 @@ class DataViewsController extends Controller
           $status = StatusProspecto::where('id_prospecto',$request->id_prospecto)->first();
           $status->id_cat_status_prospecto = 1;
           $status->save();
+
+          $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto', $request->id_prospecto)->first();
+            if($colaborador_prospecto)
+            {
+                if($colaborador_prospecto->id_colaborador != $auth->id)
+                {
+                    $colaborador_prospecto->id_colaborador = $auth->id;
+                    $colaborador_prospecto->save();
+                }
+            }
+            else
+            {
+                $colaborador_prospecto = new ColaboradorProspecto;
+                $colaborador_prospecto->id_colaborador = $auth->id;
+                $colaborador_prospecto->id_prospecto = $request->id_prospecto;
+                $colaborador_prospecto->save();
+            }
+
+
           DB::commit();
           
          
@@ -1951,12 +2039,12 @@ class DataViewsController extends Controller
             'fotos_colaboradores.url_foto as url_foto',
             'count(colaborador_oportunidad.id_colaborador_oportunidad) as oportunidades_cerradas'
         );
-        return $users = DB::table('users')
+        return  DB::table('users')
             ->join('detalle_colaborador', 'users.id', 'detalle_colaborador.id_colaborador')
             ->join('colaborador_oportunidad','users.id','colaborador_oportunidad.id_colaborador')
             ->join('fotos_colaboradores', 'users.id', 'fotos_colaboradores.id_colaborador')
             ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad', 'status_oportunidad.id_oportunidad')
-            ->join('oportunidades','oportunidades.id_oportunidad', 'colaborador_oportunidad.id_oportunidad')
+            ->join('oportunidades', 'colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
             ->wherenull('oportunidades.deleted_at')
             ->wherenull('status_oportunidad.deleted_at')
             ->wherenull('users.deleted_at')
@@ -2156,6 +2244,68 @@ class DataViewsController extends Controller
             }
             return $consulta;
 
+    }
+
+    public function prospectosColaborador(){
+        
+       
+        $prospecto_por_status = array();
+        
+        $estados = CatStatusProspecto::all();
+
+        $colaboradores = ColaboradorProspecto::join('users', 'colaborador_prospecto.id_colaborador', 'users.id')
+            ->wherenull('colaborador_prospecto.deleted_at')
+            ->join('status_prospecto', 'status_prospecto.id_prospecto', 'colaborador_prospecto.id_prospecto')
+            ->whereNull('status_prospecto.deleted_at')
+            ->join('prospectos', 'prospectos.id_prospecto', 'status_prospecto.id_prospecto', 'colaborador_prospecto.id_prospecto')
+            ->whereNull('prospectos.deleted_at')
+            ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', 'status_prospecto.id_cat_status_prospecto')
+            ->wherenull('cat_status_prospecto.deleted_at')
+            ->join('detalle_colaborador', 'detalle_colaborador.id_colaborador', 'users.id')
+            ->wherenull('detalle_colaborador.deleted_at')
+            ->join('fotos_colaboradores', 'fotos_colaboradores.id_colaborador', 'users.id')
+            ->whereNull('fotos_colaboradores.deleted_at')
+            ->select('users.id as id_usuario', 'users.nombre as nombre', 'users.apellido as apellido', 'detalle_colaborador.puesto as puesto', 'fotos_colaboradores.url_foto as foto')
+            ->groupBy('users.id')
+            ->get();            
+
+        foreach($colaboradores as $colaborador)
+        {
+            $status = array();
+            foreach($estados as $estado)
+            {
+                $consulta = ColaboradorProspecto::join('users', 'colaborador_prospecto.id_colaborador', 'users.id')
+                    ->wherenull('colaborador_prospecto.deleted_at')
+                    ->join('status_prospecto', 'status_prospecto.id_prospecto', 'colaborador_prospecto.id_prospecto')
+                    ->whereNull('status_prospecto.deleted_at')
+                    ->join('prospectos', 'prospectos.id_prospecto', 'status_prospecto.id_prospecto', 'colaborador_prospecto.id_prospecto')
+                    ->whereNull('prospectos.deleted_at')
+                    ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', 'status_prospecto.id_cat_status_prospecto')
+                    ->wherenull('cat_status_prospecto.deleted_at')
+                    ->join('detalle_colaborador', 'detalle_colaborador.id_colaborador', 'users.id')
+                    ->wherenull('detalle_colaborador.deleted_at')
+                    ->join('fotos_colaboradores', 'fotos_colaboradores.id_colaborador', 'users.id')
+                    ->whereNull('fotos_colaboradores.deleted_at')
+                    ->where('users.id', '=', $colaborador->id_usuario)
+                    ->where('cat_status_prospecto.id_cat_status_prospecto','=',$estado->id_cat_status_prospecto)
+                    ->select(DB::raw('concat(users.nombre, " ", users.apellido) as colaborador_nombre' ), DB::raw('count(status_prospecto.id_status_prospecto) as total'), 'cat_status_prospecto.status as status', 'cat_status_prospecto.color as color')
+                    ->get();
+
+                array_push($status,  $consulta);
+            }
+            array_push($prospecto_por_status,  $status);
+        }
+        
+
+        return response()->json([
+            'message'=>'Success',
+            'error'=>false,
+            'data'=>[
+                'prospecto_por_status'=>$prospecto_por_status,
+                'estados'=>$estados,
+                'colaboradores'=>$colaboradores
+            ]
+            ],200);
     }
 
 }
