@@ -370,6 +370,19 @@ class DataViewsController extends Controller
 
         $oportunidades_no_viables = $this->oportunidades_por_colaborador_por_status($id,3);
 
+        $s_o = CatStatusOportunidad::all(); 
+        
+        $oportunidades_status = Array();
+        $oportunidades_status_p = Array();
+        foreach( $s_o as $status)
+        {
+            $total_status = $this->oportunidades_por_colaborador_por_status($id,$status->id_cat_status_oportunidad);
+            $porcentaje_status = $this->porcentajeOportunidades($total_status,$oportunidades_total);
+
+            array_push($oportunidades_status, $total_status);
+            array_push($oportunidades_status_p, $porcentaje_status);
+        }
+       
         $oportunidades = DB::table('oportunidades')
                             ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
@@ -423,7 +436,10 @@ class DataViewsController extends Controller
                     'color'=>$this->colorsOportunidades(3)
 
                 ],
-                'oportunidades'=>$oportunidades
+                'oportunidades'=>$oportunidades,
+
+                'oportunidades_status' => $oportunidades_status,
+                'porcentaje_status' => $oportunidades_status_p
             ]
             ],200);
     }
@@ -495,6 +511,30 @@ class DataViewsController extends Controller
                             ->whereNull('cat_fuentes.deleted_at')
                             ->select('nombre','url','status')->get();
 
+
+
+        return response()->json([
+            'message'=>'Correcto',
+            'error'=>false,
+            'data'=>[
+                'status'=>$nombre_status->status,
+                'total'=>[
+                    'valor'=>$total,
+                    'porcentaje'=>$this->porcentajeOportunidades($total,$total_general),
+                    'color'=>$this->colorsOportunidades($status)
+                ],
+                'fuentes'=> $this->fuentesChecker($catalogo_fuentes, $fuentes),
+                'oportunidades'=> $oportunidades
+
+            ]
+            ],200);
+    }
+
+    public function mis_oportunidades_status(){
+
+        $id = $this->guard()->user()->id;
+
+        
 
 
         return response()->json([
@@ -1463,6 +1503,7 @@ class DataViewsController extends Controller
     }
 
     public function updateStatus(Request $request){
+        
         $id = $request->id_status;
         try{
             DB::beginTransaction();

@@ -736,6 +736,7 @@ class OportunidadesController extends Controller
     }
 
     public function updateStatus(Request $request,$id){
+        
         $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
         $auth = $this->guard()->user();
         $status = $request->status;
