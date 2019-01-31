@@ -90,6 +90,7 @@ class ColaboradoresController extends Controller
 
                     $arrayColaborador = $colaborador->toArray();
                     $arrayColaborador['pass'] = $pass;
+                    $arrayColaborador['link'] = env('URL_FRONT');
 
                     Mailgun::send('auth.emails.register',$arrayColaborador,function ($contacto) use ($arrayColaborador){
                        // $message->tag('myTag');

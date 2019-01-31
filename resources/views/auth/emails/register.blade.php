@@ -515,7 +515,7 @@
                     <tbody>
                         <tr>
                             <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Lato, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif; font-size: 12px; padding: 15px;">
-                                <a class="mcnButton " title="ENTRA AQUÍ" href="https://kiper.app/" target="_blank" style="font-weight: normal;letter-spacing: 4px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">ENTRA AQUÍ</a>
+                                <a class="mcnButton " title="ENTRA AQUÍ" href="{{$link}}" target="_blank" style="font-weight: normal;letter-spacing: 4px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">ENTRA AQUÍ</a>
                             </td>
                         </tr>
                     </tbody>
