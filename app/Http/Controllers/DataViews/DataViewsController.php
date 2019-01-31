@@ -530,30 +530,6 @@ class DataViewsController extends Controller
             ],200);
     }
 
-    public function mis_oportunidades_status(){
-
-        $id = $this->guard()->user()->id;
-
-        
-
-
-        return response()->json([
-            'message'=>'Correcto',
-            'error'=>false,
-            'data'=>[
-                'status'=>$nombre_status->status,
-                'total'=>[
-                    'valor'=>$total,
-                    'porcentaje'=>$this->porcentajeOportunidades($total,$total_general),
-                    'color'=>$this->colorsOportunidades($status)
-                ],
-                'fuentes'=> $this->fuentesChecker($catalogo_fuentes, $fuentes),
-                'oportunidades'=> $oportunidades
-
-            ]
-            ],200);
-    }
-
     public function estadisticas_oportunidad(){
         $oportunidades_cotizadas = $this->oportunidades_por_status(1);
 
