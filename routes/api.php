@@ -154,7 +154,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('mis-oportunidades/{status}','DataViews\DataViewsController@mis_oportunidades_status');
         Route::get('mis-oportunidades/status','DataViews\DataViewsController@mis_oportunidades_status_todos');
         Route::get('/estadisticas/oportunidades','DataViews\DataViewsController@estadisticas_oportunidad');
-        Route::post('/estadisticas/oportunidades','DataViews\DataViewsController@estadisticas_oportunidad_grafica');
+        Route::get('/estadisticas/oportunidades/me','Estadisticas\EstadisticasController@estadisticas_oportunidad_personal');
         Route::get('/estadisticas/colaboradores','DataViews\DataViewsController@estadisticas_colaborador');
         Route::get('/estadisticas/finanzas','DataViews\DataViewsController@estadisticas_finanzas');
         Route::get('/estadisticas/finanzas/semanal','DataViews\DataViewsController@estadisticas_finanzas_semanal');
@@ -172,6 +172,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/etiquetas/ajustes', 'DataViews\DataViewsController@getEtiquetasAjustes');
 
         //POST
+        Route::post('/estadisticas/oportunidades','DataViews\DataViewsController@estadisticas_oportunidad_grafica');
         Route::post('/etiquetas','DataViews\DataViewsController@addEtiquetas');
         Route::post('/servicios','DataViews\DataViewsController@addServicios');
         Route::post('/mail','DataViews\DataViewsController@sendMail');
