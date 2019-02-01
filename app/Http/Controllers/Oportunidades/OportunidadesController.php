@@ -20,6 +20,7 @@ use App\Modelos\Prospecto\DetalleProspecto;
 use App\Modelos\Oportunidad\Oportunidad;
 use App\Modelos\Oportunidad\DetalleOportunidad;
 use App\Modelos\Oportunidad\EtiquetasOportunidad;
+use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Modelos\Oportunidad\ColaboradorOportunidad;
 use App\Modelos\Oportunidad\ServicioOportunidad;
 use App\Modelos\Oportunidad\ProspectoOportunidad;
@@ -83,6 +84,20 @@ class OportunidadesController extends Controller
                             ->select('oportunidades.id_oportunidad','oportunidades.nombre_oportunidad','detalle_oportunidad.valor','cat_status_oportunidad.id_cat_status_oportunidad  as status_id','cat_status_oportunidad.status','cat_status_oportunidad.color','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','users.id as id_colaborador','users.nombre as asigando_nombre','users.apellido as asigando_apellido','oportunidades.created_at')
                             ->orderBy('oportunidades.created_at', 'desc')
                             ->get();
+            
+            $s_o = CatStatusOportunidad::all(); 
+            $oportunidades_status = Array();
+            $oportunidades_status_p = Array();
+            foreach( $s_o as $status)
+            {
+                $total_status = $this->oportunidades_por_status($status->id_cat_status_oportunidad);
+                $porcentaje_status = $this->porcentajeOportunidades($total_status,$oportunidades_total);
+                    
+                array_push($oportunidades_status, $total_status);
+                array_push($oportunidades_status_p, $porcentaje_status);
+            }
+
+
 
         if($oportunidades_total == 0)
         {
@@ -126,9 +141,19 @@ class OportunidadesController extends Controller
                     'color'=>$this->colorsOportunidades(3)
 
                 ],
-                'oportunidades'=>$oportunidades
+                'oportunidades'=>$oportunidades,
+                'oportunidades_status' => $oportunidades_status,
+                'porcentaje_status' => $oportunidades_status_p
             ]
             ],200);
+    }
+    
+    public function oportunidades_por_status($status){
+        return DB::table('oportunidades')
+            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+            ->whereNull('oportunidades.deleted_at')
+            ->where('status_oportunidad.id_cat_status_oportunidad','=',$status)->count();
     }
 
     public function getAllOportunidadesStatus($status){
