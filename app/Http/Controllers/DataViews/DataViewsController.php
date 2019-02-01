@@ -1223,6 +1223,17 @@ class DataViewsController extends Controller
         $catalogo_status = DB::table('cat_status_oportunidad')
                     ->select('id_cat_status_oportunidad as id','status as nombre','color')
                     ->get();
+        $catalogo_status_select = DB::table('cat_status_oportunidad')
+                    ->join('status_oportunidad', 'status_oportunidad.id_cat_status_oportunidad', 'cat_status_oportunidad.id_cat_status_oportunidad')
+                    ->join('oportunidades', 'oportunidades.id_oportunidad', 'status_oportunidad.id_oportunidad')
+                    ->join('colaborador_oportunidad', 'colaborador_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
+                    ->wherenull('oportunidades.deleted_at')
+                    ->wherenull('cat_status_oportunidad.deleted_at')
+                    ->wherenull('colaborador_oportunidad.deleted_at')
+                    ->wherenull('status_oportunidad.deleted_at')
+                    ->select('cat_status_oportunidad.id_cat_status_oportunidad as id','cat_status_oportunidad.status as nombre','cat_status_oportunidad.color')
+                    ->groupBy('cat_status_oportunidad.status')
+                    ->get();
 
         return response()->json([
                     'message'=>'Correcto',
@@ -1231,7 +1242,8 @@ class DataViewsController extends Controller
                         'status'=>$catalogo_status,
                         'status_1'=>$status_1,
                         'status_2'=>$status_2,
-                        'status_3'=>$status_3
+                        'status_3'=>$status_3,
+                        'select' => $catalogo_status_select
                     ]
                     ],200);
 
