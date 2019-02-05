@@ -1633,7 +1633,8 @@ class DataViewsController extends Controller
       $medio_contacto=MedioContactoProspecto::where('id_prospecto',$id)
                       ->join('mediocontacto_catalogo','mediocontacto_catalogo.id_mediocontacto_catalogo','medio_contacto_prospectos.id_mediocontacto_catalogo')
                       ->wherenull('mediocontacto_catalogo.deleted_at')
-                      ->groupBy('medio_contacto_prospectos.id_mediocontacto_catalogo')
+                      ->wherenull('medio_contacto_prospectos.deleted_at')
+                      //->groupBy('medio_contacto_prospectos.id_mediocontacto_catalogo')
                       ->get();
 
       if ($medio_contacto->isEmpty()) {
@@ -1655,7 +1656,8 @@ class DataViewsController extends Controller
       $medio_contacto = MedioContactoOportunidad::where('id_oportunidad',$id)
                                                   ->join('mediocontacto_catalogo','mediocontacto_catalogo.id_mediocontacto_catalogo','medio_contacto_oportunidades.id_mediocontacto_catalogo')
                                                   ->wherenull('mediocontacto_catalogo.deleted_at')
-                                                  ->groupBy('medio_contacto_oportunidades.id_mediocontacto_catalogo')
+                                                  ->wherenull('medio_contacto_oportunidades.deleted_at')
+                                                  //->groupBy('medio_contacto_oportunidades.id_mediocontacto_catalogo')
                                                   ->get();
 
       if ($medio_contacto->isEmpty()) {
