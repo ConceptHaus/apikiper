@@ -98,6 +98,9 @@ Route::prefix('/v1/prospectos')->group(function(){
             Route::delete('/foto/{id}', 'Prospectos\ProspectosController@deleteFoto');
 
             Route::get('/status/all','Prospectos\ProspectosController@getStatus');
+            
+            //import
+            Route::post('/import/bulk','Prospectos\ProspectosController@importProspectos');
         });
 });
 

@@ -33,6 +33,9 @@ use App\Modelos\Oportunidad\StatusOportunidad;
 use App\Modelos\Prospecto\StatusProspecto;
 use App\Modelos\Prospecto\CatStatusProspecto;
 
+use App\Imports\ProspectosImport;
+use Excel;
+
 
 use DB;
 use Mail;
@@ -176,6 +179,30 @@ class ProspectosController extends Controller
                 'error'=>true,
                 'messages'=> $errores
         ],400);
+    }
+
+    public function importProspectos(Request $request){
+
+
+        try{
+            Excel::import(new ProspectosImport, request()->file('import'));
+
+            return response()->json([
+                'message'=>'Success',
+                'error'=>false,
+                'data'=>[
+                    'prospectos'=>'Los prospectos se han guardado correctamente.'
+                ]
+                ],200);
+        }
+        
+        catch(Exception $e){
+            return response()->json([
+                'message'=>$e,
+                'error'=>true
+            ],400);
+        }
+        
     }
 
     public function getAllProspectos(){
