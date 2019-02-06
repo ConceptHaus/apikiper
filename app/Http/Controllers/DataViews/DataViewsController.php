@@ -1705,6 +1705,8 @@ class DataViewsController extends Controller
     }
 
     public function sendMail (Request $request){
+        
+        //return $request->Files[0]->getClientOriginalName();
       $auth = $this->guard()->user();
       $data = $request->all();
       $validator = $this->validatorMail($data);
@@ -1748,31 +1750,25 @@ class DataViewsController extends Controller
             }
             DB::commit();
         }
+        if($request->id_colaborador){
+            $colaborador = User::where('id',$request->id_colaborador)->first();
+        }
 
 
-        if(isset($request->fileToUpload))
+
+        if(isset($request->Files))
         {
-            $archivos = $request->fileToUpload;
-            $archivoUrl = array();
-            for($x = 0; $x < count($archivos); $x++)
-            {
-                $url = $this->uploadFilesS3($archivos[$x]);
-                array_push($archivoUrl, $url);
-            }
-            Mailgun::send('mailing.mail', $data, function ($message) use ($data, $archivos,$request, $archivoUrl){
+            Mailgun::send('mailing.mail', $data, function ($message) use ($data,$request){
                 $message->from($data['email_de'],$data['nombre_de']);
                 $message->subject($data['asunto']);
                 $message->to($data['email_para'],$data['nombre_para']);
                 
-                for($x = 0; $x < count($archivos); $x++)
+                for($x = 0; $x < count($request->Files); $x++)
                 {
-                    $message->attach($archivoUrl[$x], $request->fileToUpload[$x]->getClientOriginalName());
+                    $message->attach($request->Files[$x]->getRealPath(), $request->Files[$x]->getClientOriginalName());
                 }   
             });
-            for($x = 0; $x < count($archivos); $x++)
-            {
-                Storage::disk('s3')->delete('temporales/'.$this->after ('temporales/', $archivoUrl[$x]));
-            }
+            
         }
         else
         {
@@ -1787,12 +1783,21 @@ class DataViewsController extends Controller
        
 
        //Historial
-        activity()
+        if($request->id_prospecto){
+            activity()
                 ->performedOn($prospecto)
                 ->causedBy($auth)
                 ->withProperties(['accion'=>'Envió','color'=>'#7ac5ff'])
                 ->useLog('prospecto')
                 ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion un correo a :subject.nombre :subject.apellido </span>');
+        }elseif($request->id_colaborador){
+            activity()
+                ->performedOn($colaborador)
+                ->causedBy($auth)
+                ->withProperties(['accion'=>'Envió','color'=>'#7ac5ff'])
+                ->useLog('prospecto')
+                ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion un correo a :subject.nombre :subject.apellido </span>');
+        }
                 
        return response()->json([
          'error'=>false,
