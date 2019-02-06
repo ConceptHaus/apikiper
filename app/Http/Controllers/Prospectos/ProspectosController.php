@@ -621,9 +621,9 @@ class ProspectosController extends Controller
           }
     }
 
-    public function deleteEtiquetas($id_prospecto, $id_etiqueta){
+    public function deleteEtiquetas($id_etiqueta){
 
-      $etiqueta = EtiquetasProspecto::where('id_prospecto',$id_prospecto)->where('id_etiqueta', $id_etiqueta)->first();
+      $etiqueta = EtiquetasProspecto::find($id_etiqueta);
 
       if ($etiqueta) {
         try {

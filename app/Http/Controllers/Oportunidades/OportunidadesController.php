@@ -390,9 +390,9 @@ class OportunidadesController extends Controller
           }
     }
 
-    public function deleteEtiquetas($id_oportunidad, $id_etiqueta){
+    public function deleteEtiquetas($id_etiqueta){
 
-      $etiqueta = EtiquetasOportunidad::where('id_oportunidad',$id_oportunidad)->where('id_etiqueta', $id_etiqueta)->first();
+      $etiqueta = EtiquetasOportunidad::find($id_etiqueta);
 
       if ($etiqueta) {
         try {
