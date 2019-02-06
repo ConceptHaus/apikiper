@@ -1750,6 +1750,10 @@ class DataViewsController extends Controller
             }
             DB::commit();
         }
+        if($request->id_colaborador){
+            $colaborador = User::where('id',$request->id_colaborador)->first();
+        }
+
 
 
         if(isset($request->Files))
@@ -1779,12 +1783,21 @@ class DataViewsController extends Controller
        
 
        //Historial
-        activity()
+        if($request->id_prospecto){
+            activity()
                 ->performedOn($prospecto)
                 ->causedBy($auth)
                 ->withProperties(['accion'=>'Envió','color'=>'#7ac5ff'])
                 ->useLog('prospecto')
                 ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion un correo a :subject.nombre :subject.apellido </span>');
+        }elseif($request->id_colaborador){
+            activity()
+                ->performedOn($colaborador)
+                ->causedBy($auth)
+                ->withProperties(['accion'=>'Envió','color'=>'#7ac5ff'])
+                ->useLog('prospecto')
+                ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion un correo a :subject.nombre :subject.apellido </span>');
+        }
                 
        return response()->json([
          'error'=>false,
