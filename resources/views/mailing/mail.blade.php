@@ -430,7 +430,7 @@
 
                             <h1><span style="color:#E43D30">{{$asunto}}</span></h1>
 
-<p>{{$contenido}}</p>
+							{!! $contenido !!}
 
                         </td>
                     </tr>
