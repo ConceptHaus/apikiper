@@ -18,7 +18,18 @@ class ProspectosImport implements ToModel, WithHeadingRow
     */
     public function model(array $row)
     {
-        
+        if($row['nombre'] == null){
+            $row['nombre'] = 'n/a';
+        }
+        if($row['apellido'] == null){
+            $row['apellido'] = 'n/a';
+        }
+        if($row['correo'] == null){
+            $row['correo'] = 'n/a';
+        }
+        if($row['status'] == null){
+            $row['status'] = 1;
+        }
         $prospecto =  new Prospecto([
             'nombre'=> $row['nombre'],
             'apellido'=>$row['apellido'],
