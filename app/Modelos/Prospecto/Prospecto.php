@@ -97,6 +97,7 @@ class Prospecto extends Model
                 ->with('foto')
                 ->with('fuente')
                 ->with('colaborador_prospecto.colaboradorDetalle')
+                ->with('colaborador_prospecto.colaborador')
                 ->with('servicio_prospecto')
                 ->with('oportunidades.oportunidad.detalle_oportunidad.status.status')
                 ->with('oportunidades.oportunidad.archivos_oportunidad')

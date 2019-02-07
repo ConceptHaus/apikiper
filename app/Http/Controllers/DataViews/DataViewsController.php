@@ -273,9 +273,15 @@ class DataViewsController extends Controller
                     ->groupBy('cat_fuentes.nombre')->get();
 
         $prospectos = Prospecto::with('detalle_prospecto')
+                                ->with('colaborador_prospecto.colaborador.detalle')
+                                /*->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                                ->join('users', 'users.id', 'colaborador_prospecto.id_prospecto')
+                                ->wherenull('users.deleted_at')
+                                ->wherenull('colaborador_prospecto.deleted_at')*/
                                 ->wherenull('prospectos.deleted_at')
                                 ->with('status_prospecto.status')
                                 ->orderBy('prospectos.created_at','desc')
+                                //->groupBy('prospectos.id_prospecto')
                                 ->get();
 
         $catalogo_fuentes = DB::table('cat_fuentes')
