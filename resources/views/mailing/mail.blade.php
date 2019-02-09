@@ -1,10 +1,11 @@
+<!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{$asunto}}</title>
-
+        <title>Mail</title>
+        
     <style type="text/css">
 		p{
 			margin:10px 0;
@@ -93,15 +94,19 @@
 		.mcnDividerBlock{
 			table-layout:fixed !important;
 		}
+	
 		body,#bodyTable{
 			background-color:#FAFAFA;
 		}
+	
 		#bodyCell{
 			border-top:0;
 		}
+	
 		.templateContainer{
 			border:0;
 		}
+	
 		h1{
 			color:#202020;
 			font-family:Helvetica;
@@ -112,6 +117,7 @@
 			letter-spacing:normal;
 			text-align:left;
 		}
+	
 		h2{
 			color:#202020;
 			font-family:Helvetica;
@@ -122,6 +128,7 @@
 			letter-spacing:normal;
 			text-align:left;
 		}
+	
 		h3{
 			color:#202020;
 			font-family:Helvetica;
@@ -132,6 +139,7 @@
 			letter-spacing:normal;
 			text-align:left;
 		}
+	
 		h4{
 			color:#202020;
 			font-family:Helvetica;
@@ -142,6 +150,7 @@
 			letter-spacing:normal;
 			text-align:left;
 		}
+	
 		#templatePreheader{
 			background-color:#FAFAFA;
 			background-image:none;
@@ -153,6 +162,7 @@
 			padding-top:9px;
 			padding-bottom:9px;
 		}
+	
 		#templatePreheader .mcnTextContent,#templatePreheader .mcnTextContent p{
 			color:#656565;
 			font-family:Helvetica;
@@ -160,11 +170,13 @@
 			line-height:150%;
 			text-align:left;
 		}
+	
 		#templatePreheader .mcnTextContent a,#templatePreheader .mcnTextContent p a{
 			color:#656565;
 			font-weight:normal;
 			text-decoration:underline;
 		}
+	
 		#templateHeader{
 			background-color:#FFFFFF;
 			background-image:none;
@@ -176,6 +188,7 @@
 			padding-top:9px;
 			padding-bottom:0;
 		}
+	
 		#templateHeader .mcnTextContent,#templateHeader .mcnTextContent p{
 			color:#202020;
 			font-family:Helvetica;
@@ -183,11 +196,13 @@
 			line-height:150%;
 			text-align:left;
 		}
+	
 		#templateHeader .mcnTextContent a,#templateHeader .mcnTextContent p a{
-			color:#2BAADF;
+			color:#007C89;
 			font-weight:normal;
 			text-decoration:underline;
 		}
+	
 		#templateBody{
 			background-color:#FFFFFF;
 			background-image:none;
@@ -199,6 +214,11 @@
 			padding-top:0;
 			padding-bottom:9px;
 		}
+	/*
+	@tab Body
+	@section Body Text
+	@tip Set the styling for your email's body text. Choose a size and color that is easy to read.
+	*/
 		#templateBody .mcnTextContent,#templateBody .mcnTextContent p{
 			color:#202020;
 			font-family:Helvetica;
@@ -207,7 +227,7 @@
 			text-align:left;
 		}
 		#templateBody .mcnTextContent a,#templateBody .mcnTextContent p a{
-			color:#2BAADF;
+			color:#007C89;
 			font-weight:normal;
 			text-decoration:underline;
 		}
@@ -249,7 +269,6 @@
 			width:100% !important;
 			min-width:100% !important;
 		}
-
 }	@media only screen and (max-width: 480px){
 		#bodyCell{
 			padding-top:10px !important;
@@ -388,7 +407,8 @@
 
 }</style></head>
     <body>
-		<span class="mcnPreviewText" style="display:none; font-size:0px; line-height:0px; max-height:0px; max-width:0px; opacity:0; overflow:hidden; visibility:hidden; mso-hide:all;"></span>
+        <span class="mcnPreviewText" style="display:none; font-size:0px; line-height:0px; max-height:0px; max-width:0px; opacity:0; overflow:hidden; visibility:hidden; mso-hide:all;">Has recibido un correo</span><!--<![endif]-->
+        
         <center>
             <table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable">
                 <tr>
@@ -398,23 +418,19 @@
                                 <td valign="top" id="templatePreheader"></td>
                             </tr>
                             <tr>
-                                <td valign="top" id="templateHeader"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageBlock" style="min-width:100%;">
-    <tbody class="mcnImageBlockOuter">
-            <tr>
-                <td valign="top" style="padding:9px" class="mcnImageBlockInner">
-                    <table align="left" width="100%" border="0" cellpadding="0" cellspacing="0" class="mcnImageContentContainer" style="min-width:100%;">
-                        <tbody><tr>
-                            <td class="mcnImageContent" valign="top" style="padding-right: 9px; padding-left: 9px; padding-top: 0; padding-bottom: 0; text-align:center;">
-
-
-                                        <img align="center" alt="" src="https://gallery.mailchimp.com/766ee0c962d543c02140cdccb/images/88fc7da3-051d-4893-bd02-ca99afa584e3.png" width="32" style="max-width:32px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage">
-
-
-                            </td>
-                        </tr>
-                    </tbody></table>
-                </td>
-            </tr>
+                                <td valign="top" id="templateHeader"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnDividerBlock" style="min-width:100%;">
+    <tbody class="mcnDividerBlockOuter">
+        <tr>
+            <td class="mcnDividerBlockInner" style="min-width:100%; padding:18px;">
+                <table class="mcnDividerContent" border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-top: 2px solid #FFFFFF;">
+                    <tbody><tr>
+                        <td>
+                            <span></span>
+                        </td>
+                    </tr>
+                </tbody></table>
+            </td>
+        </tr>
     </tbody>
 </table></td>
                             </tr>
@@ -425,12 +441,12 @@
             <td valign="top" class="mcnTextBlockInner" style="padding-top:9px;">
                 <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%; min-width:100%;" width="100%" class="mcnTextContentContainer">
                     <tbody><tr>
-
+                        
                         <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px;">
+                        
+                            <h1><span style="color:#5D737E">{{$asunto}}</span></h1>
 
-                            <h1><span style="color:#E43D30">{{$asunto}}</span></h1>
-
-							{!! $contenido !!}
+								<p>{!! $contenido !!}</p>
 
                         </td>
                     </tr>
