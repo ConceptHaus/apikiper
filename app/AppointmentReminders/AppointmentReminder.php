@@ -8,7 +8,7 @@ use Twilio\Rest\Client;
 
 use App\Modelos\Extras\RecordatorioProspecto;
 use App\Modelos\Extras\RecordatorioOportunidad;
-
+use Illuminate\Support\Str;
 use DB;
 use Mailgun;
 class AppointmentReminder
@@ -61,7 +61,7 @@ class AppointmentReminder
                 $recordatorio->save();
                 DB::commit();
 
-                $arrayReminder = $reminder->toArray();
+                $arrayReminder = $reminder;
                 $arrayReminder['date'] = $date;
                 Mailgun::send('mailing.reminders', $arrayReminder, function($contacto) use ($arrayReminder){
                     $contacto->from('reminders@kiper.app', 'Kiper');
