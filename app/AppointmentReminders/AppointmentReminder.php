@@ -97,7 +97,7 @@ class AppointmentReminder
                 $arrayReminder['nombre_oportunidad'] = $reminder->nombre_oportunidad;
                 $arrayReminder['date'] = $date;
                 $arrayReminder['link'] = env('URL_FRONT');
-                Mailgun::send('mailing.reminders', $arrayReminder, function($contacto) use ($arrayReminder){
+                Mailgun::send('mailing.reminders_op', $arrayReminder, function($contacto) use ($arrayReminder){
                     $contacto->from('reminders@kiper.app', 'Kiper');
                     $contacto->subject('Kiper reminder');
                     $contacto->to($arrayReminder['email'],$arrayReminder['nombre']);
