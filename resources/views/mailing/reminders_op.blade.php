@@ -432,7 +432,7 @@
 <h1 class="null"><span style="color:#5D737E"><span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif">Recordatorio</span></span></h1>
 <span style="color:#5D737E">&nbsp;</span>
 
-                        <h4><font color="#5d737e" face="helvetica neue, helvetica, arial, verdana, sans-serif">{{$nombre}} debes {{$nota_recordatorio}} con {{$nombre_prospecto}} {{$apellido_prospecto}} a las {{$date}}</font></h4>
+                        <h4><font color="#5d737e" face="helvetica neue, helvetica, arial, verdana, sans-serif">{{$nombre}} debes {{$nota_recordatorio}} con {{$nombre_oportunidad}} a las {{$date}}</font></h4>
 
                         </td>
                     </tr>
