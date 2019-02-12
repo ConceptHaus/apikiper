@@ -274,6 +274,7 @@ class DataViewsController extends Controller
 
         $prospectos = Prospecto::with('detalle_prospecto')
                                 ->with('colaborador_prospecto.colaborador.detalle')
+                                ->with('fuente')
                                 /*->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', 'prospectos.id_prospecto')
                                 ->join('users', 'users.id', 'colaborador_prospecto.id_prospecto')
                                 ->wherenull('users.deleted_at')
