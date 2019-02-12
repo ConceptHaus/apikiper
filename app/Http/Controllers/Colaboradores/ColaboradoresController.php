@@ -84,7 +84,12 @@ class ColaboradoresController extends Controller
                     $colaborador->detalle()->save($colaborador_ext);
 
                     $foto_colaborador = new FotoColaborador;
-                    $foto_colaborador->url_foto = 'https://s3.us-east-2.amazonaws.com/kiperbucket/generales/kiper-default.svg';
+                    if(!isset($request->image))
+                        $foto_colaborador->url_foto = 'https://s3.us-east-2.amazonaws.com/kiperbucket/generales/kiper-default.svg';
+                    else
+                    {
+                        $foto_colaborador->url_foto = $this->uploadFilesS3($request->image, $request->image->getClientOriginalName());
+                    }
 
                     $colaborador->foto()->save($foto_colaborador);
 
@@ -131,7 +136,6 @@ class ColaboradoresController extends Controller
                 'error'=>true,
                 'messages'=> $errores
             ],400);
-
 
     }
 
