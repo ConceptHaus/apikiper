@@ -32,7 +32,7 @@ class ColaboradoresController extends Controller
             'nombre' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'apellido'=> 'required|string|max:255',
-            'is_admin'=> 'required|boolean|max:255',
+            'is_admin'=> 'required|max:255',
             'puesto' => 'required|string|max:255',
             'telefono'=> 'required|string|max:255',
             //'fecha_nacimiento'=> 'required|string|max:255'
@@ -71,7 +71,13 @@ class ColaboradoresController extends Controller
                     $colaborador->email = $request->email;
                     $pass = str_random(8);
                     $colaborador->password = bcrypt($pass);
-                    $colaborador->is_admin = $request->is_admin;
+                    if($request->is_admin == 'true'){
+                        $colaborador->is_admin = 1;
+                    }
+                    else
+                    {
+                        $colaborador->is_admin = 0;
+                    }
                     $colaborador->status = 1;
 
                     $colaborador_ext = new DetalleColaborador;
