@@ -109,6 +109,43 @@ class EstadisticasController extends Controller
             ],200);
                            
     }
+    public function estadisticas_oportunidad_personal_por_fecha($inicio, $fin){
+        $inicioPeriodo = new Carbon($inicio);
+        $finPeriodo = new Carbon(($fin));
+        $id = $this->guard()->user()->id;
+
+        $fuentes = DB::table('oportunidades')
+                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                            ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                            ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                            ->whereNull('oportunidades.deleted_at')
+                            ->whereNull('colaborador_oportunidad.deleted_at')
+                            ->whereNull('oportunidad_prospecto.deleted_at')
+                            ->whereNull('prospectos.deleted_at')
+                            ->where('colaborador_oportunidad.id_colaborador',$id)
+                            ->whereBetween('colaborador_oportunidad.updated_at', array($inicioPeriodo ,$finPeriodo))
+                            ->select(DB::raw('count(*) as total, cat_fuentes.nombre'),'cat_fuentes.url','cat_fuentes.status')->groupBy('cat_fuentes.nombre')->get(); 
+        
+        $catalogo_status = DB::table('cat_status_oportunidad')
+                    ->select('id_cat_status_oportunidad as id','status','color')
+                    ->get();
+
+        $catalogo_fuentes = DB::table('cat_fuentes')
+                            ->select('nombre','url','status')->get();
+
+
+        return response()->json([
+            'message'=>'Correcto',
+            'error'=>false,
+            'data'=>[
+               
+                'status'=>$this->StatusChecker($catalogo_status,$this->oportunidades_status_genericos($id, $inicioPeriodo, $finPeriodo)),
+                'fuentes'=>$this->FuentesChecker($catalogo_fuentes, $fuentes),
+            ]
+            ],200);
+                           
+    }
 
      public function estadisticas_colaborador(){
         $users_ventas = DB::table('users')
@@ -568,6 +605,18 @@ class EstadisticasController extends Controller
         }
         
             
+    }
+
+    public function oportunidades_status_genericos_por_fecha($id, $inicio, $fin){
+        return DB::table('oportunidades')
+                    ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                    ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+                    ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                    ->whereNull('oportunidades.deleted_at')
+                    ->where('colaborador_oportunidad.id_colaborador',$id)
+                    ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
+                    ->select('cat_status_oportunidad.id_cat_status_oportunidad as id','cat_status_oportunidad.color',DB::raw('count(*) as total, cat_status_oportunidad.status'))->groupBy('cat_status_oportunidad.status')
+                    ->get();       
     }
 
     public function guard()
