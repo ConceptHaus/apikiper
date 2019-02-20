@@ -104,7 +104,10 @@ class ProspectosController extends Controller
 
                         //Detalle de oportunidades
                         $detalle_oportunidad = new DetalleOportunidad;
-                        $detalle_oportunidad->valor = $oportunidad['valor'];
+                        if(isset($oportunidad['valor']))
+                            $detalle_oportunidad->valor = $oportunidad['valor'];
+                        else
+                            $detalle_oportunidad->valor = 0;
                         $nueva_oportunidad->detalle_oportunidad()->save($detalle_oportunidad);
 
 
