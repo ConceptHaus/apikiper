@@ -310,7 +310,10 @@ class ProspectosController extends Controller
             foreach ($op as $opor) {
                 Oportunidad::where('id_oportunidad',$opor->id_oportunidad)->delete();
             }
-            Prospecto::where('id_prospecto', $id)->delete();
+            $borrar = Prospecto::where('id_prospecto', $id)->first();
+            $borrar->correo = 'n/a';
+            $borrar->save();
+            $borar->delete();
             DB::commit();
 
             //Historial
