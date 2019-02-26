@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Modelos\User;
 use App\Modelos\Colaborador\DetalleColaborador;
 use App\Modelos\Colaborador\FotoColaborador;
+use App\Events\Historial;
+use App\Events\Event;
 use DB;
 use Mail;
 
@@ -154,18 +156,19 @@ class UserController extends Controller
                 DB::commit();
                 
                 //Historial
-                activity()
+                $actividad = activity()
                         ->performedOn($me)
                         ->causedBy($auth)
                         ->withProperties(['accion'=>'Editó','color'=>'#ffcf4c'])
                         ->useLog('perfil_colaborador')
                         ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion su perfil. </span>');
-                        
+                
+                event( new Historial($actividad));
 
                 return response()->json([
                     'message'=>'Success',
                     'error'=>false,
-                    'data'=>$meRes
+                    'data'=>$meRes,
                     ]);
 
             }catch(Exception $e){

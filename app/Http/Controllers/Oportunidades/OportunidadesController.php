@@ -30,6 +30,8 @@ use App\Modelos\Extras\DetalleRecordatorioOportunidad;
 use App\Modelos\Extras\Evento;
 use App\Modelos\Extras\DetalleEvento;
 use App\Modelos\Oportunidad\ArchivosOportunidadColaborador;
+use App\Events\Historial;
+use App\Events\Event;
 
 use DB;
 use Mail;
@@ -309,11 +311,12 @@ class OportunidadesController extends Controller
           DB::commit();
             
           //Historial
-            activity('oportunidad')
+            $actividad = activity('oportunidad')
                 ->performedOn($oportunidad)
                 ->causedBy($auth)
                 ->withProperties(['accion'=>'Eliminó','color'=>'#f42c50'])
                 ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion :subject.nombre_oportunidad </span>');
+            event( new Historial($actividad));
 
           return response()->json([
             'error'=>false,
@@ -646,11 +649,12 @@ class OportunidadesController extends Controller
             $detalle->valor = $valor;
             $detalle->save();
             DB::commit();
-            activity('oportunidad')
+            $actividad = activity('oportunidad')
                 ->performedOn($oportunidad)
                 ->causedBy($auth)
                 ->withProperties(['accion'=>'Cambió','color'=>'#7ac5ff'])
                 ->log(':causer.nombre :causer.apellido <br><span class="histroial_status"> :properties.accion el valor de :subject.nombre_oportunidad </span>');
+            event( new Historial($actividad));
 
             return response()->json([
                 'error'=>false,
@@ -772,12 +776,13 @@ class OportunidadesController extends Controller
             $oportunidad_status->save();
             DB::commit();
 
-            activity('oportunidad')
+            $actividad = activity('oportunidad')
                 ->performedOn($oportunidad)
                 ->causedBy($auth)
                 ->withProperties(['accion'=>'Cambió','color'=>'#7ac5ff'])
                 ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> Cambió de status :subject.nombre_oportunidad </span>');
-                
+            event( new Historial($actividad));
+               
             return response()->json([
                 'error'=>false,
                 'message'=>'Registro Correcto',

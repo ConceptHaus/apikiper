@@ -32,6 +32,8 @@ use App\Modelos\Extras\DetalleEvento;
 use App\Modelos\Oportunidad\StatusOportunidad;
 use App\Modelos\Prospecto\StatusProspecto;
 use App\Modelos\Prospecto\CatStatusProspecto;
+use App\Events\Historial;
+use App\Events\Event;
 
 use App\Imports\ProspectosImport;
 use Excel;
@@ -152,13 +154,14 @@ class ProspectosController extends Controller
                 }
                 DB::commit();
                 //Historial
-                    activity()
+                    $actividad = activity()
                             ->performedOn($prospecto)
                             ->causedBy($auth)
                             ->withProperties(['accion'=>'Agregó','color'=>'#39ce5f'])
                             ->useLog('prospecto')
                             ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion un nuevo prospecto. </span>');
-
+                    event( new Historial($actividad));
+                    
                 return response()->json([
                         'message'=>'Registro Correcto',
                         'error'=>false,
@@ -270,13 +273,14 @@ class ProspectosController extends Controller
             DB::commit();
 
             //Historial
-            activity()
+            $actividad = activity()
                 ->performedOn($prospecto)
                 ->causedBy($auth)
                 ->withProperties(['accion'=>'Editó','color'=>'#ffcf4c'])
                 ->useLog('prospecto')
                 ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion el perfil de un prospecto.</span>');
-                             
+            event( new Historial($actividad));
+                          
             return response()->json([
                 'error'=>false,
                 'message'=>'Actualizado Correctamente',
@@ -317,13 +321,14 @@ class ProspectosController extends Controller
             DB::commit();
 
             //Historial
-            activity()
+            $actividad = activity()
                 ->performedOn($prospecto)
                 ->causedBy($auth)
                 ->withProperties(['accion'=>'Eliminó','color'=>'#f42c50'])
                 ->useLog('prospecto')
                 ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion a un prospecto.</span>');
 
+            event( new Historial($actividad));
 
             return response()->json([
                 'error'=>false,
@@ -453,13 +458,15 @@ class ProspectosController extends Controller
                 DB::commit();
 
                 //Historial
-                activity()
+                $actividad = activity()
                         ->performedOn($nueva_oportunidad)
                         ->causedBy($auth)
                         ->withProperties(['accion'=>'Agregó','color'=>'#39ce5f'])
                         ->useLog('oportunidad')
                         ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion una nueva oportunidad. </span>');
-                                
+                
+                event( new Historial($actividad));
+                             
                 return response()->json([
                         'message'=>'Oportunidad agregada correctamente.',
                         'error'=>false,

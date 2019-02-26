@@ -35,6 +35,8 @@ use App\Modelos\Extras\EventoProspecto;
 use App\Modelos\Extras\DetalleEventoProspecto;
 use App\Modelos\Extras\RecordatorioProspecto;
 use App\Modelos\Extras\DetalleRecordatorioProspecto;
+use App\Events\Historial;
+use App\Events\Event;
 
 use Mailgun;
 use DB;
@@ -2016,19 +2018,25 @@ class DataViewsController extends Controller
 
        //Historial
         if($request->id_prospecto){
-            activity()
+            $actividad = activity()
                 ->performedOn($prospecto)
                 ->causedBy($auth)
                 ->withProperties(['accion'=>'Envió','color'=>'#7ac5ff'])
                 ->useLog('prospecto')
                 ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion un correo a :subject.nombre :subject.apellido </span>');
+
+            event( new Historial($actividad));
+            
         }elseif($request->id_colaborador){
-            activity()
+            $actividad = activity()
                 ->performedOn($colaborador)
                 ->causedBy($auth)
                 ->withProperties(['accion'=>'Envió','color'=>'#7ac5ff'])
                 ->useLog('prospecto')
                 ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion un correo a :subject.nombre :subject.apellido </span>');
+            
+            event( new Historial($actividad));
+            
         }
                 
        return response()->json([
@@ -2078,12 +2086,13 @@ class DataViewsController extends Controller
         }
         DB::commit();
 
-        activity('prospecto')
+        $actividad = activity('prospecto')
                 ->performedOn($prospecto)
                 ->causedBy($auth)
                 ->withProperties(['accion'=>'Cambió','color'=>'#7ac5ff'])
                 ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> Cambió de status a :subject.nombre :subject.apellido </span>');
-                
+        event( new Historial($actividad));
+             
 
         return response()->json([
             'error'=>false,
@@ -2190,13 +2199,13 @@ class DataViewsController extends Controller
           //Historial
           
                 
-            activity('prospecto')
+            $actividad = activity('prospecto')
                 ->performedOn($prospecto)
                 ->causedBy($auth)
                 ->withProperties(['accion'=>$details_medio->medio_contacto->nombre,'color'=>$details_medio->medio_contacto->color])
                 ->log(':causer.nombre :causer.apellido<br> <span class="histroial_status"> Contactó vía :properties.accion a :subject.nombre :subject.apellido </span>');
           
-
+                event( new Historial($actividad));
           
             if($medio_contacto_prospecto->id_mediocontacto_catalogo == 5){
                 

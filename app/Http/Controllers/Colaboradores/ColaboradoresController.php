@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use RuntimeException;
+use App\Events\Historial;
+use App\Events\Event;
 
 
 use DB;
@@ -113,13 +115,14 @@ class ColaboradoresController extends Controller
 
                     DB::commit();
                     //Historial
-                        activity('colaborador')
+                        $actividad = activity('colaborador')
                                 ->performedOn($colaborador)
                                 ->causedBy($auth)
                                 ->withProperties(['accion'=>'Agregó','color'=>'#39ce5f'])
                                 ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion un nuevo colaborador.</span>');
                                 
-                    
+                        event( new Historial($actividad));
+
 
                     return response()->json([
                         'message'=>'Registro Correcto',
@@ -295,13 +298,15 @@ class ColaboradoresController extends Controller
             DB::commit();
 
             //Historial
-                activity()
+                $actividad = activity()
                     ->performedOn($colaborador)
                     ->causedBy($auth)
                     ->withProperties(['accion'=>'Editó','color'=>'#ffcf4c'])
                     ->useLog('colaborador')
                     ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion el perfil de un colaborador.</span>');
-                                
+                
+                event( new Historial($actividad));
+
             return response()->json([
                 'message'=>'Correcto',
                 'error'=>false,
@@ -375,12 +380,14 @@ class ColaboradoresController extends Controller
 
           DB::commit();
             //Historial
-                activity()
+                $actividad = activity()
                     ->performedOn($borrar)
                     ->causedBy($auth)
                     ->withProperties(['accion'=>'Eliminó','color'=>'#f42c50'])
                     ->useLog('colaborador')
                     ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion a un colaborador.</span>');
+                
+                event( new Historial($actividad));
 
           return response()->json([
               'message'=>'Borrado Correctamente',
