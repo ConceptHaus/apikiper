@@ -412,10 +412,13 @@ class ProspectosController extends Controller
                 $nueva_oportunidad->servicio_oportunidad()->save($servicio_oportunidad);
 
                 //Asignación a colaborador
-                $colaborador_oportunidad = new ColaboradorOportunidad;
-                $colaborador_oportunidad->id_colaborador = $request->id_colaborador;
-                $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
-                $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
+                $colaboradores = $request->id_colaborador;
+                foreach($colaboradores as $_colaborador){
+                    $colaborador_oportunidad = new ColaboradorOportunidad;
+                    $colaborador_oportunidad->id_colaborador = $_colaborador;
+                    $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
+                    $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
+                }
 
                 //Asignación a prospecto
                 $prospecto_oportunidad = new ProspectoOportunidad;
