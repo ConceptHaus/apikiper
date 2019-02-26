@@ -46,6 +46,7 @@ use Carbon\Carbon;
 class ProspectosController extends Controller
 {
     public function registerProspecto(Request $request){
+        //return $request;
         $auth = $this->guard()->user();
 
         $validator = $this->validadorProspectos($request->all());
@@ -124,11 +125,13 @@ class ProspectosController extends Controller
 
                         //Asignación a colaborador
 
-
-                            $colaborador_oportunidad = new ColaboradorOportunidad;
-                            $colaborador_oportunidad->id_colaborador = $oportunidad['id_colaborador'];
-                            $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
-                            $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
+                            foreach($oportunidad['id_colaborador'] as $col_op){
+                                $colaborador_oportunidad = new ColaboradorOportunidad;
+                                $colaborador_oportunidad->id_colaborador = $col_op;
+                                $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
+                                $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
+                            }
+                            
 
 
 
