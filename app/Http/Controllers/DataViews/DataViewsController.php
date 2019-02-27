@@ -1763,7 +1763,6 @@ class DataViewsController extends Controller
       return Validator::make($data,[
           'email_de'=>'required|email',
           'nombre_de'=>'string|max:255',
-          'email_para'=>'required|email',
           'nombre_para'=>'string|max:255',
           'asunto'=>'required|string|max:255',
           'contenido'=>'required'
@@ -1939,7 +1938,6 @@ class DataViewsController extends Controller
     }
 
     public function sendMail (Request $request){
-        
         //return $request->Files[0]->getClientOriginalName();
       $auth = $this->guard()->user();
       $data = $request->all();
@@ -1992,10 +1990,15 @@ class DataViewsController extends Controller
 
         if(isset($request->Files))
         {
-            Mailgun::send('mailing.mail', $data, function ($message) use ($data,$request){
+            $aux = '';
+            foreach($data['email_para'] as $email_para) {
+                $aux = $aux . ',' . $email_para;
+            }
+            Mailgun::send('mailing.mail', $data, function ($message) use ($data,$request, $aux){
                 $message->from($data['email_de'],$data['nombre_de']);
                 $message->subject($data['asunto']);
-                $message->to($data['email_para'],$data['nombre_para']);
+                
+                $message->to($aux);
                 
                 for($x = 0; $x < count($request->Files); $x++)
                 {
@@ -2006,12 +2009,16 @@ class DataViewsController extends Controller
         }
         else
         {
-            Mailgun::send('mailing.mail', $data, function ($message) use ($data){
+            $aux = '';
+            foreach($data['email_para'] as $email_para) {
+                $aux = $aux . $email_para . ',';
+            }
+            Mailgun::send('mailing.mail', $data, function ($message) use ($data, $aux){
                 // $message->tag('myTag');
                 $message->from($data['email_de'],$data['nombre_de']);
                 // $message->testmode(true);
                 $message->subject($data['asunto']);
-                $message->to($data['email_para'],$data['nombre_para']);
+                $message->to($aux);
             });
         }
        
