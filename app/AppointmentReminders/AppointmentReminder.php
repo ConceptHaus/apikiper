@@ -8,6 +8,7 @@ use Twilio\Rest\Client;
 
 use App\Modelos\Extras\RecordatorioProspecto;
 use App\Modelos\Extras\RecordatorioOportunidad;
+use App\Modelos\Extras\RecordatorioColaborador;
 use Illuminate\Support\Str;
 use DB;
 use Mailgun;
@@ -22,6 +23,7 @@ class AppointmentReminder
     {   
         $now = Carbon::now()->toDateTimeString();
         $inTwentyMinutes = Carbon::now()->addMinutes(20)->toDateTimeString();
+        $inOneDay = Carbon::now()->add(1, 'day')->toDateTimeString();
 
         $this->recordatorios_prospecto = DB::table('recordatorios_prospecto')
                             ->join('detalle_recordatorio_prospecto','detalle_recordatorio_prospecto.id_recordatorio_prospecto','recordatorios_prospecto.id_recordatorio_prospecto')
@@ -40,6 +42,14 @@ class AppointmentReminder
                             ->select('recordatorios_oportunidad.id_recordatorio_oportunidad','users.email','users.nombre','detalle_colaborador.celular','oportunidades.nombre_oportunidad','detalle_recordatorio_op.nota_recordatorio','detalle_recordatorio_op.fecha_recordatorio')
                             ->where('recordatorios_oportunidad.notification_sent',0)
                             ->whereBetween('detalle_recordatorio_op.fecha_recordatorio',[$now, $inTwentyMinutes])->get();
+
+        $this->recordatorios_colaboradores = DB::table('recordatorio_colaborador')
+                            ->join('users', 'recordatorio_colaborador.id_colaborador', 'users.id')
+                            ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
+                            ->select('recordatorio_colaborador.id_recordatorio_colaborador','users.email','users.nombre','detalle_colaborador.celular','recordatorio_colaborador.nota','recordatorio_colaborador.fecha', 'recordatorio_colaborador.hora')
+                            ->where('recordatorio_colaborador.notification_sent',0)
+                            ->wherenull('recordatorio_colaborador.deleted_at')
+                            ->whereBetween('recordatorio_colaborador.fecha',[$now, $inOneDay])->get();                            
 
 
 
@@ -110,6 +120,36 @@ class AppointmentReminder
                     "body" => 'Kiper reminder: '.$reminder->nombre.' debes '.$reminder->nota_recordatorio.' con '.$reminder->nombre_oportunidad.' a las '.$date
                 ));
         }
+
+        foreach($this->recordatorios_colaboradores as $reminder){
+            $date = Carbon::parse($reminder->fecha)->format('H:i');
+            
+            DB::beginTransaction();
+            $recordatorio = RecordatorioColaborador::where('id_recordatorio_colaborador',$reminder->id_recordatorio_colaborador)->first();
+            $recordatorio->notification_sent = 1;
+            $recordatorio->save();
+            DB::commit();
+
+            $arrayReminder['nombre'] = $reminder->nombre;
+            $arrayReminder['email'] = $reminder->email;
+            $arrayReminder['nota_recordatorio'] = $reminder->nota;
+            $arrayReminder['nombre_prospecto'] = ' ';
+            $arrayReminder['apellido_prospecto'] = ' ';
+            $arrayReminder['date'] = $date;
+            $arrayReminder['link'] = env('URL_FRONT');
+            Mailgun::send('mailing.reminders', $arrayReminder, function($contacto) use ($arrayReminder){
+                $contacto->from('reminders@kiper.app', 'Kiper');
+                $contacto->subject('Kiper reminder');
+                $contacto->to($arrayReminder['email'],$arrayReminder['nombre']);
+            });
+            
+            $this->twilioClient->messages->create(
+            '+52'.$reminder->celular,
+            array(
+                "from" => $this->sendingNumber,
+                "body" => 'Kiper reminder: '.$reminder->nombre.' debes '.$reminder->nota.' a las '.$date
+            ));
+    }
 
         return response()->json([
             'error'=>false,

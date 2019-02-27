@@ -14,6 +14,7 @@ use App\Modelos\Oportunidad\ColaboradorOportunidad;
 use App\Modelos\Oportunidad\ArchivosOportunidadColaborador;
 use App\Modelos\Prospecto\ColaboradorProspecto;
 use App\Modelos\Prospecto\ArchivosProspectoColaborador;
+use App\Modelos\Extras\RecordatorioColaborador;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
@@ -494,6 +495,39 @@ class ColaboradoresController extends Controller
         ],400);
       }
 
+    }
+
+    public function getRecordatoriosColaborador($id){
+        $user = User::find($id);
+        return $user->recordatorioColaborador;
+    }
+
+    public function addRecordatorio(Request $request){
+        try{
+            DB::beginTransaction();
+            $recordatorio = new RecordatorioColaborador;
+            $recordatorio->id_colaborador = $request->id_colaborador;
+            $recordatorio->nota = $request->nota_recordatorio;
+            $recordatorio->hora = $request->hora_recordatorio;
+            $recordatorio->fecha = $request->fecha_recordatorio;
+            $recordatorio->save();
+
+            DB::commit();
+
+            return response()->json([
+                'error'=>false,
+                'message'=>'success',
+                'data'=>$recordatorio,
+            ],200);
+
+        }catch(Exception $e){
+            DB::rollBack();
+            Bugsnag::notifyException(new RuntimeException("No se pudo crear un recordatorio en oportunidad"));
+            return response()->json([
+                'error'=>true,
+                'message'=>$e
+            ],400);
+        }
     }
 
     public function uploadFilesS3($file, $colaborador){

@@ -79,6 +79,10 @@ class User extends Authenticatable implements JWTSubject
 
     }
 
+    public function recordatorioColaborador(){
+        return $this->hasMany('App\Modelos\Extras\RecordatorioColaborador', 'id_colaborador', 'id')->wherenull('deleted_at');
+    }
+    
     public function eventos(){
         return $this->hasMany('App\Modelos\Extras\Evento','id_colaborador','id');
 
