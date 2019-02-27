@@ -23,7 +23,7 @@ class AppointmentReminder
     {   
         $now = Carbon::now()->toDateTimeString();
         $inTwentyMinutes = Carbon::now()->addMinutes(20)->toDateTimeString();
-        $inOneDay = Carbon::now()->add(1, 'day')->toDateTimeString();
+        $inOneDay = Carbon::now()->addMinutes(1440)->toDateTimeString();
 
         $this->recordatorios_prospecto = DB::table('recordatorios_prospecto')
                             ->join('detalle_recordatorio_prospecto','detalle_recordatorio_prospecto.id_recordatorio_prospecto','recordatorios_prospecto.id_recordatorio_prospecto')
