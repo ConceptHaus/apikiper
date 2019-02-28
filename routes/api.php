@@ -106,6 +106,15 @@ Route::prefix('/v1/prospectos')->group(function(){
         });
 });
 
+//Empresas
+Route::prefix('/v1/empresas')->group(function(){
+    Route::middleware(['auth','cors'])->group(function(){
+        //CRUD principal
+        Route::post('/', 'Empresas\EmpresaController@registerCompany');
+        
+    });
+});
+
 //Oportunidades
 Route::prefix('/v1/oportunidades')->group(function(){
         Route::middleware(['auth','cors'])->group(function(){
@@ -148,6 +157,7 @@ Route::prefix('/v1/oportunidades')->group(function(){
 
 Route::prefix('/v1/generales')->group(function(){
     Route::middleware(['auth','cors'])->group(function(){
+        Route::get('/industrias', 'DataViews\DataViewsController@getIndustrias');
         Route::get('/dashboard','DataViews\DataViewsController@dashboard');
         Route::get('/dashboard/semanal','DataViews\DataViewsController@dashboardSemanal');
         Route::get('/dashboard/mensual','DataViews\DataViewsController@dashboardMensual');

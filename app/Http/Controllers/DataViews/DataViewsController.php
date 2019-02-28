@@ -2116,6 +2116,14 @@ class DataViewsController extends Controller
 
     }
 
+    public function GetIndustrias(){
+        $indutrias = DB::table('cat_industrias')->wherenull('deleted_at')->get();
+        return response()->json([
+            'error'=>false,
+            'data'=>$indutrias
+        ],200);
+    }
+
     public function FuentesChecker($catalogo,$consulta){
 
             if(count($catalogo) > count($consulta)){
