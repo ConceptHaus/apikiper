@@ -34,7 +34,7 @@ class Empresa extends Model
         'razon_social'
     ];
     protected $softCascade = [
-      'prospectos_empresas',
+      //'prospectos_empresas',
     ];
 
     public function prospectos_empresas(){

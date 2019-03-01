@@ -111,7 +111,10 @@ Route::prefix('/v1/empresas')->group(function(){
     Route::middleware(['auth','cors'])->group(function(){
         //CRUD principal
         Route::post('/', 'Empresas\EmpresaController@registerCompany');
-        
+        Route::get('/', 'Empresas\EmpresaController@getAllCompany');
+        Route::get('/{id}', 'Empresas\EmpresaController@getOneCompany');
+        Route::post('/{id}', 'Empresas\EmpresaController@updateCompany');
+        Route::delete('/{id}', 'Empresas\EmpresaController@deleteCompany');
     });
 });
 
