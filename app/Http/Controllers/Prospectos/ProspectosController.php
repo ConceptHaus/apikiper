@@ -32,6 +32,7 @@ use App\Modelos\Extras\DetalleEvento;
 use App\Modelos\Oportunidad\StatusOportunidad;
 use App\Modelos\Prospecto\StatusProspecto;
 use App\Modelos\Prospecto\CatStatusProspecto;
+use App\Modelos\Empresa\EmpresaProspecto;
 use App\Events\Historial;
 use App\Events\Event;
 
@@ -71,13 +72,20 @@ class ProspectosController extends Controller
                 $prospectoDetalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
                 $prospectoDetalle->puesto = $request->puesto;
                 $prospectoDetalle->nota = $request->nota;
-                $prospectoDetalle->empresa = $request->empresa;
+                //$prospectoDetalle->empresa = $request->empresa;
                 $prospecto->fuente = 3;
                 $prospecto->save();
                 $prospecto->status_prospecto()->save($statusProspecto);
                 $prospecto->detalle_prospecto()->save($prospectoDetalle);
                 $colaborador_prospecto->id_colaborador = $auth->id;
                 $prospecto->colaborador_prospecto()->save($colaborador_prospecto);
+                if( isset($request->empresa))
+                {
+                    $prospecto_empresa = new EmpresaProspecto;
+                    $prospecto_empresa->id_empresa = $request->empresa;
+                    $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
+                    $prospecto_empresa->save();
+                }
                 if($etiquetas != null){
                     //Crear etiquetas
 
