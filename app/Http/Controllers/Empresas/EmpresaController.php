@@ -194,6 +194,10 @@ class EmpresaController extends Controller
         $empresa = Empresa::find($id);
         if( $empresa ) {
             $empresa->delete();
+            $prospecto_empresa = EmpresaProspecto::where('id_empresa', '=', $id)->wherenull('deleted_at')->get();
+            foreach($prospecto_empresa as $pe){
+                $pe->delete();
+            }
             return response()->json([
                 'error'=>false,
                 'message'=>'Empresa borrada',
