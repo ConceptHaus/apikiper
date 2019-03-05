@@ -246,6 +246,7 @@ class ProspectosController extends Controller
     }
 
     public function updateProspecto(Request $request, $id){
+        // return $request->all();
         $auth = $this->guard()->user();
         $prospecto = Prospecto::where('id_prospecto',$id)->first();
         $detalle = DetalleProspecto::where('id_prospecto',$id)->first();
@@ -262,7 +263,7 @@ class ProspectosController extends Controller
             $detalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
             $detalle->nota = $request->nota;
             $detalle->puesto = $request->puesto;
-            $detalle->empresa = $request->empresa;
+            //$detalle->empresa = $request->empresa;
             $prospecto->save();
             $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto', $id)->first();
             if($colaborador_prospecto)
@@ -281,6 +282,16 @@ class ProspectosController extends Controller
                 $colaborador_prospecto->save();
             }
             $detalle->save();
+            if(isset($request->empresa)){
+                $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->wherenull('deleted_at')->get();
+                foreach($prospecto_empresa as $pe){
+                    $pe->delete();
+                }
+                $prospecto_empresa = new EmpresaProspecto;
+                $prospecto_empresa->id_empresa = $request->empresa;
+                $prospecto_empresa->id_prospecto = $id;
+                $prospecto_empresa->save();
+            }
             DB::commit();
 
             //Historial
