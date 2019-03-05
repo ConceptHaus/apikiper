@@ -329,6 +329,8 @@ class DataViewsController extends Controller
                                 ->wherenull('colaborador_prospecto.deleted_at')*/
                                 ->wherenull('prospectos.deleted_at')
                                 ->with('status_prospecto.status')
+                                ->with('prospectos_empresas')
+                                ->with('prospectos_empresas.empresas')
                                 ->orderBy('prospectos.created_at','desc')
                                 //->groupBy('prospectos.id_prospecto')
                                 ->get();
@@ -354,14 +356,17 @@ class DataViewsController extends Controller
                         ->join('status_prospecto','status_prospecto.id_prospecto','prospectos.id_prospecto')
                         ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                         ->join('cat_status_prospecto','cat_status_prospecto.id_cat_status_prospecto','status_prospecto.id_cat_status_prospecto')
+                        ->leftJoin('prospectos_empresas', 'prospectos.id_prospecto', '=', 'prospectos_empresas.id_prospecto')
+                        ->leftJoin('empresas', 'prospectos_empresas.id_empresa', '=', 'empresas.id_empresa')
+                        //->join('empresas', 'prospectos_empresas.id_empresa', 'empresas.id_empresa')
                         ->whereNull('prospectos.deleted_at')
                         ->whereNull('detalle_prospecto.deleted_at')
                         ->whereNull('status_prospecto.deleted_at')
                         ->where('status_prospecto.id_cat_status_prospecto',$status)
-                        ->select('prospectos.id_prospecto','prospectos.nombre','prospectos.apellido','prospectos.correo','detalle_prospecto.telefono','detalle_prospecto.empresa','detalle_prospecto.whatsapp','prospectos.created_at','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','cat_status_prospecto.status','cat_status_prospecto.id_cat_status_prospecto as id_status', 'cat_status_prospecto.color as color')
+                        ->select('prospectos.id_prospecto','prospectos.nombre','prospectos.apellido','prospectos.correo','detalle_prospecto.telefono','empresas.nombre as empresa','detalle_prospecto.whatsapp','prospectos.created_at','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','cat_status_prospecto.status','cat_status_prospecto.id_cat_status_prospecto as id_status', 'cat_status_prospecto.color as color')
                         ->orderBy('status_prospecto.updated_at','desc')
                         ->get();
-
+        
         return response()->json([
             'message'=>'Correcto',
             'error'=>false,
@@ -1938,7 +1943,7 @@ class DataViewsController extends Controller
     }
 
     public function sendMail (Request $request){
-        //return $request->Files[0]->getClientOriginalName();
+      //return $request->all();
       $auth = $this->guard()->user();
       $data = $request->all();
       $validator = $this->validatorMail($data);
@@ -1985,6 +1990,44 @@ class DataViewsController extends Controller
         if($request->id_colaborador){
             $colaborador = User::where('id',$request->id_colaborador)->first();
         }
+        if(isset($request->id_prospecto_lista)){
+            $prospecto_lista = [];
+            foreach($request->id_prospecto_lista as $id_p){
+                DB::beginTransaction();
+                $prospecto = Prospecto::where('id_prospecto',$id_p)->first();
+                
+                $medio_contacto = new MedioContactoProspecto;
+                $medio_contacto->id_mediocontacto_catalogo = 4;
+                $medio_contacto->id_prospecto = $id_p;
+                $medio_contacto->descripcion = 'Se envió correo desde Kiper.';
+                $medio_contacto->fecha = Carbon::now();
+                $medio_contacto->hora = Carbon::parse(Carbon::now())->format('H:i');
+                
+                $statusProspecto = StatusProspecto::where('id_prospecto',$id_p)->first();
+                $statusProspecto->id_cat_status_prospecto = 1;
+                $statusProspecto->save();
+                $medio_contacto->save();
+
+                $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto', $id_p)->first();
+                if($colaborador_prospecto)
+                {
+                    if($colaborador_prospecto->id_colaborador != $auth->id)
+                    {
+                        $colaborador_prospecto->id_colaborador = $auth->id;
+                        $colaborador_prospecto->save();
+                    }
+                }
+                else
+                {
+                    $colaborador_prospecto = new ColaboradorProspecto;
+                    $colaborador_prospecto->id_colaborador = $auth->id;
+                    $colaborador_prospecto->id_prospecto = $id_p;
+                    $colaborador_prospecto->save();
+                }
+                DB::commit();
+                array_push($prospecto_lista, $prospecto);
+            }
+        }
 
 
 
@@ -1992,8 +2035,9 @@ class DataViewsController extends Controller
         {
             $aux = '';
             foreach($data['email_para'] as $email_para) {
-                $aux = $aux . ',' . $email_para;
+                $aux = $aux . $email_para . ',';
             }
+            $aux = substr($aux, 0, -1);
             Mailgun::send('mailing.mail', $data, function ($message) use ($data,$request, $aux){
                 $message->from($data['email_de'],$data['nombre_de']);
                 $message->subject($data['asunto']);
@@ -2012,7 +2056,8 @@ class DataViewsController extends Controller
             $aux = '';
             foreach($data['email_para'] as $email_para) {
                 $aux = $aux . $email_para . ',';
-            }
+            }            
+            $aux = substr($aux, 0, -1);
             Mailgun::send('mailing.mail', $data, function ($message) use ($data, $aux){
                 // $message->tag('myTag');
                 $message->from($data['email_de'],$data['nombre_de']);
@@ -2044,6 +2089,17 @@ class DataViewsController extends Controller
             
             event( new Historial($actividad));
             
+        }elseif($request->id_prospecto_lista){
+            foreach($prospecto_lista as $prospecto){
+                $actividad = activity()
+                    ->performedOn($prospecto)
+                    ->causedBy($auth)
+                    ->withProperties(['accion'=>'Envió','color'=>'#7ac5ff'])
+                    ->useLog('prospecto')
+                    ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion un correo a :subject.nombre :subject.apellido </span>');
+
+                event( new Historial($actividad));
+            }
         }
                 
        return response()->json([

@@ -34,11 +34,11 @@ class Empresa extends Model
         'razon_social'
     ];
     protected $softCascade = [
-      //'prospectos_empresas',
+      'prospectos_empresas',
     ];
 
     public function prospectos_empresas(){
-        return $this->hasMany('App\Modelos\Empresas\ProspectosEmpresas','id_empresa','id_empresa');
+        return $this->hasMany('App\Modelos\Empresa\EmpresaProspecto','id_empresa','id_empresa');
     }
 
     public function industria(){

@@ -82,6 +82,10 @@ class Prospecto extends Model
         return $this->hasMany('App\Modelos\Prospecto\FotoProspecto','id_prospecto','id_prospecto');
     }
 
+    public function prospectos_empresas(){
+        return $this->hasMany('App\Modelos\Empresa\EmpresaProspecto','id_prospecto','id_prospecto')->with('empresas');
+    }
+
     public function scopeGetAllProspectos($query){
         return $query->with('status_prospecto.status')
                      ->with('foto')
@@ -104,6 +108,7 @@ class Prospecto extends Model
                 ->with('medio_contacto')
                 ->with('archivos_prospecto_colaborador')
                 ->with('etiquetas_prospecto.etiqueta.prospecto')
+                ->with('prospectos_empresas.empresas')
                 ->where('id_prospecto',$id)->first();
     }
 
