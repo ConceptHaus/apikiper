@@ -339,7 +339,11 @@ class ProspectosController extends Controller
             $borrar = Prospecto::where('id_prospecto', $id)->first();
             $borrar->correo = 'n/a';
             $borrar->save();
-            $borar->delete();
+            $borrar->delete();
+            $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->wherenull('deleted_at')->get();
+            foreach($prospecto_empresa as $pe){
+                $pe->delete();
+            }
             DB::commit();
 
             //Historial
