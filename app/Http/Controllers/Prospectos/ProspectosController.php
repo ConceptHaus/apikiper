@@ -72,20 +72,24 @@ class ProspectosController extends Controller
                 $prospectoDetalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
                 $prospectoDetalle->puesto = $request->puesto;
                 $prospectoDetalle->nota = $request->nota;
-                //$prospectoDetalle->empresa = $request->empresa;
                 $prospecto->fuente = 3;
                 $prospecto->save();
                 $prospecto->status_prospecto()->save($statusProspecto);
-                $prospecto->detalle_prospecto()->save($prospectoDetalle);
                 $colaborador_prospecto->id_colaborador = $auth->id;
                 $prospecto->colaborador_prospecto()->save($colaborador_prospecto);
-                if( isset($request->empresa))
-                {
-                    $prospecto_empresa = new EmpresaProspecto;
-                    $prospecto_empresa->id_empresa = $request->empresa;
-                    $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
-                    $prospecto_empresa->save();
+                if(!$request->hsh){
+                    if( isset($request->empresa))
+                    {
+                        $prospecto_empresa = new EmpresaProspecto;
+                        $prospecto_empresa->id_empresa = $request->empresa;
+                        $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
+                        $prospecto_empresa->save();
+                    }
+                }else {
+                    $prospectoDetalle->empresa = $request->empresa;
                 }
+                $prospecto->detalle_prospecto()->save($prospectoDetalle);
+                
                 if($etiquetas != null){
                     //Crear etiquetas
 
@@ -281,17 +285,21 @@ class ProspectosController extends Controller
                 $colaborador_prospecto->id_prospecto = $id;
                 $colaborador_prospecto->save();
             }
-            $detalle->save();
-            if(isset($request->empresa)){
-                $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->wherenull('deleted_at')->get();
-                foreach($prospecto_empresa as $pe){
-                    $pe->delete();
+            if(!$request->hsh){
+                if(isset($request->empresa)){
+                    $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->wherenull('deleted_at')->get();
+                    foreach($prospecto_empresa as $pe){
+                        $pe->delete();
+                    }
+                    $prospecto_empresa = new EmpresaProspecto;
+                    $prospecto_empresa->id_empresa = $request->empresa;
+                    $prospecto_empresa->id_prospecto = $id;
+                    $prospecto_empresa->save();
                 }
-                $prospecto_empresa = new EmpresaProspecto;
-                $prospecto_empresa->id_empresa = $request->empresa;
-                $prospecto_empresa->id_prospecto = $id;
-                $prospecto_empresa->save();
+            }else {
+                $detalle->empresa = $request->empresa;
             }
+            $detalle->save();            
             DB::commit();
 
             //Historial

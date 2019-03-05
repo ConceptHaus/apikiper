@@ -37,7 +37,7 @@ use App\Modelos\Extras\RecordatorioProspecto;
 use App\Modelos\Extras\DetalleRecordatorioProspecto;
 use App\Events\Historial;
 use App\Events\Event;
-
+use App\Modelos\Empresa\EmpresaProspecto;
 use Mailgun;
 use DB;
 use Mail;
@@ -363,14 +363,28 @@ class DataViewsController extends Controller
                         ->whereNull('detalle_prospecto.deleted_at')
                         ->whereNull('status_prospecto.deleted_at')
                         ->where('status_prospecto.id_cat_status_prospecto',$status)
-                        ->select('prospectos.id_prospecto','prospectos.nombre','prospectos.apellido','prospectos.correo','detalle_prospecto.telefono','empresas.nombre as empresa','detalle_prospecto.whatsapp','prospectos.created_at','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','cat_status_prospecto.status','cat_status_prospecto.id_cat_status_prospecto as id_status', 'cat_status_prospecto.color as color')
+                        ->select('prospectos.id_prospecto','prospectos.nombre','prospectos.apellido','prospectos.correo','detalle_prospecto.telefono', 'empresas.id_empresa','empresas.nombre as empresa', 'detalle_prospecto.empresa as empresa2','detalle_prospecto.whatsapp','prospectos.created_at','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','cat_status_prospecto.status','cat_status_prospecto.id_cat_status_prospecto as id_status', 'cat_status_prospecto.color as color')
                         ->orderBy('status_prospecto.updated_at','desc')
+                        ->groupBy('prospectos.id_prospecto')
                         ->get();
+        foreach($prospectos as $p){
+            $ep = EmpresaProspecto::where('id_prospecto', '=', $p->id_prospecto)->with('empresas')->get();
+            $p->empresa = [];
+            $p->id_empresa = [];
+            $aux = [];
+            $aux2 = [];
+            foreach($ep as $_ep){
+                array_push($aux, $_ep->empresas->nombre);
+                array_push($aux2, $_ep->empresas->id_empresa);
+            }
+            $p->empresa = $aux;
+            $p->id_empresa = $aux2;
+        }
         
         return response()->json([
             'message'=>'Correcto',
             'error'=>false,
-            'data'=>$prospectos
+            'data'=>$prospectos,
             ],200);
     }
     public function oportunidadesByUser($id){
