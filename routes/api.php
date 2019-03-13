@@ -115,6 +115,7 @@ Route::prefix('/v1/empresas')->group(function(){
         Route::get('/{id}', 'Empresas\EmpresaController@getOneCompany');
         Route::post('/{id}', 'Empresas\EmpresaController@updateCompany');
         Route::delete('/{id}', 'Empresas\EmpresaController@deleteCompany');
+        Route::delete('/prospectos/{id}', 'Empresas\EmpresaController@deleteCompanyProspect');
     });
 });
 

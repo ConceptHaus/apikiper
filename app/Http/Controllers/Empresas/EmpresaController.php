@@ -209,4 +209,19 @@ class EmpresaController extends Controller
             ],500);
         }
     }
+    public function deleteCompanyProspect($id) {
+        $prospecto_empresa = EmpresaProspecto::where('id_prospecto_empresa', '=', $id);
+        if( $prospecto_empresa ) {
+            $prospecto_empresa->delete();
+            return response()->json([
+                'error'=>false,
+                'message'=>'Prospecto desvinculado',
+            ],200);
+        }else{
+            return response()->json([
+                'error'=>true,
+                'message'=>$e,
+            ],500);
+        }
+    }
 }
