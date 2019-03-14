@@ -20,7 +20,9 @@ class CreateTableDetalleMailings extends Migration
             $table->string('subject');
             $table->string('preview_text');
             $table->string('text_body');
-            $table->string('cta');
+            $table->string('cta_nombre');
+            $table->string('cta_url');
+            $table->string('color');
             $table->timestamps();
         });
     }

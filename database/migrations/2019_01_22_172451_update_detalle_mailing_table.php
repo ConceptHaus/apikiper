@@ -38,6 +38,8 @@ class UpdateDetalleMailingTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('detalle_mailings', function (Blueprint $table) {
+            //
+        });
     }
 }
