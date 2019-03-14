@@ -14,9 +14,9 @@ class UpdateDetalleMailingsTable extends Migration
     public function up()
     {
         Schema::table('detalle_mailings', function (Blueprint $table) {
-            //$table->renameColumn('cta','cta_nombre');
-            // $table->string('cta_url');
-            // $table->string('color');
+            $table->renameColumn('cta','cta_nombre');
+            $table->string('cta_url');
+            $table->string('color');
         });
     }
 
