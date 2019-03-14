@@ -15,7 +15,7 @@ class UpdatesMailingsTable extends Migration
     {
         Schema::table('mailings', function (Blueprint $table) {
             //$table->string('id_mailgun')->after('id_mailing');
-            $table->integer('enviados')->default(0);
+            //$table->integer('enviados')->default(0);
         });
     }
 
