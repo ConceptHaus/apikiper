@@ -392,7 +392,6 @@ class ProspectosController extends Controller
                                   ->join('cat_fuentes','prospectos.fuente','cat_fuentes.id_fuente')
                                   ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', 'status_prospecto.id_cat_status_prospecto')
                                   ->where('status_prospecto.id_cat_status_prospecto','=',2)
-                                  ->whereNull('deleted_at')
                                   ->whereNull('status_prospecto.deleted_at')
                                   ->whereNull('detalle_prospecto.deleted_at')
                                   ->whereNull('cat_fuentes.deleted_at')
@@ -733,7 +732,7 @@ class ProspectosController extends Controller
 
     public function getArchivos($id){
         $prospecto_archivos = Prospecto::GetProspectoArchivos($id);
-        if(count($prospecto_archivos) <= 0)
+        if($prospecto_archivos == [])
         return response()->json([
             'message'=>'Correcto',
             'error'=>false,
