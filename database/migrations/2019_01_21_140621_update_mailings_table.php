@@ -14,7 +14,7 @@ class UpdateMailingsTable extends Migration
     public function up()
     {
         Schema::table('mailings', function (Blueprint $table) {
-            //$table->string('id_mailgun')->after('id_mailing');
+            $table->string('id_mailgun')->after('id_mailing');
             $table->integer('enviados')->default(0);
         });
     }
