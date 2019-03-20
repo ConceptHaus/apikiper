@@ -132,8 +132,8 @@ class DataViewsController extends Controller
         //Ingresos
         //Origen Prospecto
         //Historial
-        $inicioSemana = new Carbon($inicio);
-        $finSemana = new Carbon(($fin));
+        $inicioSemana = (new Carbon($inicio))->addDays(-1);
+        $finSemana = (new Carbon(($fin)))->addDays(1);
         
         $oportuniades_cerradas = $this->oportunidades_por_periodo_por_status($inicioSemana,$finSemana,2);
         $oportunidades_cotizadas = $this->oportunidades_por_periodo_por_status($inicioSemana,$finSemana,1);
@@ -338,7 +338,8 @@ class DataViewsController extends Controller
         $catalogo_fuentes = DB::table('cat_fuentes')
                             ->wherenull('cat_fuentes.deleted_at')
                             ->select('nombre','url','status')->get();
-
+        
+        $prospectos_status = CatStatusProspecto::get();
         return response()->json([
             'message'=>'Correcto',
             'error'=>false,
@@ -346,10 +347,106 @@ class DataViewsController extends Controller
                 'prospectos'=>$prospectos,
                 'prospectos_total'=>$total_prospectos,
                 'prospectos_nocontactados'=> $nocontactados_prospectos,
-                'prospectos_fuente'=>$this->FuentesChecker($catalogo_fuentes,$origen)
+                'prospectos_fuente'=>$this->FuentesChecker($catalogo_fuentes,$origen),
+                'prospectos_status'=> $prospectos_status
             ]
             ],200);
     }
+    public function prospectosFiltros(Request $request){
+        
+        if(isset($request->fuentes) && isset($request->status) && isset($request->fecha)){
+            $prospectos = 'TRES';
+        }else if(isset($request->fuentes) && isset($request->status) ){
+            $prospectos = Prospecto::with('detalle_prospecto')->with('colaborador_prospecto.colaborador.detalle')
+                ->with('prospectos_empresas')->with('prospectos_empresas.empresas')
+                ->join('cat_fuentes', 'cat_fuentes.id_fuente', 'prospectos.fuente')
+                ->wherenull('cat_fuentes.deleted_at')
+                ->join('status_prospecto', 'status_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                ->wherenull('status_prospecto.deleted_at')
+                ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', 'status_prospecto.id_cat_status_prospecto')
+                ->wherenull('cat_status_prospecto.deleted_at')
+                ->wherein('cat_status_prospecto.status', $request->status)
+                ->wherein('cat_fuentes.nombre', $request->fuentes)
+                ->get();
+        } else if(isset($request->fuentes) && isset($request->fecha)){
+            $prospectos = 'Fuentes y fecha';
+        } else if(isset($request->status) && isset($request->fecha)){
+            $prospectos = 'Status y fecha';
+        } else if(isset($request->fuentes)){
+            $prospectos = Prospecto::with('detalle_prospecto')->with('colaborador_prospecto.colaborador.detalle')
+                ->with('prospectos_empresas')->with('prospectos_empresas.empresas')
+                ->join('cat_fuentes', 'cat_fuentes.id_fuente', 'prospectos.fuente')
+                ->wherenull('cat_fuentes.deleted_at')
+                ->join('status_prospecto', 'status_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                ->wherenull('status_prospecto.deleted_at')
+                ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', 'status_prospecto.id_cat_status_prospecto')
+                ->wherenull('cat_status_prospecto.deleted_at')
+                ->wherein('cat_fuentes.nombre', $request->fuentes)
+                ->get();
+        } else if(isset($request->status)){
+            $prospectos = Prospecto::with('detalle_prospecto')->with('colaborador_prospecto.colaborador.detalle')
+                ->with('prospectos_empresas')->with('prospectos_empresas.empresas')
+                ->join('cat_fuentes', 'cat_fuentes.id_fuente', 'prospectos.fuente')
+                ->wherenull('cat_fuentes.deleted_at')
+                ->join('status_prospecto', 'status_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                ->wherenull('status_prospecto.deleted_at')
+                ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', 'status_prospecto.id_cat_status_prospecto')
+                ->wherenull('cat_status_prospecto.deleted_at')
+                ->wherein('cat_status_prospecto.status', $request->status)
+                ->get();
+        } else if(isset($request->fecha)){
+            $prospectos = 'Fecha';
+        } else {
+            $prospectos = Prospecto::with('detalle_prospecto')->with('colaborador_prospecto.colaborador.detalle')
+                ->with('prospectos_empresas')->with('prospectos_empresas.empresas')
+                ->fuenteArreglo($request->fuentes)->get();
+                /*
+                ->join('cat_fuentes', 'cat_fuentes.id_fuente', 'prospectos.fuente')
+                ->wherenull('cat_fuentes.deleted_at')
+                ->join('status_prospecto', 'status_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                ->wherenull('status_prospecto.deleted_at')
+                ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', 'status_prospecto.id_cat_status_prospecto')
+                ->wherenull('cat_status_prospecto.deleted_at')
+                ->get();*/
+        }
+        
+        
+
+        /*
+
+        $prospectos = Prospecto::join('detalle_prospecto', 'detalle_prospecto.id_prospecto', 'prospectos.id_prospecto')
+        ->wherenull('detalle_prospecto.deleted_at')
+        ->join('cat_fuentes', 'cat_fuentes.id_fuente', 'prospectos.fuente')
+        ->wherenull('cat_fuentes.deleted_at')
+        ->join('status_prospecto', 'status_prospecto.id_prospecto', 'prospectos.id_prospecto')
+        ->wherenull('status_prospecto.deleted_at')
+        ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', 'status_prospecto.id_cat_status_prospecto')
+        ->wherenull('cat_status_prospecto.deleted_at')
+        ->leftJoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', 'prospectos.id_prospecto')
+        ->wherenull('prospectos_empresas.deleted_at')
+        ->get();
+
+        $prospectos = Prospecto::with('detalle_prospecto')
+                                ->with('colaborador_prospecto.colaborador.detalle')
+                                ->with('fuente')
+                                //->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                                //->join('users', 'users.id', 'colaborador_prospecto.id_prospecto')
+                                //->wherenull('users.deleted_at')
+                                //->wherenull('colaborador_prospecto.deleted_at')
+                                ->wherenull('prospectos.deleted_at')
+                                ->with('status_prospecto.status')
+                                ->with('prospectos_empresas')
+                                ->with('prospectos_empresas.empresas')
+                                ->orderBy('prospectos.created_at','desc')
+                                //->groupBy('prospectos.id_prospecto')
+                                ->get();
+        */
+        
+        return response()->json([
+            'message'=>'Correcto',
+            'error'=>false,
+            'data'=>['prospectos_filtro'=>$prospectos]
+            ],200);}
     public function prospectosstatus($status){
         $prospectos = DB::table('prospectos')
                         ->join('detalle_prospecto','detalle_prospecto.id_prospecto','prospectos.id_prospecto')
@@ -637,8 +734,8 @@ class DataViewsController extends Controller
     }
 
     public function estadisticas_oportunidad_por_fecha($inicio, $fin){
-        $inicioPeriodo = new Carbon($inicio);
-        $finPeriodo = new Carbon(($fin));
+        $inicioPeriodo = (new Carbon($inicio))->addDays(-1);
+        $finPeriodo = (new Carbon($fin))->addDays(1);
         $fuentes = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','colaborador_oportunidad.id_oportunidad')
@@ -1075,8 +1172,8 @@ class DataViewsController extends Controller
     }
 
     public function estadisticas_colaborador_por_fecha($inicio, $fin){
-        $inicioPeriodo = new Carbon($inicio);
-        $finPeriodo = new Carbon(($fin));
+        $inicioPeriodo = (new Carbon($inicio))->addDays(-1);
+        $finPeriodo = (new Carbon($fin))->addDays(1);
         
         $users_ventas = DB::table('users')
                         ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
@@ -1102,6 +1199,7 @@ class DataViewsController extends Controller
             'fotos_colaboradores.url_foto as url_foto',
             'detalle_colaborador.puesto as puesto'
         );
+        //return implode(',', $selects);
         $top_3 = DB::table('users')
             ->join('fotos_colaboradores','fotos_colaboradores.id_colaborador','users.id')
             ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
@@ -1117,11 +1215,12 @@ class DataViewsController extends Controller
             ->where('status_oportunidad.id_cat_status_oportunidad','=','2')
             ->whereBetween('status_oportunidad.updated_at', array($inicioPeriodo ,$finPeriodo))            
             ->selectRaw(implode(',', $selects))
+            //users.apellido as apellido,count(colaborador_oportunidad.id_colaborador_oportunidad) as cerradas,users.email as email,
+            //users.id as id,users.nombre as nombre,fotos_colaboradores.url_foto as url_foto,detalle_colaborador.puesto as puesto
             ->groupBy('users.id')
             ->orderBy('cerradas','desc')
             ->limit(5)
             ->get();
-            ;
 
         $selects = array(
             'users.id as id_colaborador',
@@ -1258,8 +1357,8 @@ class DataViewsController extends Controller
 
     public function estadisticas_finanzas_por_fecha($inicio, $fin){
         
-        $inicioSemana = new Carbon($inicio);
-        $finSemana = new Carbon(($fin));
+        $inicioSemana = (new Carbon($inicio))->addDays(-1);
+        $finSemana = (new Carbon($fin))->addDays(1);
   
           $total_cotizado = $this->ingresos_por_periodo_por_status($inicioSemana, $finSemana, 1);
   
@@ -2725,8 +2824,8 @@ class DataViewsController extends Controller
 
     public function prospectosColaborador_por_fecha($inicio, $fin){
 
-        $inicioPeriodo = new Carbon($inicio);
-        $finPeriodo = new Carbon(($fin));
+        $inicioPeriodo = (new Carbon($inicio))->addDays(-1);
+        $finPeriodo = (new Carbon(($fin)))->addDays(1);
        
         $prospecto_por_status = array();
         
@@ -2752,6 +2851,7 @@ class DataViewsController extends Controller
         foreach($colaboradores as $colaborador)
         {
             $status = array();
+            
             foreach($estados as $estado)
             {
                 $consulta = ColaboradorProspecto::join('users', 'colaborador_prospecto.id_colaborador', 'users.id')
@@ -2771,9 +2871,18 @@ class DataViewsController extends Controller
                     ->whereBetween('status_prospecto.updated_at', array($inicioPeriodo ,$finPeriodo))
                     ->select(DB::raw('concat(users.nombre, " ", users.apellido) as colaborador_nombre' ), DB::raw('count(status_prospecto.id_status_prospecto) as total'), 'cat_status_prospecto.status as status', 'cat_status_prospecto.color as color')
                     ->get();
+                    if($consulta[0]->colaborador_nombre != null){
+                        array_push($status,  $consulta);
+                    }else {
+                        $consulta[0]->colaborador_nombre = $colaborador->nombre.' '.$colaborador->apellido;
+                        $consulta[0]->total = 0;
+                        $consulta[0]->status = $estado->status;
+                        $consulta[0]->color = $estado->color;
+                        array_push($status,  $consulta);
 
-                array_push($status,  $consulta);
-            }
+                    }
+
+            }            
             array_push($prospecto_por_status,  $status);
         }
         
