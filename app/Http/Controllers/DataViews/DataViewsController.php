@@ -1249,11 +1249,12 @@ class DataViewsController extends Controller
             $oportunidades_asignadas = DB::table('oportunidades')
                 ->join('colaborador_oportunidad','oportunidades.id_oportunidad','colaborador_oportunidad.id_oportunidad')
                 ->join('users','colaborador_oportunidad.id_colaborador','users.id')
+                ->leftjoin('status_oportunidad', 'status_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
                 ->whereNull('oportunidades.deleted_at')
                 ->whereNull('colaborador_oportunidad.deleted_at')
                 ->whereNull('users.deleted_at')
                 ->where('users.id','=',$user->id)
-                ->whereBetween('colaborador_oportunidad.updated_at', array($inicioPeriodo ,$finPeriodo))
+                ->whereBetween('status_oportunidad.updated_at', array($inicioPeriodo ,$finPeriodo))
                 ->selectRaw(implode(',', $selects))
                 ->groupBy('users.id')
                 ->first();
