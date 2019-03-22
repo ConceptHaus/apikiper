@@ -46,6 +46,11 @@ class Prospecto extends Model
     public function fuente(){
         return $this->hasOne('App\Modelos\Prospecto\CatFuente','id_fuente','fuente');
     }
+    
+    public function campaign(){
+        return $this->hasOne('App\Modelos\Prospecto\CampaignInfo','id_prospecto','id_prospecto');
+    }
+
     public function colaborador_prospecto(){
         return $this->hasOne('App\Modelos\Prospecto\ColaboradorProspecto','id_prospecto','id_prospecto');
     }

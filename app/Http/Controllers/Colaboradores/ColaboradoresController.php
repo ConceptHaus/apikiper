@@ -105,6 +105,7 @@ class ColaboradoresController extends Controller
                     $arrayColaborador = $colaborador->toArray();
                     $arrayColaborador['pass'] = $pass;
                     $arrayColaborador['link'] = env('URL_FRONT');
+                    $arrayColaborador['dominio'] = env('DOMINIO');
 
                     Mailgun::send('auth.emails.register',$arrayColaborador,function ($contacto) use ($arrayColaborador){
                        // $message->tag('myTag');
@@ -375,7 +376,7 @@ class ColaboradoresController extends Controller
           }
 
           $borrar = User::where('id', $id_borrar)->first();
-          $borrar->email = 'n/a';
+          $borrar->email = null;
           $borrar->save();
           $borrar->delete();
 

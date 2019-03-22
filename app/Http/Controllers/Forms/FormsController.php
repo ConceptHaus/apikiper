@@ -14,6 +14,7 @@ use App\Modelos\Prospecto\Prospecto;
 use App\Modelos\Prospecto\StatusProspecto;
 use App\Modelos\Prospecto\DetalleProspecto;
 use App\Modelos\Extras\IntegracionForm;
+use App\Modelos\Prospecto\CampaignInfo;
 
 use Mailgun;
 use DB;
@@ -107,6 +108,8 @@ class FormsController extends Controller
         $email = $request->correo;
         $telefono = $request->telefono;
         $mensaje = $request->mensaje;
+        $utm_campaign = $request->utm_campaign;
+        $utm_term = $request ->utm_term;
         $fuente = 2;
 
 
@@ -133,25 +136,41 @@ class FormsController extends Controller
                 $status->id_cat_status_prospecto = 2;
                 $prospecto->status_prospecto()->save($status);
 
+                $campaign = new CampaignInfo();
+                $campaign->utm_term = $utm_term;
+                $campaign->utm_campaign = $utm_campaign;
+                $campaign->id_forms = $verify->id_integracion_forms;
+                $prospecto->campaign()->save($campaign);
+                
+
                 $verify->total += 1;
                 $verify->save();
 
                 DB::commit();
 
-                return redirect()->away($verify->url_success);
+                return response()->json([
+                  'message'=>'Success',
+                  'error'=>false
+                ]);
 
             }catch(Exception $e){
 
                 DB::rollBack();
                 Bugsnag::notifyException(new RuntimeException("La integración no está registrando prospectos"));
-                return redirect()->away($verify->url_error);
+                return response()->json([
+                  'message'=>'Error',
+                  'error'=>true
+                ]);
 
             }
 
 
         }
 
-        return redirect()->away($verify->url_error);
+        return response()->json([
+                  'message'=>'Error',
+                  'error'=>true
+                ]);
     }
 
     public function updateForm(Request $request){

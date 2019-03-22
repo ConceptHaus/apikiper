@@ -345,7 +345,7 @@ class ProspectosController extends Controller
                 Oportunidad::where('id_oportunidad',$opor->id_oportunidad)->delete();
             }
             $borrar = Prospecto::where('id_prospecto', $id)->first();
-            $borrar->correo = 'n/a';
+            $borrar->correo = null;
             $borrar->save();
             $borrar->delete();
             $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->wherenull('deleted_at')->get();
