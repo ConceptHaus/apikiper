@@ -247,7 +247,7 @@ class MailingController extends Controller
 
           }
           return response()->json([
-            'message'=>'Camapaña guardada correctamente.',
+            'message'=>'Newsletter enviado correctamente.',
             'error'=>false
           ],200);
         }
@@ -264,6 +264,24 @@ class MailingController extends Controller
           'request'=>$request->all()
         ],400);
       }
+
+    }
+
+    public function checkRemitentes(Request $request){
+        if($request->opcionEtiqueta == 'undefined')
+          $opcion_etiqueta = 0;
+        else
+          $opcion_etiqueta = $request->opcionEtiqueta;
+        if($request->opcionServicio == 'undefined')
+          $opcion_servicio = 0;
+        else
+          $opcion_servicio = $request->opcionServicio;
+        if($request->opcionEstatus == 'undefined')
+          $opcion_estatus = 0;
+        else
+          $opcion_estatus = $request->opcionEstatus;
+          
+        return response()->json($request->all());
 
     }
 

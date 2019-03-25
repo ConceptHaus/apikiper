@@ -240,6 +240,7 @@ Route::prefix('/v1/forms')->group(function(){
 Route::prefix('/v1/mailing')->group(function(){
     Route::middleware(['auth','cors'])->group(function(){
         Route::post('/new','Mailing\MailingController@addNew');
+        Route::post('/remitentes','Mailing\MailingController@checkRemitentes');
         Route::get('/','Mailing\MailingController@getAll');
         Route::get('/{id}','Mailing\MailingController@getOne');
         Route::put('/update','Mailing\MailingController@updateMailing');
