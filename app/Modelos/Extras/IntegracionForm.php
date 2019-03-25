@@ -22,5 +22,7 @@ class IntegracionForm extends Model
         'status'
     ];
 
-
+    public function campaign(){
+        return $this->hasOne('App\Modelos\Prospecto\CampaignInfo','id_forms','id_integracion_forms');
+    }
 }
