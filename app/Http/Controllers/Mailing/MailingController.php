@@ -125,66 +125,123 @@ class MailingController extends Controller
 
 
         //Query para obtener lista de remitentes
-        if($opcion_servicio == 0 && $opcion_etiqueta == 0)
-        {
-          $remitentes = DB::table('prospectos')
-                        ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
-                        ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
-                        ->whereNull('prospectos.deleted_at')
-                        ->whereNull('oportunidad_prospecto.deleted_at')
-                        ->whereNull('status_oportunidad.deleted_at')
-                        ->where('status_oportunidad.id_cat_status_oportunidad',$opcion_estatus)
-                        ->select('prospectos.correo','prospectos.nombre')->distinct()->get();
+        if($opcion_estatus != 0){
+          if($opcion_servicio == 0 && $opcion_etiqueta == 0)
+          {
+            $remitentes = DB::table('prospectos')
+                          ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                          ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                          ->whereNull('prospectos.deleted_at')
+                          ->whereNull('oportunidad_prospecto.deleted_at')
+                          ->whereNull('status_oportunidad.deleted_at')
+                          ->where('status_oportunidad.id_cat_status_oportunidad',$opcion_estatus)
+                          ->select('prospectos.correo','prospectos.nombre')->distinct()->get();
+          }
+          else
+          {
+            if($opcion_servicio != 0 && $opcion_etiqueta != 0)
+            {
+              $remitentes = DB::table('prospectos')
+                          ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                          ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                          ->join('servicio_oportunidad','servicio_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                          ->join('etiquetas_oportunidades','etiquetas_oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                          ->whereNull('prospectos.deleted_at')
+                          ->whereNull('oportunidad_prospecto.deleted_at')
+                          ->whereNull('status_oportunidad.deleted_at')
+                          ->whereNull('servicio_oportunidad.deleted_at')
+                          ->whereNull('etiquetas_oportunidades.deleted_at')
+                          ->where('status_oportunidad.id_cat_status_oportunidad',$opcion_estatus)
+                          ->where('servicio_oportunidad.id_servicio_cat',$opcion_servicio)
+                          ->where('etiquetas_oportunidades.id_etiqueta',$opcion_etiqueta)
+                          ->select('prospectos.correo','prospectos.nombre')->distinct()->get(); 
+            }
+            elseif($opcion_servicio != 0)
+            {
+              $remitentes = DB::table('prospectos')
+                          ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                          ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                          ->join('servicio_oportunidad','servicio_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                          ->whereNull('prospectos.deleted_at')
+                          ->whereNull('oportunidad_prospecto.deleted_at')
+                          ->whereNull('status_oportunidad.deleted_at')
+                          ->whereNull('servicio_oportunidad.deleted_at')
+                          ->where('status_oportunidad.id_cat_status_oportunidad',$opcion_estatus)
+                          ->where('servicio_oportunidad.id_servicio_cat',$opcion_servicio)
+                          ->select('prospectos.correo','prospectos.nombre')->distinct()->get(); 
+            }
+            elseif($opcion_etiqueta != 0)
+            {
+              $remitentes = DB::table('prospectos')
+                          ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                          ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                          ->join('etiquetas_oportunidades','etiquetas_oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                          ->whereNull('prospectos.deleted_at')
+                          ->whereNull('oportunidad_prospecto.deleted_at')
+                          ->whereNull('status_oportunidad.deleted_at')
+                          ->whereNull('etiquetas_oportunidades.deleted_at')
+                          ->where('status_oportunidad.id_cat_status_oportunidad',$opcion_estatus)
+                          ->where('etiquetas_oportunidades.id_etiqueta',$opcion_etiqueta)
+                          ->select('prospectos.correo','prospectos.nombre','prospectos.id_prospecto')->distinct()->get();  
+            }
+          }
+        } else {
+          if($opcion_servicio == 0 && $opcion_etiqueta == 0)
+          {
+            $remitentes = DB::table('prospectos')
+              ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+              ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+              ->whereNull('prospectos.deleted_at')
+              ->whereNull('oportunidad_prospecto.deleted_at')
+              ->whereNull('status_oportunidad.deleted_at')
+              ->select('prospectos.correo','prospectos.nombre')->distinct()->get();
+          }
+          else
+          {
+            if($opcion_servicio != 0 && $opcion_etiqueta != 0)
+            {
+              $remitentes = DB::table('prospectos')
+                ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                ->join('servicio_oportunidad','servicio_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                ->join('etiquetas_oportunidades','etiquetas_oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                ->whereNull('prospectos.deleted_at')
+                ->whereNull('oportunidad_prospecto.deleted_at')
+                ->whereNull('status_oportunidad.deleted_at')
+                ->whereNull('servicio_oportunidad.deleted_at')
+                ->whereNull('etiquetas_oportunidades.deleted_at')
+                ->where('servicio_oportunidad.id_servicio_cat',$opcion_servicio)
+                ->where('etiquetas_oportunidades.id_etiqueta',$opcion_etiqueta)
+                ->select('prospectos.correo','prospectos.nombre')->distinct()->get(); 
+            }
+            elseif($opcion_servicio != 0)
+            {
+              $remitentes = DB::table('prospectos')
+                ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                ->join('servicio_oportunidad','servicio_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                ->whereNull('prospectos.deleted_at')
+                ->whereNull('oportunidad_prospecto.deleted_at')
+                ->whereNull('status_oportunidad.deleted_at')
+                ->whereNull('servicio_oportunidad.deleted_at')
+                ->where('servicio_oportunidad.id_servicio_cat',$opcion_servicio)
+                ->select('prospectos.correo','prospectos.nombre')->distinct()->get(); 
+            }
+            elseif($opcion_etiqueta != 0)
+            {
+              $remitentes = DB::table('prospectos')
+                ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                ->join('etiquetas_oportunidades','etiquetas_oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                ->whereNull('prospectos.deleted_at')
+                ->whereNull('oportunidad_prospecto.deleted_at')
+                ->whereNull('status_oportunidad.deleted_at')
+                ->whereNull('etiquetas_oportunidades.deleted_at')
+                ->where('etiquetas_oportunidades.id_etiqueta',$opcion_etiqueta)
+                ->select('prospectos.correo','prospectos.nombre','prospectos.id_prospecto')->distinct()->get();  
+            }
+          }
         }
-        else
-        {
-          if($opcion_servicio != 0 && $opcion_etiqueta != 0)
-          {
-            $remitentes = DB::table('prospectos')
-                        ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
-                        ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
-                        ->join('servicio_oportunidad','servicio_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
-                        ->join('etiquetas_oportunidades','etiquetas_oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
-                        ->whereNull('prospectos.deleted_at')
-                        ->whereNull('oportunidad_prospecto.deleted_at')
-                        ->whereNull('status_oportunidad.deleted_at')
-                        ->whereNull('servicio_oportunidad.deleted_at')
-                        ->whereNull('etiquetas_oportunidades.deleted_at')
-                        ->where('status_oportunidad.id_cat_status_oportunidad',$opcion_estatus)
-                        ->where('servicio_oportunidad.id_servicio_cat',$opcion_servicio)
-                        ->where('etiquetas_oportunidades.id_etiqueta',$opcion_etiqueta)
-                        ->select('prospectos.correo','prospectos.nombre')->distinct()->get(); 
-          }
-          elseif($opcion_servicio != 0)
-          {
-            $remitentes = DB::table('prospectos')
-                        ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
-                        ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
-                        ->join('servicio_oportunidad','servicio_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
-                        ->whereNull('prospectos.deleted_at')
-                        ->whereNull('oportunidad_prospecto.deleted_at')
-                        ->whereNull('status_oportunidad.deleted_at')
-                        ->whereNull('servicio_oportunidad.deleted_at')
-                        ->where('status_oportunidad.id_cat_status_oportunidad',$opcion_estatus)
-                        ->where('servicio_oportunidad.id_servicio_cat',$opcion_servicio)
-                        ->select('prospectos.correo','prospectos.nombre')->distinct()->get(); 
-          }
-          elseif($opcion_etiqueta != 0)
-          {
-            $remitentes = DB::table('prospectos')
-                        ->join('oportunidad_prospecto','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
-                        ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
-                        ->join('etiquetas_oportunidades','etiquetas_oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
-                        ->whereNull('prospectos.deleted_at')
-                        ->whereNull('oportunidad_prospecto.deleted_at')
-                        ->whereNull('status_oportunidad.deleted_at')
-                        ->whereNull('etiquetas_oportunidades.deleted_at')
-                        ->where('status_oportunidad.id_cat_status_oportunidad',$opcion_estatus)
-                        ->where('etiquetas_oportunidades.id_etiqueta',$opcion_etiqueta)
-                        ->select('prospectos.correo','prospectos.nombre','prospectos.id_prospecto')->distinct()->get();  
-          }
-        }
-        
         $numero_remitentes = count($remitentes);
 
         if($numero_remitentes > 0)
@@ -217,7 +274,7 @@ class MailingController extends Controller
           foreach ($remitentes as $remitente) {
             array_push($send_contacts, [$remitente->correo => ['name'=>$remitente->nombre]]);
           }
-          
+
           $datosMail['contenido'] = $request->descripcion;
           $datosMail['asunto'] = $request->titulo;
           $datosMail['email'] = $send_contacts;
@@ -231,21 +288,17 @@ class MailingController extends Controller
           $datosMail['fondo_general'] = $mailing->fondo_general;
           $datosMail['fondo_cta'] = $mailing->fondo_cta;
           $datosMail['color_titulo'] = $mailing->color_titulo;
-          $datosMail['color_subtitulo'] = $mailing->color_subtitulo;          
-          for($i=0;$i<$numero_remitentes;$i++)
-          {
-            $datosMail['email'] = $send_contacts[$i];
-            
-            Mailgun::send('mailing.template_one', $datosMail, function($message) use ($datosMail){
-                    $message->to($datosMail['email']);
+          $datosMail['color_subtitulo'] = $mailing->color_subtitulo;        
+          Mailgun::send('mailing.template_one', $datosMail, function($message) use ($datosMail){
+                    foreach($datosMail['email'] as $to_){
+                      $message->to($to_);
+                    }
                     $message->subject($datosMail['asunto']);
                     $message->trackClicks(true);
                     $message->trackOpens(true);
                     $message->tag($datosMail['titulo_campana']);
-
             });
 
-          }
           return response()->json([
             'message'=>'Newsletter enviado correctamente.',
             'error'=>false
