@@ -1,11 +1,11 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
-    <head>
-        <meta charset="UTF-8">
+	<head>
+		<meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Kiper Confirmacion</title>
-
+		<title>KIPER</title>
+        
     <style type="text/css">
 		p{
 			margin:10px 0;
@@ -73,6 +73,9 @@
 			font-weight:inherit !important;
 			line-height:inherit !important;
 		}
+		#bodyCell{
+			padding:10px;
+		}
 		.templateContainer{
 			max-width:600px !important;
 		}
@@ -91,145 +94,146 @@
 		.mcnDividerBlock{
 			table-layout:fixed !important;
 		}
+	
+		body,#bodyTable{
+			background-color:#fafafa;
+		}
+	
+		#bodyCell{
+			border-top:0;
+		}
+	
+		.templateContainer{
+			border:0;
+		}
+	
 		h1{
-			color:#222222;
-			font-family:Helvetica;
-			font-size:40px;
-			font-style:normal;
-			font-weight:bold;
-			line-height:150%;
-			letter-spacing:normal;
-			text-align:center;
-		}
-		h2{
-			color:#222222;
-			font-family:Helvetica;
-			font-size:34px;
-			font-style:normal;
-			font-weight:bold;
-			line-height:150%;
-			letter-spacing:normal;
-			text-align:left;
-		}
-		h3{
-			color:#444444;
-			font-family:Helvetica;
-			font-size:22px;
-			font-style:normal;
-			font-weight:bold;
-			line-height:150%;
-			letter-spacing:normal;
-			text-align:left;
-		}
-		h4{
-			color:#999999;
+			color:#f2f3fa;
 			font-family:Georgia;
-			font-size:20px;
-			font-style:italic;
+			font-size:28px;
+			font-style:normal;
 			font-weight:normal;
 			line-height:125%;
 			letter-spacing:normal;
 			text-align:left;
 		}
-		#templateHeader{
-			background-color:#d0d0d0;
-			background-image:url("https://gallery.mailchimp.com/766ee0c962d543c02140cdccb/images/cb2da133-8da5-47e6-996c-c13bc0a6da08.jpg");
-			background-repeat:no-repeat;
-			background-position:center;
-			background-size:cover;
-			border-top:0;
-			border-bottom:0;
-			padding-top:85px;
-			padding-bottom:85px;
-		}
-		.headerContainer{
-			background-color:transparent;
-			background-image:none;
-			background-repeat:no-repeat;
-			background-position:center;
-			background-size:cover;
-			border-top:0;
-			border-bottom:0;
-			padding-top:0;
-			padding-bottom:0;
-		}
-		.headerContainer .mcnTextContent,.headerContainer .mcnTextContent p{
-			color:#808080;
+	
+		h2{
+			color:#ffffff;
 			font-family:Helvetica;
-			font-size:16px;
-			line-height:150%;
-			text-align:left;
+			font-size:22px;
+			font-style:normal;
+			font-weight:bold;
+			line-height:125%;
+			letter-spacing:normal;
+			text-align:center;
 		}
-		.headerContainer .mcnTextContent a,.headerContainer .mcnTextContent p a{
-			color:#00ADD8;
-			font-weight:normal;
-			text-decoration:underline;
-		}
-		#templateBody{
-			background-color:#FFFFFF;
-			background-image:none;
-			background-repeat:no-repeat;
-			background-position:center;
-			background-size:cover;
-			border-top:0;
-			border-bottom:0;
-			padding-top:36px;
-			padding-bottom:45px;
-		}
-		.bodyContainer{
-			background-color:transparent;
-			background-image:none;
-			background-repeat:no-repeat;
-			background-position:center;
-			background-size:cover;
-			border-top:0;
-			border-bottom:0;
-			padding-top:0;
-			padding-bottom:0;
-		}
-		.bodyContainer .mcnTextContent,.bodyContainer .mcnTextContent p{
-			color:#808080;
-			font-family:Helvetica;
-			font-size:16px;
-			line-height:150%;
-			text-align:left;
-		}
-		.bodyContainer .mcnTextContent a,.bodyContainer .mcnTextContent p a{
-			color:#00ADD8;
-			font-weight:normal;
-			text-decoration:underline;
-		}
-		#templateFooter{
-			background-color:#54595d;
-			background-image:none;
-			background-repeat:no-repeat;
-			background-position:center;
-			background-size:cover;
-			border-top:0;
-			border-bottom:0;
-			padding-top:12px;
-			padding-bottom:12px;
-		}
-		.footerContainer{
-			background-color:transparent;
-			background-image:none;
-			background-repeat:no-repeat;
-			background-position:center;
-			background-size:cover;
-			border-top:0;
-			border-bottom:0;
-			padding-top:0;
-			padding-bottom:0;
-		}
-		.footerContainer .mcnTextContent,.footerContainer .mcnTextContent p{
+	
+		h3{
 			color:#FFFFFF;
+			font-family:Helvetica;
+			font-size:20px;
+			font-style:normal;
+			font-weight:bold;
+			line-height:125%;
+			letter-spacing:normal;
+			text-align:center;
+		}
+	
+		h4{
+			color:#FFFFFF;
+			font-family:Courier New;
+			font-size:18px;
+			font-style:normal;
+			font-weight:normal;
+			line-height:125%;
+			letter-spacing:normal;
+			text-align:center;
+		}
+	
+		#templatePreheader{
+			background-color:#fafafa;
+			border-top:0;
+			border-bottom:0;
+			padding-top:9px;
+			padding-bottom:9px;
+		}
+	
+		#templatePreheader .mcnTextContent,#templatePreheader .mcnTextContent p{
+			color:#ffffff;
 			font-family:Helvetica;
 			font-size:12px;
 			line-height:150%;
 			text-align:center;
 		}
-		.footerContainer .mcnTextContent a,.footerContainer .mcnTextContent p a{
-			color:#FFFFFF;
+	
+		#templatePreheader .mcnTextContent a,#templatePreheader .mcnTextContent p a{
+			color:#ffffff;
+			font-weight:normal;
+			text-decoration:underline;
+		}
+	
+		#templateHeader{
+			background-color:#ffffff;
+			border-top:0;
+			border-bottom:0;
+			padding-top:0;
+			padding-bottom:9px;
+		}
+	
+		#templateHeader .mcnTextContent,#templateHeader .mcnTextContent p{
+			color:#202020;
+			font-family:Helvetica;
+			font-size:16px;
+			line-height:150%;
+			text-align:left;
+		}
+
+		#templateHeader .mcnTextContent a,#templateHeader .mcnTextContent p a{
+			color:#2BAADF;
+			font-weight:normal;
+			text-decoration:underline;
+		}
+
+		#templateBody{
+			background-color:#ffffff;
+			border-top:0;
+			border-bottom:0;
+			padding-top:0;
+		}
+
+		#templateBody .mcnTextContent,#templateBody .mcnTextContent p{
+			color:#000000;
+			font-family:Helvetica;
+			font-size:16px;
+			line-height:150%;
+			text-align:left;
+		}
+	
+		#templateBody .mcnTextContent a,#templateBody .mcnTextContent p a{
+			color:#c7342f;
+			font-weight:bold;
+			text-decoration:none;
+		}
+
+		#templateFooter{
+			background-color:#ffffff;
+			border-top:0;
+			border-bottom:0;
+			padding-top:9px;
+			padding-bottom:9px;
+		}
+	
+		#templateFooter .mcnTextContent,#templateFooter .mcnTextContent p{
+			color:#656565;
+			font-family:Helvetica;
+			font-size:12px;
+			line-height:150%;
+			text-align:center;
+		}
+
+		#templateFooter .mcnTextContent a,#templateFooter .mcnTextContent p a{
+			color:#656565;
 			font-weight:normal;
 			text-decoration:underline;
 		}
@@ -247,6 +251,11 @@
 		body{
 			width:100% !important;
 			min-width:100% !important;
+		}
+
+}	@media only screen and (max-width: 480px){
+		#bodyCell{
+			padding-top:10px !important;
 		}
 
 }	@media only screen and (max-width: 480px){
@@ -322,120 +331,158 @@
 		}
 
 }	@media only screen and (max-width: 480px){
+	
 		h1{
-			font-size:30px !important;
+			font-size:22px !important;
 			line-height:125% !important;
 		}
 
 }	@media only screen and (max-width: 480px){
+	
 		h2{
-			font-size:26px !important;
+			font-size:20px !important;
 			line-height:125% !important;
 		}
 
 }	@media only screen and (max-width: 480px){
+	
 		h3{
-			font-size:20px !important;
-			line-height:150% !important;
-		}
-
-}	@media only screen and (max-width: 480px){
-		h4{
 			font-size:18px !important;
+			line-height:125% !important;
+		}
+
+}	@media only screen and (max-width: 480px){
+
+		h4{
+			font-size:16px !important;
 			line-height:150% !important;
 		}
 
 }	@media only screen and (max-width: 480px){
+
 		.mcnBoxedTextContentContainer .mcnTextContent,.mcnBoxedTextContentContainer .mcnTextContent p{
 			font-size:14px !important;
 			line-height:150% !important;
 		}
 
 }	@media only screen and (max-width: 480px){
-		.headerContainer .mcnTextContent,.headerContainer .mcnTextContent p{
+	
+
+		#templatePreheader{
+			display:block !important;
+		}
+
+}	@media only screen and (max-width: 480px){
+
+		#templatePreheader .mcnTextContent,#templatePreheader .mcnTextContent p{
+			font-size:14px !important;
+			line-height:150% !important;
+		}
+
+}	@media only screen and (max-width: 480px){
+	
+		#templateHeader .mcnTextContent,#templateHeader .mcnTextContent p{
 			font-size:16px !important;
 			line-height:150% !important;
 		}
 
 }	@media only screen and (max-width: 480px){
-		.bodyContainer .mcnTextContent,.bodyContainer .mcnTextContent p{
+	
+		#templateBody .mcnTextContent,#templateBody .mcnTextContent p{
 			font-size:16px !important;
 			line-height:150% !important;
 		}
 
 }	@media only screen and (max-width: 480px){
-		.footerContainer .mcnTextContent,.footerContainer .mcnTextContent p{
+	
+		#templateFooter .mcnTextContent,#templateFooter .mcnTextContent p{
 			font-size:14px !important;
 			line-height:150% !important;
 		}
 
 }</style></head>
     <body>
-		<span class="mcnPreviewText" style="display:none; font-size:0px; line-height:0px; max-height:0px; max-width:0px; opacity:0; overflow:hidden; visibility:hidden; mso-hide:all;"> </span>
+        <span class="mcnPreviewText" style="display:none; font-size:0px; line-height:0px; max-height:0px; max-width:0px; opacity:0; overflow:hidden; visibility:hidden; mso-hide:all;">BIENVENIDO</span>
+       
         <center>
             <table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable">
                 <tr>
                     <td align="center" valign="top" id="bodyCell">
-                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                        
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%" class="templateContainer">
                             <tr>
-                                <td align="center" valign="top" id="templateHeader" data-template-container>
-                                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" class="templateContainer">
-                                        <tr>
-                                            <td valign="top" class="headerContainer"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageBlock" style="min-width:100%;">
+                                <td valign="top" id="templatePreheader"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width:100%;">
+    <tbody class="mcnTextBlockOuter">
+        <tr>
+            <td valign="top" class="mcnTextBlockInner" style="padding-top:9px;">
+              	
+                <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%; min-width:100%;" width="100%" class="mcnTextContentContainer">
+                    <tbody><tr>
+                        
+                        <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px;color: #C4C4C4;font-family: Arial, &quot;Helvetica Neue&quot;, Helvetica, sans-serif;font-style: normal;font-weight: normal;">
+                        
+                            <a href="*|ARCHIVE|*" target="_blank"><span style="color:#A9A9A9">Ver este correo en navegador&nbsp;</span></a>
+                        </td>
+                    </tr>
+                </tbody></table>
+				
+            </td>
+        </tr>
+    </tbody>
+</table></td>
+                            </tr>
+                            <tr>
+                                <td valign="top" id="templateHeader"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageBlock" style="min-width:100%;">
     <tbody class="mcnImageBlockOuter">
             <tr>
-                <td valign="top" style="padding:9px" class="mcnImageBlockInner">
+                <td valign="top" style="padding:0px" class="mcnImageBlockInner">
                     <table align="left" width="100%" border="0" cellpadding="0" cellspacing="0" class="mcnImageContentContainer" style="min-width:100%;">
                         <tbody><tr>
-                            <td class="mcnImageContent" valign="top" style="padding-right: 9px; padding-left: 9px; padding-top: 0; padding-bottom: 0; text-align:center;">
-
-
-                                        <img align="center" alt="" src="https://gallery.mailchimp.com/766ee0c962d543c02140cdccb/images/181706a1-35de-468d-9735-d41582e5278f.png" width="219" style="max-width:219px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage">
-
-
+                            <td class="mcnImageContent" valign="top" style="padding-right: 0px; padding-left: 0px; padding-top: 0; padding-bottom: 0; text-align:center;">
+                                
+                                    
+                                        <img align="center" alt="" src="https://gallery.mailchimp.com/766ee0c962d543c02140cdccb/images/ae244b80-c67d-4006-bf04-a82ecfbf8698.gif" width="600" style="max-width: 600px; padding-bottom: 0px; vertical-align: bottom; display: inline !important; border-radius: 0%;" class="mcnImage">
+                                    
+                                
                             </td>
                         </tr>
                     </tbody></table>
                 </td>
             </tr>
     </tbody>
-</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnDividerBlock" style="min-width:100%;">
-    <tbody class="mcnDividerBlockOuter">
-        <tr>
-            <td class="mcnDividerBlockInner" style="min-width:100%; padding:18px;">
-                <table class="mcnDividerContent" border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-top: 2px none #EAEAEA;">
-                    <tbody><tr>
-                        <td>
-                            <span></span>
-                        </td>
-                    </tr>
-                </tbody></table>
-            </td>
-        </tr>
-    </tbody>
 </table></td>
-                                        </tr>
-                                    </table>
-                                </td>
                             </tr>
                             <tr>
-                                <td align="center" valign="top" id="templateBody" data-template-container>
-                                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" class="templateContainer">
-                                        <tr>
-                                            <td valign="top" class="bodyContainer"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width:100%;">
+                                <td valign="top" id="templateBody"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnCodeBlock">
+    <tbody class="mcnTextBlockOuter">
+        <tr>
+            <td valign="top" class="mcnTextBlockInner">
+                <link href="https://fonts.googleapis.com/css?family=Poppins:500" rel="stylesheet">
+            </td>
+        </tr>
+    </tbody>
+</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width:100%;">
     <tbody class="mcnTextBlockOuter">
         <tr>
             <td valign="top" class="mcnTextBlockInner" style="padding-top:9px;">
+              	
                 <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%; min-width:100%;" width="100%" class="mcnTextContentContainer">
                     <tbody><tr>
-
-                        <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px;color: #51636E;font-size: 18px;">
-
-                            <div style="text-align: center;"><span style="color:#5D737E"><span style="font-size:24px"><span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif">Haz recibido este mensaje por que has sido agregado a Kiper con los siguientes datos</span></span></span></div>
+                        
+                        <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-style: normal; font-weight: normal;">
+                        
+                            <link href="https://fonts.googleapis.com/css?family=Poppins:500" rel="stylesheet">
+<style type="text/css">h1,h2,h3,h4,h5,p { 
+  font-family: 'Poppins', sans-serif!important;
+}
+</style>
+<div style="text-align: center; color:#54595D"><span><font face="Poppins, helvetica, arial, verdana, sans-serif"><span style="font-size:28px">¡Haz sido añadido!</span><br>
+<span style="color:#A3A9AC; font-size:14px">Ingresa a Kiper con los siguientes datos</span></font></span></div>
 
                         </td>
                     </tr>
                 </tbody></table>
+				
             </td>
         </tr>
     </tbody>
@@ -450,46 +497,7 @@
                         </td>
                     </tr>
                 </tbody></table>
-            </td>
-        </tr>
-    </tbody>
-</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width:100%;">
-    <tbody class="mcnTextBlockOuter">
-        <tr>
-            <td valign="top" class="mcnTextBlockInner" style="padding-top:9px;">
-                <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%; min-width:100%;" width="100%" class="mcnTextContentContainer">
-                    <tbody><tr>
 
-                        <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px;color: #51636E;font-size: 18px;">
-
-                            <div style="text-align: center;"><span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif">Correo<br>
-<span style="color:#E43D30"><span style="font-size:24px"><strong>{{ $email }}</strong></span></span></span>
-
-<hr></div>
-
-                        </td>
-                    </tr>
-                </tbody></table>
-            </td>
-        </tr>
-    </tbody>
-</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width:100%;">
-    <tbody class="mcnTextBlockOuter">
-        <tr>
-            <td valign="top" class="mcnTextBlockInner" style="padding-top:9px;">
-                <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%; min-width:100%;" width="100%" class="mcnTextContentContainer">
-                    <tbody><tr>
-
-                        <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px;color: #51636E;font-size: 18px;">
-
-                            <div style="text-align: center;"><span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif">Password<br>
-<span style="color:#E43D30"><strong><span style="font-size:24px">{{ $pass }}</span></strong></span></span>
-
-<hr></div>
-
-                        </td>
-                    </tr>
-                </tbody></table>
             </td>
         </tr>
     </tbody>
@@ -504,6 +512,112 @@
                         </td>
                     </tr>
                 </tbody></table>
+
+            </td>
+        </tr>
+    </tbody>
+</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width:100%;">
+    <tbody class="mcnTextBlockOuter">
+        <tr>
+            <td valign="top" class="mcnTextBlockInner" style="padding-top:9px;">
+              	
+                <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:300px;" width="100%" class="mcnTextContentContainer">
+                    <tbody><tr>
+                        
+                        <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-style: normal; font-weight: normal;">
+                        
+                            <div dir="ltr" style="color: #A3A9AC; text-align: center;"><span style="font-size:16px"><font face="Poppins, helvetica, arial, verdana, sans-serif">Correo</font></span></div>
+
+                        </td>
+                    </tr>
+                </tbody></table>
+				
+                <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:300px;" width="100%" class="mcnTextContentContainer">
+                    <tbody><tr>
+                        
+                        <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-style: normal; font-weight: normal;">
+                        
+                            <div style="text-align: left;"><a href="https://www.w3schools.com/html/"><font color="#e43d30" face="Poppins, helvetica, arial, verdana, sans-serif"><span style="font-size:16px"><strong>{{ $email }}</strong></span></font></a></div>
+
+                        </td>
+                    </tr>
+                </tbody></table>
+				
+            </td>
+        </tr>
+    </tbody>
+</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width:100%;">
+    <tbody class="mcnTextBlockOuter">
+        <tr>
+            <td valign="top" class="mcnTextBlockInner" style="padding-top:9px;">
+              	
+                <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:300px;" width="100%" class="mcnTextContentContainer">
+                    <tbody><tr>
+                        
+                        <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-style: normal; font-weight: normal;">
+                        
+                            <div style="color: #A3A9AC; text-align: center;"><font face="Poppins, helvetica, arial, verdana, sans-serif"><span style="font-size:16px">Password</span></font></div>
+
+                        </td>
+                    </tr>
+                </tbody></table>
+				
+                <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:300px;" width="100%" class="mcnTextContentContainer">
+                    <tbody><tr>
+                        
+                        <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-style: normal; font-weight: normal;">
+                        
+                            <div style="text-align: left;"><span style="font-size:16px"><strong><span style="color:#e43d30"><font face="Poppins, helvetica, arial, verdana, sans-serif">{{ $pass }}</font></span></strong></span></div>
+
+                        </td>
+                    </tr>
+                </tbody></table>
+				
+            </td>
+        </tr>
+    </tbody>
+</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width:100%;">
+    <tbody class="mcnTextBlockOuter">
+        <tr>
+            <td valign="top" class="mcnTextBlockInner" style="padding-top:9px;">
+              	
+                <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:300px;" width="100%" class="mcnTextContentContainer">
+                    <tbody><tr>
+                        
+                        <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-style: normal; font-weight: normal;">
+                        
+                            <div style="color: #A3A9AC; text-align: center;"><font face="Poppins, helvetica, arial, verdana, sans-serif"><span style="font-size:16px">Empresa</span></font></div>
+
+                        </td>
+                    </tr>
+                </tbody></table>
+				
+                <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:300px;" width="100%" class="mcnTextContentContainer">
+                    <tbody><tr>
+                        
+                        <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-style: normal; font-weight: normal;">
+                        
+                            <div style="text-align: left;"><span style="font-size:16px"><strong><span style="color:#e43d30"><font face="Poppins, helvetica, arial, verdana, sans-serif">{{ $dominio }}</font></span></strong></span></div>
+
+                        </td>
+                    </tr>
+                </tbody></table>
+				
+            </td>
+        </tr>
+    </tbody>
+</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnDividerBlock" style="min-width:100%;">
+    <tbody class="mcnDividerBlockOuter">
+        <tr>
+            <td class="mcnDividerBlockInner" style="min-width:100%; padding:18px;">
+                <table class="mcnDividerContent" border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-top: 2px none #EAEAEA;">
+                    <tbody><tr>
+                        <td>
+                            <span></span>
+                        </td>
+                    </tr>
+                </tbody></table>
+
             </td>
         </tr>
     </tbody>
@@ -511,11 +625,11 @@
     <tbody class="mcnButtonBlockOuter">
         <tr>
             <td style="padding-top:0; padding-right:18px; padding-bottom:18px; padding-left:18px;" valign="top" align="center" class="mcnButtonBlockInner">
-                <table border="0" cellpadding="0" cellspacing="0" class="mcnButtonContentContainer" style="border-collapse: separate !important;border: 1px none;border-radius: 0px;background-color: #E74740;">
+                <table border="0" cellpadding="0" cellspacing="0" class="mcnButtonContentContainer" style="border-collapse: separate !important;border: 2px solid #E74740;border-radius: 50px;">
                     <tbody>
                         <tr>
-                            <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Lato, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif; font-size: 12px; padding: 15px;">
-                                <a class="mcnButton " title="ENTRA AQUÍ" href="{{$link}}" target="_blank" style="font-weight: normal;letter-spacing: 4px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">ENTRA AQUÍ</a>
+                            <td align="center" valign="middle" class="mcnButtonContent" style="font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, Verdana, sans-serif; font-size: 16px; padding: 16px;">
+                                <a class="mcnButton " title="Ingresar" href="" target="_blank" style="font-weight: bold;letter-spacing: 0px;line-height: 100%;text-align: center;text-decoration: none;color: #E74740;">Ingresar</a>
                             </td>
                         </tr>
                     </tbody>
@@ -523,38 +637,51 @@
             </td>
         </tr>
     </tbody>
-</table></td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="center" valign="top" id="templateFooter" data-template-container>
-
-                                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" class="templateContainer">
-                                        <tr>
-                                            <td valign="top" class="footerContainer"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width:100%;">
-    <tbody class="mcnTextBlockOuter">
+</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnDividerBlock" style="min-width:100%;">
+    <tbody class="mcnDividerBlockOuter">
         <tr>
-            <td valign="top" class="mcnTextBlockInner" style="padding-top:9px;">
-                <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%; min-width:100%;" width="100%" class="mcnTextContentContainer">
+            <td class="mcnDividerBlockInner" style="min-width:100%; padding:18px;">
+                <table class="mcnDividerContent" border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-top: 2px none #EAEAEA;">
                     <tbody><tr>
-
-                        <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px;">
-
-                            <span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif"><a href="https://concepthaus.mx/" target="_blank">Concepthaus®</a> Derechos reservados 2018</span>
+                        <td>
+                            <span></span>
                         </td>
                     </tr>
                 </tbody></table>
+
+            </td>
+        </tr>
+    </tbody>
+</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnCodeBlock">
+    <tbody class="mcnTextBlockOuter">
+        <tr>
+            <td valign="top" class="mcnTextBlockInner">
+                <div data-dojo-attach-point="containerNode" style="
+    background-color: #DDD;
+"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnCodeBlock">
+    <tbody class="mcnTextBlockOuter">
+        <tr>
+            <td valign="top" class="mcnTextBlockInner">
+                </td><td class="mcnImageContent" valign="top" style="padding-right: 9px; padding-left: 9px; padding-top: 12px; padding-bottom: 12px; text-align:center;"><img align="center" alt="" src="https://gallery.mailchimp.com/766ee0c962d543c02140cdccb/images/fa7ff4e1-ade8-4ef2-a56e-3363c0053d4a.png" width="145" style="max-width:195px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage blockDropTarget" id="dijit__Templated_145" widgetid="dijit__Templated_145"></td>
+            
+        </tr>
+    </tbody>
+</table></div>
             </td>
         </tr>
     </tbody>
 </table></td>
-                                        </tr>
-                                    </table>
-                                </td>
+                            </tr>
+							<tr>
+								<td align="center" valign="top">
+									<img src="https://cdn-images.mailchimp.com/template_images/gallery/8a7030a1-3d71-45ca-aa5d-e244b31efdf5.png" width="100%" height="auto" style="display:block; margin:0; padding:0;">
+								</td>
+							</tr>
+                            <tr>
+                                <td valign="top" id="templateFooter"></td>
                             </tr>
                         </table>
+						
                     </td>
                 </tr>
             </table>

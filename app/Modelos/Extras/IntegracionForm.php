@@ -23,6 +23,6 @@ class IntegracionForm extends Model
     ];
 
     public function campaign(){
-        return $this->hasOne('App\Modelos\Extras\CampaignInfo','id_integracion_forms','id_integracion_forms');
+        return $this->hasOne('App\Modelos\Prospecto\CampaignInfo','id_forms','id_integracion_forms');
     }
 }

@@ -87,7 +87,8 @@ class FormsController extends Controller
     }
 
     public function getOne($id){
-        $form = IntegracionForm::where('id_integracion_forms',$id)->first();
+
+        $form = IntegracionForm::with('campaign')->where('id_integracion_forms',$id)->first();
 
         return response()->json([
             'error'=>false,
