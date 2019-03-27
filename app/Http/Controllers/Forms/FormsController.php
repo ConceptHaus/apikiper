@@ -88,13 +88,19 @@ class FormsController extends Controller
 
     public function getOne($id){
 
-        $form = IntegracionForm::with('campaign')->where('id_integracion_forms',$id)->first();
-
+        $campaign = DB::table('integracion_forms')->join('campaign_infos','campaign_infos.id_forms','integracion_forms.id_integracion_forms')
+                    ->where('integracion_forms.id_integracion_forms',$id)
+                    ->select(DB::raw('count(*) as leads, campaign_infos.utm_term'),'campaign_infos.utm_campaign')
+                    ->groupBy('campaign_infos.utm_term')->get();
+        $form = IntegracionForm::where('id_integracion_forms',$id)->first();
+        $prospectos = IntegracionForm::all()->count();
         return response()->json([
             'error'=>false,
             'messages'=>'Success',
             'data'=>$form,
-            'url'=>URL::to('/api/v1/forms/register').'?token='.$form->token
+            'campaign'=>$campaign,
+            'total_prospectos'=>$prospectos,
+            'url'=>URL::to('/api/v1/forms/register').'?token='.$form['token']
         ]);
     }
 
