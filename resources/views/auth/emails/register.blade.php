@@ -441,7 +441,7 @@
                             <td class="mcnImageContent" valign="top" style="padding-right: 0px; padding-left: 0px; padding-top: 0; padding-bottom: 0; text-align:center;">
                                 
                                     
-                                        <img align="center" alt="" src="https://gallery.mailchimp.com/766ee0c962d543c02140cdccb/images/ae244b80-c67d-4006-bf04-a82ecfbf8698.gif" width="600" style="max-width: 600px; padding-bottom: 0px; vertical-align: bottom; display: inline !important; border-radius: 0%;" class="mcnImage">
+                                        <img align="center" alt="" src="https://gallery.mailchimp.com/766ee0c962d543c02140cdccb/images/ef5d81b4-2473-4d3f-8977-1b530bf47f86.gif" width="600" style="max-width: 600px; padding-bottom: 0px; vertical-align: bottom; display: inline !important; border-radius: 0%;" class="mcnImage">
                                     
                                 
                             </td>
@@ -629,7 +629,7 @@
                     <tbody>
                         <tr>
                             <td align="center" valign="middle" class="mcnButtonContent" style="font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, Verdana, sans-serif; font-size: 16px; padding: 16px;">
-                                <a class="mcnButton " title="Ingresar" href="" target="_blank" style="font-weight: bold;letter-spacing: 0px;line-height: 100%;text-align: center;text-decoration: none;color: #E74740;">Ingresar</a>
+                                <a class="mcnButton " title="Ingresar" href="https://crm.kiper.app/" target="_blank" style="font-weight: bold;letter-spacing: 0px;line-height: 100%;text-align: center;text-decoration: none;color: #E74740;">Ingresar</a>
                             </td>
                         </tr>
                     </tbody>
