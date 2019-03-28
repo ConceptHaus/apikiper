@@ -117,7 +117,7 @@ class FormsController extends Controller
         $mensaje = $request->mensaje;
         $utm_campaign = $request->utm_campaign;
         $utm_term = $request ->utm_term;
-        if($request->fuente){
+        if($request->fuente != null){
             $fuente = $request->fuente;
         }else{
           $fuente = 2;
