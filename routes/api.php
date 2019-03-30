@@ -223,6 +223,7 @@ Route::prefix('/v1/generales')->group(function(){
 Route::prefix('/v1/forms')->group(function(){
     Route::middleware(['api','cors','guest'])->group(function(){
         Route::post('/register','Forms\FormsController@registerProspecto');
+        Route::post('/calls','Forms\FormsController@registerProspectoCalls');
     });
     
     Route::middleware(['auth','cors'])->group(function(){

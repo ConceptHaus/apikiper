@@ -23,6 +23,9 @@ use Keygen;
 use URL;
 use Twilio\Rest\Client;
 
+use App\Events\NewLead;
+use App\Events\Event;
+
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use RuntimeException;
 class FormsController extends Controller
@@ -103,6 +106,9 @@ class FormsController extends Controller
             'url'=>URL::to('/api/v1/forms/register').'?token='.$form['token']
         ]);
     }
+    public function registerProspectoCalls(Request $request){
+       
+    }
 
     public function registerProspecto(Request $request){
       // return $request->query('token');
@@ -115,8 +121,23 @@ class FormsController extends Controller
         $email = $request->correo;
         $telefono = $request->telefono;
         $mensaje = $request->mensaje;
-        $utm_campaign = $request->utm_campaign;
-        $utm_term = $request ->utm_term;
+      
+        if($request->utm_campaign != null){
+
+          $utm_campaign = $request->utm_campaign;
+
+        }else{
+          $utm_campaign = 'Orgánico';
+        }
+
+        if($request ->utm_term != null){
+          
+          $utm_term = $request ->utm_term;
+
+        }else{
+          $utm_term = 'Orgánico';
+        }
+
         if($request->fuente != null){
             $fuente = $request->fuente;
         }else{
@@ -159,6 +180,10 @@ class FormsController extends Controller
                 $verify->save();
 
                 DB::commit();
+
+                //Mail New Lead
+                event(new NewLead($request->all()));
+
 
                 return response()->json([
                   'message'=>'Success',
