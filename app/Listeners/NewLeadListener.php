@@ -48,17 +48,17 @@ class NewLeadListener
             $data['email_de'] = 'activity@kiper.io';
             $data['nombre_de'] = 'Kiper';
 
-            //echo $actividad['nombre'];
+            
            // echo $actividad->nombre;
 
-            $data['nombre_p'] = $actividad['nombre'];
-            $data['apellido_p'] = $actividad['apellido'];
-            $data['correo_p'] = $actividad['correo'];
-            $data['empresa_p'] = $actividad['empresa'];
-            $data['telefono_p'] = $actividad['telefono'];
-            //$data['mensaje_p'] = $actividad['mensaje'];
-            $data['campaign_p'] = $actividad['utm_campaign'];
-            $data['term_p'] = $actividad['utm_term'];
+            $data['nombre_p'] = $actividad->nombre;
+            $data['apellido_p'] = $actividad->apellido;
+            $data['correo_p'] = $actividad->correo;
+            $data['empresa_p'] = $actividad->detalle_prospecto->empresa;
+            $data['telefono_p'] = $actividad->detalle_prospecto->telefono;
+            $data['mensaje_p'] = $actividad->detalle_prospecto->nota;
+            $data['campaign_p'] = $actividad->campaign->utm_campaign;
+            $data['term_p'] = $actividad->campaign->utm_term;
 
 
 

@@ -180,9 +180,10 @@ class FormsController extends Controller
                 $verify->save();
 
                 DB::commit();
-
+                
+                  
                 //Mail New Lead
-                event(new NewLead($request->all()));
+                event(new NewLead($prospecto));
 
 
                 return response()->json([
