@@ -44,7 +44,7 @@ class NewLeadListener
         if($admins){
 
             $data['email'] = $array_admins;
-            $data['asunto'] = 'Tienes un nuevo lead 😁 🎉';
+            $data['asunto'] = 'Tienes un nuevo prospecto 😁 🎉';
             $data['email_de'] = 'activity@kiper.io';
             $data['nombre_de'] = 'Kiper';
 
