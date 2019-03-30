@@ -56,7 +56,7 @@ class NewLeadListener
             $data['correo_p'] = $actividad['correo'];
             $data['empresa_p'] = $actividad['empresa'];
             $data['telefono_p'] = $actividad['telefono'];
-            $data['mensaje_p'] = $actividad['mensaje'];
+            //$data['mensaje_p'] = $actividad['mensaje'];
             $data['campaign_p'] = $actividad['utm_campaign'];
             $data['term_p'] = $actividad['utm_term'];
 
