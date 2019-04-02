@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use App\Modelos\Prospecto\Prospecto;
 use App\Modelos\Prospecto\StatusProspecto;
 use App\Modelos\Prospecto\DetalleProspecto;
+use App\Modelos\Prospecto\CallsProstecto;
 use App\Modelos\Extras\IntegracionForm;
 use App\Modelos\Prospecto\CampaignInfo;
 
@@ -106,9 +107,7 @@ class FormsController extends Controller
             'url'=>URL::to('/api/v1/forms/register').'?token='.$form['token']
         ]);
     }
-    public function registerProspectoCalls(Request $request){
-       
-    }
+    
 
     public function registerProspecto(Request $request){
       // return $request->query('token');
@@ -147,6 +146,63 @@ class FormsController extends Controller
 
 
         if($verify){
+
+          if($request->lead_type == "Phone Call"){
+            
+            try{
+
+              DB::beginTransaction();
+              $prospecto = New Prospecto();
+              $prospecto->nombre = $request->caller_name;
+              $prospecto->correo = "Not Set";
+              $prospecto->fuente = 4;
+              $prospecto->save();
+
+              $detalleProspecto = New DetalleProspecto();
+              $detalleProspecto->telefono = $request->caller_number;
+              $prospecto->detalle_prospecto()->save($detalleProspecto);
+
+              $llamadaProspecto = New CallsProstecto();
+              $llamadaProspecto->caller_number = $request->caller_number;
+              $llamadaProspecto->caller_name = $request->caller_name;
+              $llamadaProspecto->caller_city = $request->caller_city;
+              $llamadaProspecto->caller_state = $request->caller_state;
+              $llamadaProspecto->caller_zip = $request->caller_zip;
+              $llamadaProspecto->play_recording = $request->play_recording;
+              $llamadaProspecto->device_type = $request->device_type;
+              $llamadaProspecto->device_make = $request->device_make;
+              $llamadaProspecto->call_status = $request->call_status;
+              $llamadaProspecto->call_duration = $request->call_duration;
+              $prospecto->calls()->save($llamadaProspecto);
+
+              $status = New StatusProspecto();
+              $status->id_cat_status_prospecto = 1;
+              $prospecto->status_prospecto()->save($status);
+
+              $campaign = New CampaignInfo();
+              $campaign->id_forms = $verify->id_integracion_forms;
+              $campaign->utm_campaign = $request->lead_campaign;
+              $campaign->utm_term = $request->lead_keyword;
+              $campaign->utm_source = $request->lead_source;
+              $prospecto->campaign()->save($campaign);
+
+              DB::commit();
+
+              return response()->json([
+                 'message'=>'Success',
+                'error'=>false
+              ],201);
+
+            }catch(Exception $e){
+
+              return response()->json([
+                'message'=>'Error',
+                'error'=>true
+              ],401);
+            }
+              
+
+          }else{
 
             try{
 
@@ -201,6 +257,10 @@ class FormsController extends Controller
                 ]);
 
             }
+
+          }
+
+            
 
 
         }

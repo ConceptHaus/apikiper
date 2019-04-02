@@ -87,6 +87,10 @@ class Prospecto extends Model
         return $this->hasMany('App\Modelos\Prospecto\FotoProspecto','id_prospecto','id_prospecto');
     }
 
+    public function calls(){
+        return $this->hasOne('App\Modelos\Prospecto\CallsProstecto','id_prospecto','id_prospecto');
+    }
+
     public function prospectos_empresas(){
         return $this->hasMany('App\Modelos\Empresa\EmpresaProspecto','id_prospecto','id_prospecto')->with('empresas');
     }
