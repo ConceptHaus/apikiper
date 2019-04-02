@@ -19,12 +19,18 @@ use App\Modelos\Prospecto\DetalleProspecto;
 use App\Modelos\Prospecto\EtiquetasProspecto;
 use App\Modelos\Prospecto\ArchivosProspectoColaborador;
 use App\Modelos\Prospecto\ColaboradorProspecto;
+
 use App\Modelos\Oportunidad\Oportunidad;
 use App\Modelos\Oportunidad\DetalleOportunidad;
 use App\Modelos\Oportunidad\EtiquetasOportunidad;
 use App\Modelos\Oportunidad\ColaboradorOportunidad;
 use App\Modelos\Oportunidad\ServicioOportunidad;
 use App\Modelos\Oportunidad\ProspectoOportunidad;
+
+use App\Modelos\Empresa\Empresa;
+use App\Modelos\Empresa\EmpresaProspecto;
+
+
 use App\Evento;
 use App\Modelos\Extras\RecordatorioProspecto;
 use App\Modelos\Extras\DetalleRecordatorioProspecto;
@@ -32,7 +38,6 @@ use App\Modelos\Extras\DetalleEvento;
 use App\Modelos\Oportunidad\StatusOportunidad;
 use App\Modelos\Prospecto\StatusProspecto;
 use App\Modelos\Prospecto\CatStatusProspecto;
-use App\Modelos\Empresa\EmpresaProspecto;
 use App\Events\Historial;
 use App\Events\Event;
 
@@ -80,8 +85,12 @@ class ProspectosController extends Controller
                 if(!$request->hsh){
                     if( isset($request->empresa))
                     {
+                        $empresa = new Empresa;
+                        $empresa->nombre = $request->empresa;
+                        $empresa->save();
+
                         $prospecto_empresa = new EmpresaProspecto;
-                        $prospecto_empresa->id_empresa = $request->empresa;
+                        $prospecto_empresa->id_empresa = $empresa->id_empresa;
                         $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
                         $prospecto_empresa->save();
                     }
