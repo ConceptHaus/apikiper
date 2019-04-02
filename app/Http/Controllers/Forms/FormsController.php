@@ -137,7 +137,7 @@ class FormsController extends Controller
           $utm_term = $request ->utm_term;
 
         }else{
-          $utm_term = 'Orgánico';
+          $utm_term = 'Not set';
         }
 
         if($request->fuente != null){
