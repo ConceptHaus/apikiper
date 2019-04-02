@@ -97,8 +97,8 @@ class FormsController extends Controller
 
         $campaign = DB::table('integracion_forms')->join('campaign_infos','campaign_infos.id_forms','integracion_forms.id_integracion_forms')
                     ->where('integracion_forms.id_integracion_forms',$id)
-                    ->select(DB::raw('count(*) as leads, campaign_infos.utm_term'),'campaign_infos.utm_campaign')
-                    ->groupBy('campaign_infos.utm_term')->get();
+                    ->select(DB::raw('count(*) as leads, campaign_infos.utm_campaign'),'campaign_infos.utm_term')
+                    ->groupBy('campaign_infos.utm_campaign')->get();
         $form = IntegracionForm::where('id_integracion_forms',$id)->first();
         $prospectos = IntegracionForm::all()->count();
         return response()->json([
