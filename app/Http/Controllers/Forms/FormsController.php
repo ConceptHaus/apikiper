@@ -17,6 +17,9 @@ use App\Modelos\Prospecto\CallsProstecto;
 use App\Modelos\Extras\IntegracionForm;
 use App\Modelos\Prospecto\CampaignInfo;
 
+use App\Modelos\Extras\Etiqueta;
+use App\Modelos\Prospecto\EtiquetasProspecto;
+
 use Mailgun;
 use DB;
 use Mail;
@@ -231,6 +234,18 @@ class FormsController extends Controller
                 $campaign->id_forms = $verify->id_integracion_forms;
                 $prospecto->campaign()->save($campaign);
                 
+                if(Etiqueta::where('nombre','=',$utm_campaign)->first()){ 
+                  $etiqueta = Etiqueta::where('nombre','=',$utm_campaign)->first();
+                }else{
+                  $etiqueta = new Etiqueta;
+                  $etiqueta->nombre = $utm_campaign;
+                  $etiqueta->status = 1;
+                  $etiqueta->save();
+                }
+                
+                $etiqueta_prospecto = new EtiquetasProspecto;
+                $etiqueta_prospecto->id_etiqueta = $etiqueta->id_etiqueta;
+                $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
 
                 $verify->total += 1;
                 $verify->save();
