@@ -171,7 +171,7 @@ class FormsController extends Controller
               $llamadaProspecto->caller_city = $request->caller_city;
               $llamadaProspecto->caller_state = $request->caller_state;
               $llamadaProspecto->caller_zip = $request->caller_zip;
-              $llamadaProspecto->play_recording = $request->play_recording;
+              $llamadaProspecto->recording = $request->play_recording;
               $llamadaProspecto->device_type = $request->device_type;
               $llamadaProspecto->device_make = $request->device_make;
               $llamadaProspecto->call_status = $request->call_status;
