@@ -28,6 +28,7 @@ use URL;
 use Twilio\Rest\Client;
 
 use App\Events\NewLead;
+use App\Events\NewCall;
 use App\Events\Event;
 
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
@@ -171,7 +172,7 @@ class FormsController extends Controller
               $llamadaProspecto->caller_city = $request->caller_city;
               $llamadaProspecto->caller_state = $request->caller_state;
               $llamadaProspecto->caller_zip = $request->caller_zip;
-              $llamadaProspecto->recording = $request->play_recording;
+              $llamadaProspecto->play_recording = $request->recording;
               $llamadaProspecto->device_type = $request->device_type;
               $llamadaProspecto->device_make = $request->device_make;
               $llamadaProspecto->call_status = $request->call_status;
@@ -188,6 +189,25 @@ class FormsController extends Controller
               $campaign->utm_term = $request->lead_keyword;
               $campaign->utm_source = $request->lead_source;
               $prospecto->campaign()->save($campaign);
+
+              if(Etiqueta::where('nombre','=',$campaign->utm_campaign)->first()){ 
+                  $etiqueta = Etiqueta::where('nombre','=',$campaign->utm_campaign)->first();
+                }else{
+                  $etiqueta = new Etiqueta;
+                  $etiqueta->nombre = $campaign->utm_campaign;
+                  $etiqueta->status = 1;
+                  $etiqueta->save();
+                }
+                
+                $etiqueta_prospecto = new EtiquetasProspecto;
+                $etiqueta_prospecto->id_etiqueta = $etiqueta->id_etiqueta;
+                $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
+
+                $verify->total += 1;
+                $verify->save();
+
+              //Mail New Lead
+              event(new NewCall($prospecto));
 
               DB::commit();
 
