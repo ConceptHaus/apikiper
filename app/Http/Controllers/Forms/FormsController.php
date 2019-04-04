@@ -13,8 +13,12 @@ use Carbon\Carbon;
 use App\Modelos\Prospecto\Prospecto;
 use App\Modelos\Prospecto\StatusProspecto;
 use App\Modelos\Prospecto\DetalleProspecto;
+use App\Modelos\Prospecto\CallsProstecto;
 use App\Modelos\Extras\IntegracionForm;
 use App\Modelos\Prospecto\CampaignInfo;
+
+use App\Modelos\Extras\Etiqueta;
+use App\Modelos\Prospecto\EtiquetasProspecto;
 
 use Mailgun;
 use DB;
@@ -22,6 +26,10 @@ use Mail;
 use Keygen;
 use URL;
 use Twilio\Rest\Client;
+
+use App\Events\NewLead;
+use App\Events\NewCall;
+use App\Events\Event;
 
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use RuntimeException;
@@ -90,8 +98,8 @@ class FormsController extends Controller
 
         $campaign = DB::table('integracion_forms')->join('campaign_infos','campaign_infos.id_forms','integracion_forms.id_integracion_forms')
                     ->where('integracion_forms.id_integracion_forms',$id)
-                    ->select(DB::raw('count(*) as leads, campaign_infos.utm_term'),'campaign_infos.utm_campaign')
-                    ->groupBy('campaign_infos.utm_term')->get();
+                    ->select(DB::raw('count(*) as leads, campaign_infos.utm_campaign'),'campaign_infos.utm_term')
+                    ->groupBy('campaign_infos.utm_campaign')->get();
         $form = IntegracionForm::where('id_integracion_forms',$id)->first();
         $prospectos = IntegracionForm::all()->count();
         return response()->json([
@@ -103,6 +111,7 @@ class FormsController extends Controller
             'url'=>URL::to('/api/v1/forms/register').'?token='.$form['token']
         ]);
     }
+    
 
     public function registerProspecto(Request $request){
       // return $request->query('token');
@@ -115,8 +124,23 @@ class FormsController extends Controller
         $email = $request->correo;
         $telefono = $request->telefono;
         $mensaje = $request->mensaje;
-        $utm_campaign = $request->utm_campaign;
-        $utm_term = $request ->utm_term;
+      
+        if($request->utm_campaign != null){
+
+          $utm_campaign = $request->utm_campaign;
+
+        }else{
+          $utm_campaign = 'Orgánico';
+        }
+
+        if($request ->utm_term != null){
+          
+          $utm_term = $request ->utm_term;
+
+        }else{
+          $utm_term = 'Not set';
+        }
+
         if($request->fuente != null){
             $fuente = $request->fuente;
         }else{
@@ -126,6 +150,82 @@ class FormsController extends Controller
 
 
         if($verify){
+
+          if($request->lead_type == "Phone Call"){
+            
+            try{
+
+              DB::beginTransaction();
+              $prospecto = New Prospecto();
+              $prospecto->nombre = $request->caller_name;
+              $prospecto->correo = "Not Set";
+              $prospecto->fuente = 4;
+              $prospecto->save();
+
+              $detalleProspecto = New DetalleProspecto();
+              $detalleProspecto->telefono = $request->caller_number;
+              $prospecto->detalle_prospecto()->save($detalleProspecto);
+
+              $llamadaProspecto = New CallsProstecto();
+              $llamadaProspecto->caller_number = $request->caller_number;
+              $llamadaProspecto->caller_name = $request->caller_name;
+              $llamadaProspecto->caller_city = $request->caller_city;
+              $llamadaProspecto->caller_state = $request->caller_state;
+              $llamadaProspecto->caller_zip = $request->caller_zip;
+              $llamadaProspecto->play_recording = $request->recording;
+              $llamadaProspecto->device_type = $request->device_type;
+              $llamadaProspecto->device_make = $request->device_make;
+              $llamadaProspecto->call_status = $request->call_status;
+              $llamadaProspecto->call_duration = $request->call_duration;
+              $prospecto->calls()->save($llamadaProspecto);
+
+              $status = New StatusProspecto();
+              $status->id_cat_status_prospecto = 1;
+              $prospecto->status_prospecto()->save($status);
+
+              $campaign = New CampaignInfo();
+              $campaign->id_forms = $verify->id_integracion_forms;
+              $campaign->utm_campaign = $request->lead_campaign;
+              $campaign->utm_term = $request->lead_keyword;
+              $campaign->utm_source = $request->lead_source;
+              $prospecto->campaign()->save($campaign);
+
+              if(Etiqueta::where('nombre','=',$campaign->utm_campaign)->first()){ 
+                  $etiqueta = Etiqueta::where('nombre','=',$campaign->utm_campaign)->first();
+                }else{
+                  $etiqueta = new Etiqueta;
+                  $etiqueta->nombre = $campaign->utm_campaign;
+                  $etiqueta->status = 1;
+                  $etiqueta->save();
+                }
+                
+                $etiqueta_prospecto = new EtiquetasProspecto;
+                $etiqueta_prospecto->id_etiqueta = $etiqueta->id_etiqueta;
+                $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
+
+                $verify->total += 1;
+                $verify->save();
+
+              //Mail New Lead
+              event(new NewCall($prospecto));
+
+              DB::commit();
+
+              return response()->json([
+                 'message'=>'Success',
+                'error'=>false
+              ],201);
+
+            }catch(Exception $e){
+
+              return response()->json([
+                'message'=>'Error',
+                'error'=>true
+              ],401);
+            }
+              
+
+          }else{
 
             try{
 
@@ -154,11 +254,28 @@ class FormsController extends Controller
                 $campaign->id_forms = $verify->id_integracion_forms;
                 $prospecto->campaign()->save($campaign);
                 
+                if(Etiqueta::where('nombre','=',$utm_campaign)->first()){ 
+                  $etiqueta = Etiqueta::where('nombre','=',$utm_campaign)->first();
+                }else{
+                  $etiqueta = new Etiqueta;
+                  $etiqueta->nombre = $utm_campaign;
+                  $etiqueta->status = 1;
+                  $etiqueta->save();
+                }
+                
+                $etiqueta_prospecto = new EtiquetasProspecto;
+                $etiqueta_prospecto->id_etiqueta = $etiqueta->id_etiqueta;
+                $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
 
                 $verify->total += 1;
                 $verify->save();
 
                 DB::commit();
+                
+                  
+                //Mail New Lead
+                event(new NewLead($prospecto));
+
 
                 return response()->json([
                   'message'=>'Success',
@@ -175,6 +292,10 @@ class FormsController extends Controller
                 ]);
 
             }
+
+          }
+
+            
 
 
         }

@@ -19,6 +19,12 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\Historial' => [
             'App\Listeners\HistorialListener'
         ],
+        'App\Events\NewLead' => [
+            'App\Listeners\NewLeadListener'
+        ],
+        'App\Events\NewCall' => [
+            'App\Listeners\NewCallListener'
+        ],
     ];
 
     /**
