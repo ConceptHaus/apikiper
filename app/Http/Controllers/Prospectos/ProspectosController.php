@@ -38,6 +38,11 @@ use App\Modelos\Extras\DetalleEvento;
 use App\Modelos\Oportunidad\StatusOportunidad;
 use App\Modelos\Prospecto\StatusProspecto;
 use App\Modelos\Prospecto\CatStatusProspecto;
+<<<<<<< HEAD
+use App\Modelos\Empresa\EmpresaProspecto;
+use App\Modelos\Empresa\Empresa;
+=======
+>>>>>>> 3e5b34f969baaa9315974c44f6ba98267d043f67
 use App\Events\Historial;
 use App\Events\Event;
 
@@ -296,6 +301,7 @@ class ProspectosController extends Controller
             }
             if(!$request->hsh){
                 if(isset($request->empresa)){
+                    /*
                     $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->wherenull('deleted_at')->get();
                     foreach($prospecto_empresa as $pe){
                         $pe->delete();
@@ -314,6 +320,28 @@ class ProspectosController extends Controller
                     $prospecto_empresa->id_empresa = $empresa->id_empresa;
                     $prospecto_empresa->id_prospecto = $id;
                     $prospecto_empresa->save();
+                    */
+                    $empresa = Empresa::where('nombre', '=', $request->empresa)->wherenull('deleted_at')->first();
+                    if($empresa){
+                        $empresa_prospecto = EmpresaProspecto::where('id_prospecto', '=', $prospecto->id_prospecto)
+                                            ->where('id_empresa', '=', $empresa->id_empresa)
+                                            ->wherenull('deleted_at')
+                                            ->first();
+                        if(!$empresa_prospecto){
+                            $prospecto_empresa = new EmpresaProspecto;
+                            $prospecto_empresa->id_empresa = $empresa->id_empresa;
+                            $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
+                            $prospecto_empresa->save();
+                        }
+                    }else{
+                        $empresa = new Empresa;
+                        $empresa->nombre = $request->empresa;
+                        $empresa->save();
+                        $prospecto_empresa = new EmpresaProspecto;
+                        $prospecto_empresa->id_empresa = $empresa->id_empresa;
+                        $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
+                        $prospecto_empresa->save();
+                    }
                 }
             }else {
                 $detalle->empresa = $request->empresa;
