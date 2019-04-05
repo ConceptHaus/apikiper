@@ -38,11 +38,6 @@ use App\Modelos\Extras\DetalleEvento;
 use App\Modelos\Oportunidad\StatusOportunidad;
 use App\Modelos\Prospecto\StatusProspecto;
 use App\Modelos\Prospecto\CatStatusProspecto;
-<<<<<<< HEAD
-use App\Modelos\Empresa\EmpresaProspecto;
-use App\Modelos\Empresa\Empresa;
-=======
->>>>>>> 3e5b34f969baaa9315974c44f6ba98267d043f67
 use App\Events\Historial;
 use App\Events\Event;
 
