@@ -30,13 +30,26 @@ class ColaboradorInsights{
             
             if(count($consulta)){
 
-                $output = array_map(function ($object) { return $object; },$consulta->toArray());
-                echo implode(', ', $output);
-                // Mailgun::send('mailgin.report',$consulta, function($message) use ($consulta){
-                //     $contacto->from('activity@kiper.io','Kiper');
-                //     $contacto->subject('¿Hacemos números? | Reporte Semanal');
-                //     $contacto->to($user->email,$user->nombre.' '.$user->apellido);
-                // });
+                $result = [];
+                
+                // foreach($consulta as $value){
+                //     // $result['id'] = $value->id;
+                //     // $result['color'] = $value->color;
+                //     // $result['total'] = $value->total;
+                //     // $result['status'] = $value->status;
+                //     //array_push($result,$value->color,$value->total,$value->status);
+                    
+                // }
+
+                $data =['result'=>$consulta,'user'=>$user];
+
+                echo '---'.$data['user']->email.' '.$data['result'].'---';
+                Mailgun::send('mailing.reportes',$data, function($message) use ($data){
+                    $message->from('activity@kiper.io','Kiper');
+                    $message->subject('¿Hacemos números? | Reporte Semanal');
+                    $message->to('57dced4c42-3a998f@inbox.mailtrap.io');
+                    //$message->to($data['user']->email,$data['user']->nombre.' '.$data['user']->apellido);
+                });
 
             }else{
                  

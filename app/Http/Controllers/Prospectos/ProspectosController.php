@@ -300,8 +300,18 @@ class ProspectosController extends Controller
                     foreach($prospecto_empresa as $pe){
                         $pe->delete();
                     }
+                    
+                    if( Empresa::where('nombre','=',$request->empresa)->first() != null ){
+                        $empresa = Empresa::where('nombre','=',$request->empresa)->first();
+                    }else{
+                        $empresa = new Empresa;
+                        $empresa->nombre = $request->empresa;
+                        $empresa->save();
+                    }
+                    
+
                     $prospecto_empresa = new EmpresaProspecto;
-                    $prospecto_empresa->id_empresa = $request->empresa;
+                    $prospecto_empresa->id_empresa = $empresa->id_empresa;
                     $prospecto_empresa->id_prospecto = $id;
                     $prospecto_empresa->save();
                 }
