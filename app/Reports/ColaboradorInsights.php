@@ -16,6 +16,7 @@ class ColaboradorInsights{
     
     function __construct()
     {   
+        
         $this->now = Carbon::now()->toDateTimeString();
         $this->last_week = Carbon::now()->subWeek()->toDateTimeString();
         $this->users = User::all();
@@ -23,7 +24,9 @@ class ColaboradorInsights{
     }
     
     public function sendReport(){
-
+        
+        $fin = Carbon::now()->format('l jS');
+        $inicio = Carbon::now()->subWeek()->format('l jS');
 
         foreach ($this->users as $user) {
             $consulta = $this->consultaOportunidades($user->id,$this->now,$this->last_week);
@@ -41,9 +44,9 @@ class ColaboradorInsights{
                     
                 // }
 
-                $data =['result'=>$consulta,'user'=>$user];
-
-                echo '---'.$data['user']->email.' '.$data['result'].'---';
+                // $data =['result'=>$consulta,'user'=>$user, 'inicio'=>$inicio,'fin'=>$fin];
+                // echo $inicio.' '.$fin;
+                //echo '---'.$data['user']->email.' '.$data['result'].'---';
                 Mailgun::send('mailing.reportes',$data, function($message) use ($data){
                     $message->from('activity@kiper.io','Kiper');
                     $message->subject('¿Hacemos números? | Reporte Semanal');

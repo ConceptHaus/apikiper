@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-
+use Carbon\Carbon;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -13,7 +13,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        setLocale(LC_TIME, 'sv');
+        Carbon::setLocale('sv');
     }
 
     /**
@@ -23,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+            
             $this->app->bind('mailgun.client', function() {
                 return \Http\Adapter\Guzzle6\Client::createWithConfig([
                     // your Guzzle6 configuration
