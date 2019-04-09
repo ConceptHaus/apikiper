@@ -51,7 +51,7 @@ class ColaboradorInsights{
                     $message->from('activity@kiper.io','Kiper');
                     $message->subject('¿Hacemos números? | Reporte Semanal');
                     $message->to('57dced4c42-3a998f@inbox.mailtrap.io');
-                    //$message->to($data['user']->email,$data['user']->nombre.' '.$data['user']->apellido);
+                    $message->to($data['user']->email,$data['user']->nombre.' '.$data['user']->apellido);
                 });
 
             }else{
@@ -71,7 +71,7 @@ class ColaboradorInsights{
                     ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
                     ->whereNull('oportunidades.deleted_at')
                     ->where('colaborador_oportunidad.id_colaborador',$id)
-                    //->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
+                    ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
                     ->select('cat_status_oportunidad.id_cat_status_oportunidad as id','cat_status_oportunidad.color',DB::raw('count(*) as total, cat_status_oportunidad.status'))->groupBy('cat_status_oportunidad.status')
                     ->get(); 
         
