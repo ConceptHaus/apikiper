@@ -441,7 +441,7 @@
                             <td class="mcnImageContent" valign="top" style="padding-right: 0px; padding-left: 0px; padding-top: 0; padding-bottom: 0; text-align:center;">
                                 
                                     
-                                        <img align="center" alt="" src="https://gallery.mailchimp.com/766ee0c962d543c02140cdccb/images/0d1778b8-f2c7-4598-b4ad-4e53467595aa.gif" width="600" style="max-width: 600px; padding-bottom: 0px; vertical-align: bottom; display: inline !important; border-radius: 0%;" class="mcnImage">
+                                        <img align="center" alt="" src="https://gallery.mailchimp.com/766ee0c962d543c02140cdccb/images/32d73bd6-a539-4888-bd7a-b54b4ce13efc.gif" width="600" style="max-width: 600px; padding-bottom: 0px; vertical-align: bottom; display: inline !important; border-radius: 0%;" class="mcnImage">
                                     
                                 
                             </td>
