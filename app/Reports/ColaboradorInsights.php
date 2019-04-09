@@ -45,7 +45,7 @@ class ColaboradorInsights{
                 // }
                 
 
-                // $data =['result'=>$consulta,'user'=>$user, 'inicio'=>$inicio,'fin'=>$fin];
+                $data =['result'=>$consulta,'user'=>$user, 'inicio'=>$inicio,'fin'=>$fin];
                 // echo $inicio.' '.$fin;
                 //echo '---'.$data['user']->email.' '.$data['result'].'---';
                 Mailgun::send('mailing.reportes',$data, function($message) use ($data){
