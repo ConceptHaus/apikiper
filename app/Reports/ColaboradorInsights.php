@@ -29,7 +29,7 @@ class ColaboradorInsights{
         $inicio = Carbon::now()->subWeek()->format('l jS');
 
         foreach ($this->users as $user) {
-            $consulta = $this->consultaOportunidades($user->id,$this->now,$this->last_week);
+            $consulta = $this->consultaOportunidades($user->id,$this->last_week,$this->now);
             
             if(count($consulta)){
 
