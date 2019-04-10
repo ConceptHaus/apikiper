@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Modelos\EMpresa;
+namespace App\Modelos\Empresa;
 
 use Illuminate\Database\Eloquent\Model;
 
-use Alsofronie\Uuid\UuidModelTrait;
+//use Alsofronie\Uuid\UuidModelTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class EmpresaProspecto extends Model
 {
-    use UuidModelTrait;
-    use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
+    //use UuidModelTrait;
+    //use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
     use SoftDeletes;
 
     protected $table = 'prospectos_empresas';
