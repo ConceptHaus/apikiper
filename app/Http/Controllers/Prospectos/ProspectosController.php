@@ -91,15 +91,20 @@ class ProspectosController extends Controller
                             $prospecto_empresa->id_empresa = $empresa->id_empresa;
                             $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
                             $prospecto_empresa->save();
+                            $prospectoDetalle->empresa = $request->empresa;
                         }else{
-                            $empresa = new Empresa;
-                            $empresa->nombre = $request->empresa;
-                            $empresa->save();
-
-                            $prospecto_empresa = new EmpresaProspecto;
-                            $prospecto_empresa->id_empresa = $empresa->id_empresa;
-                            $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
-                            $prospecto_empresa->save();
+                            $empresa_new = new Empresa;
+                            $empresa_new->nombre = $request->empresa;
+                            //$empresa_new->save();
+                            
+                            if($empresa_new->save()){
+                                $prospecto_empresa = new EmpresaProspecto;
+                                $prospecto_empresa->id_empresa = $empresa_new->id_empresa;
+                                $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
+                                $prospecto_empresa->save();
+                            }
+                            $prospectoDetalle->empresa = $request->empresa;
+                            
                         }
                         
                     }
