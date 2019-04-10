@@ -164,6 +164,8 @@ class FormsController extends Controller
 
               $detalleProspecto = New DetalleProspecto();
               $detalleProspecto->telefono = $request->caller_number;
+              $detalleProspecto->celular = $request->caller_number;
+              $detalleProspecto->whatsapp = $request->caller_number;
               $prospecto->detalle_prospecto()->save($detalleProspecto);
 
               $llamadaProspecto = New CallsProstecto();
@@ -242,6 +244,8 @@ class FormsController extends Controller
                 $detalleProspecto = new DetalleProspecto();
                 $detalleProspecto->empresa = $empresa;
                 $detalleProspecto->telefono = $telefono;
+                $detalleProspecto->celular = $telefono;
+                $detalleProspecto->whatsapp = $telefono;
                 $detalleProspecto->nota = $mensaje;
                 $prospecto->detalle_prospecto()->save($detalleProspecto);
 
