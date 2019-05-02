@@ -196,10 +196,18 @@ class FormsController extends Controller
               if(Etiqueta::where('nombre','=',$campaign->utm_campaign)->first()){ 
                   $etiqueta = Etiqueta::where('nombre','=',$campaign->utm_campaign)->first();
                 }else{
-                  $etiqueta = new Etiqueta;
-                  $etiqueta->nombre = $campaign->utm_campaign;
-                  $etiqueta->status = 1;
-                  $etiqueta->save();
+                  if($campaign->utm_campaign){
+                    $etiqueta = new Etiqueta;
+                    $etiqueta->nombre = $campaign->utm_campaign;
+                    $etiqueta->status = 1;
+                    $etiqueta->save();
+                  }else{
+                    $etiqueta = new Etiqueta;
+                    $etiqueta->nombre = 'Directo';
+                    $etiqueta->status = 1;
+                    $etiqueta->save();
+                  }
+                  
                 }
                 
                 $etiqueta_prospecto = new EtiquetasProspecto;
