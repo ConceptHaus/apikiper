@@ -376,8 +376,8 @@ class ColaboradoresController extends Controller
           }
 
           $borrar = User::where('id', $id_borrar)->first();
-          $borrar->email = null;
-          $borrar->save();
+          //$borrar->email = null;
+          //$borrar->save();
           $borrar->delete();
 
           DB::commit();
