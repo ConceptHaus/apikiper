@@ -21,8 +21,8 @@ class CatalogoSeeder extends Seeder
         DB::table('cat_status_oportunidad')->insert(['status'=>'Cerrado','color'=>'#37af9b','created_at'=> now()]);
         DB::table('cat_status_oportunidad')->insert(['status'=>'No viable','color'=>'#000000','created_at'=> now()]);
         //Categorias Status Prospecto
-        DB::table('cat_status_prospecto')->insert(['status'=>'Contactado','color'=>'#000000','created_at'=> now()]);
-        DB::table('cat_status_prospecto')->insert(['status'=>'No contactado','color'=>'#000000','created_at'=> now()]);
+        DB::table('cat_status_prospecto')->insert(['status'=>'Contactado','color'=>'#18c5a9','created_at'=> now()]);
+        DB::table('cat_status_prospecto')->insert(['status'=>'No contactado','color'=>'#f39c12','created_at'=> now()]);
         //Categoria Medio Contacto
         DB::table('mediocontacto_catalogo')->insert(['nombre'=>'Nota','color'=>'#ffd505','created_at'=> now()]);
         DB::table('mediocontacto_catalogo')->insert(['nombre'=>'Llamada','color'=>'#297c35','created_at'=> now()]);
