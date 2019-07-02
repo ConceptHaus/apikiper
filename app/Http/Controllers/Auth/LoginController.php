@@ -98,8 +98,17 @@ class LoginController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => $this->guard()->factory()->getTTL() / 60
+            'expires_in' => $this->guard()->factory()->getTTL() / 60,
+            'hash'=>$this->hash($this->guard()->user()->id)
         ]);
+    }
+
+    protected function hash($id){
+        return hash_hmac(
+        'sha256', // hash function
+        $id, // user's id
+        '7hVgZ2IFrt6AFM9VWQvy54wMyQk8sDyIY5CNjyFF' // secret key (keep safe!)
+        );
     }
 
     /**
