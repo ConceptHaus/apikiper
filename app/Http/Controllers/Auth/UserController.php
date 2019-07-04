@@ -206,6 +206,15 @@ class UserController extends Controller
         }
     }
 
+    public function onBoarding(Request $request){
+        $auth = $this->guard()->user();
+        if($auth->onboardgin_tour == 0){
+            $auth->onbarding_tour = 1;
+            $auth->save();
+            return response()->json(['tour'=>true]);
+        }
+        return response()->json(['tour'=>false]);
+    }
  
     
        /**

@@ -143,6 +143,7 @@ class FormsController extends Controller
 
         if($request->fuente != null){
             $fuente = $request->fuente;
+            
         }else{
           $fuente = 2;
         }

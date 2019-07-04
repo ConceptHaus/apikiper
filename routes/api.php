@@ -33,7 +33,7 @@ Route::prefix('/v1/users')->group(function(){
             Route::post('/login', 'Auth\LoginController@login');
             Route::get('/activate/{token}','Auth\UserController@activateUser');
             Route::post('/password','Auth\UserController@setPassword');
-
+            Route::get('/onboarding','Auth\USercontroller@onBoarding');
         });
 
         Route::middleware(['auth','cors'])->group(function(){
