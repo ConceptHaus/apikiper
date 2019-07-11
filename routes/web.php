@@ -11,6 +11,6 @@
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function(){
+    return response()->json(['Error'=>'Nothing here. ⚠️'],200);
+});
