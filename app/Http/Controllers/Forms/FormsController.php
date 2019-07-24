@@ -311,18 +311,29 @@ class FormsController extends Controller
           $campaign->id_forms = $verify;
           $prospecto->campaign()->save($campaign);
 
-          $etiqueta = Etiqueta::where('nombre','=',$campaign->utm_campaign)->first();
-          
-          if(!$etiqueta){
-              $etiqueta = new Etiqueta;
-              $etiqueta->nombre = $campaign->utm_campaign;
-              $etiqueta->status = 1;
-              $etiqueta->save();
+          $etiqueta_campaign = Etiqueta::where('nombre','=',$campaign->utm_campaign)->first();
+          $etiqueta_term = Etiqueta::where('nombre','=',$campaign->utm_term)->first();
+
+          if(!$etiqueta_campaign){
+              $etiqueta_campaign = new Etiqueta;
+              $etiqueta_campaign->nombre = $campaign->utm_campaign;
+              $etiqueta_campaign->status = 1;
+              $etiqueta_campaign->save();
+          }
+          if(!$etiqueta_term){
+              $etiqueta_term = new Etiqueta;
+              $etiqueta_term->nombre = $campaign->utm_term;
+              $etiqueta_term->status = 1;
+              $etiqueta_term->save();
           }
 
-          $etiqueta_prospecto = new EtiquetasProspecto;
-          $etiqueta_prospecto->id_etiqueta = $etiqueta->id_etiqueta;
-          $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
+          $etiqueta_prospecto_c = new EtiquetasProspecto;
+          $etiqueta_prospecto_c->id_etiqueta = $etiqueta_campaign->id_etiqueta;
+          $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto_c);
+
+          $etiqueta_prospecto_t = new EtiquetasProspecto;
+          $etiqueta_prospecto_t->id_etiqueta = $etiqueta_term->id_etiqueta;
+          $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto_t);
 
           
           if(strpos($data['utm_campaign'],'can') !== false){
