@@ -329,11 +329,11 @@ class FormsController extends Controller
           $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto_t);
 
           //Condicional etiqueta Colabora
-          if(strpos($data['utm_campaign'],'can') !== false){
+          if(strpos($data['utm_campaign'],'cancol') !== false){
             event(new CoCan($prospecto));
           }
 
-          if(strpos($data['utm_campaign'],'gdl') !== false){
+          if(strpos($data['utm_campaign'],'gdlcol') !== false){
             event(new CoGdl($prospecto));
           }
 
