@@ -29,6 +29,8 @@ use Twilio\Rest\Client;
 
 use App\Events\NewLead;
 use App\Events\NewCall;
+use App\Events\CoCan;
+use App\Events\CoGdl;
 use App\Events\Event;
 
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
@@ -37,11 +39,12 @@ class FormsController extends Controller
 {
 
     public function addNew(Request $request){
-        $validator = $this->validatorForm($request->all());
+         $validator = $this->validatorForm($request->all());
          $key =  Keygen::alphanum(32)->generate();
          $url_success = $request->url_success;
          $url_error = $request->url_error;
          $nombre_form = $request->nombre;
+
         if($validator->passes()){
 
             try{
@@ -75,7 +78,9 @@ class FormsController extends Controller
 
 
         }
+
         $errors = $validator->errors()->toArray();
+
         return response()->json([
             'error'=>true,
             'messages'=> $errors
@@ -118,111 +123,11 @@ class FormsController extends Controller
         $token = $request->query('token');
         $verify = IntegracionForm::where('token',$token)->first();
 
-        $nombre = $request->nombre;
-        $apellido = $request->apellido;
-        $empresa = $request->empresa;
-        $email = $request->correo;
-        $telefono = $request->telefono;
-        $mensaje = $request->mensaje;
-      
-        if($request->utm_campaign != null){
-
-          $utm_campaign = $request->utm_campaign;
-
-        }else{
-          $utm_campaign = 'Orgánico';
-        }
-
-        if($request ->utm_term != null){
-          
-          $utm_term = $request ->utm_term;
-
-        }else{
-          $utm_term = 'Not set';
-        }
-
-        if($request->fuente != null){
-            $fuente = $request->fuente;
-            
-        }else{
-          $fuente = 2;
-        }
-        
-
-
         if($verify){
-
-          if($request->lead_type == "Phone Call"){
-            
             try{
-
-              DB::beginTransaction();
-              $prospecto = New Prospecto();
-              $prospecto->nombre = $request->caller_name;
-              $prospecto->correo = "Not Set";
-              $prospecto->fuente = 4;
-              $prospecto->save();
-
-              $detalleProspecto = New DetalleProspecto();
-              $detalleProspecto->telefono = $request->caller_number;
-              $detalleProspecto->celular = $request->caller_number;
-              $detalleProspecto->whatsapp = $request->caller_number;
-              $prospecto->detalle_prospecto()->save($detalleProspecto);
-
-              $llamadaProspecto = New CallsProstecto();
-              $llamadaProspecto->caller_number = $request->caller_number;
-              $llamadaProspecto->caller_name = $request->caller_name;
-              $llamadaProspecto->caller_city = $request->caller_city;
-              $llamadaProspecto->caller_state = $request->caller_state;
-              $llamadaProspecto->caller_zip = $request->caller_zip;
-              $llamadaProspecto->play_recording = $request->recording;
-              $llamadaProspecto->device_type = $request->device_type;
-              $llamadaProspecto->device_make = $request->device_make;
-              $llamadaProspecto->call_status = $request->call_status;
-              $llamadaProspecto->call_duration = $request->call_duration;
-              $prospecto->calls()->save($llamadaProspecto);
-
-              $status = New StatusProspecto();
-              $status->id_cat_status_prospecto = 1;
-              $prospecto->status_prospecto()->save($status);
-
               
-              $campaign = New CampaignInfo();
-              $campaign->id_forms = $verify->id_integracion_forms;
-              $campaign->utm_campaign = $request->lead_campaign;
-              $campaign->utm_term = $request->lead_keyword;
-              $campaign->utm_source = $request->lead_source;
-              $prospecto->campaign()->save($campaign);
-
-              if(Etiqueta::where('nombre','=',$campaign->utm_campaign)->first()){ 
-                  $etiqueta = Etiqueta::where('nombre','=',$campaign->utm_campaign)->first();
-                }else{
-                  if($campaign->utm_campaign){
-                    $etiqueta = new Etiqueta;
-                    $etiqueta->nombre = $campaign->utm_campaign;
-                    $etiqueta->status = 1;
-                    $etiqueta->save();
-                  }else{
-                    $etiqueta = new Etiqueta;
-                    $etiqueta->nombre = 'Directo';
-                    $etiqueta->status = 1;
-                    $etiqueta->save();
-                  }
-                  
-                }
-                
-                $etiqueta_prospecto = new EtiquetasProspecto;
-                $etiqueta_prospecto->id_etiqueta = $etiqueta->id_etiqueta;
-                $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
-
-                $verify->total += 1;
-                $verify->save();
-
-              //Mail New Lead
-              event(new NewCall($prospecto));
-
-              DB::commit();
-
+              $this->addProspecto($request->all(),$verify->id_integracion_forms);
+              
               return response()->json([
                  'message'=>'Success',
                 'error'=>false
@@ -235,89 +140,12 @@ class FormsController extends Controller
                 'error'=>true
               ],401);
             }
-              
-
-          }else{
-
-            try{
-
-                DB::beginTransaction();
-
-                $prospecto = new Prospecto();
-                $prospecto->nombre = $nombre;
-                $prospecto->apellido = $apellido;
-                $prospecto->correo = $email;
-                $prospecto->fuente = $fuente;
-                $prospecto->save();
-
-                $detalleProspecto = new DetalleProspecto();
-                $detalleProspecto->empresa = $empresa;
-                $detalleProspecto->telefono = $telefono;
-                $detalleProspecto->celular = $telefono;
-                $detalleProspecto->whatsapp = $telefono;
-                $detalleProspecto->nota = $mensaje;
-                $prospecto->detalle_prospecto()->save($detalleProspecto);
-
-                $status = new StatusProspecto();
-                $status->id_cat_status_prospecto = 2;
-                $prospecto->status_prospecto()->save($status);
-
-                $campaign = new CampaignInfo();
-                $campaign->utm_term = $utm_term;
-                $campaign->utm_campaign = $utm_campaign;
-                $campaign->id_forms = $verify->id_integracion_forms;
-                $prospecto->campaign()->save($campaign);
-                
-                if(Etiqueta::where('nombre','=',$utm_campaign)->first()){ 
-                  $etiqueta = Etiqueta::where('nombre','=',$utm_campaign)->first();
-                }else{
-                  $etiqueta = new Etiqueta;
-                  $etiqueta->nombre = $utm_campaign;
-                  $etiqueta->status = 1;
-                  $etiqueta->save();
-                }
-                
-                $etiqueta_prospecto = new EtiquetasProspecto;
-                $etiqueta_prospecto->id_etiqueta = $etiqueta->id_etiqueta;
-                $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
-
-                $verify->total += 1;
-                $verify->save();
-
-                DB::commit();
-                
-                  
-                //Mail New Lead
-                event(new NewLead($prospecto));
-
-
-                return response()->json([
-                  'message'=>'Success',
-                  'error'=>false
-                ]);
-
-            }catch(Exception $e){
-
-                DB::rollBack();
-                Bugsnag::notifyException(new RuntimeException("La integración no está registrando prospectos"));
-                return response()->json([
-                  'message'=>'Error',
-                  'error'=>true
-                ]);
-
-            }
-
-          }
-
-            
-
-
         }
 
         return response()->json([
                   'message'=>'Error',
                   'error'=>true
-                ]);
+        ], 401);
     }
 
     public function updateForm(Request $request){
@@ -384,6 +212,136 @@ class FormsController extends Controller
 
     }
 
+    
+
+    public function addProspecto(array $data, $verify){
+        
+        DB::beginTransaction();
+
+        $prospecto = new Prospecto();
+        $status = new StatusProspecto();
+
+        if(isset($data['lead_type'])){
+          $prospecto->nombre = $data['caller_name'];
+          $prospecto->correo = 'Not set';
+          $prospecto->fuente = 4;
+          $prospecto->save();
+          
+          //Call
+          $llamadaProspecto = New CallsProstecto();
+          $llamadaProspecto->caller_number = $data['caller_number'];
+          $llamadaProspecto->caller_name = $data['caller_name'];
+          $llamadaProspecto->caller_city = $data['caller_city'];
+          $llamadaProspecto->caller_state = $data['caller_state'];
+          $llamadaProspecto->caller_zip = $data['caller_zip'];
+          $llamadaProspecto->play_recording = $data['recording'];
+          $llamadaProspecto->device_type = $data['device_type'];
+          $llamadaProspecto->device_make = $data['device_make'];
+          $llamadaProspecto->call_status = $data['call_status'];
+          $llamadaProspecto->call_duration = $data['call_duration'];
+          $prospecto->calls()->save($llamadaProspecto);
+
+          $detalleProspecto = new DetalleProspecto();
+          $detalleProspecto->telefono = $data['caller_number'];
+          $detalleProspecto->celular = $data['caller_number'];
+          $detalleProspecto->whatsapp = $data['caller_number'];
+          $prospecto->detalle_prospecto()->save($detalleProspecto);
+
+          $status->id_cat_status_prospecto = 1;
+          $prospecto->status_prospecto()->save($status);
+
+
+
+          if(isset($data['lead_campaign'])){
+
+          $campaign = new CampaignInfo();
+          $campaign->utm_term = $data['lead_keyword'];
+          $campaign->utm_campaign = $data['lead_campaign'];
+          $campaign->id_forms = $verify;
+          $prospecto->campaign()->save($campaign);
+
+          $etiqueta = Etiqueta::where('nombre','=',$campaign->utm_campaign)->first();
+          
+          if(!$etiqueta){
+              $etiqueta = new Etiqueta;
+              $etiqueta->nombre = $campaign->utm_campaign;
+              $etiqueta->status = 1;
+              $etiqueta->save();
+          }
+
+          $etiqueta_prospecto = new EtiquetasProspecto;
+          $etiqueta_prospecto->id_etiqueta = $etiqueta->id_etiqueta;
+          $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
+        }
+
+        event(new NewCall($prospecto));
+
+        }else{
+          $prospecto->nombre = $data['nombre'];
+          $prospecto->apellido = $data['apellido'];
+          $prospecto->correo = $data['correo'];
+          $prospecto->fuente = $data['fuente'];
+          $prospecto->save();
+
+          
+          $detalleProspecto = new DetalleProspecto();
+          $detalleProspecto->empresa = $data['empresa'];
+          $detalleProspecto->telefono = $data['telefono'];
+          $detalleProspecto->celular = $data['telefono'];
+          $detalleProspecto->whatsapp = $data['telefono'];
+          $detalleProspecto->nota = $data['mensaje'];
+          $prospecto->detalle_prospecto()->save($detalleProspecto);
+          
+          $status->id_cat_status_prospecto = 2;
+          $prospecto->status_prospecto()->save($status);
+
+          if(isset($data['utm_campaign'])){
+
+          $campaign = new CampaignInfo();
+          $campaign->utm_term = $data['utm_term'];
+          $campaign->utm_campaign = $data['utm_campaign'];
+          $campaign->id_forms = $verify;
+          $prospecto->campaign()->save($campaign);
+
+          $etiqueta = Etiqueta::where('nombre','=',$campaign->utm_campaign)->first();
+          
+          if(!$etiqueta){
+              $etiqueta = new Etiqueta;
+              $etiqueta->nombre = $campaign->utm_campaign;
+              $etiqueta->status = 1;
+              $etiqueta->save();
+          }
+
+          $etiqueta_prospecto = new EtiquetasProspecto;
+          $etiqueta_prospecto->id_etiqueta = $etiqueta->id_etiqueta;
+          $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
+
+          
+          if(strpos($data['utm_campaign'],'can') !== false){
+            event(new CoCan($prospecto));
+          }
+          if(strpos($data['utm_campaign'],'gdl') !== false){
+            event(new CoGdl($prospecto));
+          }
+          
+        }
+
+        event(new NewLead($prospecto));
+
+        }
+        
+        DB::commit();
+
+        
+        
+        //Condicional etiqueta Colabora
+
+    }
+
+
+
+
+    //Validadores
     public function validatorUpdate(array $data){
       return Validator::make($data, [
         'id'=>'required|exists:integracion_forms,id_integracion_forms',
@@ -400,5 +358,6 @@ class FormsController extends Controller
             'url_error'=>'required|string'
         ]);
     }
+
 
 }

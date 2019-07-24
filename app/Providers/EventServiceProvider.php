@@ -25,6 +25,12 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\NewCall' => [
             'App\Listeners\NewCallListener'
         ],
+        'App\Events\CoCan'=>[
+            'App\Listeners\ColaboraCanListener'
+        ],
+        'App\Events\CoGdl'=>[
+            'App\Listeners\ColaboraGdlListener'
+        ]
     ];
 
     /**
