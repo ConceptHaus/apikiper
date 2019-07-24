@@ -57,8 +57,8 @@ class NewLeadListener
             $data['empresa_p'] = $actividad->detalle_prospecto->empresa;
             $data['telefono_p'] = $actividad->detalle_prospecto->telefono;
             $data['mensaje_p'] = $actividad->detalle_prospecto->nota;
-            $data['campaign_p'] = $actividad->campaign->utm_campaign;
-            $data['term_p'] = $actividad->campaign->utm_term;
+            $data['campaign_p'] = (isset($actividad->campaign->utm_campaign) ? $actividad->campaign->utm_campaign : 'orgánico');
+            $data['term_p'] = (isset($actividad->campaign->utm_term) ? $actividad->campaign->utm_term : 'orgánico');
 
 
 

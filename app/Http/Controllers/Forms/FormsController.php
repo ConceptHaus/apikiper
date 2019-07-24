@@ -231,9 +231,9 @@ class FormsController extends Controller
           $llamadaProspecto = New CallsProstecto();
           $llamadaProspecto->caller_number = $data['caller_number'];
           $llamadaProspecto->caller_name = $data['caller_name'];
-          $llamadaProspecto->caller_city = $data['caller_city'];
-          $llamadaProspecto->caller_state = $data['caller_state'];
-          $llamadaProspecto->caller_zip = $data['caller_zip'];
+          $llamadaProspecto->caller_city = (isset($data['caller_city']) ? $data['caller_city'] : '');
+          $llamadaProspecto->caller_state = (isset($data['caller_state']) ? $data['caller_state'] : '');
+          $llamadaProspecto->caller_zip = (isset($data['caller_zip']) ? $data['caller_zip'] : '');
           $llamadaProspecto->play_recording = $data['recording'];
           $llamadaProspecto->device_type = $data['device_type'];
           $llamadaProspecto->device_make = $data['device_make'];
@@ -254,48 +254,43 @@ class FormsController extends Controller
 
           if(isset($data['lead_campaign'])){
 
-          $campaign = new CampaignInfo();
-          $campaign->utm_term = $data['lead_keyword'];
-          $campaign->utm_campaign = $data['lead_campaign'];
-          $campaign->id_forms = $verify;
-          $prospecto->campaign()->save($campaign);
+            $campaign = new CampaignInfo();
+            $campaign->utm_term = (isset($data['lead_keyword']) ? $data['lead_keyword'] : ' ');
+            $campaign->utm_campaign = (isset($data['lead_campaign']) ? $data['lead_campaign'] : 'orgánico');
+            $campaign->id_forms = $verify;
+            $prospecto->campaign()->save($campaign);
 
-          $etiqueta = Etiqueta::where('nombre','=',$campaign->utm_campaign)->first();
-          
-          if(!$etiqueta){
-              $etiqueta = new Etiqueta;
-              $etiqueta->nombre = $campaign->utm_campaign;
-              $etiqueta->status = 1;
-              $etiqueta->save();
-          }
+            $etiqueta = Etiqueta::where('nombre','=',$campaign->utm_campaign)->first();
+            
+            if(!$etiqueta){
+                $etiqueta = new Etiqueta;
+                $etiqueta->nombre = $campaign->utm_campaign;
+                $etiqueta->status = 1;
+                $etiqueta->save();
+            }
 
-          $etiqueta_prospecto = new EtiquetasProspecto;
-          $etiqueta_prospecto->id_etiqueta = $etiqueta->id_etiqueta;
-          $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
+            $etiqueta_prospecto = new EtiquetasProspecto;
+            $etiqueta_prospecto->id_etiqueta = $etiqueta->id_etiqueta;
+            $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
         }
 
         event(new NewCall($prospecto));
 
         }else{
+
           $prospecto->nombre = $data['nombre'];
-          if(isset($data['apellido'])){
-            $prospecto->apellido = $data['apellido'];
-          }
+          $prospecto->apellido = (isset($data['apellido']) ? $data['apellido'] : '');
           $prospecto->correo = $data['correo'];
           $prospecto->fuente = $data['fuente'];
           $prospecto->save();
 
           
           $detalleProspecto = new DetalleProspecto();
-          if(isset($data['empresa'])){
-            $detalleProspecto->empresa = $data['empresa'];
-          }
+          $detalleProspecto->empresa = (isset($data['empresa']) ? $data['empresa'] : '');
           $detalleProspecto->telefono = $data['telefono'];
           $detalleProspecto->celular = $data['telefono'];
           $detalleProspecto->whatsapp = $data['telefono'];
-          if(isset($data['mensaje'])){
-            $detalleProspecto->nota = $data['mensaje'];
-          }
+          $detalleProspecto->nota = (isset($data['mensaje']) ? $data['mensaje'] : '');
           $prospecto->detalle_prospecto()->save($detalleProspecto);
           
           $status->id_cat_status_prospecto = 2;
@@ -303,16 +298,14 @@ class FormsController extends Controller
 
           if(isset($data['utm_campaign'])){
 
-          $campaign = new CampaignInfo();
-          if(isset($data['utm_term'])){
-            $campaign->utm_term = $data['utm_term'];
-          }
-          $campaign->utm_campaign = $data['utm_campaign'];
-          $campaign->id_forms = $verify;
-          $prospecto->campaign()->save($campaign);
+            $campaign = new CampaignInfo();
+            $campaign->utm_term = (isset($data['utm_term']) ? $data['utm_term'] : 'orgánico' );
+            $campaign->utm_campaign = $data['utm_campaign'];
+            $campaign->id_forms = $verify;
+            $prospecto->campaign()->save($campaign);
 
-          $etiqueta_campaign = Etiqueta::where('nombre','=',$campaign->utm_campaign)->first();
-          $etiqueta_term = Etiqueta::where('nombre','=',$campaign->utm_term)->first();
+            $etiqueta_campaign = Etiqueta::where('nombre','=',$campaign->utm_campaign)->first();
+            $etiqueta_term = Etiqueta::where('nombre','=',$campaign->utm_term)->first();
 
           if(!$etiqueta_campaign){
               $etiqueta_campaign = new Etiqueta;

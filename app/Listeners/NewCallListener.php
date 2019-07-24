@@ -52,8 +52,8 @@ class NewCallListener
             $data['nombre_p'] = $actividad->nombre;
             $data['telefono_p'] = $actividad->detalle_prospecto->telefono;
             $data['recording_p'] = $actividad->calls->play_recording;
-            $data['campaign_p'] = $actividad->campaign->utm_campaign;
-            $data['term_p'] = $actividad->campaign->utm_term;
+            $data['campaign_p'] = (isset($actividad->campaign->utm_campaign) ? $actividad->campaign->utm_campaign : 'orgánico');
+            $data['term_p'] = (isset($actividad->campaign->utm_term) ? $actividad->campaign->utm_term : 'orgánico');
 
 
 
