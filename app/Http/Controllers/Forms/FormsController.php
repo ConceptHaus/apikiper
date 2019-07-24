@@ -278,18 +278,24 @@ class FormsController extends Controller
 
         }else{
           $prospecto->nombre = $data['nombre'];
-          $prospecto->apellido = $data['apellido'];
+          if(isset($data['apellido'])){
+            $prospecto->apellido = $data['apellido'];
+          }
           $prospecto->correo = $data['correo'];
           $prospecto->fuente = $data['fuente'];
           $prospecto->save();
 
           
           $detalleProspecto = new DetalleProspecto();
-          $detalleProspecto->empresa = $data['empresa'];
+          if(isset($data['empresa'])){
+            $detalleProspecto->empresa = $data['empresa'];
+          }
           $detalleProspecto->telefono = $data['telefono'];
           $detalleProspecto->celular = $data['telefono'];
           $detalleProspecto->whatsapp = $data['telefono'];
-          $detalleProspecto->nota = $data['mensaje'];
+          if(isset($data['mensaje'])){
+            $detalleProspecto->nota = $data['mensaje'];
+          }
           $prospecto->detalle_prospecto()->save($detalleProspecto);
           
           $status->id_cat_status_prospecto = 2;
