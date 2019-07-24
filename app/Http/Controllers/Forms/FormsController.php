@@ -304,7 +304,9 @@ class FormsController extends Controller
           if(isset($data['utm_campaign'])){
 
           $campaign = new CampaignInfo();
-          $campaign->utm_term = $data['utm_term'];
+          if(isset($data['utm_term'])){
+            $campaign->utm_term = $data['utm_term'];
+          }
           $campaign->utm_campaign = $data['utm_campaign'];
           $campaign->id_forms = $verify;
           $prospecto->campaign()->save($campaign);
