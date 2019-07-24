@@ -33,7 +33,7 @@ class NewLeadListener
     public function handle($event)
     {
         $actividad = $event->evento;
-        $admins = DB::table('users')->where('is_admin',1)->get();
+        $admins = DB::table('users')->where('super_admin',1)->get();
         $array_admins = array();
         //echo $admins;
         foreach ($admins as $admin) {
