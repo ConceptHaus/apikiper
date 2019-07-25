@@ -281,7 +281,7 @@ class FormsController extends Controller
           $prospecto->nombre = $data['nombre'];
           $prospecto->apellido = (isset($data['apellido']) ? $data['apellido'] : '');
           $prospecto->correo = $data['correo'];
-          $prospecto->fuente = $data['fuente'];
+          $prospecto->fuente = (isset($data['fuente']) ? $data['fuente'] : 2) ;
           $prospecto->save();
 
           
