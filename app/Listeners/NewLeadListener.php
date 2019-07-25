@@ -64,8 +64,9 @@ class NewLeadListener
 
             //Template
             //Funcion for para array de admins
-
-            Mailgun::send('mailing.template_newlead',$data, function($message) use ($data){
+            if(count($data['email']) > 0 ){
+                
+                Mailgun::send('mailing.template_newlead',$data, function($message) use ($data){
                 $message->from($data['email_de'],$data['nombre_de']);
                 $message->subject($data['asunto']);
                 foreach($data['email'] as $to_){
@@ -73,7 +74,9 @@ class NewLeadListener
                 }
                 $message->trackOpens(true);
                 $message->tag('new_lead');
-            });
+                });
+            }
+            
         }
     }
 }
