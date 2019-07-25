@@ -2,6 +2,8 @@
 
 namespace App\Imports;
 
+use App\Modelos\User;
+
 use App\Modelos\Prospecto\Prospecto;
 use App\Modelos\Prospecto\DetalleProspecto;
 use App\Modelos\Prospecto\StatusProspecto;
@@ -84,6 +86,21 @@ class ProspectosImport implements ToModel, WithHeadingRow
             ]);
             $oportunidad->servicio_oportunidad()->save($servicio_op);
             
+            
+        }
+
+        if(isset($row['colaborador'])){
+
+            $colaborador = User::where('email',$row['colaborador'])->first();
+            
+            if($colaborador){
+                
+                $colaborador_op = new ColaboradorOportunidad([
+                    'id_colaborador' => $colaborador->id
+                ]);
+
+                $oportunidad->colaborador_oportunidad()->save($colaborador_op);
+            }
             
         }
 
