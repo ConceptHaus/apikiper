@@ -14,6 +14,7 @@ use App\Modelos\Oportunidad\EtiquetasOportunidad;
 use App\Modelos\Oportunidad\ColaboradorOportunidad;
 use App\Modelos\Oportunidad\ServicioOportunidad;
 use App\Modelos\Oportunidad\ProspectoOportunidad;
+use App\Modelos\Oportunidad\StatusOportunidad;
 use App\Modelos\Oportunidad\CatServicios;
 
 
@@ -46,7 +47,19 @@ class ProspectosImport implements ToModel, WithHeadingRow
                 'nombre_oportunidad'=> $row['nombre_oportunidad']
             ]);
             $oportunidad->save();
+            
+            $pros_op =  new ProspectoOportunidad([
+            'id_prospecto'=>$prospecto->id_prospecto
+            ]);
+            $oportunidad->prospecto()->save($pros_op);
+
+            $status_op = new StatusOportunidad([
+                'id_cat_status_oportunidad'=>1
+            ]);
+            $oportunidad->status_oportunidad()->save($status_op);
         }
+
+
         if(isset($row['valor_oportunidad'])){
             $detalle_op = new DetalleOportunidad([
                 'valor' => $row['valor_oportunidad']
