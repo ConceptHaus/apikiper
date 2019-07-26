@@ -287,9 +287,9 @@ class FormsController extends Controller
           
           $detalleProspecto = new DetalleProspecto();
           $detalleProspecto->empresa = (isset($data['empresa']) ? $data['empresa'] : '');
-          $detalleProspecto->telefono = $data['telefono'];
-          $detalleProspecto->celular = $data['telefono'];
-          $detalleProspecto->whatsapp = $data['telefono'];
+          $detalleProspecto->telefono = (isset($data['telefono']) ? $data['telefono'] : '');
+          $detalleProspecto->celular = (isset($data['telefono']) ? $data['telefono'] : '');
+          $detalleProspecto->whatsapp = (isset($data['telefono']) ? $data['telefono'] : '');
           $detalleProspecto->nota = (isset($data['mensaje']) ? $data['mensaje'] : '');
           $prospecto->detalle_prospecto()->save($detalleProspecto);
           
