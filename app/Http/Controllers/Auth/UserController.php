@@ -15,6 +15,7 @@ use App\Events\Historial;
 use App\Events\Event;
 use DB;
 use Mail;
+use Mailgun;
 use Carbon\Carbon;
 
 
