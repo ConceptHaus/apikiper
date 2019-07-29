@@ -34,6 +34,7 @@ Route::prefix('/v1/users')->group(function(){
             Route::get('/activate/{token}','Auth\UserController@activateUser');
             Route::post('/password','Auth\UserController@setPassword');
             Route::get('/onboarding','Auth\UserController@onBoarding');
+            Route::post('/create','Auth\UserController@createUser');
         });
 
         Route::middleware(['auth','cors'])->group(function(){

@@ -49,6 +49,17 @@ class UserController extends Controller
       ]);
     }
 
+    protected function validatorUser(array $data){
+        return Validator::make($data, [
+            'nombre' => 'required|string|max:255',
+            'apellido'=>'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'puesto'=> 'required|string|max:255',
+            'telefono'=>'required|string|max:255'
+
+        ]);
+    }
+
 
     public function getAuthUser(Request $request){
         $id_user = $this->guard()->user()->id;
@@ -214,6 +225,63 @@ class UserController extends Controller
             return response()->json(['tour'=>true]);
         }
         return response()->json(['tour'=>false]);
+    }
+
+    public function createUser(Request $request){
+        $validator = $this->validatorUser($request->all());
+        if($validator->passes()){
+            try{
+                DB::beginTransaction();
+                $user = new User;
+                $user->nombre = $request->nombre;
+                $user->apellido = $request->apellido;
+                $user->email = $request->email;
+                $pass = str_random(8);
+                $user->password = bcrypt($pass);
+                $user->is_admin = 1;
+                $user->save();
+
+                $user_ext = new DetalleColaborador;
+                $user_ext->puesto = $request->puesto;
+                $user_ext->telefono = $request->telefono;
+                $user_ext->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular),10);
+                $user_ext->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
+                $user_ext->fecha_nacimiento = $request->fecha_nacimiento;
+
+                $user->detalle()->save(user_ext);
+
+                $foto_user = new FotoColaborador;
+                $foto_user->url_foto = 'https://s3.us-east-2.amazonaws.com/kiperbucket/generales/kiper-default.svg';
+
+                $user->foto()->save($foto_user);
+
+                $array = $user->toArray();
+                $array['pass'] = $pass;
+                $array['link'] = env('URL_FRONT');
+                $array['dominio'] = env('DOMINIO');
+                Mailgun::send('auth.emails.register',$array,function ($contacto) use ($array){
+                       $message->tag('new_user_kiper');
+                       $contacto->from('contacto@kiper.app', 'Kiper');
+                       $contacto->subject('Termina tu registro en Kiper');
+                       $contacto->to($array['email'],$array['nombre']);
+                   });
+
+                return response()->json([
+                    'message'=>'Registro exitoso',
+                    'error'=>false,
+                    'data'=>json(['user'=>$user->email,'pass'=>$pass])
+                ]) ;
+                
+
+            }catch(Exception $e){
+                DB::rollBack();
+                Bugsnag::notifyException(new RuntimeException("No se pudo agregar un colaborador"));
+                return response()->json([
+                    'message'=>$e,
+                    'error'=>true
+                ],500);
+            }
+        }
     }
  
     
