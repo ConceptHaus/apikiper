@@ -271,7 +271,7 @@ class UserController extends Controller
                 return response()->json([
                     'message'=>'Registro exitoso',
                     'error'=>false,
-                    'data'=>json(['user'=>$user->email,'pass'=>$pass])
+                    'data'=>json(['user'=>$user->email,'pass'=>$pass,'dominio'=>$array['dominio']])
                 ]) ;
                 
 
@@ -283,6 +283,12 @@ class UserController extends Controller
                     'error'=>true
                 ],500);
             }
+        }else{
+
+            return response()->json([
+                    'message'=>$e,
+                    'error'=>true
+            ],500);
         }
     }
  
