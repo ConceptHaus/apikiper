@@ -15,6 +15,8 @@ use App\Events\Historial;
 use App\Events\Event;
 use DB;
 use Mail;
+use Carbon\Carbon;
+
 
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use RuntimeException;
@@ -246,7 +248,7 @@ class UserController extends Controller
                 $user_ext->telefono = $request->telefono;
                 $user_ext->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular),10);
                 $user_ext->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
-                $user_ext->fecha_nacimiento = $request->fecha_nacimiento;
+                $user_ext->fecha_nacimiento = Carbon::now()->toDateTimeString();
 
                 $user->detalle()->save(user_ext);
 
