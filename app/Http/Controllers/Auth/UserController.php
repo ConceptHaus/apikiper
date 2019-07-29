@@ -250,7 +250,7 @@ class UserController extends Controller
                 $user_ext->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
                 $user_ext->fecha_nacimiento = Carbon::now()->toDateTimeString();
 
-                $user->detalle()->save(user_ext);
+                $user->detalle()->save($user_ext);
 
                 $foto_user = new FotoColaborador;
                 $foto_user->url_foto = 'https://s3.us-east-2.amazonaws.com/kiperbucket/generales/kiper-default.svg';
