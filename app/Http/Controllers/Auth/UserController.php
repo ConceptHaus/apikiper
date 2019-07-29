@@ -263,7 +263,7 @@ class UserController extends Controller
                 $array['link'] = env('URL_FRONT');
                 $array['dominio'] = env('DOMINIO');
                 Mailgun::send('auth.emails.register',$array,function ($contacto) use ($array){
-                       $message->tag('new_user_kiper');
+                       $contacto->tag('new_user_kiper');
                        $contacto->from('contacto@kiper.app', 'Kiper');
                        $contacto->subject('Termina tu registro en Kiper');
                        $contacto->to($array['email'],$array['nombre']);
