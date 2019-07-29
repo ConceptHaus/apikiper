@@ -272,7 +272,7 @@ class UserController extends Controller
                 return response()->json([
                     'message'=>'Registro exitoso',
                     'error'=>false,
-                    'data'=>json(['user'=>$user->email,'pass'=>$pass,'dominio'=>$array['dominio']])
+                    'data'=>['user'=>$user->email,'pass'=>$pass,'dominio'=>$array['dominio']]
                 ]) ;
                 
 
