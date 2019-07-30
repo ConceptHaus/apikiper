@@ -268,7 +268,7 @@ class UserController extends Controller
                        $contacto->subject('Termina tu registro en Kiper');
                        $contacto->to($array['email'],$array['nombre']);
                    });
-
+                DB::commit();
                 return response()->json([
                     'message'=>'Registro exitoso',
                     'error'=>false,
