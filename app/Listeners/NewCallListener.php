@@ -37,14 +37,17 @@ class NewCallListener
         //echo $admins;
         
         //Array de admins
-        if(strpos($actividad->campaign->utm_campaign,'cancol') !== false){
+        if(isset($actividad->campaign->utm_campaign)){
+            if(strpos($actividad->campaign->utm_campaign,'cancol') !== false){
             $admins = DB::table('users')->where('email','ian@co-labora.mx')->get();
             
+            }
+            if(strpos($actividad->campaign->utm_campaign,'gdlcol') !== false){
+                $admins = DB::table('users')->where('email','paola@co-labora.mx')->get();
+                
+            }
         }
-        if(strpos($actividad->campaign->utm_campaign,'gdlcol') !== false){
-            $admins = DB::table('users')->where('email','paola@co-labora.mx')->get();
-            
-        }
+        
         $array_admins = array();
         foreach ($admins as $admin) {
             array_push($array_admins,[$admin->email=>['name'=>$admin->nombre.' '.$admin->apellido]]);
