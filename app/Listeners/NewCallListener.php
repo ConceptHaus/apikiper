@@ -33,13 +33,23 @@ class NewCallListener
     public function handle($event){
         $actividad = $event->evento;
         $admins = DB::table('users')->where('super_admin',1)->get();
-        $array_admins = array();
+        
         //echo $admins;
+        
+        //Array de admins
+        if(strpos($actividad->campaign->utm_campaign,'cancol') !== false){
+            $admins = DB::table('users')->where('email','ian@co-labora.mx')->get();
+            
+        }
+        if(strpos($actividad->campaign->utm_campaign,'gdlcol') !== false){
+            $admins = DB::table('users')->where('email','paola@co-labora.mx')->get();
+            
+        }
+        $array_admins = array();
         foreach ($admins as $admin) {
             array_push($array_admins,[$admin->email=>['name'=>$admin->nombre.' '.$admin->apellido]]);
         }
-        //Array de admins
-        if($admins){
+        if(count($admins)>0){
 
             $data['email'] = $array_admins;
             $data['asunto'] = 'Un nuevo prospecto te ha llamado ☎️ 😁 🎉';
