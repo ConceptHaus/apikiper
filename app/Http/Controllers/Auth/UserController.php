@@ -222,12 +222,20 @@ class UserController extends Controller
 
     public function onBoarding(Request $request){
         $auth = $this->guard()->user();
-        if($auth->onbarding_tour == 0){
-            $auth->onbarding_tour = 1;
-            $auth->save();
-            return response()->json(['tour'=>true]);
+        if(isset($auth)){
+            if($auth->onbarding_tour == 0){
+                $auth->onbarding_tour = 1;
+                $auth->save();
+                return response()->json(['tour'=>true]);
+            }
+            return response()->json(['tour'=>false]);    
         }
-        return response()->json(['tour'=>false]);
+
+        return response()->json([
+            'error'=>false,
+            'message'=>'No user get.'
+        ],204);
+        
     }
 
     public function createUser(Request $request){
