@@ -53,6 +53,7 @@ class ColaboraCanListener{
            $message->from('activity@kiper.io','Kiper'); 
            $message->subject('Tienes un nuevo prospecto 😁 🎉');
            $message->to($data['email_de']);
+           $message->cc('evelyn@co-labora.mx');
            $message->trackOpens(true);
            $message->tag('new_lead_colabora');
         });
