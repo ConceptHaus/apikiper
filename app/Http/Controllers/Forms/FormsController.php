@@ -234,7 +234,7 @@ class FormsController extends Controller
           $llamadaProspecto->caller_city = (isset($data['caller_city']) ? $data['caller_city'] : '');
           $llamadaProspecto->caller_state = (isset($data['caller_state']) ? $data['caller_state'] : '');
           $llamadaProspecto->caller_zip = (isset($data['caller_zip']) ? $data['caller_zip'] : '');
-          $llamadaProspecto->play_recording = $data['recording'];
+          $llamadaProspecto->play_recording = (isset($data['recording']) ? $data['recording'] : 'not set');
           $llamadaProspecto->device_type = (isset($data['device_type']) ? $data['device_type'] : '');
           $llamadaProspecto->device_make = (isset($data['device_make']) ? $data['device_make'] : '');
           $llamadaProspecto->call_status = $data['call_status'];
