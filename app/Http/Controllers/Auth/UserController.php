@@ -300,8 +300,8 @@ class UserController extends Controller
             ],500);
         }
     }
- 
-    
+
+
        /**
      * Get the token array structure.
      *

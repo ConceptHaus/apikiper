@@ -66,7 +66,7 @@ Route::prefix('/v1/colaboradores')->group(function(){
 
 //Prospectos
 Route::prefix('/v1/prospectos')->group(function(){
-        Route::middleware(['cors'])->group(function(){
+        Route::middleware(['auth','cors'])->group(function(){
             //CRUD principal
             Route::post('/', 'Prospectos\ProspectosController@registerProspecto');
             Route::get('/','Prospectos\ProspectosController@getAllProspectos');
