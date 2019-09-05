@@ -50,16 +50,18 @@ Route::prefix('/v1/users')->group(function(){
 
 //Colaboradores
 Route::prefix('/v1/colaboradores')->group(function(){
-        Route::middleware(['auth','cors'])->group(function(){
+        Route::middleware(['cors'])->group(function(){
             Route::post('/', 'Colaboradores\ColaboradoresController@registerColaborador');
             Route::get('/', 'Colaboradores\ColaboradoresController@getAllColaboradores');
             Route::get('/{id}','Colaboradores\ColaboradoresController@getOneColaborador');
+            Route::get('/etiquetas/{id_etiqueta}','Forms\FormsController@assigment_colaborador');
             Route::put('/{id}','Colaboradores\ColaboradoresController@updateColaborador');
             Route::get('/{id}/recordatorios','Colaboradores\ColaboradoresController@getRecordatoriosColaborador');            
             Route::post('/recordatorio','Colaboradores\ColaboradoresController@addRecordatorio');            
             Route::post('/delete','Colaboradores\ColaboradoresController@deleteColaborador');
             Route::post('/foto/{id}', 'Colaboradores\ColaboradoresController@addFoto');
             Route::delete('/foto/{id}', 'Colaboradores\ColaboradoresController@deleteFoto');
+
 
         });
 });

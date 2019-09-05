@@ -30,6 +30,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         'App\Events\CoGdl'=>[
             'App\Listeners\ColaboraGdlListener'
+        ],
+        'App\Events\NewAssigment'=>[
+            'App\Listeners\NewAssigmentListener'
         ]
     ];
 
