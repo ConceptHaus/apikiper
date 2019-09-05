@@ -607,7 +607,30 @@
 
                         </td>
                     </tr>
+				</tbody></table>
+
+				 <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:300px;" width="100%" class="mcnTextContentContainer">
+                    <tbody><tr>
+                        
+                        <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-style: normal; font-weight: normal;">
+                        
+                            <div dir="ltr" style="color: #A3A9AC; text-align: center;"><span style="font-size:16px"><font face="Poppins, helvetica, arial, verdana, sans-serif">Campaña</font></span></div>
+
+                        </td>
+                    </tr>
                 </tbody></table>
+				
+                <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:300px;" width="100%" class="mcnTextContentContainer">
+                    <tbody><tr>
+                        
+                        <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-style: normal; font-weight: normal;">
+                        
+                            <div style="text-align: left;"><a href="https://www.w3schools.com/html/"><font color="#e43d30" face="Poppins, helvetica, arial, verdana, sans-serif"><span style="font-size:16px"><strong>{{ $campaign_p }}</strong></span></font></a></div>
+
+                        </td>
+                    </tr>
+				</tbody></table>
+				
 
                 <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:300px;" width="100%" class="mcnTextContentContainer">
                     <tbody><tr>
