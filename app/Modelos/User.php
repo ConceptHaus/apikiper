@@ -88,6 +88,10 @@ class User extends Authenticatable implements JWTSubject
 
     }
 
+    public function etiquetas_colaborador(){
+        return $this->hasMany('App\Modelos\Prospecto\EtiquetasProspecto','id_user','id');
+    }
+
     public function scopeGetAllUsers($query){
         return $query->with('detalle','foto')
                      ->orderBy('created_at','desc')

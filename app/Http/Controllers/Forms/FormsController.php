@@ -20,6 +20,9 @@ use App\Modelos\Prospecto\CampaignInfo;
 use App\Modelos\Extras\Etiqueta;
 use App\Modelos\Prospecto\EtiquetasProspecto;
 
+use App\Modelos\Colaborador\EtiquetaColaborador;
+use App\Modelos\Prospecto\ColaboradorProspecto;
+
 use Mailgun;
 use DB;
 use Mail;
@@ -29,6 +32,7 @@ use Twilio\Rest\Client;
 
 use App\Events\NewLead;
 use App\Events\NewCall;
+use App\Events\NewAssigment;
 use App\Events\CoCan;
 use App\Events\CoGdl;
 use App\Events\Event;
@@ -212,7 +216,36 @@ class FormsController extends Controller
 
     }
 
-    
+    public function check_etiquetas($id_etiqueta){
+
+        $users = EtiquetaColaborador::where('id_etiqueta',$id_etiqueta)->get();
+        $users_array = [];
+
+        for($i=0; $i < count($users); $i++){
+
+          array_push($users_array, $users[$i]['id_user']);
+        }
+
+        return $users_array;
+    }
+
+    public function assigment_colaborador($users_array, $id_prospecto){
+      if(count($users_array)>0){
+        for($i=0; $i < count($users_array); $i++){
+
+          $col_prospecto = new ColaboradorProspecto;
+          $col_prospecto->id_colaborador = $users_array[$i];
+          $col_prospecto->id_prospecto = $id_prospecto;
+          $col_prospecto->save();
+
+        }
+
+        return true;
+      }
+      
+      return false;
+
+    }
 
     public function addProspecto(array $data, $verify){
         
@@ -324,6 +357,7 @@ class FormsController extends Controller
           $etiqueta_prospecto_c->id_etiqueta = $etiqueta_campaign->id_etiqueta;
           $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto_c);
 
+
           $etiqueta_prospecto_t = new EtiquetasProspecto;
           $etiqueta_prospecto_t->id_etiqueta = $etiqueta_term->id_etiqueta;
           $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto_t);
@@ -336,8 +370,24 @@ class FormsController extends Controller
           if(strpos($data['utm_campaign'],'gdlcol') !== false){
             event(new CoGdl($prospecto));
           }
+          
+          $array_users = $this->check_etiquetas($etiqueta_prospecto_c->id_etiqueta);
+          $assigment = $this->assigment_colaborador($array_users, $prospecto->id_prospecto);
+          
+          $data_event['colaboradores'] = $array_users;
+          $data_event['prospecto'] = $prospecto;
+          
 
-          event(new NewLead($prospecto));
+          if($assigment){
+             event(new NewAssigment($data_event));
+          }
+          else{
+            event(new NewLead($prospecto));
+          }
+           
+
+
+          
           
         }
 
