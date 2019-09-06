@@ -381,9 +381,8 @@ class FormsController extends Controller
           if($assigment){
              event(new NewAssigment($data_event));
           }
-          else{
-            event(new NewLead($prospecto));
-          }
+  
+          event(new NewLead($prospecto));
            
 
 

@@ -609,7 +609,7 @@
                     </tr>
 				</tbody></table>
 
-				 <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:300px;" width="100%" class="mcnTextContentContainer">
+				<table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:300px;" width="100%" class="mcnTextContentContainer">
                     <tbody><tr>
                         
                         <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-style: normal; font-weight: normal;">
@@ -630,7 +630,6 @@
                         </td>
                     </tr>
 				</tbody></table>
-				
 
                 <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:300px;" width="100%" class="mcnTextContentContainer">
                     <tbody><tr>
