@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\DataViews;
 
+use App\Modelos\Prospecto\EtiquetasProspecto;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Response;
 use App\Http\Requests;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -17,7 +18,6 @@ use RuntimeException;
 
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
-use DateTime;
 
 use App\Modelos\Prospecto\Prospecto;
 use App\Modelos\Prospecto\StatusProspecto;
@@ -33,12 +33,8 @@ use App\Modelos\Prospecto\ColaboradorProspecto;
 use App\Modelos\Oportunidad\MedioContactoOportunidad;
 use App\Modelos\Extras\EventoProspecto;
 use App\Modelos\Extras\DetalleEventoProspecto;
-use App\Modelos\Extras\RecordatorioProspecto;
-use App\Modelos\Extras\DetalleRecordatorioProspecto;
 use App\Events\Historial;
-use App\Events\Event;
 use App\Modelos\Empresa\EmpresaProspecto;
-use Mailgun;
 use DB;
 use Mail;
 
@@ -2782,7 +2778,7 @@ class DataViewsController extends Controller
             ->whereNull('fotos_colaboradores.deleted_at')
             ->select('users.id as id_usuario', 'users.nombre as nombre', 'users.apellido as apellido', 'detalle_colaborador.puesto as puesto', 'fotos_colaboradores.url_foto as foto')
             ->groupBy('users.id')
-            ->get();            
+            ->get();
 
         foreach($colaboradores as $colaborador)
         {
@@ -2832,7 +2828,13 @@ class DataViewsController extends Controller
         
         $estados = CatStatusProspecto::all();
 
-        $colaboradores = ColaboradorProspecto::join('users', 'colaborador_prospecto.id_colaborador', 'users.id')
+        $fuentes = CatFuente::select('cat_fuentes.id_fuente as id', 'cat_fuentes.nombre')->get();
+
+        $etiquetas = EtiquetasProspecto::join('etiquetas', 'etiquetas_prospectos.id_etiqueta', 'etiquetas.id_etiqueta')
+                      ->select('etiquetas.id_etiqueta as id', 'etiquetas.nombre')
+                      ->groupBy('etiquetas.id_etiqueta')->get();
+
+        $colaboradoresQuery = ColaboradorProspecto::join('users', 'colaborador_prospecto.id_colaborador', 'users.id')
             ->wherenull('colaborador_prospecto.deleted_at')
             ->join('status_prospecto', 'status_prospecto.id_prospecto', 'colaborador_prospecto.id_prospecto')
             ->whereNull('status_prospecto.deleted_at')
@@ -2845,9 +2847,25 @@ class DataViewsController extends Controller
             ->join('fotos_colaboradores', 'fotos_colaboradores.id_colaborador', 'users.id')
             ->whereNull('fotos_colaboradores.deleted_at')
             ->select('users.id as id_usuario', 'users.nombre as nombre', 'users.apellido as apellido', 'detalle_colaborador.puesto as puesto', 'fotos_colaboradores.url_foto as foto')
-            ->whereBetween('status_prospecto.updated_at', array($inicioPeriodo ,$finPeriodo))
-            ->groupBy('users.id')
-            ->get();            
+            ->whereBetween('status_prospecto.updated_at', array($inicioPeriodo ,$finPeriodo));
+
+        // Aplica el filtro de fuente
+        if (Input::get('fuentes')) {
+            $colaboradoresQuery->whereIn('prospectos.fuente', explode(",", Input::get('fuentes')));
+        }
+
+        if (Input::get('etiquetas')) {
+          $colaboradoresQuery->join('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'prospectos.id_prospecto')
+              ->whereIn('etiquetas_prospectos.id_etiqueta', explode(",", Input::get('etiquetas')));
+        }
+
+        $filtro = [
+            "fuentes" => Input::get("fuentes"),
+            "etiquetas" => Input::get("etiquetas")
+        ];
+
+
+        $colaboradores = $colaboradoresQuery->groupBy('users.id')->get();
 
         foreach($colaboradores as $colaborador)
         {
@@ -2894,7 +2912,14 @@ class DataViewsController extends Controller
             'data'=>[
                 'prospecto_por_status'=>$prospecto_por_status,
                 'estados'=>$estados,
-                'colaboradores'=>$colaboradores
+                'colaboradores'=>$colaboradores,
+                'fuentes' => $fuentes,
+                'etiquetas' => $etiquetas,
+                'filtro' => $filtro,
+                'incio' => $inicioPeriodo,
+                'fin' =>  $finPeriodo,
+                'sql' => $colaboradoresQuery->toSql(),
+                'binding' => $colaboradoresQuery->getBindings()
             ]
             ],200);
     }
