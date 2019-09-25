@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\DataViews;
 
+use App\Modelos\Oportunidad\EtiquetasOportunidad;
+use App\Modelos\Oportunidad\ServicioOportunidad;
+use App\Modelos\Oportunidad\StatusOportunidad;
 use App\Modelos\Prospecto\EtiquetasProspecto;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -730,8 +733,25 @@ class DataViewsController extends Controller
     }
 
     public function estadisticas_oportunidad_por_fecha($inicio, $fin){
+
         $inicioPeriodo = (new Carbon($inicio))->addDays(-1);
+
         $finPeriodo = (new Carbon($fin))->addDays(1);
+
+	    $estados = CatStatusOportunidad::all();
+
+	    $listaFuentes = CatFuente::select('cat_fuentes.id_fuente as id', 'cat_fuentes.nombre','cat_fuentes.url')->get();
+
+	    $servicios = CatServicios::select('cat_servicios.id_servicio_cat as id', 'cat_servicios.nombre')
+		    ->wherenull('cat_servicios.deleted_at')->get();
+
+	    $listaColaboradores = User::select('users.id', 'users.nombre', 'users.apellido')
+		    ->wherenull('users.deleted_at')->get();
+
+	    $etiquetas = EtiquetasOportunidad::join('etiquetas', 'etiquetas_oportunidades.id_etiqueta', 'etiquetas.id_etiqueta')
+		    ->select('etiquetas.id_etiqueta as id', 'etiquetas.nombre')
+		    ->groupBy('etiquetas.id_etiqueta')->get();
+
         $fuentes = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','colaborador_oportunidad.id_oportunidad')
@@ -742,7 +762,7 @@ class DataViewsController extends Controller
                             ->whereNull('oportunidad_prospecto.deleted_at')
                             ->whereNull('prospectos.deleted_at')
                             ->whereBetween('colaborador_oportunidad.updated_at', array($inicioPeriodo ,$finPeriodo))
-                            ->select(DB::raw('count(*) as total, cat_fuentes.nombre'),'cat_fuentes.url','cat_fuentes.status')->groupBy('cat_fuentes.nombre')->get();    
+                            ->select(DB::raw('count(*) as total, cat_fuentes.nombre'),'cat_fuentes.url','cat_fuentes.status');
 
         $catalogo_status = DB::table('cat_status_oportunidad')
                     ->select('id_cat_status_oportunidad as id','status','color')
@@ -751,15 +771,55 @@ class DataViewsController extends Controller
         $status = DB::table('cat_status_oportunidad')
                       ->select('id_cat_status_oportunidad as id','status','color')->get();
 
-        $catalogo_fuentes = DB::table('cat_fuentes')
-                            ->select('nombre','url','status')->get();
+	    // Aplica el filtro de fuente
+	    if (Input::get('fuentes')) {
+		    $fuentes->whereIn('cat_fuentes.id_fuente', explode(",", Input::get('fuentes')));
+	    }
+
+	    if (Input::get('etiquetas')) {
+		    $fuentes->join('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'prospectos.id_prospecto')
+			    ->whereIn('etiquetas_prospectos.id_etiqueta', explode(",", Input::get('etiquetas')));
+	    }
+
+	    if (Input::get('servicios')) {
+		    $fuentes->join('servicio_prospecto', 'servicio_prospecto.id_prospecto', 'prospectos.id_prospecto')
+			    ->whereIn('servicio_prospecto.id_prospecto', explode(",", Input::get('servicios')));
+	    }
+
+	    if (Input::get('colaboradores')) {
+		    $fuentes->whereIn('colaborador_oportunidad.id_colaborador', explode(",", Input::get('colaboradores')));
+	    }
+
+	    if (Input::get('estados')) {
+		    $fuentes->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+		            ->whereIn('status_oportunidad.id_cat_status_oportunidad', explode(",", Input::get('estados')));
+	    }
+
+	    $fuentes = $fuentes->groupBy('cat_fuentes.nombre')->get();
+
+	    $catalogo_fuentes = DB::table('cat_fuentes')
+		    ->select('nombre','url','status')->get();
+
+	    $filtros = [
+		    "fuentes"   => Input::get("fuentes"),
+		    "etiquetas" => Input::get("etiquetas"),
+		    "colaboradores" => Input::get("colaboradores"),
+		    "servicios" => Input::get("servicios"),
+		    "estados" => Input::get("estados")
+	    ];
 
         return response()->json([
             'message'=>'Correcto',
             'error'=>false,
             'data'=>[
-                'status'=>$this->StatusChecker($catalogo_status,$this->oportunidades_status_genericos_por_fecha($inicio, $fin)),
+                'status'=>$this->StatusChecker($catalogo_status,$this->oportunidades_status_genericos_por_fecha($inicio, $fin, $filtros)),
                 'fuentes'=>$this->FuentesChecker($catalogo_fuentes, $fuentes),
+	            'estados' => $estados,
+	            'listaFuente' => $listaFuentes,
+	            'servicios' => $servicios,
+	            'listaColaboradores' => $listaColaboradores,
+	            'etiquetas' => $etiquetas,
+	            'filtros' => $filtros
             ]
             ],200);
     }
@@ -1354,35 +1414,65 @@ class DataViewsController extends Controller
 
     public function estadisticas_finanzas_por_fecha($inicio, $fin){
         
-        $inicioSemana = (new Carbon($inicio))->addDays(-1);
-        $finSemana = (new Carbon($fin))->addDays(1);
+		$inicioSemana = (new Carbon($inicio))->addDays(-1);
+
+		$finSemana = (new Carbon($fin))->addDays(1);
+
+	    $estados = CatStatusOportunidad::select('cat_status_oportunidad.id_cat_status_oportunidad', 'cat_status_oportunidad.status')
+		    ->wherenull('cat_status_oportunidad.deleted_at')->get();
+
+	    $listaFuentes = CatFuente::select('cat_fuentes.id_fuente as id', 'cat_fuentes.nombre','cat_fuentes.url')
+		    ->wherenull('cat_fuentes.deleted_at')->get();
+
+	    $servicios = CatServicios::select('cat_servicios.id_servicio_cat as id', 'cat_servicios.nombre')
+		    ->wherenull('cat_servicios.deleted_at')->get();
+
+	    $listaColaboradores = User::select('users.id', 'users.nombre', 'users.apellido')
+		    ->wherenull('users.deleted_at')->get();
+
+	    $etiquetas = EtiquetasOportunidad::join('etiquetas', 'etiquetas_oportunidades.id_etiqueta', 'etiquetas.id_etiqueta')
+		    ->select('etiquetas.id_etiqueta as id', 'etiquetas.nombre')
+		    ->groupBy('etiquetas.id_etiqueta')->get();
+
+	    $filtros = [
+		    "fuentes"   => Input::get("fuentes"),
+		    "etiquetas" => Input::get("etiquetas"),
+		    "colaboradores" => Input::get("colaboradores"),
+		    "servicios" => Input::get("servicios"),
+		    "estados" => Input::get("estados")
+	    ];
+
+		$total_cotizado = $this->ingresos_por_periodo_por_status($inicioSemana, $finSemana, 1, $filtros);
+
+		$total_cerrador = $this->ingresos_por_periodo_por_status($inicioSemana, $finSemana, 2, $filtros);
+
+		$total_noviable = $this->ingresos_por_periodo_por_status($inicioSemana, $finSemana, 3, $filtros);
+
+		$top_3 = $this->valor_top_3_por_periodo($inicioSemana, $finSemana, $filtros);
+
+		$fuentes = $this->valor_fuentes_por_periodo($inicioSemana, $finSemana, $filtros);
+
+		$catalogo_fuentes = DB::table('cat_fuentes')
+		                  ->select('nombre','url','status')->get();
   
-          $total_cotizado = $this->ingresos_por_periodo_por_status($inicioSemana, $finSemana, 1);
-  
-          $total_cerrador = $this->ingresos_por_periodo_por_status($inicioSemana, $finSemana, 2);
-  
-          $total_noviable = $this->ingresos_por_periodo_por_status($inicioSemana, $finSemana, 3);
-  
-          $top_3 = $this->valor_top_3_por_periodo($inicioSemana, $finSemana);
-  
-          $fuentes = $this->valor_fuentes_por_periodo($inicioSemana, $finSemana);
-  
-          $catalogo_fuentes = DB::table('cat_fuentes')
-                              ->select('nombre','url','status')->get();
-  
-          return response()->json([
-              'message'=>'Correcto',
-              'error'=>false,
-              'data'=>[
-                  'total_cotizado'=>number_format($total_cotizado,2),
-                  'total_cerrador'=>number_format($total_cerrador,2),
-                  'total_noviable'=>number_format($total_noviable,2),
-                  'top_3'=>$top_3,
-                  'fuentes'=>$this->FuentesChecker($catalogo_fuentes,$fuentes)
-              ]
-  
-              ],200);
-      }
+		return response()->json([
+			'message'=>'Correcto',
+			'error'=>false,
+			'data'=>[
+				'total_cotizado' => number_format($total_cotizado,2),
+				'total_cerrador' => number_format($total_cerrador,2),
+				'total_noviable' => number_format($total_noviable,2),
+				'top_3' => $top_3,
+				'fuentes' => $this->FuentesChecker($catalogo_fuentes,$fuentes),
+				'estados' => $estados,
+				'listaFuente' => $listaFuentes,
+				'servicios' => $servicios,
+				'listaColaboradores' => $listaColaboradores,
+				'etiquetas' => $etiquetas,
+				'filtros' => $filtros
+			]
+		],200);
+    }
 
     public function estadisticas_finanzas_semanal(){
       $inicioSemana = Carbon::now()->startOfWeek();
@@ -2575,17 +2665,50 @@ class DataViewsController extends Controller
             ->where('status_prospecto.id_cat_status_prospecto','=',$status)->count();
     }
 
-    public function ingresos_por_periodo_por_status($inicio, $fin, $status)
+    public function ingresos_por_periodo_por_status($inicio, $fin, $status, $filtro = null)
     {
-        return DB::table('oportunidades')
-            ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
-            ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
-            ->wherenull('oportunidades.deleted_at')
-            ->wherenull('detalle_oportunidad.deleted_at')
-            ->wherenull('status_oportunidad.deleted_at')
-            ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
-            ->where('status_oportunidad.id_cat_status_oportunidad',$status)
-            ->sum('detalle_oportunidad.valor');
+
+	    $query = DB::table('oportunidades')
+		    ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
+		    ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+		    ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+		    ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+		    ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+		    ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+		    ->wherenull('oportunidades.deleted_at')
+		    ->wherenull('detalle_oportunidad.deleted_at')
+		    ->wherenull('status_oportunidad.deleted_at')
+		    ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
+		    ->where('status_oportunidad.id_cat_status_oportunidad',$status);
+
+	    $filtroKeys = [];
+	    if ($filtro)
+		    $filtroKeys = array_keys($filtro);
+
+	    if ($filtro && in_array('fuentes', $filtroKeys) && $filtro['fuentes']) {
+		    $query->whereIn('cat_fuentes.id_fuente', explode(",", $filtro['fuentes']));
+	    }
+
+	    if ($filtro && in_array('etiquetas', $filtroKeys) && $filtro['etiquetas']) {
+		    $query->join('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'prospectos.id_prospecto')
+			    ->whereIn('etiquetas_prospectos.id_etiqueta', explode(",", $filtro['etiquetas']));
+	    }
+
+	    if ($filtro && in_array('servicios', $filtroKeys) && $filtro['servicios']) {
+		    $query->join('servicio_prospecto', 'servicio_prospecto.id_prospecto', 'prospectos.id_prospecto')
+			    ->whereIn('servicio_prospecto.id_prospecto', explode(",", $filtro['servicios']));
+	    }
+
+	    if ($filtro && in_array('colaboradores', $filtroKeys) && $filtro['colaboradores']) {
+		    $query->whereIn('colaborador_oportunidad.id_colaborador', explode(",", $filtro['colaboradores']));
+	    }
+
+	    if ($filtro && in_array('estados', $filtroKeys) && $filtro['estados']) {
+		    $query->whereIn('status_oportunidad.id_cat_status_oportunidad', explode(",", $filtro['estados']));
+	    }
+
+
+	    return $query->sum('detalle_oportunidad.valor');
             
     }
 
@@ -2633,18 +2756,49 @@ class DataViewsController extends Controller
                     ->get();     
     }
 
-    public function oportunidades_status_genericos_por_fecha($inicio, $fin){
-        return DB::table('oportunidades')
+    public function oportunidades_status_genericos_por_fecha($inicio, $fin, $filtro = null){
+
+    	$query =  DB::table('oportunidades')
                     ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                     ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
                     ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+		            ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+		            ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+	                ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                     ->whereNull('oportunidades.deleted_at')
                     ->whereNull('colaborador_oportunidad.deleted_at')
                     ->whereNull('status_oportunidad.deleted_at')
                     ->whereNull('cat_status_oportunidad.deleted_at')
                     ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
-                    ->select('cat_status_oportunidad.id_cat_status_oportunidad as id','cat_status_oportunidad.color',DB::raw('count(*) as total, cat_status_oportunidad.status'))->groupBy('cat_status_oportunidad.status')
-                    ->get();     
+                    ->select('cat_status_oportunidad.id_cat_status_oportunidad as id','cat_status_oportunidad.color',DB::raw('count(*) as total, cat_status_oportunidad.status'))->groupBy('cat_status_oportunidad.status');
+
+    	$filtroKeys = [];
+    	if ($filtro)
+    		$filtroKeys = array_keys($filtro);
+
+	    if ($filtro && in_array('fuentes', $filtroKeys) && $filtro['fuentes']) {
+		    $query->whereIn('cat_fuentes.id_fuente', explode(",", $filtro['fuentes']));
+	    }
+
+	    if ($filtro && in_array('etiquetas', $filtroKeys) && $filtro['etiquetas']) {
+		    $query->join('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'prospectos.id_prospecto')
+			    ->whereIn('etiquetas_prospectos.id_etiqueta', explode(",", $filtro['etiquetas']));
+	    }
+
+	    if ($filtro && in_array('servicios', $filtroKeys) && $filtro['servicios']) {
+		    $query->join('servicio_prospecto', 'servicio_prospecto.id_prospecto', 'prospectos.id_prospecto')
+			    ->whereIn('servicio_prospecto.id_prospecto', explode(",", $filtro['servicios']));
+	    }
+
+	    if ($filtro && in_array('colaboradores', $filtroKeys) && $filtro['colaboradores']) {
+		    $query->whereIn('colaborador_oportunidad.id_colaborador', explode(",", $filtro['colaboradores']));
+	    }
+
+	    if ($filtro && in_array('estados', $filtroKeys) && $filtro['estados']) {
+		    $query->whereIn('status_oportunidad.id_cat_status_oportunidad', explode(",", $filtro['estados']));
+	    }
+
+    	return $query->get();
     }
 
     public function valor_oportunidades_por_status($status){
@@ -2670,14 +2824,18 @@ class DataViewsController extends Controller
             ->sum('detalle_oportunidad.valor');
     }
 
-    public function valor_top_3_por_periodo($inicio, $fin){
-        return DB::table('users')
+    public function valor_top_3_por_periodo($inicio, $fin, $filtro = null) {
+
+        $query = DB::table('users')
             ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
             ->join('detalle_colaborador','detalle_colaborador.id_colaborador','users.id')
             ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
             ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')
             ->join('fotos_colaboradores','fotos_colaboradores.id_colaborador','users.id')
             ->join('oportunidades', 'colaborador_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
+	        ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','colaborador_oportunidad.id_oportunidad')
+	        ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+	        ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
             ->wherenull('users.deleted_at')
             ->wherenull('colaborador_oportunidad.deleted_at')
             ->wherenull('detalle_colaborador.deleted_at')
@@ -2687,15 +2845,40 @@ class DataViewsController extends Controller
             ->wherenull('oportunidades.deleted_at')
             ->where('status_oportunidad.id_cat_status_oportunidad','=',2)
             ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
-            ->select('users.id','users.nombre','users.apellido','fotos_colaboradores.url_foto','detalle_colaborador.puesto',DB::raw('sum(detalle_oportunidad.valor) as total_ingresos'))
-            ->groupBy('users.id')
-            ->orderBy('total_ingresos','desc')
-            ->limit(5)
-            ->get();
+            ->select('users.id','users.nombre','users.apellido','fotos_colaboradores.url_foto','detalle_colaborador.puesto',DB::raw('sum(detalle_oportunidad.valor) as total_ingresos'));
+
+	    $filtroKeys = [];
+	    if ($filtro)
+		    $filtroKeys = array_keys($filtro);
+
+	    if ($filtro && in_array('fuentes', $filtroKeys) && $filtro['fuentes']) {
+		    $query->whereIn('cat_fuentes.id_fuente', explode(",", $filtro['fuentes']));
+	    }
+
+	    if ($filtro && in_array('etiquetas', $filtroKeys) && $filtro['etiquetas']) {
+		    $query->join('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'prospectos.id_prospecto')
+			    ->whereIn('etiquetas_prospectos.id_etiqueta', explode(",", $filtro['etiquetas']));
+	    }
+
+	    if ($filtro && in_array('servicios', $filtroKeys) && $filtro['servicios']) {
+		    $query->join('servicio_prospecto', 'servicio_prospecto.id_prospecto', 'prospectos.id_prospecto')
+			    ->whereIn('servicio_prospecto.id_prospecto', explode(",", $filtro['servicios']));
+	    }
+
+	    if ($filtro && in_array('colaboradores', $filtroKeys) && $filtro['colaboradores']) {
+		    $query->whereIn('colaborador_oportunidad.id_colaborador', explode(",", $filtro['colaboradores']));
+	    }
+
+	    if ($filtro && in_array('estados', $filtroKeys) && $filtro['estados']) {
+		    $query->whereIn('status_oportunidad.id_cat_status_oportunidad', explode(",", $filtro['estados']));
+	    }
+
+        return $query->groupBy('users.id')->orderBy('total_ingresos','desc')->limit(5)->get();
     }
 
-    public function valor_fuentes_por_periodo($inicio, $fin){
-        return DB::table('oportunidades')
+    public function valor_fuentes_por_periodo($inicio, $fin, $filtro = null) {
+
+        $query = DB::table('oportunidades')
             ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
             ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
             ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
@@ -2707,9 +2890,36 @@ class DataViewsController extends Controller
             ->wherenull('oportunidad_prospecto.deleted_at')
             ->wherenull('prospectos.deleted_at')
             ->where('status_oportunidad.id_cat_status_oportunidad',2)
-            ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
-            ->select(DB::raw('SUM(detalle_oportunidad.valor) as total'),'cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status')->groupBy('cat_fuentes.nombre')
-            ->get();
+            ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin));
+
+	    $filtroKeys = [];
+	    if ($filtro)
+		    $filtroKeys = array_keys($filtro);
+
+	    if ($filtro && in_array('fuentes', $filtroKeys) && $filtro['fuentes']) {
+		    $query->whereIn('cat_fuentes.id_fuente', explode(",", $filtro['fuentes']));
+	    }
+
+	    if ($filtro && in_array('etiquetas', $filtroKeys) && $filtro['etiquetas']) {
+		    $query->join('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'prospectos.id_prospecto')
+			    ->whereIn('etiquetas_prospectos.id_etiqueta', explode(",", $filtro['etiquetas']));
+	    }
+
+	    if ($filtro && in_array('servicios', $filtroKeys) && $filtro['servicios']) {
+		    $query->join('servicio_prospecto', 'servicio_prospecto.id_prospecto', 'prospectos.id_prospecto')
+			    ->whereIn('servicio_prospecto.id_prospecto', explode(",", $filtro['servicios']));
+	    }
+
+	    if ($filtro && in_array('colaboradores', $filtroKeys) && $filtro['colaboradores']) {
+		    $query->whereIn('colaborador_oportunidad.id_colaborador', explode(",", $filtro['colaboradores']));
+	    }
+
+	    if ($filtro && in_array('estados', $filtroKeys) && $filtro['estados']) {
+		    $query->whereIn('status_oportunidad.id_cat_status_oportunidad', explode(",", $filtro['estados']));
+	    }
+
+        return $query->select(DB::raw('SUM(detalle_oportunidad.valor) as total'),'cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status')->groupBy('cat_fuentes.nombre')
+	        ->get();
     }
     public function prospectos_sin_contactar(){
         return DB::table('prospectos')
@@ -2828,7 +3038,13 @@ class DataViewsController extends Controller
         
         $estados = CatStatusProspecto::all();
 
-        $fuentes = CatFuente::select('cat_fuentes.id_fuente as id', 'cat_fuentes.nombre')->get();
+        $fuentes = CatFuente::select('cat_fuentes.id_fuente as id', 'cat_fuentes.nombre','cat_fuentes.url')->get();
+
+	    $servicios = CatServicios::select('cat_servicios.id_servicio_cat as id', 'cat_servicios.nombre')
+		                            ->wherenull('cat_servicios.deleted_at')->get();
+
+	    $listaColaboradores = User::select('users.id', 'users.nombre', 'users.apellido')
+		    ->wherenull('users.deleted_at')->get();
 
         $etiquetas = EtiquetasProspecto::join('etiquetas', 'etiquetas_prospectos.id_etiqueta', 'etiquetas.id_etiqueta')
                       ->select('etiquetas.id_etiqueta as id', 'etiquetas.nombre')
@@ -2859,9 +3075,20 @@ class DataViewsController extends Controller
               ->whereIn('etiquetas_prospectos.id_etiqueta', explode(",", Input::get('etiquetas')));
         }
 
+	    if (Input::get('servicios')) {
+		    $colaboradoresQuery->join('servicio_prospecto', 'servicio_prospecto.id_prospecto', 'prospectos.id_prospecto')
+			    ->whereIn('servicio_prospecto.id_prospecto', explode(",", Input::get('servicios')));
+	    }
+
+	    if (Input::get('colaboradores')) {
+		    $colaboradoresQuery->whereIn('users.id', explode(",", Input::get('colaboradores')));
+	    }
+
         $filtro = [
             "fuentes" => Input::get("fuentes"),
-            "etiquetas" => Input::get("etiquetas")
+            "etiquetas" => Input::get("etiquetas"),
+	        "colaboradores" => Input::get("colaboradores"),
+	        "servicios" => Input::get("servicios")
         ];
 
 
@@ -2915,6 +3142,8 @@ class DataViewsController extends Controller
                 'colaboradores'=>$colaboradores,
                 'fuentes' => $fuentes,
                 'etiquetas' => $etiquetas,
+                'listaColaboradores' => $listaColaboradores,
+                'servicios' => $servicios,
                 'filtro' => $filtro,
                 'incio' => $inicioPeriodo,
                 'fin' =>  $finPeriodo,
