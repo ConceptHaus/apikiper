@@ -22,10 +22,16 @@ class NewAssigmentListener
     {
         $activity = $event->evento;
         $colaboradores = array();
-        foreach($activity['colaboradores'] as $colaborador){
-            $user = User::where('id',$colaborador)->first();
-            array_push($colaboradores, $user->email);
+        if(is_array($activity['colaboradores'])){
+            foreach($activity['colaboradores'] as $colaborador){
+                $user = User::where('id',$colaborador)->first();
+                array_push($colaboradores, $user->email);
+            }
+        }else{
+            $user = User::where('id',$activity['colaboradores'])->first();
+            array_push($colaboradores,$user->email);
         }
+        
         //dd($colaboradores);
         
         if(count($activity) > 0){
