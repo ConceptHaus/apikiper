@@ -229,6 +229,24 @@ class FormsController extends Controller
         return $users_array;
     }
 
+    public function random_assigment($id_prospecto){
+        $users = DB::table('users')->select('id')->get();
+        $arr_users = array();
+
+        foreach($users as $user){
+          array_push($arr_users, $user->id);
+        }
+
+        $random_user = array_rand($arr_users,1);
+
+        $col_prospecto = new ColaboradorProspecto;
+        $col_prospecto->id_colaborador = $arr_users[$random_user];
+        $col_prospecto->id_prospecto = $id_prospecto;
+        $col_prospecto->save();
+
+        return $arr_users[$random_user];
+    }
+
     public function assigment_colaborador($users_array, $id_prospecto){
       if(count($users_array)>0){
         for($i=0; $i < count($users_array); $i++){
@@ -371,15 +389,20 @@ class FormsController extends Controller
             event(new CoGdl($prospecto));
           }
           
-          $array_users = $this->check_etiquetas($etiqueta_prospecto_c->id_etiqueta);
-          $assigment = $this->assigment_colaborador($array_users, $prospecto->id_prospecto);
+          //$array_users = $this->check_etiquetas($etiqueta_prospecto_c->id_etiqueta);
+          $user_rand = $this->random_assigment($prospecto->id_prospecto);
+          //$assigment = $this->assigment_colaborador($array_users, $prospecto->id_prospecto);
           
-          $data_event['colaboradores'] = $array_users;
+          $data_event['colaboradores'] = $user_rand;
           $data_event['prospecto'] = $prospecto;
           
 
-          if($assigment){
-             event(new NewAssigment($data_event));
+          // if($assigment){
+          //    event(new NewAssigment($data_event));
+          // }
+
+          if($user_rand){
+            event(new NewAssigment($data_event));
           }
           else{
             event(new NewLead($prospecto));
