@@ -28,7 +28,7 @@ class NewAssigmentListener
                 array_push($colaboradores, $user->email);
             }
         }else{
-            $user = User::where('id',$activity['colaboradores'])->first();
+            $user = User::where('id',$activity['colaboradores'])->get();
             array_push($colaboradores,$user->email);
         }
         
