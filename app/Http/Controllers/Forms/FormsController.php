@@ -230,7 +230,7 @@ class FormsController extends Controller
     }
 
     public function random_assigment($id_prospecto){
-        $users = DB::table('users')->select('id')->get();
+        $users = DB::table('users')->select('id')->where([['super_admin','!=',1],['email','!=','admin@concepthaus.mx']])->get();
         $arr_users = array();
 
         foreach($users as $user){
