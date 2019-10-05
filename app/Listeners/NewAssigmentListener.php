@@ -21,22 +21,24 @@ class NewAssigmentListener
     public function handle($event)
     {
         $activity = $event->evento;
-        $colaboradores = array();
-        if(is_array($activity['colaboradores'])){
-            foreach($activity['colaboradores'] as $colaborador){
-                $user = User::where('id',$colaborador)->first();
-                array_push($colaboradores, $user->email);
-            }
-        }else{
+        //$colaboradores = array();
+        // if(is_array($activity['colaboradores'])){
+        //     foreach($activity['colaboradores'] as $colaborador){
+        //         $user = User::where('id',$colaborador)->first();
+        //         array_push($colaboradores, $user->email);
+        //     }
+        // }else{
             $user = User::where('id',$activity['colaboradores'])->first();
             $email =  $user->email;
-        }
+        //}
         
-            //dd($email);
+            
+        //dd($user);
         
         if(count($activity) > 0){
             
             $data['email'] = $email;
+            //dd($data['email']);
             $data['asunto'] = 'Tienes un nuevo prospecto 😁 🎉';
             $data['email_de'] = 'activity@kiper.io';
             $data['nombre_de'] = 'Kiper';
