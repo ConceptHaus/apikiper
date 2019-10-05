@@ -29,10 +29,10 @@ class NewAssigmentListener
             }
         }else{
             $user = User::where('id',$activity['colaboradores'])->first();
-            array_push($colaboradores, $user->email);
+            $email =  $user->email;
         }
         
-        //dd($colaboradores);
+            //dd($email);
         
         if(count($activity) > 0){
             
@@ -53,9 +53,10 @@ class NewAssigmentListener
             Mailgun::send('mailing.template_newlead',$data, function($message) use ($data){
                 $message->from($data['email_de'],$data['nombre_de']);
                 $message->subject($data['asunto']);
-                foreach($data['email'] as $to_){
-                    $message->to($to_);
-                }
+                // foreach($data['email'] as $to_){
+                //     $message->to($to_);
+                // }
+                $message->to($email);
                 $message->trackOpens(true);
                 $message->tag('new_lead');
             });
