@@ -392,7 +392,6 @@ class FormsController extends Controller
           //$array_users = $this->check_etiquetas($etiqueta_prospecto_c->id_etiqueta);
           $user_rand = $this->random_assigment($prospecto->id_prospecto);
           //$assigment = $this->assigment_colaborador($array_users, $prospecto->id_prospecto);
-          
           $data_event['colaboradores'] = $user_rand;
           $data_event['prospecto'] = $prospecto;
           
@@ -401,7 +400,7 @@ class FormsController extends Controller
           //    event(new NewAssigment($data_event));
           // }
 
-          if($user_rand){
+          if($user_rand != null){
             event(new NewAssigment($data_event));
           }
   
