@@ -36,7 +36,7 @@ class NewAssigmentListener
         
         if(count($activity) > 0){
             
-            $data['email'] = $colaboradores;
+            $data['email'] = $email;
             $data['asunto'] = 'Tienes un nuevo prospecto 😁 🎉';
             $data['email_de'] = 'activity@kiper.io';
             $data['nombre_de'] = 'Kiper';
@@ -56,7 +56,7 @@ class NewAssigmentListener
                 // foreach($data['email'] as $to_){
                 //     $message->to($to_);
                 // }
-                $message->to($email);
+                $message->to($data['email']);
                 $message->trackOpens(true);
                 $message->tag('new_lead');
             });
