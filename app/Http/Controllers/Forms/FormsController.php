@@ -400,15 +400,9 @@ class FormsController extends Controller
           //    event(new NewAssigment($data_event));
           // }
 
-<<<<<<< HEAD
-          if($user_rand != null){
-            event(new NewAssigment($data_event));
-          }
-=======
           // if($user_rand){
           //   event(new NewAssigment($data_event));
           // }
->>>>>>> dev
   
           event(new NewLead($prospecto));
            
