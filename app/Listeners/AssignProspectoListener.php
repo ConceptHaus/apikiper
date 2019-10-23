@@ -61,11 +61,14 @@ class AssignProspectoListener
             $message->tag('assign_lead');
         });
 
-        $this->twilioClient->messages->create(
+        if($user->detalle->celular){
+            $this->twilioClient->messages->create(
                 '+52'.$user->detalle->celular,
                 array(
                     "from" => $this->sendingNumber,
                     "body" => 'Te han asignado un prospecto -- Nombre: '.$mail_data['nombre_p'].' '.$mail_data['apellido_p'].' Correo: '.$mail_data['correo_p'].' Telefono: '.$mail_data['telefono_p']
                 ));
+        }
+        
     }
 }
