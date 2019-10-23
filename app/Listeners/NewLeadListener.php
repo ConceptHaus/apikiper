@@ -83,13 +83,17 @@ class NewLeadListener
                 });
             }
             foreach($admins as $admin){
-                $user = User::find($admin->id);
-                $this->twilioClient->messages->create(
-                '+52'.$user->detalle->celular,
-                array(
-                    "from" => $this->sendingNumber,
-                    "body" => 'Kiper Leads | Nombre: '.$data['nombre_p'].' '.$data['apellido_p'].' Correo: '.$data['correo_p'].' Telefono: '.$data['telefono_p']
-                ));
+                if(count($user->detalle->celular)==10){
+                    
+                    $user = User::find($admin->id);
+                    $this->twilioClient->messages->create(
+                    '+52'.$user->detalle->celular,
+                    array(
+                        "from" => $this->sendingNumber,
+                        "body" => 'Kiper Leads | Nombre: '.$data['nombre_p'].' '.$data['apellido_p'].' Correo: '.$data['correo_p'].' Telefono: '.$data['telefono_p']
+                    ));
+                }
+                
             }
             
         }
