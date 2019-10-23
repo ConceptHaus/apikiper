@@ -33,6 +33,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         'App\Events\NewAssigment'=>[
             'App\Listeners\NewAssigmentListener'
+        ],
+        'App\Events\AssignProspecto'=>[
+            'App\Listeners\AssignProspectoListener'
         ]
     ];
 

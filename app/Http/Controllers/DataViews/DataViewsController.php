@@ -37,6 +37,7 @@ use App\Modelos\Extras\RecordatorioProspecto;
 use App\Modelos\Extras\DetalleRecordatorioProspecto;
 use App\Events\Historial;
 use App\Events\Event;
+use App\Events\AssignProspecto;
 use App\Modelos\Empresa\EmpresaProspecto;
 use Mailgun;
 use DB;
@@ -123,7 +124,7 @@ class DataViewsController extends Controller
     }
 
     public function dashboardPorFecha($inicio, $fin){
-
+        $auth = $this->guard()->user();  
         //return $inicio.' '.$fin;
         //Oportunidades Cotizadas
         //Oportunidades Cerradas
@@ -135,12 +136,12 @@ class DataViewsController extends Controller
         $inicioSemana = (new Carbon($inicio))->addDays(-1);
         $finSemana = (new Carbon(($fin)))->addDays(1);
         
-        $oportuniades_cerradas = $this->oportunidades_por_periodo_por_status($inicioSemana,$finSemana,2);
-        $oportunidades_cotizadas = $this->oportunidades_por_periodo_por_status($inicioSemana,$finSemana,1);
+        $oportuniades_cerradas = $this->oportunidades_por_periodo_por_status($inicioSemana,$finSemana,2,$auth);
+        $oportunidades_cotizadas = $this->oportunidades_por_periodo_por_status($inicioSemana,$finSemana,1,$auth);
         $colaboradores = $this->dashboard_colaboradores_periodo($inicioSemana,$finSemana);
-        $prospectos_sin_contactar = $this->prospectos_sin_contactar();
-        $ingresos = $this->ingresos_por_periodo_por_status($inicioSemana,$finSemana,2);
-        $origen = $this->origen_por_periodo($inicioSemana, $finSemana);
+        $prospectos_sin_contactar = $this->prospectos_sin_contactar($auth);
+        $ingresos = $this->ingresos_por_periodo_por_status($inicioSemana,$finSemana,2, $auth);
+        $origen = $this->origen_por_periodo($inicioSemana, $finSemana, $auth);
 
         if(Activity::all()->last() != null){
 
@@ -320,7 +321,10 @@ class DataViewsController extends Controller
                     ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(*) as total, cat_fuentes.nombre'))
                     ->groupBy('cat_fuentes.nombre')->get();
 
-        $prospectos = Prospecto::with('detalle_prospecto')
+        
+        $auth = $this->guard()->user();  
+        if($auth->is_admin){
+                $prospectos = Prospecto::with('detalle_prospecto')
                                 ->with('colaborador_prospecto.colaborador.detalle')
                                 ->with('fuente')
                                 /*->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', 'prospectos.id_prospecto')
@@ -334,6 +338,41 @@ class DataViewsController extends Controller
                                 ->orderBy('prospectos.created_at','desc')
                                 //->groupBy('prospectos.id_prospecto')
                                 ->get();
+        }else{
+                $prospectos = Prospecto::with('detalle_prospecto')
+                                ->with('colaborador_prospecto.colaborador.detalle')
+                                ->with('fuente')
+                                ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                                ->where('colaborador_prospecto.id_colaborador',$auth->id)
+                                ->wherenull('colaborador_prospecto.deleted_at')
+                                ->wherenull('prospectos.deleted_at')
+                                ->with('status_prospecto.status')
+                                ->with('prospectos_empresas')
+                                ->with('prospectos_empresas.empresas')
+                                ->orderBy('prospectos.created_at','desc')
+                                //->groupBy('prospectos.id_prospecto')
+                                ->get();
+                
+                $total_prospectos = Prospecto::join('colaborador_prospecto','colaborador_prospecto.id_prospecto','prospectos.id_prospecto')
+                                    ->where('colaborador_prospecto.id_colaborador',$auth->id)->count();
+                
+                $origen = DB::table('prospectos')
+                    ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                    ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                    ->where('colaborador_prospecto.id_colaborador',$auth->id)
+                    ->wherenull('prospectos.deleted_at')
+                    ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(*) as total, cat_fuentes.nombre'))
+                    ->groupBy('cat_fuentes.nombre')->get();
+                
+                $nocontactados_prospectos = DB::table('prospectos')
+                                ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+                                ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                                ->where('colaborador_prospecto.id_colaborador',$auth->id)
+                                ->wherenull('prospectos.deleted_at')
+                                ->wherenull('prospectos.deleted_at')
+                                ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
+        }
+        
 
         $catalogo_fuentes = DB::table('cat_fuentes')
                             ->wherenull('cat_fuentes.deleted_at')
@@ -448,7 +487,9 @@ class DataViewsController extends Controller
             'data'=>['prospectos_filtro'=>$prospectos]
             ],200);}
     public function prospectosstatus($status){
-        $prospectos = DB::table('prospectos')
+        $auth = $this->guard()->user();
+        if($auth->is_admin){
+            $prospectos = DB::table('prospectos')   
                         ->join('detalle_prospecto','detalle_prospecto.id_prospecto','prospectos.id_prospecto')
                         ->join('status_prospecto','status_prospecto.id_prospecto','prospectos.id_prospecto')
                         ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
@@ -464,6 +505,28 @@ class DataViewsController extends Controller
                         ->orderBy('status_prospecto.updated_at','desc')
                         ->groupBy('prospectos.id_prospecto')
                         ->get();
+        }
+        else{
+            $prospectos = DB::table('prospectos')
+                        ->join('detalle_prospecto','detalle_prospecto.id_prospecto','prospectos.id_prospecto')
+                        ->join('status_prospecto','status_prospecto.id_prospecto','prospectos.id_prospecto')
+                        ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                        ->join('cat_status_prospecto','cat_status_prospecto.id_cat_status_prospecto','status_prospecto.id_cat_status_prospecto')
+                        ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                        ->where('colaborador_prospecto.id_colaborador',$auth->id)
+                        ->leftJoin('prospectos_empresas', 'prospectos.id_prospecto', '=', 'prospectos_empresas.id_prospecto')
+                        ->leftJoin('empresas', 'prospectos_empresas.id_empresa', '=', 'empresas.id_empresa')
+                        //->join('empresas', 'prospectos_empresas.id_empresa', 'empresas.id_empresa')
+                        ->whereNull('prospectos.deleted_at')
+                        ->whereNull('detalle_prospecto.deleted_at')
+                        ->whereNull('status_prospecto.deleted_at')
+                        ->where('status_prospecto.id_cat_status_prospecto',$status)
+                        ->select('prospectos.id_prospecto','prospectos.nombre','prospectos.apellido','prospectos.correo','detalle_prospecto.telefono', 'empresas.id_empresa','empresas.nombre as empresa', 'detalle_prospecto.empresa as empresa2','detalle_prospecto.whatsapp','prospectos.created_at','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','cat_status_prospecto.status','cat_status_prospecto.id_cat_status_prospecto as id_status', 'cat_status_prospecto.color as color')
+                        ->orderBy('status_prospecto.updated_at','desc')
+                        ->groupBy('prospectos.id_prospecto')
+                        ->get();
+        }
+        
         foreach($prospectos as $p){
             $ep = EmpresaProspecto::where('id_prospecto', '=', $p->id_prospecto)->with('empresas')->get();
             $p->empresa = [];
@@ -1357,15 +1420,15 @@ class DataViewsController extends Controller
     }
 
     public function estadisticas_finanzas_por_fecha($inicio, $fin){
-        
+        $auth = $this->guard()->user();  
         $inicioSemana = (new Carbon($inicio))->addDays(-1);
         $finSemana = (new Carbon($fin))->addDays(1);
   
-          $total_cotizado = $this->ingresos_por_periodo_por_status($inicioSemana, $finSemana, 1);
+          $total_cotizado = $this->ingresos_por_periodo_por_status($inicioSemana, $finSemana, 1, $auth);
   
-          $total_cerrador = $this->ingresos_por_periodo_por_status($inicioSemana, $finSemana, 2);
+          $total_cerrador = $this->ingresos_por_periodo_por_status($inicioSemana, $finSemana, 2, $auth);
   
-          $total_noviable = $this->ingresos_por_periodo_por_status($inicioSemana, $finSemana, 3);
+          $total_noviable = $this->ingresos_por_periodo_por_status($inicioSemana, $finSemana, 3, $auth);
   
           $top_3 = $this->valor_top_3_por_periodo($inicioSemana, $finSemana);
   
@@ -1867,6 +1930,41 @@ class DataViewsController extends Controller
                 'message'=>$e
             ],400);
         }
+    }
+
+    public function updateColaborador(Request $request){
+        $prospecto = Prospecto::where('id_prospecto',$request->id_prospecto)->first();    
+        $colaborador = User::where('id',$request->id_colaborador)->first();
+
+        $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto',$request->id_prospecto)->first();
+        try{
+            DB::beginTransaction();
+           if($colaborador_prospecto){
+                $colaborador_prospecto->id_colaborador = $colaborador->id;
+                $colaborador_prospecto->save();
+            }else{
+                $colaborador_prospecto = new ColaboradorProspecto;
+                $colaborador_prospecto->id_colaborador = $colaborador->id;
+                $colaborador_prospecto->id_prospecto = $prospecto->id_prospecto;
+                $colaborador_prospecto->save();
+            }
+            DB::commit();
+            $data_event['colaborador'] = $colaborador;
+            $data_event['prospecto'] = $prospecto;
+            event(new AssignProspecto($data_event));
+            return response()->json([
+                'error'=>false,
+                'message'=>'El prospecto se ha asignado correctamente.'
+            ],201);
+        }catch (Exception $e){
+            DB::rollBack();
+            return response()->json([
+                'error'=>true,
+                'message'=>$e
+            ],400);
+        }
+        
+
     }
 
 
@@ -2559,14 +2657,25 @@ class DataViewsController extends Controller
             ->get();
     }
 
-    public function oportunidades_por_periodo_por_status($inicio, $fin, $status)
+    public function oportunidades_por_periodo_por_status($inicio, $fin, $status, $auth)
     {
-        return DB::table('oportunidades')
+        if($auth->is_admin){
+            return DB::table('oportunidades')
             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
             ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
             ->whereNull('oportunidades.deleted_at')
             ->wherenull('status_oportunidad.deleted_at')
             ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',$status)->count();
+        }
+            return DB::table('oportunidades')
+            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+            ->where('colaborador_oportunidad.id_colaborador',$auth->id)
+            ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
+            ->whereNull('oportunidades.deleted_at')
+            ->wherenull('status_oportunidad.deleted_at')
+            ->select('oportunidades.*')->where('status_oportunidad.id_cat_status_oportunidad','=',$status)->count();    
+        
     }
 
     public function prospectos_por_periodo_por_status($inicio, $fin, $status)
@@ -2579,30 +2688,55 @@ class DataViewsController extends Controller
             ->where('status_prospecto.id_cat_status_prospecto','=',$status)->count();
     }
 
-    public function ingresos_por_periodo_por_status($inicio, $fin, $status)
-    {
-        return DB::table('oportunidades')
-            ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
-            ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
-            ->wherenull('oportunidades.deleted_at')
-            ->wherenull('detalle_oportunidad.deleted_at')
-            ->wherenull('status_oportunidad.deleted_at')
-            ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
-            ->where('status_oportunidad.id_cat_status_oportunidad',$status)
-            ->sum('detalle_oportunidad.valor');
+    public function ingresos_por_periodo_por_status($inicio, $fin, $status,$auth)
+    {   
+        if($auth->is_admin){
+            return DB::table('oportunidades')
+                ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
+                ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                ->wherenull('oportunidades.deleted_at')
+                ->wherenull('detalle_oportunidad.deleted_at')
+                ->wherenull('status_oportunidad.deleted_at')
+                ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
+                ->where('status_oportunidad.id_cat_status_oportunidad',$status)
+                ->sum('detalle_oportunidad.valor');   
+        }
+            return DB::table('oportunidades')
+                ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
+                ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                ->where('colaborador_oportunidad.id_colaborador',$auth->id)
+                ->wherenull('oportunidades.deleted_at')
+                ->wherenull('detalle_oportunidad.deleted_at')
+                ->wherenull('status_oportunidad.deleted_at')
+                ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
+                ->where('status_oportunidad.id_cat_status_oportunidad',$status)
+                ->sum('detalle_oportunidad.valor');
             
     }
 
-    public function origen_por_periodo($inicio, $fin)
+    public function origen_por_periodo($inicio, $fin,$auth)
     {
-        return DB::table('prospectos')
-            ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
-            ->wherenull('prospectos.deleted_at')
-            ->wherenull('cat_fuentes.deleted_at')
-            ->where('prospectos.deleted_at',null)
-            ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
-            ->whereBetween('prospectos.updated_at', array($inicio ,$fin))
-            ->groupBy('cat_fuentes.nombre')->get();
+        if($auth->is_admin){
+            return DB::table('prospectos')
+                ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                ->wherenull('prospectos.deleted_at')
+                ->wherenull('cat_fuentes.deleted_at')
+                ->where('prospectos.deleted_at',null)
+                ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
+                ->whereBetween('prospectos.updated_at', array($inicio ,$fin))
+                ->groupBy('cat_fuentes.nombre')->get();   
+        }
+            return DB::table('prospectos')
+                ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                ->join('colaborador_prospecto','colaborador_prospecto.id_prospecto','prospectos.id_prospecto')
+                ->where('colaborador_prospecto.id_colaborador',$auth->id)
+                ->wherenull('prospectos.deleted_at')
+                ->wherenull('cat_fuentes.deleted_at')
+                ->where('prospectos.deleted_at',null)
+                ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
+                ->whereBetween('prospectos.updated_at', array($inicio ,$fin))
+                ->groupBy('cat_fuentes.nombre')->get();
     }
 
     public function oportunidades_por_colaborador_por_status($id,$status){
@@ -2715,12 +2849,21 @@ class DataViewsController extends Controller
             ->select(DB::raw('SUM(detalle_oportunidad.valor) as total'),'cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status')->groupBy('cat_fuentes.nombre')
             ->get();
     }
-    public function prospectos_sin_contactar(){
-        return DB::table('prospectos')
+    public function prospectos_sin_contactar($auth){
+        if($auth->is_admin){
+            return DB::table('prospectos')
             ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
             ->wherenull('prospectos.deleted_at')
             ->wherenull('status_prospecto.deleted_at')
             ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
+        }
+            return DB::table('prospectos')
+                ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+                ->join('colaborador_prospecto','colaborador_prospecto.id_prospecto','prospectos.id_prospecto')
+                ->where('colaborador_prospecto.id_colaborador',$auth->id)
+                ->wherenull('prospectos.deleted_at')
+                ->wherenull('status_prospecto.deleted_at')
+                ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
     }
     public function StatusChecker($catalogo,$consulta){
 

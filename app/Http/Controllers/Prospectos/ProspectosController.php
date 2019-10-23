@@ -250,10 +250,22 @@ class ProspectosController extends Controller
     }
 
     public function getAllProspectos(){
-        $prospectos = Prospecto::GetAllProspectos();
-        $prospectos_total = Prospecto::count();
-        $prospectos_sin_contactar = Prospecto::join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
-                                    ->where('status_prospecto.id_cat_status_prospecto','=',1)->count();
+        $auth = $this->guard()->user();
+        if($auth->is_admin){
+            $prospectos = Prospecto::GetAllProspectos();
+            $prospectos_total = Prospecto::count();
+            $prospectos_sin_contactar = Prospecto::join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+                                    ->where('status_prospecto.id_cat_status_prospecto','=',1)->count(); 
+        }
+        else{
+            $prospectos = Prospecto::join('colaborador_prospecto','colaborador_prospecto.id_prospecto','prospectos.id_prospecto')
+                                    ->where('colaborador_prospecto.id_colaborador',$auth->id)->get();
+            $prospectos_total = Prospecto::join('colaborador_prospecto','colaborador_prospecto.id_prospecto','prospectos.id_prospecto')
+                                    ->where('colaborador_prospecto.id_colaborador',$auth->id)->count();
+            $prospectos_sin_contactar = Prospecto::join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+                                    ->where('status_prospecto.id_cat_status_prospecto','=',1)->count(); 
+        }
+        
         return response()->json([
             'message'=>'Correcto',
             'error'=>false,

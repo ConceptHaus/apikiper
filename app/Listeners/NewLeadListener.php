@@ -7,6 +7,8 @@ use App\Modelos\User;
 
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Twilio\Rest\Client;
+
 
 use Mailgun;
 use DB;
@@ -20,7 +22,11 @@ class NewLeadListener
      */
     public function __construct()
     {
-        //
+        $accountSid = env('TWILIO_ACCOUNT_SID');
+        $authToken = env('TWILIO_AUTH_TOKEN');
+        $this->sendingNumber = env('TWILIO_NUMBER');
+
+        $this->twilioClient = new Client($accountSid, $authToken);
         
     }
 
@@ -75,6 +81,15 @@ class NewLeadListener
                 $message->trackOpens(true);
                 $message->tag('new_lead');
                 });
+            }
+            foreach($admins as $admin){
+                $user = User::find($admin->id);
+                $this->twilioClient->messages->create(
+                '+52'.$user->detalle->celular,
+                array(
+                    "from" => $this->sendingNumber,
+                    "body" => 'Kiper Leads | Nombre: '.$data['nombre_p'].' '.$data['apellido_p'].' Correo: '.$data['correo_p'].' Telefono: '.$data['telefono_p']
+                ));
             }
             
         }

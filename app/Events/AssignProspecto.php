@@ -10,7 +10,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class NewRandomAssigment
+class AssignProspecto
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $evento;
@@ -22,7 +22,7 @@ class NewRandomAssigment
     public function __construct($evento)
     {
         $this->evento = $evento;
-    }
+    } 
 
     /**
      * Get the channels the event should broadcast on.

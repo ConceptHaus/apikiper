@@ -213,6 +213,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::put('/etiquetas','DataViews\DataViewsController@updateEtiquetas');
         Route::put('/servicios','DataViews\DataViewsController@updateServicios');
         Route::put('/status','DataViews\DataViewsController@updateStatus');
+        Route::put('/prospectos/colaborador','DataViews\DataViewsController@updateColaborador');
 
         //DELETE
         Route::delete('/etiquetas/{id}','DataViews\DataViewsController@deleteEtiquetas');
