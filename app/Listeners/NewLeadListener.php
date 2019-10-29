@@ -84,7 +84,7 @@ class NewLeadListener
             }
             foreach($admins as $admin){
                 $user = User::find($admin->id);
-                if(count($user->detalle->celular)==10){
+                if(isset($user->detalle) && count($user->detalle->celular)==10){
                     $this->twilioClient->messages->create(
                     '+52'.$user->detalle->celular,
                     array(
