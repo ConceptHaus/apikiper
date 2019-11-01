@@ -498,7 +498,7 @@ class ProspectosController extends Controller
           ],200);
         }
 
-        if($validator->passes() || $prospecto == null){
+        if($validator->passes() || $prospecto !== null){
             try{
                 DB::beginTransaction();
                 //Datos generales oportunidad
@@ -513,13 +513,22 @@ class ProspectosController extends Controller
                 $nueva_oportunidad->servicio_oportunidad()->save($servicio_oportunidad);
 
                 //Asignación a colaborador
-                $colaboradores = $request->id_colaborador;
-                foreach($colaboradores as $_colaborador){
-                    $colaborador_oportunidad = new ColaboradorOportunidad;
-                    $colaborador_oportunidad->id_colaborador = $_colaborador;
-                    $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
-                    $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
-                }
+                $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto',$id)->first();
+                
+                //$colaboradores = $request->id_colaborador;
+                $colaborador = $colaborador_prospecto->id_colaborador ?? $auth->id;
+                
+                $colaborador_oportunidad = new ColaboradorOportunidad;
+                $colaborador_oportunidad->id_colaborador = $colaborador;
+                $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
+                $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
+
+                // foreach($colaboradores as $_colaborador){
+                //     $colaborador_oportunidad = new ColaboradorOportunidad;
+                //     $colaborador_oportunidad->id_colaborador = $_colaborador;
+                //     $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
+                //     $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
+                // }
 
                 //Asignación a prospecto
                 $prospecto_oportunidad = new ProspectoOportunidad;
