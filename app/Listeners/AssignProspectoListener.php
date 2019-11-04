@@ -61,7 +61,7 @@ class AssignProspectoListener
             $message->tag('assign_lead');
         });
 
-        if($user->detalle->celular){
+        if(isset($user->detalle) && $user->detalle->celular){
             $this->twilioClient->messages->create(
                 '+52'.$user->detalle->celular,
                 array(
