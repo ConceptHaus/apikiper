@@ -380,22 +380,12 @@ class FormsController extends Controller
           $etiqueta_prospecto_t->id_etiqueta = $etiqueta_term->id_etiqueta;
           $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto_t);
 
-          //Condicional etiqueta Colabora
-          if(strpos($data['utm_campaign'],'cancol') !== false){
-            event(new CoCan($prospecto));
-          }
-
-          if(strpos($data['utm_campaign'],'gdlcol') !== false){
-            event(new CoGdl($prospecto));
-          }
           
           //$array_users = $this->check_etiquetas($etiqueta_prospecto_c->id_etiqueta);
           //$user_rand = $this->random_assigment($prospecto->id_prospecto);
           //$assigment = $this->assigment_colaborador($array_users, $prospecto->id_prospecto);
           //$data_event['colaboradores'] = $user_rand;
-          $data_event['prospecto'] = $prospecto;
           
-
           // if($assigment){
           //    event(new NewAssigment($data_event));
           // }
@@ -404,14 +394,15 @@ class FormsController extends Controller
           //   event(new NewAssigment($data_event));
           // }
   
-          event(new NewLead($prospecto));
-           
-
-
+          //event(new NewLead($prospecto));
           
-          
+ 
         }
-
+        if(isset($data['assigment'])){
+          $data_event['prospecto'] = $prospecto;
+          $data_event['desarrollo'] = $data['assigment'];
+          event(new NewAssigment($data_event));
+        }
         
 
         }
