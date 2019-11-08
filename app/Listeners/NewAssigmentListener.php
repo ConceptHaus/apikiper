@@ -171,7 +171,7 @@ class NewAssigmentListener
                 $message->trackOpens(true);
                 $message->tag('new_lead');
             });
-
+            $colaborador = User::find($id);
             if(isset($colaborador->detalle) && count($colaborador->detalle->celular)==10){
                 $this->twilioClient->messages->create(
                 '+52'.$colaborador->detalle->celular,
