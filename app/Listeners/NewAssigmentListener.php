@@ -167,9 +167,7 @@ class NewAssigmentListener
             Mailgun::send('mailing.template_newlead',$data, function($message) use ($data){
                 $message->from($data['email_de'],$data['nombre_de']);
                 $message->subject($data['asunto']);
-                foreach($data['email'] as $to_){
-                    $message->to($to_);
-                }
+                $message->to($data['email']);
                 $message->trackOpens(true);
                 $message->tag('new_lead');
             });
