@@ -125,17 +125,30 @@ class FormsController extends Controller
     public function registerProspecto(Request $request){
       // return $request->query('token');
         $token = $request->query('token');
+
         $verify = IntegracionForm::where('token',$token)->first();
 
         if($verify){
             try{
               
-              $this->addProspecto($request->all(),$verify->id_integracion_forms);
+              if($this->validadorProspecto($request->all())->passes()){
+                  
+                $this->addProspecto($request->all(),$verify->id_integracion_forms);
+                  
+                    return response()->json([
+                      'message'=>'Success',
+                      'error'=>false
+                    ],201);
+
+              }
               
-              return response()->json([
-                 'message'=>'Success',
-                'error'=>false
-              ],201);
+              else{
+                return response()->json([
+                  'message'=>'Error: email repetido',
+                  'error'=>true
+                ],406);
+              }
+              
 
             }catch(Exception $e){
 
@@ -428,6 +441,11 @@ class FormsController extends Controller
       ]);
     }
 
+    public function validadorProspecto(array $data){
+        return Validator::make($data,[
+          'correo'=>'required|email|max:255|unique:prospectos,correo',
+        ]);
+    }
     public function validatorForm(array $data){
         return Validator::make($data, [
             'nombre'=>'required|string',
