@@ -125,17 +125,30 @@ class FormsController extends Controller
     public function registerProspecto(Request $request){
       // return $request->query('token');
         $token = $request->query('token');
+
         $verify = IntegracionForm::where('token',$token)->first();
 
         if($verify){
             try{
               
-              $this->addProspecto($request->all(),$verify->id_integracion_forms);
+              if($this->validadorProspecto($request->all())->passes()){
+                  
+                $this->addProspecto($request->all(),$verify->id_integracion_forms);
+                  
+                    return response()->json([
+                      'message'=>'Success',
+                      'error'=>false
+                    ],201);
+
+              }
               
-              return response()->json([
-                 'message'=>'Success',
-                'error'=>false
-              ],201);
+              else{
+                return response()->json([
+                  'message'=>'Error: email repetido',
+                  'error'=>true
+                ],406);
+              }
+              
 
             }catch(Exception $e){
 
@@ -227,6 +240,24 @@ class FormsController extends Controller
         }
 
         return $users_array;
+    }
+
+    public function random_assigment($id_prospecto){
+        $users = DB::table('users')->select('id')->where([['super_admin','!=',1],['email','!=','admin@concepthaus.mx']])->get();
+        $arr_users = array();
+
+        foreach($users as $user){
+          array_push($arr_users, $user->id);
+        }
+
+        $random_user = array_rand($arr_users,1);
+
+        $col_prospecto = new ColaboradorProspecto;
+        $col_prospecto->id_colaborador = $arr_users[$random_user];
+        $col_prospecto->id_prospecto = $id_prospecto;
+        $col_prospecto->save();
+
+        return $arr_users[$random_user];
     }
 
     public function assigment_colaborador($users_array, $id_prospecto){
@@ -362,34 +393,29 @@ class FormsController extends Controller
           $etiqueta_prospecto_t->id_etiqueta = $etiqueta_term->id_etiqueta;
           $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto_t);
 
-          //Condicional etiqueta Colabora
-          if(strpos($data['utm_campaign'],'cancol') !== false){
-            event(new CoCan($prospecto));
-          }
+          
+          //$array_users = $this->check_etiquetas($etiqueta_prospecto_c->id_etiqueta);
+          //$user_rand = $this->random_assigment($prospecto->id_prospecto);
+          //$assigment = $this->assigment_colaborador($array_users, $prospecto->id_prospecto);
+          //$data_event['colaboradores'] = $user_rand;
+          
+          // if($assigment){
+          //    event(new NewAssigment($data_event));
+          // }
 
-          if(strpos($data['utm_campaign'],'gdlcol') !== false){
-            event(new CoGdl($prospecto));
-          }
-          
-          $array_users = $this->check_etiquetas($etiqueta_prospecto_c->id_etiqueta);
-          $assigment = $this->assigment_colaborador($array_users, $prospecto->id_prospecto);
-          
-          $data_event['colaboradores'] = $array_users;
-          $data_event['prospecto'] = $prospecto;
-          
-
-          if($assigment){
-             event(new NewAssigment($data_event));
-          }
+          // if($user_rand){
+          //   event(new NewAssigment($data_event));
+          // }
   
           event(new NewLead($prospecto));
-           
-
-
           
-          
+ 
         }
-
+        if(isset($data['assigment'])){
+          $data_event['prospecto'] = $prospecto;
+          $data_event['desarrollo'] = $data['assigment'];
+          event(new NewAssigment($data_event));
+        }
         
 
         }
@@ -415,6 +441,11 @@ class FormsController extends Controller
       ]);
     }
 
+    public function validadorProspecto(array $data){
+        return Validator::make($data,[
+          'correo'=>'required|email|max:255|unique:prospectos,correo',
+        ]);
+    }
     public function validatorForm(array $data){
         return Validator::make($data, [
             'nombre'=>'required|string',

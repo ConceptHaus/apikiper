@@ -250,10 +250,22 @@ class ProspectosController extends Controller
     }
 
     public function getAllProspectos(){
-        $prospectos = Prospecto::GetAllProspectos();
-        $prospectos_total = Prospecto::count();
-        $prospectos_sin_contactar = Prospecto::join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
-                                    ->where('status_prospecto.id_cat_status_prospecto','=',1)->count();
+        $auth = $this->guard()->user();
+        if($auth->is_admin){
+            $prospectos = Prospecto::GetAllProspectos();
+            $prospectos_total = Prospecto::count();
+            $prospectos_sin_contactar = Prospecto::join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+                                    ->where('status_prospecto.id_cat_status_prospecto','=',1)->count(); 
+        }
+        else{
+            $prospectos = Prospecto::join('colaborador_prospecto','colaborador_prospecto.id_prospecto','prospectos.id_prospecto')
+                                    ->where('colaborador_prospecto.id_colaborador',$auth->id)->get();
+            $prospectos_total = Prospecto::join('colaborador_prospecto','colaborador_prospecto.id_prospecto','prospectos.id_prospecto')
+                                    ->where('colaborador_prospecto.id_colaborador',$auth->id)->count();
+            $prospectos_sin_contactar = Prospecto::join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+                                    ->where('status_prospecto.id_cat_status_prospecto','=',1)->count(); 
+        }
+        
         return response()->json([
             'message'=>'Correcto',
             'error'=>false,
@@ -486,7 +498,7 @@ class ProspectosController extends Controller
           ],200);
         }
 
-        if($validator->passes() || $prospecto == null){
+        if($validator->passes() || $prospecto !== null){
             try{
                 DB::beginTransaction();
                 //Datos generales oportunidad
@@ -501,13 +513,22 @@ class ProspectosController extends Controller
                 $nueva_oportunidad->servicio_oportunidad()->save($servicio_oportunidad);
 
                 //Asignación a colaborador
-                $colaboradores = $request->id_colaborador;
-                foreach($colaboradores as $_colaborador){
-                    $colaborador_oportunidad = new ColaboradorOportunidad;
-                    $colaborador_oportunidad->id_colaborador = $_colaborador;
-                    $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
-                    $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
-                }
+                $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto',$id)->first();
+                
+                //$colaboradores = $request->id_colaborador;
+                $colaborador = $colaborador_prospecto->id_colaborador ?? $auth->id;
+                
+                $colaborador_oportunidad = new ColaboradorOportunidad;
+                $colaborador_oportunidad->id_colaborador = $colaborador;
+                $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
+                $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
+
+                // foreach($colaboradores as $_colaborador){
+                //     $colaborador_oportunidad = new ColaboradorOportunidad;
+                //     $colaborador_oportunidad->id_colaborador = $_colaborador;
+                //     $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
+                //     $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
+                // }
 
                 //Asignación a prospecto
                 $prospecto_oportunidad = new ProspectoOportunidad;
@@ -943,7 +964,7 @@ class ProspectosController extends Controller
         return Validator::make($data,[
             'nombre'=>'required|string|max:255',
             //'apellido'=>'required|string|max:255',
-            'correo'=>'required|string|email|max:255|unique:prospectos',
+            'correo'=>'required|email|max:255|unique:prospectos,correo',
 
         ]);
 
