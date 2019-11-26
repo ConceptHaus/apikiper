@@ -36,9 +36,9 @@ class ProspectosImport implements ToModel, WithHeadingRow
     {   
         
         $prospecto =  new Prospecto([
-            'nombre'=> (isset($row['nombre']) ? $row['nombre'] : 'n/a'),
+            'nombre'=> $row['nombre'] ?: 'n/a',
             'apellido'=> $row['apellido'] ?:'',
-            'correo'=>(isset($row['correo']) ? $row['correo'] : 'n/a'),
+            'correo'=>$row['correo'] ?: 'n/a',
             'fuente'=>$row['fuente'] ?: 3
         ]);
         $prospecto->save();
