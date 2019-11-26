@@ -2253,7 +2253,7 @@ class DataViewsController extends Controller
             Mailgun::send('mailing.mail', $data, function ($message) use ($data,$request, $aux){
                 $message->from($data['email_de'],$data['nombre_de']);
                 $message->subject($data['asunto']);
-                
+                $message->bcc($data['email_de']);
                 $message->to($aux);
                 
                 for($x = 0; $x < count($request->Files); $x++)
@@ -2274,6 +2274,7 @@ class DataViewsController extends Controller
                 // $message->tag('myTag');
                 $message->from($data['email_de'],$data['nombre_de']);
                 // $message->testmode(true);
+                $message->bcc($data['email_de']);
                 $message->subject($data['asunto']);
                 $message->to($aux);
             });
