@@ -7,6 +7,7 @@ use App\Modelos\User;
 use App\Modelos\Prospecto\Prospecto;
 use App\Modelos\Prospecto\DetalleProspecto;
 use App\Modelos\Prospecto\StatusProspecto;
+use App\Modelos\Prospecto\ColaboradorProspecto;
 
 use App\Modelos\Oportunidad\Oportunidad;
 use App\Modelos\Oportunidad\DetalleOportunidad;
@@ -41,7 +42,19 @@ class ProspectosImport implements ToModel, WithHeadingRow
             'fuente'=>$row['fuente'] ?: 3
         ]);
         $prospecto->save();
-        
+
+        if(isset($row['colaborador'])){
+
+            $colaborador = User::where('email',$row['colaborador'])->first();
+            
+            if($colaborador){
+                $colaborador_op = new ColaboradorProspecto();
+                $colaborador_op->id_colaborador = $colaborador->id;
+                $colaborador_op->id_prospecto = $prospecto->id_prospecto;
+                $colaborador_op->save();
+                
+            }    
+        }
         if(isset($row['nombre_oportunidad'])){
             $oportunidad = new Oportunidad([
                 'nombre_oportunidad'=> $row['nombre_oportunidad']
@@ -102,20 +115,7 @@ class ProspectosImport implements ToModel, WithHeadingRow
             
         }
 
-        if(isset($row['colaborador'])){
-
-            $colaborador = User::where('email',$row['colaborador'])->first();
-            
-            if($colaborador){
-                
-                $colaborador_op = new ColaboradorOportunidad([
-                    'id_colaborador' => $colaborador->id
-                ]);
-
-                $oportunidad->colaborador_oportunidad()->save($colaborador_op);
-            }
-            
-        }
+        
 
 
         $detalle = new DetalleProspecto([
