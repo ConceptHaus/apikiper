@@ -373,7 +373,7 @@ class DataViewsController extends Controller
                                 ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
         }
         
-
+        $colaboradores = User::all();
         $catalogo_fuentes = DB::table('cat_fuentes')
                             ->wherenull('cat_fuentes.deleted_at')
                             ->select('nombre','url','status')->get();
@@ -387,7 +387,8 @@ class DataViewsController extends Controller
                 'prospectos_total'=>$total_prospectos,
                 'prospectos_nocontactados'=> $nocontactados_prospectos,
                 'prospectos_fuente'=>$this->FuentesChecker($catalogo_fuentes,$origen),
-                'prospectos_status'=> $prospectos_status
+                'prospectos_status'=> $prospectos_status,
+                'colaboradores'=> $colaboradores
             ]
             ],200);
     }
