@@ -960,7 +960,9 @@ class ProspectosController extends Controller
         ]);
     }
 
-    public function downloadProspectos(){
+    public function downloadProspectos($admin,$rol){
+        
+        $date = Carbon::now();
         $headings = [
             'nombre_prospecto',
             'apellido_prospecto',
@@ -969,9 +971,19 @@ class ProspectosController extends Controller
             'fuente',
             'status',
             'nota',
+            'asigando_a',
             'fecha_registro'
         ];
-        return (new ProspectosReports($headings))->download('report.xlsx',null,['Access-Control-Allow-Origin'=>'*']);
+        if($admin && $rol == 0){
+             $desarrollo = 'all';
+        }
+        else if($rol == 1){
+             $desarrollo='polanco';
+        }
+        else if($rol == 2){
+             $desarrollo='napoles';
+        }
+        return (new ProspectosReports($headings,$desarrollo))->download("{$date}_{$desarrollo}_reporte.xlsx");
     }
 
     //Functiones auxiliares
