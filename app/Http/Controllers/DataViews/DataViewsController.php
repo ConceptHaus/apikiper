@@ -330,21 +330,24 @@ class DataViewsController extends Controller
                             ->with('status_prospecto.status')
                             ->with('prospectos_empresas')
                             ->with('prospectos_empresas.empresas')
-                            ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
-                            ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
+                            ->leftjoin('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
+                            ->leftjoin('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
                             ->where('etiquetas.nombre','like','%polanco%')
-                            ->select('*','prospectos.nombre','etiquetas.nombre AS nombre_etiqueta')
+                            ->groupby('prospectos.id_prospecto')
                             ->orderBy('prospectos.created_at','desc')
+                            ->select('*','prospectos.created_at','prospectos.nombre','etiquetas.nombre AS nombre_etiqueta')
                             ->get();
             $total_prospectos = $prospectos->count();
             $origen = DB::table('prospectos')
+                    ->distinct()
                     ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                     ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
                     ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
                     ->wherenull('prospectos.deleted_at')
                     ->where('etiquetas.nombre','like','%polanco%')
-                    ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(*) as total, cat_fuentes.nombre'))
-                    ->groupBy('cat_fuentes.nombre')->get();
+                    ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status', DB::raw('count(DISTINCT(prospectos.id_prospecto)) as total, cat_fuentes.nombre'))
+                    ->groupBy('cat_fuentes.nombre')
+                    ->get();
                 
             $nocontactados_prospectos = DB::table('prospectos')
                     ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
@@ -364,8 +367,9 @@ class DataViewsController extends Controller
                             ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
                             ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
                             ->where('etiquetas.nombre','like','%napoles%')
-                            ->select('*','prospectos.nombre','etiquetas.nombre AS nombre_etiqueta')
+                            ->select('*','prospectos.created_at','prospectos.nombre','etiquetas.nombre AS nombre_etiqueta')
                             ->orderBy('prospectos.created_at','desc')
+                            ->groupby('prospectos.id_prospecto')
                             ->get();
             $total_prospectos = $prospectos->count();
             
@@ -375,7 +379,7 @@ class DataViewsController extends Controller
                     ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
                     ->wherenull('prospectos.deleted_at')
                     ->where('etiquetas.nombre','like','%napoles%')
-                    ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(*) as total, cat_fuentes.nombre'))
+                    ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(DISTINCT(prospectos.id_prospecto)) as total, cat_fuentes.nombre'))
                     ->groupBy('cat_fuentes.nombre')->get();
                 
             $nocontactados_prospectos = DB::table('prospectos')
