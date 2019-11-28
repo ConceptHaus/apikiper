@@ -66,3 +66,5 @@ Route::get('/{desarrollo}', function($desarrollo){
     
     return response()->json($filter_prospectos,200);
 });
+
+Route::get('/download/prospectos','Prospectos\ProspectosController@downloadProspectos');

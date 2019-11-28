@@ -42,6 +42,7 @@ use App\Events\Historial;
 use App\Events\Event;
 
 use App\Imports\ProspectosImport;
+use App\Exports\ProspectosReports;
 use Excel;
 
 
@@ -958,6 +959,21 @@ class ProspectosController extends Controller
             'data'=>$status
         ]);
     }
+
+    public function downloadProspectos(){
+        $headings = [
+            'nombre_prospecto',
+            'apellido_prospecto',
+            'telefono',
+            'correo',
+            'fuente',
+            'status',
+            'nota',
+            'fecha_registro'
+        ];
+        return (new ProspectosReports($headings))->download('report.xlsx',null,['Access-Control-Allow-Origin'=>'*']);
+    }
+
     //Functiones auxiliares
     public function validadorProspectos(array $data){
 
