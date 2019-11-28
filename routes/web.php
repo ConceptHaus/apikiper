@@ -15,7 +15,7 @@ Route::get('/', function(){
     return response()->json(['Error'=>'Nothing here. ⚠️'],200);
 });
 
-Route::get('/{desarrollo}', function(){
+Route::get('/{desarrollo}', function($desarrollo){
     $filter_prospectos = [];
     $prospectos = App\Modelos\Prospecto\Prospecto::with('detalle_prospecto')
                     //->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
