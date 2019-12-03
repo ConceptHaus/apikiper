@@ -287,10 +287,16 @@ class FormsController extends Controller
 
         if(isset($data['lead_type'])){
           $prospecto->nombre = $data['caller_name'];
-          $prospecto->correo = 'Not set';
-          $prospecto->fuente = 4;
+          $prospecto->correo =isset($data['caller_number']) ? "{$data['caller_number']}@phonecall.com" : 'Not set';
+          $prospecto->fuente = $data['fuente'] ?: 4;
           $prospecto->save();
           
+          if(isset($data['assigment'])){
+            $data_event['prospecto'] = $prospecto;
+            $data_event['desarrollo'] = $data['assigment'];
+            event(new NewAssigment($data_event));
+          }
+
           //Call
           $llamadaProspecto = New CallsProstecto();
           $llamadaProspecto->caller_number = $data['caller_number'];

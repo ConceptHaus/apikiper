@@ -306,6 +306,7 @@ class DataViewsController extends Controller
 
     public function prospectos(){
 
+
         $total_prospectos = Prospecto::all()->count();
 
         $nocontactados_prospectos = DB::table('prospectos')
@@ -321,7 +322,7 @@ class DataViewsController extends Controller
                     ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(*) as total, cat_fuentes.nombre'))
                     ->groupBy('cat_fuentes.nombre')->get();
 
-        
+        $etiquetas = DB::table('etiquetas')->select('*')->get();
         $auth = $this->guard()->user();  
         if($auth->rol == 1){
             $prospectos = Prospecto::with('detalle_prospecto')
@@ -330,6 +331,7 @@ class DataViewsController extends Controller
                             ->with('status_prospecto.status')
                             ->with('prospectos_empresas')
                             ->with('prospectos_empresas.empresas')
+                            ->with('etiquetas_prospecto')
                             ->leftjoin('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
                             ->leftjoin('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
                             ->where('etiquetas.nombre','like','%polanco%')
@@ -364,6 +366,7 @@ class DataViewsController extends Controller
                             ->with('prospectos_empresas')
                             ->with('prospectos_empresas.empresas')
                             ->with('status_prospecto.status')
+                            ->with('etiquetas_prospecto')
                             ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
                             ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
                             ->where('etiquetas.nombre','like','%napoles%')
@@ -401,6 +404,7 @@ class DataViewsController extends Controller
                                 ->wherenull('prospectos.deleted_at')
                                 ->with('status_prospecto.status')
                                 ->with('prospectos_empresas')
+                                ->with('etiquetas_prospecto')
                                 ->with('prospectos_empresas.empresas')
                                 ->orderBy('prospectos.created_at','desc')
                                 //->groupBy('prospectos.id_prospecto')
@@ -415,6 +419,7 @@ class DataViewsController extends Controller
                                 ->wherenull('prospectos.deleted_at')
                                 ->with('status_prospecto.status')
                                 ->with('prospectos_empresas')
+                                ->with('etiquetas_prospecto')
                                 ->with('prospectos_empresas.empresas')
                                 ->orderBy('prospectos.created_at','desc')
                                 //->groupBy('prospectos.id_prospecto')
@@ -455,7 +460,8 @@ class DataViewsController extends Controller
                 'prospectos_nocontactados'=> $nocontactados_prospectos,
                 'prospectos_fuente'=>$this->FuentesChecker($catalogo_fuentes,$origen),
                 'prospectos_status'=> $prospectos_status,
-                'colaboradores'=> $colaboradores
+                'colaboradores'=> $colaboradores,
+                'etiquetas'=>$etiquetas
             ]
             ],200);
     }
