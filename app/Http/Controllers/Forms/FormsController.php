@@ -302,8 +302,8 @@ class FormsController extends Controller
           $llamadaProspecto->play_recording = (isset($data['recording']) ? $data['recording'] : 'not set');
           $llamadaProspecto->device_type = (isset($data['device_type']) ? $data['device_type'] : '');
           $llamadaProspecto->device_make = (isset($data['device_make']) ? $data['device_make'] : '');
-          $llamadaProspecto->call_status = $data['call_status'];
-          $llamadaProspecto->call_duration = $data['call_duration'];
+          $llamadaProspecto->call_status = $data['call_status']??' ';
+          $llamadaProspecto->call_duration = $data['call_duration']??' ';
           $prospecto->calls()->save($llamadaProspecto);
 
           $detalleProspecto = new DetalleProspecto();
