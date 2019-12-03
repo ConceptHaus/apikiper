@@ -255,9 +255,9 @@ class NewAssigmentListener
             $data['nombre_p'] = $prospecto->nombre;
             $data['apellido_p'] = $prospecto->apellido;
             $data['correo_p'] = $prospecto->correo;
-            $data['empresa_p'] = $prospecto->detalle_prospecto->empresa;
+            $data['empresa_p'] = $prospecto->detalle_prospecto->empresa ?: 'not set';
             $data['telefono_p'] = $prospecto->detalle_prospecto->telefono;
-            $data['mensaje_p'] = $prospecto->detalle_prospecto->nota;
+            $data['mensaje_p'] = $prospecto->detalle_prospecto->nota ?: 'not set';
             $data['campaign_p'] = (isset($prospecto->campaign->utm_campaign) ? $prospecto->campaign->utm_campaign : 'orgánico');
             $data['term_p'] = (isset($prospecto->campaign->utm_term) ? $prospecto->campaign->utm_term : 'orgánico');
 
