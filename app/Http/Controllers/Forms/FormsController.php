@@ -291,11 +291,6 @@ class FormsController extends Controller
           $prospecto->fuente = $data['fuente'] ?? 4;
           $prospecto->save();
           
-          if(isset($data['assigment'])){
-            $data_event['prospecto'] = $prospecto;
-            $data_event['desarrollo'] = $data['assigment'];
-            event(new NewAssigment($data_event));
-          }
 
           //Call
           $llamadaProspecto = New CallsProstecto();
@@ -343,7 +338,12 @@ class FormsController extends Controller
             $etiqueta_prospecto->id_etiqueta = $etiqueta->id_etiqueta;
             $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
         }
-
+        
+        if(isset($data['assigment'])){
+          $data_event['prospecto'] = $prospecto;
+          $data_event['desarrollo'] = $data['assigment'];
+          event(new NewAssigment($data_event));
+        }
         event(new NewCall($prospecto));
 
         }else{
