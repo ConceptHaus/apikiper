@@ -531,6 +531,18 @@ class ColaboradoresController extends Controller
         }
     }
 
+    public function changeRol($status){
+        $auth = $this->guard()->user();
+        $auth->rol = $status;
+        $auth->save();
+
+        return response()->json([
+            'error'=>false,
+            'message'=>'success',
+            'data'=>"Status: {$status}"
+        ],200);
+    }
+    
     public function uploadFilesS3($file, $colaborador){
         //Sube archivos a bucket de Amazon
         $disk = Storage::disk('s3');
