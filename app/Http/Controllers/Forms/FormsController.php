@@ -377,65 +377,41 @@ class FormsController extends Controller
             $etiqueta_campaign = Etiqueta::where('nombre','=',$campaign->utm_campaign)->first();
             $etiqueta_term = Etiqueta::where('nombre','=',$campaign->utm_term)->first();
 
-          if(!$etiqueta_campaign){
-              $etiqueta_campaign = new Etiqueta;
-              $etiqueta_campaign->nombre = $campaign->utm_campaign;
-              $etiqueta_campaign->status = 1;
-              $etiqueta_campaign->save();
+            if(!$etiqueta_campaign){
+                $etiqueta_campaign = new Etiqueta;
+                $etiqueta_campaign->nombre = $campaign->utm_campaign;
+                $etiqueta_campaign->status = 1;
+                $etiqueta_campaign->save();
+            }
+            if(!$etiqueta_term){
+                $etiqueta_term = new Etiqueta;
+                $etiqueta_term->nombre = $campaign->utm_term;
+                $etiqueta_term->status = 1;
+                $etiqueta_term->save();
+            }
+
+            $etiqueta_prospecto_c = new EtiquetasProspecto;
+            $etiqueta_prospecto_c->id_etiqueta = $etiqueta_campaign->id_etiqueta;
+            $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto_c);
+
+
+            $etiqueta_prospecto_t = new EtiquetasProspecto;
+            $etiqueta_prospecto_t->id_etiqueta = $etiqueta_term->id_etiqueta;
+            $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto_t);
+
           }
-          if(!$etiqueta_term){
-              $etiqueta_term = new Etiqueta;
-              $etiqueta_term->nombre = $campaign->utm_term;
-              $etiqueta_term->status = 1;
-              $etiqueta_term->save();
+          if(isset($data['assigment'])){
+            $data_event['prospecto'] = $prospecto;
+            $data_event['desarrollo'] = $data['assigment'];
+            event(new NewAssigment($data_event));
           }
-
-          $etiqueta_prospecto_c = new EtiquetasProspecto;
-          $etiqueta_prospecto_c->id_etiqueta = $etiqueta_campaign->id_etiqueta;
-          $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto_c);
-
-
-          $etiqueta_prospecto_t = new EtiquetasProspecto;
-          $etiqueta_prospecto_t->id_etiqueta = $etiqueta_term->id_etiqueta;
-          $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto_t);
-
-          
-          //$array_users = $this->check_etiquetas($etiqueta_prospecto_c->id_etiqueta);
-          //$user_rand = $this->random_assigment($prospecto->id_prospecto);
-          //$assigment = $this->assigment_colaborador($array_users, $prospecto->id_prospecto);
-          //$data_event['colaboradores'] = $user_rand;
-          
-          // if($assigment){
-          //    event(new NewAssigment($data_event));
-          // }
-
-          // if($user_rand){
-          //   event(new NewAssigment($data_event));
-          // }
-  
-          event(new NewLead($prospecto));
-          
- 
-        }
-        if(isset($data['assigment'])){
-          $data_event['prospecto'] = $prospecto;
-          $data_event['desarrollo'] = $data['assigment'];
-          event(new NewAssigment($data_event));
-        }
         
-
+        event(new NewLead($prospecto));
         }
         
         DB::commit();
-
-        
-        
-        
-
+ 
     }
-
-
-
 
     //Validadores
     public function validatorUpdate(array $data){
