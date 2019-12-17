@@ -70,11 +70,11 @@ class ProspectosReports implements WithHeadings,FromCollection{
                 ->groupby('prospectos.id_prospecto')
                 ->orderBy('prospectos.created_at','desc')
                 ->select(
-                        'CONCAT(users.nombre," ",users.apellido) as asesor',
+                        DB::raw('CONCAT(users.nombre," ",users.apellido) as asesor'),
                         'prospectos.created_at as fecha',
                         'cat_status_prospecto.status as estado',
                         'cat_fuentes.nombre as como se enteró',
-                        'CONCAT(prospectos.nombre," ",prospectos.apellido) as cliente',
+                        DB::raw('CONCAT(prospectos.nombre," ",prospectos.apellido) as cliente'),
                         'detalle_prospecto.telefono',
                         'prospectos.correo as mail',
                         'detalle_prospecto.nota as comentarios'
