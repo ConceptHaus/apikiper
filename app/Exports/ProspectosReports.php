@@ -46,15 +46,16 @@ class ProspectosReports implements WithHeadings,FromCollection{
                 ->join('colaborador_prospecto','colaborador_prospecto.id_prospecto','prospectos.id_prospecto')
                 ->join('users','users.id','colaborador_prospecto.id_colaborador')
                 ->orderBy('prospectos.created_at','desc')
-                ->select('prospectos.nombre as nombre_prospecto',
-                        'prospectos.apellido as apellido_prospecto',
+                ->select(
+                        DB::raw('CONCAT(users.nombre," ",users.apellido) as asesor'),
+                        'prospectos.created_at as fecha',
+                        'cat_status_prospecto.status as estado',
+                        'cat_fuentes.nombre as como se enteró',
+                        DB::raw('CONCAT(prospectos.nombre," ",prospectos.apellido) as cliente'),
                         'detalle_prospecto.telefono',
-                        'prospectos.correo',
-                        'cat_fuentes.nombre as fuente',
-                        'cat_status_prospecto.status',
-                        'detalle_prospecto.nota',
-                        'users.email as asignado_a',
-                        'prospectos.created_at')->get();
+                        'prospectos.correo as mail',
+                        'detalle_prospecto.nota as comentarios'
+                        )->get();
         }
         return DB::table('prospectos')
                 ->join('detalle_prospecto','prospectos.id_prospecto','detalle_prospecto.id_prospecto')
@@ -68,15 +69,16 @@ class ProspectosReports implements WithHeadings,FromCollection{
                 ->where('etiquetas.nombre','like','%'.$desarrollo.'%')
                 ->groupby('prospectos.id_prospecto')
                 ->orderBy('prospectos.created_at','desc')
-                ->select('prospectos.nombre as nombre_prospecto',
-                        'prospectos.apellido as apellido_prospecto',
+                ->select(
+                        'CONCAT(users.nombre," ",users.apellido) as asesor',
+                        'prospectos.created_at as fecha',
+                        'cat_status_prospecto.status as estado',
+                        'cat_fuentes.nombre as como se enteró',
+                        'CONCAT(prospectos.nombre," ",prospectos.apellido) as cliente',
                         'detalle_prospecto.telefono',
-                        'prospectos.correo',
-                        'cat_fuentes.nombre as fuente',
-                        'cat_status_prospecto.status',
-                        'detalle_prospecto.nota',
-                        'users.email as asignado_a',
-                        'prospectos.created_at')->get();
+                        'prospectos.correo as mail',
+                        'detalle_prospecto.nota as comentarios'
+                        )->get();
     }
     public function headings() : array
     {

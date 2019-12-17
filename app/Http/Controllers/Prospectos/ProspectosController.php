@@ -964,15 +964,14 @@ class ProspectosController extends Controller
         
         $date = Carbon::now();
         $headings = [
-            'nombre_prospecto',
-            'apellido_prospecto',
-            'telefono',
-            'correo',
-            'fuente',
-            'status',
-            'nota',
-            'asigando_a',
-            'fecha_registro'
+            'Asesor',
+            'Fecha',
+            'Status',
+            'Cómo se enteró',
+            'Cliente',
+            'Teléfono',
+            'Mail',
+            'Comentarios',
         ];
         if($admin && $rol == 0){
              $desarrollo = 'all';
