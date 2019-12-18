@@ -406,7 +406,7 @@ class FormsController extends Controller
             event(new NewAssigment($data_event));
           }
         
-        event(new NewLead($prospecto));
+          event(new NewLead($prospecto));
         }
         
         DB::commit();

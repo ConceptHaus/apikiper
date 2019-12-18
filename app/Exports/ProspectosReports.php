@@ -45,6 +45,9 @@ class ProspectosReports implements WithHeadings,FromCollection{
                 ->join('cat_status_prospecto','status_prospecto.id_cat_status_prospecto','cat_status_prospecto.id_cat_status_prospecto')
                 ->join('colaborador_prospecto','colaborador_prospecto.id_prospecto','prospectos.id_prospecto')
                 ->join('users','users.id','colaborador_prospecto.id_colaborador')
+                //->join('medio_contacto_prospectos','prospectos.id_prospecto','medio_contacto_prospectos.id_prospecto')
+                ->whereNull('prospectos.deleted_at')
+                ->groupBy('prospectos.id_prospecto')
                 ->orderBy('prospectos.created_at','desc')
                 ->select(
                         DB::raw('CONCAT(users.nombre," ",users.apellido) as asesor'),
@@ -55,7 +58,9 @@ class ProspectosReports implements WithHeadings,FromCollection{
                         'detalle_prospecto.telefono',
                         'prospectos.correo as mail',
                         'detalle_prospecto.nota as comentarios'
+                        //'medio_contacto_prospectos.descripcion as seguimiento'
                         )->get();
+                
         }
         return DB::table('prospectos')
                 ->join('detalle_prospecto','prospectos.id_prospecto','detalle_prospecto.id_prospecto')
@@ -64,9 +69,14 @@ class ProspectosReports implements WithHeadings,FromCollection{
                 ->join('cat_status_prospecto','status_prospecto.id_cat_status_prospecto','cat_status_prospecto.id_cat_status_prospecto')
                 ->join('colaborador_prospecto','colaborador_prospecto.id_prospecto','prospectos.id_prospecto')
                 ->join('users','users.id','colaborador_prospecto.id_colaborador')
-                ->leftjoin('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
-                ->leftjoin('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
-                ->where('etiquetas.nombre','like','%'.$desarrollo.'%')
+                //->join('medio_contacto_prospectos','prospectos.id_prospecto','medio_contacto_prospectos.id_prospecto')
+                ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
+                ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
+                ->where([
+                            ['etiquetas.nombre','like','%'.$desarrollo.'%'],
+                            
+                        ])
+                ->whereNull('prospectos.deleted_at')
                 ->groupby('prospectos.id_prospecto')
                 ->orderBy('prospectos.created_at','desc')
                 ->select(
@@ -78,6 +88,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                         'detalle_prospecto.telefono',
                         'prospectos.correo as mail',
                         'detalle_prospecto.nota as comentarios'
+                        //'medio_contacto_prospectos.descripcion as seguimiento'
                         )->get();
     }
     public function headings() : array

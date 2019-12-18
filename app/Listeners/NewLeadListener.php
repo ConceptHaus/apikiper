@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\NewLead;
 use App\Modelos\User;
+use App\Modelos\Prospecto\CatFuente;
 
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -48,14 +49,13 @@ class NewLeadListener
         //Array de admins
 
         if($admins){
-
+            $fuente = CatFuente::find($actividad->fuente);
             $data['email'] = $array_admins;
-            $data['asunto'] = 'Tienes un nuevo prospecto 😁 🎉';
+            $data['fuente'] = $fuente->nombre;
+            $data['asunto'] = "Nuevo prospecto vía {$fuente->nombre} 😁 🎉";
             $data['email_de'] = 'activity@kiper.io';
             $data['nombre_de'] = 'Kiper';
 
-            
-           // echo $actividad->nombre;
 
             $data['nombre_p'] = $actividad->nombre;
             $data['apellido_p'] = $actividad->apellido;
