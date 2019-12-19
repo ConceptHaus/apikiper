@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Events\NewAssigment;
 use App\Modelos\User;
 use App\Modelos\Prospecto\ColaboradorProspecto;
+use App\Modelos\Prospecto\CatFuente;
 
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -263,10 +264,10 @@ class NewAssigmentListener
 
     public function sendMail($id, $prospecto){
         $colaborador = User::where('id',$id)->first();
-
+        $fuente = CatFuente::find($prospecto->fuente);
         $data['email'] = $colaborador->email;
            
-        $data['asunto'] = 'Tienes un nuevo prospecto 😁 🎉';
+        $data['asunto'] = "Nuevo prospecto vía {$fuente->nombre} 😁 🎉";
         $data['email_de'] = 'activity@kiper.io';
         $data['nombre_de'] = 'Kiper';
 
