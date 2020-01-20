@@ -35,116 +35,45 @@ class NewAssigmentListener
             'ejecutivo_1' => [
                 'id'=>'c3d94d64-e966-44a8-9a03-6ed97e79688b',
                 'fechas'=>[
-                    Carbon::createMidnightDate(2019,12,3),
-                    Carbon::createMidnightDate(2019,12,5),
-                    Carbon::createMidnightDate(2019,12,7),
-                    Carbon::createMidnightDate(2019,12,12),
-                    Carbon::createMidnightDate(2019,12,12),
-                    Carbon::createMidnightDate(2019,12,13),
-                    Carbon::createMidnightDate(2019,12,15),
-                    Carbon::createMidnightDate(2019,12,17),
-                    Carbon::createMidnightDate(2019,12,19),
-                    Carbon::createMidnightDate(2019,12,21),
-                    Carbon::createMidnightDate(2019,12,26),
-                    Carbon::createMidnightDate(2019,12,27),
-                    Carbon::createMidnightDate(2019,12,29),
-                    Carbon::createMidnightDate(2020,1,2),
-                    Carbon::createMidnightDate(2020,1,4),
-                    Carbon::createMidnightDate(2020,1,7),
-                    Carbon::createMidnightDate(2020,1,9),
-                    Carbon::createMidnightDate(2020,1,10),
-                    Carbon::createMidnightDate(2020,1,11),
-                    Carbon::createMidnightDate(2020,1,14),
-                    Carbon::createMidnightDate(2020,1,16),
-                    Carbon::createMidnightDate(2020,1,19),
                     Carbon::createMidnightDate(2020,1,21),
                     Carbon::createMidnightDate(2020,1,23),
-                    Carbon::createMidnightDate(2020,1,24),
-                    Carbon::createMidnightDate(2020,1,25),
                     Carbon::createMidnightDate(2020,1,28),
                     Carbon::createMidnightDate(2020,1,30),
-                    Carbon::createMidnightDate(2020,2,2),
                     Carbon::createMidnightDate(2020,2,4),
                     Carbon::createMidnightDate(2020,2,6),
-                    Carbon::createMidnightDate(2020,2,7),
                     Carbon::createMidnightDate(2020,2,8),
                     Carbon::createMidnightDate(2020,2,11),
                     Carbon::createMidnightDate(2020,2,13),
-                    Carbon::createMidnightDate(2020,2,14),
-                    Carbon::createMidnightDate(2020,2,15),
                     Carbon::createMidnightDate(2020,2,18),
                     Carbon::createMidnightDate(2020,2,20),
-                    Carbon::createMidnightDate(2020,2,23),
                     Carbon::createMidnightDate(2020,2,25),
                     Carbon::createMidnightDate(2020,2,27),
-                    Carbon::createMidnightDate(2020,2,28),
-                    Carbon::createMidnightDate(2020,2,29),
+                    Carbon::createMidnightDate(2020,2,29)
                 ]
                 
             ],
             'ejecutivo_2'=>[
                 'id'=>'5a07122b-c107-4e5f-b89d-7a147a8c3fe5',
                 'fechas'=>[
-                    Carbon::createMidnightDate(2019,12,2),
-                    Carbon::createMidnightDate(2019,12,4),
-                    Carbon::createMidnightDate(2019,12,6),
-                    Carbon::createMidnightDate(2019,12,8),
-                    Carbon::createMidnightDate(2019,12,9),
-                    Carbon::createMidnightDate(2019,12,11),
-                    Carbon::createMidnightDate(2019,12,14),
-                    Carbon::createMidnightDate(2019,12,16),
-                    Carbon::createMidnightDate(2019,12,18),
-                    Carbon::createMidnightDate(2019,12,20),
-                    Carbon::createMidnightDate(2019,12,22),
-                    Carbon::createMidnightDate(2019,12,23),
-                    Carbon::createMidnightDate(2019,12,28),
-                    Carbon::createMidnightDate(2019,12,30),
-                    Carbon::createMidnightDate(2020,1,3),
-                    Carbon::createMidnightDate(2020,1,5),
-                    Carbon::createMidnightDate(2020,1,6),
-                    Carbon::createMidnightDate(2020,1,8),
-                    Carbon::createMidnightDate(2020,1,12),
-                    Carbon::createMidnightDate(2020,1,13),
-                    Carbon::createMidnightDate(2020,1,15),
-                    Carbon::createMidnightDate(2020,1,17),
-                    Carbon::createMidnightDate(2020,1,18),
-                    Carbon::createMidnightDate(2020,1,20),
                     Carbon::createMidnightDate(2020,1,22),
-                    Carbon::createMidnightDate(2020,1,26),
+                    Carbon::createMidnightDate(2020,1,25),
                     Carbon::createMidnightDate(2020,1,27),
-                    Carbon::createMidnightDate(2020,1,29),
                     Carbon::createMidnightDate(2020,1,31),
-                    Carbon::createMidnightDate(2020,2,1),
-                    Carbon::createMidnightDate(2020,2,3),
                     Carbon::createMidnightDate(2020,2,5),
                     Carbon::createMidnightDate(2020,2,9),
                     Carbon::createMidnightDate(2020,2,10),
-                    Carbon::createMidnightDate(2020,2,12),
-                    Carbon::createMidnightDate(2020,2,16),
+                    Carbon::createMidnightDate(2020,2,14),
+                    Carbon::createMidnightDate(2020,2,15),
                     Carbon::createMidnightDate(2020,2,19),
-                    Carbon::createMidnightDate(2020,2,21),
-                    Carbon::createMidnightDate(2020,2,22),
                     Carbon::createMidnightDate(2020,2,24),
-                    Carbon::createMidnightDate(2020,2,26),
+                    Carbon::createMidnightDate(2020,2,28),
+                    Carbon::createMidnightDate(2020,3,1),
+                    
                 ]       
             ],
             'ejecutivo_3'=>[
                 'id'=>'09e78cf0-1bac-46ed-8945-5adb0f642840',
                 'fechas'=>[
-                    Carbon::createMidnightDate(2019,12,1),
-                    Carbon::createMidnightDate(2019,12,2),
-                    Carbon::createMidnightDate(2019,12,4),
-                    Carbon::createMidnightDate(2019,12,6),
-                    Carbon::createMidnightDate(2019,12,7),
-                    Carbon::createMidnightDate(2019,12,10),
-                    Carbon::createMidnightDate(2019,12,12),
-                    Carbon::createMidnightDate(2019,12,15),
-                    Carbon::createMidnightDate(2019,12,16),
-                    Carbon::createMidnightDate(2019,12,18),
-                    Carbon::createMidnightDate(2019,12,20),
-                    Carbon::createMidnightDate(2019,12,21),
-                    Carbon::createMidnightDate(2019,12,26),
-                    Carbon::createMidnightDate(2019,12,29),
                     Carbon::createMidnightDate(2020,12,30),
                     Carbon::createMidnightDate(2020,1,3),
                     Carbon::createMidnightDate(2020,1,4),
@@ -166,19 +95,6 @@ class NewAssigmentListener
             'ejecutivo_4'=>[
                 'id'=>'fae9e0c4-78b5-478b-ba19-cf58a2593c21',
                 'fechas'=>[
-                    Carbon::createMidnightDate(2019,12,3),
-                    Carbon::createMidnightDate(2019,12,5),
-                    Carbon::createMidnightDate(2019,12,8),
-                    Carbon::createMidnightDate(2019,12,9),
-                    Carbon::createMidnightDate(2019,12,11),
-                    Carbon::createMidnightDate(2019,12,13),
-                    Carbon::createMidnightDate(2019,12,14),
-                    Carbon::createMidnightDate(2019,12,17),
-                    Carbon::createMidnightDate(2019,12,19),
-                    Carbon::createMidnightDate(2019,12,22),
-                    Carbon::createMidnightDate(2019,12,23),
-                    Carbon::createMidnightDate(2019,12,27),
-                    Carbon::createMidnightDate(2019,12,28),
                     Carbon::createMidnightDate(2020,1,2),
                     Carbon::createMidnightDate(2020,1,5),
                     Carbon::createMidnightDate(2020,1,6),
@@ -196,7 +112,26 @@ class NewAssigmentListener
                     Carbon::createMidnightDate(2020,1,30),
                     
                 ]       
-            ]        
+            ], 
+            'ejecutivo_5'=>[
+                'id'=>'5ba84206-494d-45d4-b186-4e2c19c4c5fb',
+                'fechas'=>[
+                    Carbon::createMidnightDate(2020,1,20),
+                    Carbon::createMidnightDate(2020,1,24),
+                    Carbon::createMidnightDate(2020,1,26),
+                    Carbon::createMidnightDate(2020,1,29),
+                    Carbon::createMidnightDate(2020,2,1),
+                    Carbon::createMidnightDate(2020,2,3),
+                    Carbon::createMidnightDate(2020,2,7),
+                    Carbon::createMidnightDate(2020,2,12),
+                    Carbon::createMidnightDate(2020,2,16),
+                    Carbon::createMidnightDate(2020,2,17),
+                    Carbon::createMidnightDate(2020,2,21),
+                    Carbon::createMidnightDate(2020,2,22),
+                    Carbon::createMidnightDate(2020,3,26),
+                    
+                ]       
+            ]       
         ];
 
         $date = Carbon::today();
@@ -220,6 +155,14 @@ class NewAssigmentListener
                 if($date->equalTo($dia)){
     
                     $this->assign($assigment_gfa['ejecutivo_2']['id'], $event->evento['prospecto']);
+                }
+            }
+            
+            foreach($assigment_gfa['ejecutivo_5']['fechas'] as $dia){
+                
+                if($date->equalTo($dia)){
+    
+                    $this->assign($assigment_gfa['ejecutivo_5']['id'], $event->evento['prospecto']);
                 }
             }
         }else{
