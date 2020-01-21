@@ -45,7 +45,8 @@ class ProspectosReports implements WithHeadings,FromCollection{
                 ->join('cat_status_prospecto','status_prospecto.id_cat_status_prospecto','cat_status_prospecto.id_cat_status_prospecto')
                 ->join('colaborador_prospecto','colaborador_prospecto.id_prospecto','prospectos.id_prospecto')
                 ->join('users','users.id','colaborador_prospecto.id_colaborador')
-                //->join('medio_contacto_prospectos','prospectos.id_prospecto','medio_contacto_prospectos.id_prospecto')
+                ->join('medio_contacto_prospectos','prospectos.id_prospecto','medio_contacto_prospectos.id_prospecto')
+                ->where('medio_contacto_prospectos.id_mediocontacto_catalogo','=',1)
                 ->whereNull('prospectos.deleted_at')
                 ->groupBy('prospectos.id_prospecto')
                 ->orderBy('prospectos.created_at','desc')
@@ -57,8 +58,8 @@ class ProspectosReports implements WithHeadings,FromCollection{
                         DB::raw('CONCAT(prospectos.nombre," ",prospectos.apellido) as cliente'),
                         'detalle_prospecto.telefono',
                         'prospectos.correo as mail',
-                        'detalle_prospecto.nota as comentarios'
-                        //'medio_contacto_prospectos.descripcion as seguimiento'
+                        'detalle_prospecto.nota as comentarios',
+                        'medio_contacto_prospectos.descripcion as seguimiento'
                         )->get();
                 
         }
