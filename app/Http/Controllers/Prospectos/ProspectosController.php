@@ -960,7 +960,7 @@ class ProspectosController extends Controller
         ]);
     }
 
-    public function downloadProspectos($admin,$rol){
+    public function downloadProspectos($admin,$rol,$id_user){
         
         $date = Carbon::now();
         $headings = [
@@ -983,7 +983,10 @@ class ProspectosController extends Controller
         else if($rol == 2){
              $desarrollo='napoles';
         }
-        return (new ProspectosReports($headings,$desarrollo))->download("{$date}_{$desarrollo}_reporte.xlsx");
+        else if(!$admin && $rol == 0){
+            $desarrollo = 'user';
+        }
+        return (new ProspectosReports($headings,$desarrollo,$id_user))->download("{$date}_{$desarrollo}_reporte.xlsx");
     }
 
     //Functiones auxiliares
