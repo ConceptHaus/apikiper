@@ -30,7 +30,16 @@ class NewAssigmentListener
     public function handle($event)
     {   
         
-
+        // $assigments = [
+        //     Carbon::createMidnightDate(2020,2,1) =>[
+        //         'polanco'=>[
+        //             'ejecutivos'=>['c3d94d64-e966-44a8-9a03-6ed97e79688b']
+        //         ],
+        //         'napoles'=>[
+        //             'ejecutivos'=>['5a07122b-c107-4e5f-b89d-7a147a8c3fe5']
+        //         ]
+        //     ]
+        // ];
         $assigment_gfa = [
             'ejecutivo_1' => [
                 'id'=>'c3d94d64-e966-44a8-9a03-6ed97e79688b',

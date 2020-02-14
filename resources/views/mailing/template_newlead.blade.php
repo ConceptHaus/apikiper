@@ -476,7 +476,10 @@
   font-family: 'Poppins', sans-serif!important;
 }
 </style>
-<div style="text-align: center; color:#54595D"><span><font face="Poppins, helvetica, arial, verdana, sans-serif"><span style="font-size:28px">¡Hola %recipient.name%!</span><br>
+<div style="text-align: center; color:#54595D">
+	<span><font face="Poppins, helvetica, arial, verdana, sans-serif">
+	{{-- <span style="font-size:28px">¡Hola {{}}!</span> --}}
+	<br>
 <span style="color:#A3A9AC; font-size:14px">Tienes un nuevo lead, no lo pierdas de vista.</span></font></span></div>
 
                         </td>
@@ -651,7 +654,30 @@
 
                         </td>
                     </tr>
-                </tbody></table>
+				</tbody></table>
+				@if (isset($asignacion_p))
+					<table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:300px;" width="100%" class="mcnTextContentContainer">
+						<tbody><tr>
+							
+							<td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-style: normal; font-weight: normal;">
+							
+								<div dir="ltr" style="color: #A3A9AC; text-align: center;"><span style="font-size:16px"><font face="Poppins, helvetica, arial, verdana, sans-serif">Asignado a:</font></span></div>
+
+							</td>
+						</tr>
+					</tbody></table>
+					
+					<table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:300px;" width="100%" class="mcnTextContentContainer">
+						<tbody><tr>
+							
+							<td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-style: normal; font-weight: normal;">
+							
+							<div style="text-align: left;"><a href="https://www.w3schools.com/html/"><font color="#e43d30" face="Poppins, helvetica, arial, verdana, sans-serif"><span style="font-size:16px"><strong>{{ $asignacion_p->nombre }} {{$asignacion_p->apellido}}</strong></span></font></a></div>
+
+							</td>
+						</tr>
+					</tbody></table>
+				@endif
 				
             </td>
         </tr>
