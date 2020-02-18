@@ -51,6 +51,7 @@ class NewLeadListener
         if($admins){
             $fuente = CatFuente::find($actividad->fuente);
             $assignment = ColaboradorProspecto::where('id_prospecto',$actividad->id_prospecto)->first() ?? 'Sin propietario';
+            $colaborador_asignado = User::where('id',$assignment->id_colaborador)->first();
              //User::where('id',$assignment->id_colaborador)->first() ?? 'Sin propietario';
             $data = array(
                 'email'=>$array_admins,
@@ -66,7 +67,7 @@ class NewLeadListener
                 'mensaje_p'=>$actividad->detalle_prospecto->nota,
                 'campaign_p'=>(isset($actividad->campaign->utm_campaign) ? $actividad->campaign->utm_campaign : 'orgánico'),
                 'term_p'=>(isset($actividad->campaign->utm_term) ? $actividad->campaign->utm_term : 'orgánico'),
-                'asignacion_p'=>User::where('id',$assignment->id_colaborador)->first() ?? 'Sin propietario'
+                'asignacion_p'=>$colaborador_asignado ?? 'Sin propietario' 
             );
             // $data['email'] = $array_admins;
             // $data['fuente'] = $fuente->nombre;

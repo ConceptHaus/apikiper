@@ -9,7 +9,8 @@ use App\Modelos\Prospecto\CatFuente;
 
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NewLead;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Twilio\Rest\Client;
@@ -30,54 +31,55 @@ class NewAssigmentListener
     public function handle($event)
     {   
         
-        // $assigments = [
-        //     Carbon::createMidnightDate(2020,2,1) =>[
-        //         'polanco'=>[
-        //             'ejecutivos'=>['c3d94d64-e966-44a8-9a03-6ed97e79688b']
-        //         ],
-        //         'napoles'=>[
-        //             'ejecutivos'=>['5a07122b-c107-4e5f-b89d-7a147a8c3fe5']
-        //         ]
-        //     ]
-        // ];
+        $data = $event->evento['prospecto'];
+        
         $assigment_gfa = [
             'ejecutivo_1' => [
                 'id'=>'c3d94d64-e966-44a8-9a03-6ed97e79688b',
                 'fechas'=>[
-                    Carbon::createMidnightDate(2020,1,21),
-                    Carbon::createMidnightDate(2020,1,23),
-                    Carbon::createMidnightDate(2020,1,28),
-                    Carbon::createMidnightDate(2020,1,30),
-                    Carbon::createMidnightDate(2020,2,4),
-                    Carbon::createMidnightDate(2020,2,6),
-                    Carbon::createMidnightDate(2020,2,8),
-                    Carbon::createMidnightDate(2020,2,11),
-                    Carbon::createMidnightDate(2020,2,13),
-                    Carbon::createMidnightDate(2020,2,18),
-                    Carbon::createMidnightDate(2020,2,20),
-                    Carbon::createMidnightDate(2020,2,25),
-                    Carbon::createMidnightDate(2020,2,27),
-                    Carbon::createMidnightDate(2020,2,29)
+                    [Carbon::create(2020,2,17,19,0,1),Carbon::create(2020,2,18,19,0,0)],
+                    [Carbon::create(2020,2,19,19,0,1),Carbon::create(2020,2,20,19,0,0)],
+                    [Carbon::create(2020,2,24,19,0,1),Carbon::create(2020,2,25,19,0,0)],
+                    [Carbon::create(2020,2,26,19,0,1),Carbon::create(2020,2,27,19,0,0)],
+                    [Carbon::create(2020,2,28,19,0,1),Carbon::create(2020,2,29,19,0,0)],
+                    [Carbon::create(2020,3,2,19,0,1),Carbon::create(2020,3,3,19,0,0)],
+                    [Carbon::create(2020,3,4,19,0,1),Carbon::create(2020,3,5,19,0,0)],
+                    [Carbon::create(2020,3,6,19,0,1),Carbon::create(2020,3,7,19,0,0)],
+                    [Carbon::create(2020,3,7,19,0,1),Carbon::create(2020,3,8,19,0,0)],
+                    [Carbon::create(2020,3,9,19,0,1),Carbon::create(2020,3,10,19,0,0)],
+                    [Carbon::create(2020,3,11,19,0,1),Carbon::create(2020,3,12,19,0,0)],
+                    [Carbon::create(2020,3,16,19,0,1),Carbon::create(2020,3,17,19,0,0)],
+                    [Carbon::create(2020,3,18,19,0,1),Carbon::create(2020,3,19,19,0,0)],
+                    [Carbon::create(2020,3,21,19,0,1),Carbon::create(2020,3,22,19,0,0)],
+                    [Carbon::create(2020,3,23,19,0,1),Carbon::create(2020,3,24,19,0,0)],
+                    [Carbon::create(2020,3,27,19,0,1),Carbon::create(2020,3,28,19,0,0)],
+                    [Carbon::create(2020,3,28,19,0,1),Carbon::create(2020,3,29,19,0,0)],
+
                 ]
                 
             ],
             'ejecutivo_2'=>[
                 'id'=>'5a07122b-c107-4e5f-b89d-7a147a8c3fe5',
                 'fechas'=>[
-                    Carbon::createMidnightDate(2020,1,22),
-                    Carbon::createMidnightDate(2020,1,25),
-                    Carbon::createMidnightDate(2020,1,27),
-                    Carbon::createMidnightDate(2020,1,31),
-                    Carbon::createMidnightDate(2020,2,5),
-                    Carbon::createMidnightDate(2020,2,9),
-                    Carbon::createMidnightDate(2020,2,10),
-                    Carbon::createMidnightDate(2020,2,14),
-                    Carbon::createMidnightDate(2020,2,15),
-                    Carbon::createMidnightDate(2020,2,19),
-                    Carbon::createMidnightDate(2020,2,24),
-                    Carbon::createMidnightDate(2020,2,28),
-                    Carbon::createMidnightDate(2020,3,1),
-                    
+                    [Carbon::create(2020,2,13,19,0,1),Carbon::create(2020,2,14,19,0,0)],
+                    [Carbon::create(2020,2,14,19,0,1),Carbon::create(2020,2,15,19,0,0)],
+                    [Carbon::create(2020,2,18,19,0,1),Carbon::create(2020,2,19,19,0,0)],
+                    [Carbon::create(2020,2,23,19,0,1),Carbon::create(2020,2,24,19,0,0)],
+                    [Carbon::create(2020,2,27,19,0,1),Carbon::create(2020,2,28,19,0,0)],
+                    [Carbon::create(2020,2,29,19,0,1),Carbon::create(2020,3,1,19,0,0)],
+                    [Carbon::create(2020,3,6,19,0,1),Carbon::create(2020,3,7,19,0,0)],
+                    [Carbon::create(2020,3,7,19,0,1),Carbon::create(2020,3,8,19,0,0)],
+                    [Carbon::create(2020,3,8,19,0,1),Carbon::create(2020,3,9,19,0,0)],
+                    [Carbon::create(2020,3,10,19,0,1),Carbon::create(2020,3,11,19,0,0)],
+                    [Carbon::create(2020,3,13,19,0,1),Carbon::create(2020,3,14,19,0,0)],
+                    [Carbon::create(2020,3,14,19,0,1),Carbon::create(2020,3,15,19,0,0)],
+                    [Carbon::create(2020,3,19,19,0,1),Carbon::create(2020,3,20,19,0,0)],
+                    [Carbon::create(2020,3,20,19,0,1),Carbon::create(2020,3,21,19,0,0)],
+                    [Carbon::create(2020,3,24,19,0,1),Carbon::create(2020,3,25,19,0,0)],
+                    [Carbon::create(2020,3,26,19,0,1),Carbon::create(2020,3,27,19,0,0)],
+                    [Carbon::create(2020,3,28,19,0,1),Carbon::create(2020,3,29,19,0,0)],
+                    [Carbon::create(2020,3,29,19,0,1),Carbon::create(2020,30,8,19,0,0)],
+                    [Carbon::create(2020,3,30,19,0,1),Carbon::create(2020,31,8,19,0,0)],
                 ]       
             ],
             'ejecutivo_3'=>[
@@ -125,51 +127,62 @@ class NewAssigmentListener
             'ejecutivo_5'=>[
                 'id'=>'5ba84206-494d-45d4-b186-4e2c19c4c5fb',
                 'fechas'=>[
-                    Carbon::createMidnightDate(2020,1,20),
-                    Carbon::createMidnightDate(2020,1,24),
-                    Carbon::createMidnightDate(2020,1,26),
-                    Carbon::createMidnightDate(2020,1,29),
-                    Carbon::createMidnightDate(2020,2,1),
-                    Carbon::createMidnightDate(2020,2,3),
-                    Carbon::createMidnightDate(2020,2,7),
-                    Carbon::createMidnightDate(2020,2,12),
-                    Carbon::createMidnightDate(2020,2,16),
-                    Carbon::createMidnightDate(2020,2,17),
-                    Carbon::createMidnightDate(2020,2,21),
-                    Carbon::createMidnightDate(2020,2,22),
-                    Carbon::createMidnightDate(2020,3,26),
-                    
+                    [Carbon::create(2020,2,15,19,0,1),Carbon::create(2020,2,16,19,0,0)],
+                    [Carbon::create(2020,2,16,19,0,1),Carbon::create(2020,2,17,19,0,0)],
+                    [Carbon::create(2020,2,20,19,0,1),Carbon::create(2020,2,21,19,0,0)],
+                    [Carbon::create(2020,2,21,19,0,1),Carbon::create(2020,2,22,19,0,0)],
+                    [Carbon::create(2020,2,25,19,0,1),Carbon::create(2020,2,26,19,0,0)],
+                    [Carbon::create(2020,3,1,19,0,1),Carbon::create(2020,3,2,19,0,0)],
+                    [Carbon::create(2020,3,3,19,0,1),Carbon::create(2020,3,4,19,0,0)],
+                    [Carbon::create(2020,3,5,19,0,1),Carbon::create(2020,3,6,19,0,0)],
+                    [Carbon::create(2020,3,12,19,0,1),Carbon::create(2020,3,13,19,0,0)],
+                    [Carbon::create(2020,3,13,19,0,1),Carbon::create(2020,3,14,19,0,0)],
+                    [Carbon::create(2020,3,14,19,0,1),Carbon::create(2020,3,15,19,0,0)],
+                    [Carbon::create(2020,3,15,19,0,1),Carbon::create(2020,3,16,19,0,0)],
+                    [Carbon::create(2020,3,17,19,0,1),Carbon::create(2020,3,18,19,0,0)],
+                    [Carbon::create(2020,3,20,19,0,1),Carbon::create(2020,3,21,19,0,0)],
+                    [Carbon::create(2020,3,21,19,0,1),Carbon::create(2020,3,8,22,0,0)],
+                    [Carbon::create(2020,3,22,19,0,1),Carbon::create(2020,3,23,19,0,0)],
+                    [Carbon::create(2020,3,25,19,0,1),Carbon::create(2020,3,26,19,0,0)],
+                    [Carbon::create(2020,3,27,19,0,1),Carbon::create(2020,3,28,19,0,0)],
                 ]       
             ]       
         ];
 
-        $date = Carbon::today();
+        $date = Carbon::now();
         
         if($event->evento['desarrollo'] === 'polanco'){
             $adminstradores = User::where('rol',1)->get();
             foreach($adminstradores as $admin){
+                //Mail::to($admin->email)->send($prospecto);
                 $this->sendMail($admin->id,$event->evento['prospecto']);
             }
-            foreach($assigment_gfa['ejecutivo_1']['fechas'] as $dia){
             
-                if($date->equalTo($dia)){
+            $ejecutivo1 = $assigment_gfa['ejecutivo_1']['fechas'];
+
+            foreach($ejecutivo1 as $key=>$value){
+            
+                if($date->between($ejecutivo1[$key][0],$ejecutivo1[$key][1],true)){
     
                     $this->assign($assigment_gfa['ejecutivo_1']['id'], $event->evento['prospecto']);
                     
                 }
             }
-    
-            foreach($assigment_gfa['ejecutivo_2']['fechas'] as $dia){
+            
+            $ejecutivo2 = $assigment_gfa['ejecutivo_2']['fechas'];
                 
-                if($date->equalTo($dia)){
-    
-                    $this->assign($assigment_gfa['ejecutivo_2']['id'], $event->evento['prospecto']);
-                }
+                foreach($ejecutivo2 as $key=>$value){
+
+                   if($date->between($ejecutivo2[$key][0],$ejecutivo2[$key][1],true)){
+                      $this->assign($assigment_gfa['ejecutivo_2']['id'], $event->evento['prospecto']);
+                  }
             }
             
-            foreach($assigment_gfa['ejecutivo_5']['fechas'] as $dia){
+            $ejecutivo5 = $assigment_gfa['ejecutivo_5']['fechas'];
+
+            foreach($ejecutivo5 as $key=>$value){
                 
-                if($date->equalTo($dia)){
+                if($date->between($ejecutivo5[$key][0],$ejecutivo5[$key][1],true)){
     
                     $this->assign($assigment_gfa['ejecutivo_5']['id'], $event->evento['prospecto']);
                 }
@@ -203,7 +216,7 @@ class NewAssigmentListener
     public function assign($id, $prospecto){
 
             $colaborador = User::where('id',$id)->first();
-            
+            //var_dump($colaborador, $prospecto);
             $pivot_col_pros = new ColaboradorProspecto();
             $pivot_col_pros->id_colaborador = $colaborador->id;
             $pivot_col_pros->id_prospecto = $prospecto->id_prospecto;
