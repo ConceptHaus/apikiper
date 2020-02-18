@@ -404,9 +404,12 @@ class FormsController extends Controller
             $data_event['prospecto'] = $prospecto;
             $data_event['desarrollo'] = $data['assigment'];
             event(new NewAssigment($data_event));
+          }else{
+            
+            event(new NewLead($prospecto));
+          
           }
         
-          event(new NewLead($prospecto));
         }
         
         DB::commit();

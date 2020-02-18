@@ -8,7 +8,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Modelos\User;
 
-class NewLead extends Mailable
+class NewLeadAdmin extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -30,10 +30,8 @@ class NewLead extends Mailable
      */
     public function build()
     {
-        $this->data->admin = User::where('is_admin',1)->get();
         return $this->subject("Nuevo prospecto vía {$this->data->fuente->nombre} 🎉")
                     ->from('activity@kiper.io','Kiper')
-                    ->cc($this->data->admin)
-                    ->view('mailing.newlead');
+                    ->view('mailing.newlead_admin');
     }
 }
