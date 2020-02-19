@@ -15,7 +15,7 @@ use App\Mail\NewLeadAdmin;
 use Mailgun;
 use DB;
 
-class Data{}
+class DataAdmin{}
 class NewLeadListener
 {
     /**
@@ -42,7 +42,7 @@ class NewLeadListener
     }
 
     public function sendMail($prospecto){
-        $data = new Data;
+        $data = new DataAdmin;
         $data->admins = User::where('super_admin',1)->get();
         $data->prospecto = $prospecto;
         $data->fuente =CatFuente::find($data->prospecto->fuente);
