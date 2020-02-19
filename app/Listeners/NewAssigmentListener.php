@@ -150,8 +150,8 @@ class NewAssigmentListener
         ];
 
         $date = Carbon::now();
-        
-        if($event->evento['desarrollo'] === 'polanco'){
+        $desarrollo = $event->evento['desarrollo']; 
+        if($desarrollo === 'polanco'){
             
             $ejecutivo1 = $assigment_gfa['ejecutivo_1']['fechas'];
 
@@ -159,7 +159,7 @@ class NewAssigmentListener
             
                 if($date->between($ejecutivo1[$key][0],$ejecutivo1[$key][1],true)){
     
-                    $this->assign($assigment_gfa['ejecutivo_1']['id'], $event->evento['prospecto']);
+                    $this->assign($assigment_gfa['ejecutivo_1']['id'], $event->evento['prospecto'],$desarrollo);
                     
                 }
             }
@@ -169,7 +169,7 @@ class NewAssigmentListener
                 foreach($ejecutivo2 as $key=>$value){
 
                    if($date->between($ejecutivo2[$key][0],$ejecutivo2[$key][1],true)){
-                      $this->assign($assigment_gfa['ejecutivo_2']['id'], $event->evento['prospecto']);
+                      $this->assign($assigment_gfa['ejecutivo_2']['id'], $event->evento['prospecto'],$desarrollo);
                   }
             }
             
@@ -179,7 +179,7 @@ class NewAssigmentListener
                 
                 if($date->between($ejecutivo5[$key][0],$ejecutivo5[$key][1],true)){
     
-                    $this->assign($assigment_gfa['ejecutivo_5']['id'], $event->evento['prospecto']);
+                    $this->assign($assigment_gfa['ejecutivo_5']['id'], $event->evento['prospecto'],$desarrollo);
                 }
             }
         }else{
@@ -188,7 +188,7 @@ class NewAssigmentListener
             
                 if($date->equalTo($dia)){
     
-                    $this->assign($assigment_gfa['ejecutivo_3']['id'], $event->evento['prospecto']);
+                    $this->assign($assigment_gfa['ejecutivo_3']['id'], $event->evento['prospecto'],$desarrollo);
 
                 }
             }
@@ -197,7 +197,7 @@ class NewAssigmentListener
                 
                 if($date->equalTo($dia)){
     
-                    $this->assign($assigment_gfa['ejecutivo_4']['id'], $event->evento['prospecto']);
+                    $this->assign($assigment_gfa['ejecutivo_4']['id'], $event->evento['prospecto'],$desarrollo);
                 }
             }
         }
@@ -205,14 +205,14 @@ class NewAssigmentListener
         
     }
 
-    public function assign($id, $prospecto){
+    public function assign($id,$prospecto,$desarrollo){
 
             $colaborador = User::where('id',$id)->first();
             $pivot_col_pros = new ColaboradorProspecto();
             $pivot_col_pros->id_colaborador = $colaborador->id;
             $pivot_col_pros->id_prospecto = $prospecto->id_prospecto;
             $pivot_col_pros->save();
-
+            $prospecto->desarrollo = $desarrollo;
             $this->sendMail($id, $prospecto);
             //$this->sendSMS($id, $prospecto);
 
@@ -222,6 +222,7 @@ class NewAssigmentListener
         
         $data = new Data;
         $data->colaborador = User::where('id',$id)->first();
+        $data->desarrollo = $prospecto->desarrollo;
         $data->prospecto = $prospecto;
         $data->fuente =CatFuente::find($data->prospecto->fuente);
         Mail::to($data->colaborador->email)->send(new NewLead($data));
