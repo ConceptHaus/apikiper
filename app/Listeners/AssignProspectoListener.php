@@ -39,7 +39,6 @@ class AssignProspectoListener
     {
         $data = $event->evento['prospecto'];
         $user = $event->evento['colaborador'];
-        //dd($data);
         $mail_data['email'] = $user->email;
         $mail_data['nombre'] = $user->nombre;
         $mail_data['asunto'] = 'Te han asignado un prospecto 😁 🎉';
