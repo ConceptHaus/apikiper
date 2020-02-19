@@ -45,7 +45,7 @@ class NewLeadListener
         $data = new DataAdmin;
         $data->admins = User::where('super_admin',1)->get();
         $data->prospecto = $prospecto;
-        $data->fuente =CatFuente::find($data->prospecto->fuente);
+        $data->fuente =CatFuente::where($data->prospecto->fuente,'id_fuentes')->first();
         Mail::to($data->admins)->send(new NewLeadAdmin($data));
     }
 }
