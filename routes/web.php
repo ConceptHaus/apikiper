@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WeeklyReport;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,7 +16,18 @@
 Route::get('/', function(){
     return response()->json(['Error'=>'Nothing here. ⚠️'],200);
 });
+Route::get('/weekly_report', function(){
+    $attach = public_path('reports/Reporte_Avenue_Polanco_17-23Feb.xlsx');
+    Mail::to(['recepcion@avenuepolanco.mx','fvazquez@residencialavenue.mx'])
+            ->cc(['sergio@concepthaus.mx','lolita@concepthaus.mx'])
+            ->send(new WeeklyReport($attach));
+    try {
 
+        return response()->json("Email Sent!");
+    } catch (\Exception $e) {
+        return response()->json($e->getMessage());
+    }
+});
 // Route::get('/{desarrollo}', function($desarrollo){
 //     $filter_prospectos = [];
 //     $prospectos = App\Modelos\Prospecto\Prospecto::with('detalle_prospecto')
