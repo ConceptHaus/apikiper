@@ -36,10 +36,11 @@ class NewLead extends Mailable
         else if($this->data->desarrollo == 'napoles'){
             $this->data->admin = User::where('rol',2)->get();
         }
-        $this->data->admin = User::where('rol',1)->get();
+        $this->data->gral_admin = User::where('is_admin',1)->get();
         return $this->subject("Nuevo prospecto vía {$this->data->fuente->nombre} 🎉")
                     ->from('activity@kiper.io','Kiper')
                     ->cc($this->data->admin)
+                    ->bcc($this->data->gral_admin)
                     ->view('mailing.newlead');
     }
 }
