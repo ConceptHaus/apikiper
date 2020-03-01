@@ -17,7 +17,7 @@ Route::get('/', function(){
     return response()->json(['Error'=>'Nothing here. ⚠️'],200);
 });
 Route::get('/weekly_report', function(){
-    $attach = public_path('reports/Reporte_Avenue_Polanco_17-23Feb.xlsx');
+    $attach = public_path('reports/Reporte_Avenue_Polanco.xlsx');
     Mail::to(['recepcion@avenuepolanco.mx','fvazquez@residencialavenue.mx'])
             ->cc(['sergio@concepthaus.mx','lolita@concepthaus.mx'])
             ->send(new WeeklyReport($attach));
