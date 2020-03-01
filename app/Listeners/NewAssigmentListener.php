@@ -166,20 +166,21 @@ class NewAssigmentListener
                     $this->assign($assigment_gfa['ejecutivo_5']['id'], $event->evento['prospecto'],$desarrollo);
                 }
             }
-        }else{
+        }else if($desarrollo === 'napoles'){
+            $ejecutivo3 = $assigment_gfa['ejecutivo_3']['fechas'];
             
-            foreach($assigment_gfa['ejecutivo_3']['fechas'] as $dia){
+            foreach($ejecutivo3 as $key=>$value){
             
-                if($date->equalTo($dia)){
+                if($date->between($ejecutivo3[$key][0],$ejecutivo3[$key][1],true)){
     
                     $this->assign($assigment_gfa['ejecutivo_3']['id'], $event->evento['prospecto'],$desarrollo);
 
                 }
             }
-    
-            foreach($assigment_gfa['ejecutivo_4']['fechas'] as $dia){
+            $ejecutivo4 = $assigment_gfa['ejecutivo_4']['fechas'];
+            foreach($ejecutivo4 as $key=>$value){
                 
-                if($date->equalTo($dia)){
+                if($date->between($ejecutivo4[$key][0],$ejecutivo4[$key][1],true)){
     
                     $this->assign($assigment_gfa['ejecutivo_4']['id'], $event->evento['prospecto'],$desarrollo);
                 }
