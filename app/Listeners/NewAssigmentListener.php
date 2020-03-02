@@ -80,6 +80,9 @@ class NewAssigmentListener
                     [Carbon::create(2020,3,28,19,0,1),Carbon::create(2020,3,29,19,0,0)],
                     [Carbon::create(2020,3,29,19,0,1),Carbon::create(2020,30,8,19,0,0)],
                     [Carbon::create(2020,3,30,19,0,1),Carbon::create(2020,31,8,19,0,0)],
+                    [Carbon::create(2020,3,2,19,0,1),Carbon::create(2020,3,3,19,0,0)],
+                    [Carbon::create(2020,3,4,19,0,1),Carbon::create(2020,3,5,19,0,0)],
+                    [Carbon::create(2020,3,6,19,0,1),Carbon::create(2020,3,7,19,0,0)],
                 ]       
             ],
             'ejecutivo_3'=>[
@@ -93,6 +96,9 @@ class NewAssigmentListener
                     [Carbon::create(2020,2,25,19,0,1),Carbon::create(2020,2,26,19,0,0)],
                     [Carbon::create(2020,2,27,19,0,1),Carbon::create(2020,2,28,14,0,0)],
                     [Carbon::create(2020,2,29,19,0,1),Carbon::create(2020,3,1,19,0,0)],
+                    [Carbon::create(2020,3,1,19,0,1),Carbon::create(2020,3,2,19,0,0)],
+                    [Carbon::create(2020,3,3,19,0,1),Carbon::create(2020,3,4,19,0,0)],
+                    [Carbon::create(2020,3,5,19,0,1),Carbon::create(2020,3,6,19,0,0)],
                 ]       
             ],
             'ejecutivo_4'=>[
