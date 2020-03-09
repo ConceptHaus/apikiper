@@ -36,6 +36,7 @@ class NewAssigmentListener
         $assigment_gfa = [
             'ejecutivo_1' => [
                 'id'=>'c3d94d64-e966-44a8-9a03-6ed97e79688b',
+                'nombre'=>'Belora Abadi'
                 'fechas'=>[
                     [Carbon::create(2020,2,17,19,0,1),Carbon::create(2020,2,18,19,0,0)],
                     [Carbon::create(2020,2,19,19,0,1),Carbon::create(2020,2,20,19,0,0)],
@@ -60,6 +61,7 @@ class NewAssigmentListener
             ],
             'ejecutivo_2'=>[
                 'id'=>'5a07122b-c107-4e5f-b89d-7a147a8c3fe5',
+                'nombre'=>'Miguel Angel Velazquez'
                 'fechas'=>[
                     [Carbon::create(2020,2,13,19,0,1),Carbon::create(2020,2,14,19,0,0)],
                     [Carbon::create(2020,2,14,19,0,1),Carbon::create(2020,2,15,19,0,0)],
@@ -86,8 +88,8 @@ class NewAssigmentListener
                 ]       
             ],
             'ejecutivo_3'=>[
-                'nombre'=>'José Luis',
                 'id'=>'09e78cf0-1bac-46ed-8945-5adb0f642840',
+                'nombre'=>'José Luis Vaca Ramos',
                 'fechas'=>[
                     [Carbon::create(2020,2,19,19,0,1),Carbon::create(2020,2,20,19,0,0)],
                     [Carbon::create(2020,2,20,19,0,1),Carbon::create(2020,2,21,14,0,0)],
@@ -102,8 +104,8 @@ class NewAssigmentListener
                 ]       
             ],
             'ejecutivo_4'=>[
-                'nombre'=>'Gerardo',
                 'id'=>'fae9e0c4-78b5-478b-ba19-cf58a2593c21',
+                'nombre'=>'Gerardo Campuzano',
                 'fechas'=>[
                     [Carbon::create(2020,2,19,19,0,1),Carbon::create(2020,2,20,19,0,0)],
                     [Carbon::create(2020,2,21,14,0,1),Carbon::create(2020,2,21,19,0,0)],
@@ -116,6 +118,7 @@ class NewAssigmentListener
             ], 
             'ejecutivo_5'=>[
                 'id'=>'5ba84206-494d-45d4-b186-4e2c19c4c5fb',
+                'nombre'=>'Alejandra Campos',
                 'fechas'=>[
                     [Carbon::create(2020,2,15,19,0,1),Carbon::create(2020,2,16,19,0,0)],
                     [Carbon::create(2020,2,16,19,0,1),Carbon::create(2020,2,17,19,0,0)],
