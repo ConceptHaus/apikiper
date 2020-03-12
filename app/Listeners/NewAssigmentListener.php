@@ -38,7 +38,7 @@ class NewAssigmentListener
                 'id'=>'261a34e0-de02-40c2-a5e9-bfdd55be193b',
                 'nombre'=>'Patricia Alvarado',
                 'fechas' => [
-                    [Carbon::create(2020,3,11,19,0,1),Carbon::create(2020,3,12,19,0,0)],
+                    //[Carbon::create(2020,3,11,19,0,1),Carbon::create(2020,3,12,19,0,0)],
                 ]
             ],
             'ejecutivo_1' => [
@@ -55,7 +55,7 @@ class NewAssigmentListener
                     [Carbon::create(2020,3,6,19,0,1),Carbon::create(2020,3,7,19,0,0)],
                     [Carbon::create(2020,3,7,19,0,1),Carbon::create(2020,3,8,19,0,0)],
                     [Carbon::create(2020,3,9,19,0,1),Carbon::create(2020,3,10,19,0,0)],
-                    //[Carbon::create(2020,3,11,19,0,1),Carbon::create(2020,3,12,19,0,0)],
+                    [Carbon::create(2020,3,11,19,0,1),Carbon::create(2020,3,12,19,0,0)],
                     [Carbon::create(2020,3,16,19,0,1),Carbon::create(2020,3,17,19,0,0)],
                     [Carbon::create(2020,3,18,19,0,1),Carbon::create(2020,3,19,19,0,0)],
                     [Carbon::create(2020,3,21,19,0,1),Carbon::create(2020,3,22,19,0,0)],
@@ -154,7 +154,7 @@ class NewAssigmentListener
         if($desarrollo === 'polanco'){
             
             $ejevutivo0 = $assigment_gfa['ejecutivo_0']['fechas'];
-            
+
             foreach($ejevutivo0 as $key=>$value){
             
                 if($date->between($ejevutivo0[$key][0],$ejevutivo0[$key][1],true)){
