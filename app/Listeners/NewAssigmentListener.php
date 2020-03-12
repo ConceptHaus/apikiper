@@ -36,7 +36,7 @@ class NewAssigmentListener
         $assigment_gfa = [
             'ejecutivo_1' => [
                 'id'=>'c3d94d64-e966-44a8-9a03-6ed97e79688b',
-                'nombre'=>'Belora Abadi'
+                'nombre'=>'Belora Abadi',
                 'fechas'=>[
                     [Carbon::create(2020,2,17,19,0,1),Carbon::create(2020,2,18,19,0,0)],
                     [Carbon::create(2020,2,19,19,0,1),Carbon::create(2020,2,20,19,0,0)],
@@ -61,7 +61,7 @@ class NewAssigmentListener
             ],
             'ejecutivo_2'=>[
                 'id'=>'5a07122b-c107-4e5f-b89d-7a147a8c3fe5',
-                'nombre'=>'Miguel Angel Velazquez'
+                'nombre'=>'Miguel Angel Velazquez',
                 'fechas'=>[
                     [Carbon::create(2020,2,13,19,0,1),Carbon::create(2020,2,14,19,0,0)],
                     [Carbon::create(2020,2,14,19,0,1),Carbon::create(2020,2,15,19,0,0)],
