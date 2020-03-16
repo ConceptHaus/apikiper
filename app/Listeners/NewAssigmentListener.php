@@ -70,11 +70,6 @@ class NewAssigmentListener
                 'id'=>'5a07122b-c107-4e5f-b89d-7a147a8c3fe5',
                 'nombre'=>'Miguel Angel Velazquez',
                 'fechas'=>[
-                    [Carbon::create(2020,2,13,19,0,1),Carbon::create(2020,2,14,19,0,0)],
-                    [Carbon::create(2020,2,14,19,0,1),Carbon::create(2020,2,15,19,0,0)],
-                    [Carbon::create(2020,2,18,19,0,1),Carbon::create(2020,2,19,19,0,0)],
-                    [Carbon::create(2020,2,23,19,0,1),Carbon::create(2020,2,24,19,0,0)],
-                    [Carbon::create(2020,2,27,19,0,1),Carbon::create(2020,2,28,19,0,0)],
                     [Carbon::create(2020,2,29,19,0,1),Carbon::create(2020,3,1,19,0,0)],
                     [Carbon::create(2020,3,6,19,0,1),Carbon::create(2020,3,7,19,0,0)],
                     [Carbon::create(2020,3,7,19,0,1),Carbon::create(2020,3,8,19,0,0)],
@@ -87,11 +82,11 @@ class NewAssigmentListener
                     [Carbon::create(2020,3,24,19,0,1),Carbon::create(2020,3,25,19,0,0)],
                     [Carbon::create(2020,3,26,19,0,1),Carbon::create(2020,3,27,19,0,0)],
                     [Carbon::create(2020,3,28,19,0,1),Carbon::create(2020,3,29,19,0,0)],
-                    [Carbon::create(2020,3,29,19,0,1),Carbon::create(2020,30,8,19,0,0)],
-                    [Carbon::create(2020,3,30,19,0,1),Carbon::create(2020,31,8,19,0,0)],
-                    [Carbon::create(2020,3,2,19,0,1),Carbon::create(2020,3,3,19,0,0)],
-                    [Carbon::create(2020,3,4,19,0,1),Carbon::create(2020,3,5,19,0,0)],
-                    [Carbon::create(2020,3,6,19,0,1),Carbon::create(2020,3,7,19,0,0)],
+                    [Carbon::create(2020,3,29,19,0,1),Carbon::create(2020,3,30,19,0,0)],
+                    [Carbon::create(2020,3,30,19,0,1),Carbon::create(2020,3,31,19,0,0)],
+                    [Carbon::create(2020,4,2,19,0,1),Carbon::create(2020,4,3,19,0,0)],
+                    [Carbon::create(2020,4,4,19,0,1),Carbon::create(2020,4,5,19,0,0)],
+                    [Carbon::create(2020,4,6,19,0,1),Carbon::create(2020,4,7,19,0,0)],
                 ]       
             ],
             'ejecutivo_3'=>[
