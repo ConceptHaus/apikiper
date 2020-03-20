@@ -45,19 +45,7 @@ class NewAssigmentListener
                 'id'=>'c3d94d64-e966-44a8-9a03-6ed97e79688b',
                 'nombre'=>'Belora Abadi',
                 'fechas'=>[
-                    [Carbon::create(2020,2,17,19,0,1),Carbon::create(2020,2,18,19,0,0)],
-                    [Carbon::create(2020,2,19,19,0,1),Carbon::create(2020,2,20,19,0,0)],
-                    [Carbon::create(2020,2,24,19,0,1),Carbon::create(2020,2,25,19,0,0)],
-                    [Carbon::create(2020,2,26,19,0,1),Carbon::create(2020,2,27,19,0,0)],
-                    [Carbon::create(2020,2,28,19,0,1),Carbon::create(2020,2,29,19,0,0)],
-                    [Carbon::create(2020,3,2,19,0,1),Carbon::create(2020,3,3,19,0,0)],
-                    [Carbon::create(2020,3,4,19,0,1),Carbon::create(2020,3,5,19,0,0)],
-                    [Carbon::create(2020,3,6,19,0,1),Carbon::create(2020,3,7,19,0,0)],
-                    [Carbon::create(2020,3,7,19,0,1),Carbon::create(2020,3,8,19,0,0)],
-                    [Carbon::create(2020,3,9,19,0,1),Carbon::create(2020,3,10,19,0,0)],
-                    [Carbon::create(2020,3,11,19,0,1),Carbon::create(2020,3,12,19,0,0)],
-                    [Carbon::create(2020,3,16,19,0,1),Carbon::create(2020,3,17,19,0,0)],
-                    [Carbon::create(2020,3,18,19,0,1),Carbon::create(2020,3,19,19,0,0)],
+                    [Carbon::create(2020,3,19,19,0,1),Carbon::create(2020,3,20,19,0,0)],
                     [Carbon::create(2020,3,21,19,0,1),Carbon::create(2020,3,22,19,0,0)],
                     [Carbon::create(2020,3,23,19,0,1),Carbon::create(2020,3,24,19,0,0)],
                     [Carbon::create(2020,3,27,19,0,1),Carbon::create(2020,3,28,19,0,0)],
@@ -70,23 +58,15 @@ class NewAssigmentListener
                 'id'=>'5a07122b-c107-4e5f-b89d-7a147a8c3fe5',
                 'nombre'=>'Miguel Angel Velazquez',
                 'fechas'=>[
-                    [Carbon::create(2020,2,29,19,0,1),Carbon::create(2020,3,1,19,0,0)],
-                    [Carbon::create(2020,3,6,19,0,1),Carbon::create(2020,3,7,19,0,0)],
-                    [Carbon::create(2020,3,7,19,0,1),Carbon::create(2020,3,8,19,0,0)],
-                    [Carbon::create(2020,3,8,19,0,1),Carbon::create(2020,3,9,19,0,0)],
-                    [Carbon::create(2020,3,10,19,0,1),Carbon::create(2020,3,11,19,0,0)],
-                    //[Carbon::create(2020,3,13,19,0,1),Carbon::create(2020,3,14,19,0,0)],
-                    [Carbon::create(2020,3,14,19,0,1),Carbon::create(2020,3,15,19,0,0)],
-                    [Carbon::create(2020,3,19,19,0,1),Carbon::create(2020,3,20,19,0,0)],
-                    [Carbon::create(2020,3,20,19,0,1),Carbon::create(2020,3,21,19,0,0)],
-                    [Carbon::create(2020,3,24,19,0,1),Carbon::create(2020,3,25,19,0,0)],
-                    [Carbon::create(2020,3,26,19,0,1),Carbon::create(2020,3,27,19,0,0)],
-                    [Carbon::create(2020,3,28,19,0,1),Carbon::create(2020,3,29,19,0,0)],
-                    [Carbon::create(2020,3,29,19,0,1),Carbon::create(2020,3,30,19,0,0)],
-                    [Carbon::create(2020,3,30,19,0,1),Carbon::create(2020,3,31,19,0,0)],
-                    [Carbon::create(2020,4,2,19,0,1),Carbon::create(2020,4,3,19,0,0)],
-                    [Carbon::create(2020,4,4,19,0,1),Carbon::create(2020,4,5,19,0,0)],
-                    [Carbon::create(2020,4,6,19,0,1),Carbon::create(2020,4,7,19,0,0)],
+                    // [Carbon::create(2020,3,20,19,0,1),Carbon::create(2020,3,21,19,0,0)],
+                    // [Carbon::create(2020,3,24,19,0,1),Carbon::create(2020,3,25,19,0,0)],
+                    // [Carbon::create(2020,3,26,19,0,1),Carbon::create(2020,3,27,19,0,0)],
+                    // [Carbon::create(2020,3,28,19,0,1),Carbon::create(2020,3,29,19,0,0)],
+                    // [Carbon::create(2020,3,29,19,0,1),Carbon::create(2020,3,30,19,0,0)],
+                    // [Carbon::create(2020,3,30,19,0,1),Carbon::create(2020,3,31,19,0,0)],
+                    // [Carbon::create(2020,4,2,19,0,1),Carbon::create(2020,4,3,19,0,0)],
+                    // [Carbon::create(2020,4,4,19,0,1),Carbon::create(2020,4,5,19,0,0)],
+                    // [Carbon::create(2020,4,6,19,0,1),Carbon::create(2020,4,7,19,0,0)],
                 ]       
             ],
             'ejecutivo_3'=>[
@@ -122,20 +102,6 @@ class NewAssigmentListener
                 'id'=>'5ba84206-494d-45d4-b186-4e2c19c4c5fb',
                 'nombre'=>'Alejandra Campos',
                 'fechas'=>[
-                    [Carbon::create(2020,2,15,19,0,1),Carbon::create(2020,2,16,19,0,0)],
-                    [Carbon::create(2020,2,16,19,0,1),Carbon::create(2020,2,17,19,0,0)],
-                    [Carbon::create(2020,2,20,19,0,1),Carbon::create(2020,2,21,19,0,0)],
-                    [Carbon::create(2020,2,21,19,0,1),Carbon::create(2020,2,22,19,0,0)],
-                    [Carbon::create(2020,2,25,19,0,1),Carbon::create(2020,2,26,19,0,0)],
-                    [Carbon::create(2020,3,1,19,0,1),Carbon::create(2020,3,2,19,0,0)],
-                    [Carbon::create(2020,3,3,19,0,1),Carbon::create(2020,3,4,19,0,0)],
-                    [Carbon::create(2020,3,5,19,0,1),Carbon::create(2020,3,6,19,0,0)],
-                    [Carbon::create(2020,3,12,19,0,1),Carbon::create(2020,3,13,19,0,0)],
-                    [Carbon::create(2020,3,13,19,0,1),Carbon::create(2020,3,14,19,0,0)],
-                    [Carbon::create(2020,3,14,19,0,1),Carbon::create(2020,3,15,19,0,0)],
-                    [Carbon::create(2020,3,15,19,0,1),Carbon::create(2020,3,16,19,0,0)],
-                    [Carbon::create(2020,3,17,19,0,1),Carbon::create(2020,3,18,19,0,0)],
-                    [Carbon::create(2020,3,20,19,0,1),Carbon::create(2020,3,21,19,0,0)],
                     [Carbon::create(2020,3,21,19,0,1),Carbon::create(2020,3,8,22,0,0)],
                     [Carbon::create(2020,3,22,19,0,1),Carbon::create(2020,3,23,19,0,0)],
                     [Carbon::create(2020,3,25,19,0,1),Carbon::create(2020,3,26,19,0,0)],
@@ -179,7 +145,7 @@ class NewAssigmentListener
                   }
             }
             
-            $ejecutivo5 = $assigment_gfa['ejecutivo_5']['fechas'];
+            //$ejecutivo5 = $assigment_gfa['ejecutivo_5']['fechas'];
 
             // foreach($ejecutivo5 as $key=>$value){
                 
