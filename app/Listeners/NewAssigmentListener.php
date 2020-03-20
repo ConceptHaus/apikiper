@@ -73,28 +73,18 @@ class NewAssigmentListener
                 'id'=>'09e78cf0-1bac-46ed-8945-5adb0f642840',
                 'nombre'=>'José Luis Vaca Ramos',
                 'fechas'=>[
-                    [Carbon::create(2020,2,19,19,0,1),Carbon::create(2020,2,20,19,0,0)],
-                    [Carbon::create(2020,2,20,19,0,1),Carbon::create(2020,2,21,14,0,0)],
-                    [Carbon::create(2020,2,21,19,0,1),Carbon::create(2020,2,22,19,0,0)],
-                    [Carbon::create(2020,2,23,19,0,1),Carbon::create(2020,2,24,19,0,0)],
-                    [Carbon::create(2020,2,25,19,0,1),Carbon::create(2020,2,26,19,0,0)],
-                    [Carbon::create(2020,2,27,19,0,1),Carbon::create(2020,2,28,14,0,0)],
-                    [Carbon::create(2020,2,29,19,0,1),Carbon::create(2020,3,1,19,0,0)],
-                    [Carbon::create(2020,3,1,19,0,1),Carbon::create(2020,3,2,19,0,0)],
-                    [Carbon::create(2020,3,3,19,0,1),Carbon::create(2020,3,4,19,0,0)],
-                    [Carbon::create(2020,3,5,19,0,1),Carbon::create(2020,3,6,19,0,0)],
+                    [Carbon::create(2020,3,20,19,0,1),Carbon::create(2020,3,21,19,0,0)],
+                    [Carbon::create(2020,3,19,22,0,1),Carbon::create(2020,3,23,19,0,0)],
+                    [Carbon::create(2020,3,19,24,0,1),Carbon::create(2020,3,25,19,0,0)],
                 ]       
             ],
             'ejecutivo_4'=>[
                 'id'=>'fae9e0c4-78b5-478b-ba19-cf58a2593c21',
                 'nombre'=>'Gerardo Campuzano',
                 'fechas'=>[
-                    [Carbon::create(2020,2,19,19,0,1),Carbon::create(2020,2,20,19,0,0)],
-                    [Carbon::create(2020,2,21,14,0,1),Carbon::create(2020,2,21,19,0,0)],
-                    [Carbon::create(2020,2,24,19,0,1),Carbon::create(2020,2,25,19,0,0)],
-                    [Carbon::create(2020,2,26,19,0,1),Carbon::create(2020,2,27,19,0,0)],
-                    [Carbon::create(2020,2,28,14,0,1),Carbon::create(2020,2,28,19,0,0)],
-                    [Carbon::create(2020,2,28,19,0,1),Carbon::create(2020,2,29,19,0,0)],
+                    [Carbon::create(2020,3,19,19,0,1),Carbon::create(2020,3,20,19,0,0)],
+                    [Carbon::create(2020,3,19,21,0,1),Carbon::create(2020,3,22,19,0,0)],
+                    [Carbon::create(2020,3,19,23,0,1),Carbon::create(2020,3,24,19,0,0)],
                     
                 ]       
             ], 
