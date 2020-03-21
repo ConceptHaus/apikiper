@@ -45,8 +45,8 @@ class NewAssigmentListener
                 'id'=>'c3d94d64-e966-44a8-9a03-6ed97e79688b',
                 'nombre'=>'Belora Abadi',
                 'fechas'=>[
-                    [Carbon::create(2020,3,19,19,0,1),Carbon::create(2020,3,20,19,0,0)],
-                    [Carbon::create(2020,3,21,19,0,1),Carbon::create(2020,3,22,19,0,0)],
+                    [Carbon::create(2020,3,20,19,0,1),Carbon::create(2020,3,21,19,0,0)],
+                    //[Carbon::create(2020,3,21,19,0,1),Carbon::create(2020,3,22,19,0,0)],
                     [Carbon::create(2020,3,23,19,0,1),Carbon::create(2020,3,24,19,0,0)],
                     [Carbon::create(2020,3,27,19,0,1),Carbon::create(2020,3,28,19,0,0)],
                     [Carbon::create(2020,3,28,19,0,1),Carbon::create(2020,3,29,19,0,0)],
