@@ -100,50 +100,58 @@ class NewAssigmentListener
             ]       
         ];
 
+        $polanco = [
+                    'c3d94d64-e966-44a8-9a03-6ed97e79688b',
+                    '5ba84206-494d-45d4-b186-4e2c19c4c5fb'
+                ];
         $date = Carbon::now();
         $desarrollo = $event->evento['desarrollo']; 
         if($desarrollo === 'polanco'){
-            
-            $ejevutivo0 = $assigment_gfa['ejecutivo_0']['fechas'];
 
-            foreach($ejevutivo0 as $key=>$value){
+            $randIndex = array_rand($polanco);
+
+            $this->assign($polanco[$randIndex],$event->evento['prospecto'],$desarrollo);
             
-                if($date->between($ejevutivo0[$key][0],$ejevutivo0[$key][1],true)){
+            // $ejevutivo0 = $assigment_gfa['ejecutivo_0']['fechas'];
+
+            // foreach($ejevutivo0 as $key=>$value){
+            
+            //     if($date->between($ejevutivo0[$key][0],$ejevutivo0[$key][1],true)){
     
-                    $this->assign($assigment_gfa['ejecutivo_0']['id'], $event->evento['prospecto'],$desarrollo);
+            //         $this->assign($assigment_gfa['ejecutivo_0']['id'], $event->evento['prospecto'],$desarrollo);
                     
-                }
-            }
+            //     }
+            // }
 
-            $ejecutivo1 = $assigment_gfa['ejecutivo_1']['fechas'];
+            // $ejecutivo1 = $assigment_gfa['ejecutivo_1']['fechas'];
 
-            foreach($ejecutivo1 as $key=>$value){
+            // foreach($ejecutivo1 as $key=>$value){
             
-                if($date->between($ejecutivo1[$key][0],$ejecutivo1[$key][1],true)){
+            //     if($date->between($ejecutivo1[$key][0],$ejecutivo1[$key][1],true)){
     
-                    $this->assign($assigment_gfa['ejecutivo_1']['id'], $event->evento['prospecto'],$desarrollo);
+            //         $this->assign($assigment_gfa['ejecutivo_1']['id'], $event->evento['prospecto'],$desarrollo);
                     
-                }
-            }
+            //     }
+            // }
             
-            $ejecutivo2 = $assigment_gfa['ejecutivo_2']['fechas'];
+            // $ejecutivo2 = $assigment_gfa['ejecutivo_2']['fechas'];
                 
-                foreach($ejecutivo2 as $key=>$value){
+            //     foreach($ejecutivo2 as $key=>$value){
 
-                   if($date->between($ejecutivo2[$key][0],$ejecutivo2[$key][1],true)){
-                      $this->assign($assigment_gfa['ejecutivo_2']['id'], $event->evento['prospecto'],$desarrollo);
-                  }
-            }
+            //        if($date->between($ejecutivo2[$key][0],$ejecutivo2[$key][1],true)){
+            //           $this->assign($assigment_gfa['ejecutivo_2']['id'], $event->evento['prospecto'],$desarrollo);
+            //       }
+            // }
             
-            $ejecutivo5 = $assigment_gfa['ejecutivo_5']['fechas'];
+            // $ejecutivo5 = $assigment_gfa['ejecutivo_5']['fechas'];
 
-            foreach($ejecutivo5 as $key=>$value){
+            // foreach($ejecutivo5 as $key=>$value){
                 
-                if($date->between($ejecutivo5[$key][0],$ejecutivo5[$key][1],true)){
+            //     if($date->between($ejecutivo5[$key][0],$ejecutivo5[$key][1],true)){
     
-                    $this->assign($assigment_gfa['ejecutivo_5']['id'], $event->evento['prospecto'],$desarrollo);
-                }
-            }
+            //         $this->assign($assigment_gfa['ejecutivo_5']['id'], $event->evento['prospecto'],$desarrollo);
+            //     }
+            // }
         }else if($desarrollo === 'napoles'){
             $ejecutivo3 = $assigment_gfa['ejecutivo_3']['fechas'];
             
