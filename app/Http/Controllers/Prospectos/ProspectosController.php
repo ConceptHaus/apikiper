@@ -908,40 +908,7 @@ class ProspectosController extends Controller
         $usera['nombre'] = $user->nombre;
 
 
-        // Mailgun::send('mailing.template_one', $usera, function ($message) {
-        //     $message->tag('myTag');
-        //     $message->testmode(true);
-        //     $message->to('sergio@concepthaus.mx', 'User One', [
-        //         'age' => 37,
-        //         'city' => 'New York'
-        //     ]);
-        // });
-        // Mailgun::send('auth.emails.register', $usera, function($message){
-        //     $message->to('sergio@concepthaus.mx', 'User One', [
-        //         'age' => 37,
-        //         'city' => 'New York'
-        //     ]);
-        //     $message->to('paola@concepthaus.mx', 'User Two', [
-        //         'age' => 41,
-        //         'city' => 'London'
-        //     ]);
-        //     $message->to('javier@concepthaus.mx', 'User One', [
-        //         'age' => 37,
-        //         'city' => 'New York'
-        //     ]);
-        //     $message->to('isaac@concepthaus.mx', 'User Two', [
-        //         'age' => 41,
-        //         'city' => 'London'
-        //     ]);
-        //     $message->to('liz@concepthaus.mx', 'User One', [
-        //         'age' => 37,
-        //         'city' => 'New York'
-        //     ]);
-        //     $message->to('sergirams@gmail.com', 'User Two', [
-        //         'age' => 41,
-        //         'city' => 'London'
-        //     ]);
-        // });
+     
 
         return response()->json([
         'user1@example.com' => [
