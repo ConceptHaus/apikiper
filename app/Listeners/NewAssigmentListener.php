@@ -92,7 +92,7 @@ class NewAssigmentListener
                 'id'=>'5ba84206-494d-45d4-b186-4e2c19c4c5fb',
                 'nombre'=>'Alejandra Campos',
                 'fechas'=>[
-                    [Carbon::create(2020,3,21,19,0,1),Carbon::create(2020,3,8,22,0,0)],
+                    [Carbon::create(2020,3,21,19,0,1),Carbon::create(2020,3,22,19,0,0)],
                     [Carbon::create(2020,3,22,19,0,1),Carbon::create(2020,3,23,19,0,0)],
                     [Carbon::create(2020,3,25,19,0,1),Carbon::create(2020,3,26,19,0,0)],
                     [Carbon::create(2020,3,27,19,0,1),Carbon::create(2020,3,28,19,0,0)],
@@ -135,15 +135,15 @@ class NewAssigmentListener
                   }
             }
             
-            //$ejecutivo5 = $assigment_gfa['ejecutivo_5']['fechas'];
+            $ejecutivo5 = $assigment_gfa['ejecutivo_5']['fechas'];
 
-            // foreach($ejecutivo5 as $key=>$value){
+            foreach($ejecutivo5 as $key=>$value){
                 
-            //     if($date->between($ejecutivo5[$key][0],$ejecutivo5[$key][1],true)){
+                if($date->between($ejecutivo5[$key][0],$ejecutivo5[$key][1],true)){
     
-            //         $this->assign($assigment_gfa['ejecutivo_5']['id'], $event->evento['prospecto'],$desarrollo);
-            //     }
-            // }
+                    $this->assign($assigment_gfa['ejecutivo_5']['id'], $event->evento['prospecto'],$desarrollo);
+                }
+            }
         }else if($desarrollo === 'napoles'){
             $ejecutivo3 = $assigment_gfa['ejecutivo_3']['fechas'];
             
