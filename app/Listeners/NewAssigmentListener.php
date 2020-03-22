@@ -74,8 +74,8 @@ class NewAssigmentListener
                 'nombre'=>'José Luis Vaca Ramos',
                 'fechas'=>[
                     [Carbon::create(2020,3,20,19,0,1),Carbon::create(2020,3,21,19,0,0)],
-                    [Carbon::create(2020,3,19,22,0,1),Carbon::create(2020,3,23,19,0,0)],
-                    [Carbon::create(2020,3,19,24,0,1),Carbon::create(2020,3,25,19,0,0)],
+                    [Carbon::create(2020,3,22,19,0,1),Carbon::create(2020,3,23,19,0,0)],
+                    [Carbon::create(2020,3,24,19,0,1),Carbon::create(2020,3,25,19,0,0)],
                 ]       
             ],
             'ejecutivo_4'=>[
@@ -83,8 +83,8 @@ class NewAssigmentListener
                 'nombre'=>'Gerardo Campuzano',
                 'fechas'=>[
                     [Carbon::create(2020,3,19,19,0,1),Carbon::create(2020,3,20,19,0,0)],
-                    [Carbon::create(2020,3,19,21,0,1),Carbon::create(2020,3,22,19,0,0)],
-                    [Carbon::create(2020,3,19,23,0,1),Carbon::create(2020,3,24,19,0,0)],
+                    [Carbon::create(2020,3,21,19,0,1),Carbon::create(2020,3,22,19,0,0)],
+                    [Carbon::create(2020,3,23,19,0,1),Carbon::create(2020,3,24,19,0,0)],
                     
                 ]       
             ], 
