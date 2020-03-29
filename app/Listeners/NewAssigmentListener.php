@@ -6,6 +6,7 @@ use App\Events\NewAssigment;
 use App\Modelos\User;
 use App\Modelos\Prospecto\ColaboradorProspecto;
 use App\Modelos\Prospecto\CatFuente;
+use App\Modelos\Prospecto;
 
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -73,18 +74,33 @@ class NewAssigmentListener
                 'id'=>'09e78cf0-1bac-46ed-8945-5adb0f642840',
                 'nombre'=>'José Luis Vaca Ramos',
                 'fechas'=>[
-                    [Carbon::create(2020,3,20,19,0,1),Carbon::create(2020,3,21,19,0,0)],
-                    [Carbon::create(2020,3,22,19,0,1),Carbon::create(2020,3,23,19,0,0)],
-                    [Carbon::create(2020,3,24,19,0,1),Carbon::create(2020,3,25,19,0,0)],
+                    [Carbon::create(2020,3,28,19,0,1),Carbon::create(2020,3,29,19,0,0)],
+                    [Carbon::create(2020,3,30,19,0,1),Carbon::create(2020,3,31,19,0,0)],
+                    [Carbon::create(2020,4,2,19,0,1),Carbon::create(2020,4,3,19,0,0)],
+                    [Carbon::create(2020,4,4,19,0,1),Carbon::create(2020,4,5,19,0,0)],
+                    [Carbon::create(2020,4,6,19,0,1),Carbon::create(2020,4,7,19,0,0)],
+                    [Carbon::create(2020,4,8,19,0,1),Carbon::create(2020,4,9,19,0,0)],
+                    [Carbon::create(2020,4,10,19,0,1),Carbon::create(2020,4,11,19,0,0)],
+                    [Carbon::create(2020,4,12,19,0,1),Carbon::create(2020,4,13,19,0,0)],
+                    [Carbon::create(2020,4,14,19,0,1),Carbon::create(2020,4,15,19,0,0)],
+                    
                 ]       
             ],
             'ejecutivo_4'=>[
                 'id'=>'fae9e0c4-78b5-478b-ba19-cf58a2593c21',
                 'nombre'=>'Gerardo Campuzano',
                 'fechas'=>[
-                    [Carbon::create(2020,3,19,19,0,1),Carbon::create(2020,3,20,19,0,0)],
-                    [Carbon::create(2020,3,21,19,0,1),Carbon::create(2020,3,22,19,0,0)],
-                    [Carbon::create(2020,3,23,19,0,1),Carbon::create(2020,3,24,19,0,0)],
+                    [Carbon::create(2020,3,29,19,0,1),Carbon::create(2020,3,30,19,0,0)],
+                    [Carbon::create(2020,3,31,19,0,1),Carbon::create(2020,4,1,19,0,0)],
+                    [Carbon::create(2020,4,1,19,0,1),Carbon::create(2020,4,2,19,0,0)],
+                    [Carbon::create(2020,4,3,19,0,1),Carbon::create(2020,4,4,19,0,0)],
+                    [Carbon::create(2020,4,5,19,0,1),Carbon::create(2020,4,6,19,0,0)],
+                    [Carbon::create(2020,4,7,19,0,1),Carbon::create(2020,4,8,19,0,0)],
+                    [Carbon::create(2020,4,9,19,0,1),Carbon::create(2020,4,10,19,0,0)],
+                    [Carbon::create(2020,4,11,19,0,1),Carbon::create(2020,4,12,19,0,0)],
+                    [Carbon::create(2020,4,13,19,0,1),Carbon::create(2020,4,14,19,0,0)],
+                    [Carbon::create(2020,4,15,19,0,1),Carbon::create(2020,4,16,19,0,0)],
+                    
                     
                 ]       
             ], 
@@ -107,10 +123,24 @@ class NewAssigmentListener
         $date = Carbon::now();
         $desarrollo = $event->evento['desarrollo']; 
         if($desarrollo === 'polanco'){
+            
+            $prospectos_today = DB::table('prospectos')
+                            ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
+                            ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
+                            ->where('etiquetas.nombre','like','%polanco%')
+                            ->whereDate('prospectos.created_at',DB::raw('CURDATE()'))
+                            ->get();
 
-            $randIndex = array_rand($polanco);
+            $remainder = count($prospectos_today) % 2;
 
-            $this->assign($polanco[$randIndex],$event->evento['prospecto'],$desarrollo);
+            if($remainder == 0){
+                $this->assign($polanco[0],$event->evento['prospecto'],$desarrollo);
+            }else{
+                $this->assign($polanco[1],$event->evento['prospecto'],$desarrollo);
+            }
+            // $randIndex = array_rand($polanco);
+
+            // $this->assign($polanco[$randIndex],$event->evento['prospecto'],$desarrollo);
             
             // $ejevutivo0 = $assigment_gfa['ejecutivo_0']['fechas'];
 
