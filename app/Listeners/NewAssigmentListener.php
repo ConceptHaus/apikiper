@@ -120,6 +120,11 @@ class NewAssigmentListener
                     'c3d94d64-e966-44a8-9a03-6ed97e79688b',
                     '5ba84206-494d-45d4-b186-4e2c19c4c5fb'
                 ];
+        $napoles = [
+                    '09e78cf0-1bac-46ed-8945-5adb0f642840',
+                    'fae9e0c4-78b5-478b-ba19-cf58a2593c21'
+
+        ];
         $date = Carbon::now();
         $desarrollo = $event->evento['desarrollo']; 
         if($desarrollo === 'polanco'){
@@ -183,24 +188,38 @@ class NewAssigmentListener
             //     }
             // }
         }else if($desarrollo === 'napoles'){
-            $ejecutivo3 = $assigment_gfa['ejecutivo_3']['fechas'];
-            
-            foreach($ejecutivo3 as $key=>$value){
-            
-                if($date->between($ejecutivo3[$key][0],$ejecutivo3[$key][1],true)){
-    
-                    $this->assign($assigment_gfa['ejecutivo_3']['id'], $event->evento['prospecto'],$desarrollo);
 
-                }
+            $prospectos_today = DB::table('prospectos')
+                            ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
+                            ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
+                            ->where('etiquetas.nombre','like','%napoles%')
+                            ->whereDate('prospectos.created_at',DB::raw('CURDATE()'))
+                            ->get();
+
+            $remainder = count($prospectos_today) % 2;
+            if($remainder == 0){
+                $this->assign($napoles[0],$event->evento['prospecto'],$desarrollo);
+            }else{
+                $this->assign($napoles[1],$event->evento['prospecto'],$desarrollo);
             }
-            $ejecutivo4 = $assigment_gfa['ejecutivo_4']['fechas'];
-            foreach($ejecutivo4 as $key=>$value){
-                
-                if($date->between($ejecutivo4[$key][0],$ejecutivo4[$key][1],true)){
+            // $ejecutivo3 = $assigment_gfa['ejecutivo_3']['fechas'];
+            
+            // foreach($ejecutivo3 as $key=>$value){
+            
+            //     if($date->between($ejecutivo3[$key][0],$ejecutivo3[$key][1],true)){
     
-                    $this->assign($assigment_gfa['ejecutivo_4']['id'], $event->evento['prospecto'],$desarrollo);
-                }
-            }
+            //         $this->assign($assigment_gfa['ejecutivo_3']['id'], $event->evento['prospecto'],$desarrollo);
+
+            //     }
+            // }
+            // $ejecutivo4 = $assigment_gfa['ejecutivo_4']['fechas'];
+            // foreach($ejecutivo4 as $key=>$value){
+                
+            //     if($date->between($ejecutivo4[$key][0],$ejecutivo4[$key][1],true)){
+    
+            //         $this->assign($assigment_gfa['ejecutivo_4']['id'], $event->evento['prospecto'],$desarrollo);
+            //     }
+            // }
         }
         
         
