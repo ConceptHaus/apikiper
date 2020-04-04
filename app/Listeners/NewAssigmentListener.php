@@ -133,11 +133,12 @@ class NewAssigmentListener
                             ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
                             ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
                             ->where('etiquetas.nombre','like','%polanco%')
+                            ->where('prospectos.deleted_at',null)
                             ->whereDate('prospectos.created_at',DB::raw('CURDATE()'))
-                            ->get();
+                            ->count();
 
-            $remainder = count($prospectos_today) % 2;
-
+            $remainder = $prospectos_today % 2;
+            echo $prospectos_today;
             if($remainder == 0){
                 $this->assign($polanco[0],$event->evento['prospecto'],$desarrollo);
             }else{
@@ -193,10 +194,11 @@ class NewAssigmentListener
                             ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
                             ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
                             ->where('etiquetas.nombre','like','%napoles%')
+                            ->where('prospectos.deleted_at',null)
                             ->whereDate('prospectos.created_at',DB::raw('CURDATE()'))
-                            ->get();
+                            ->count();
 
-            $remainder = count($prospectos_today) % 2;
+            $remainder = $prospectos_today % 2;
             if($remainder == 0){
                 $this->assign($napoles[0],$event->evento['prospecto'],$desarrollo);
             }else{
