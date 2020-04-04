@@ -140,7 +140,7 @@ class NewAssigmentListener
             $remainder = $prospectos_today % 2;
             echo $prospectos_today;
             if($remainder == 0){
-                $this->assign($polanco[0],$event->evento['prospecto'],$desarrollo);
+                 $this->assign($polanco[0],$event->evento['prospecto'],$desarrollo);
             }else{
                 $this->assign($polanco[1],$event->evento['prospecto'],$desarrollo);
             }
@@ -189,7 +189,7 @@ class NewAssigmentListener
             //     }
             // }
         }else if($desarrollo === 'napoles'){
-
+            echo $prospectos_today;
             $prospectos_today = DB::table('prospectos')
                             ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
                             ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
