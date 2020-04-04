@@ -136,14 +136,17 @@ class NewAssigmentListener
                             ->where('prospectos.deleted_at',null)
                             ->whereDate('prospectos.created_at',DB::raw('CURDATE()'))
                             ->count();
-
-            $remainder = $prospectos_today % 2;
-            echo $prospectos_today;
-            if($remainder == 0){
-                 $this->assign($polanco[0],$event->evento['prospecto'],$desarrollo);
-            }else{
-                $this->assign($polanco[1],$event->evento['prospecto'],$desarrollo);
+            if($prospectos_today >0){
+                
+                $remainder = $prospectos_today % 2;
+                echo $prospectos_today;
+                if($remainder == 0){
+                    $this->assign($polanco[0],$event->evento['prospecto'],$desarrollo);
+                }else{
+                    $this->assign($polanco[1],$event->evento['prospecto'],$desarrollo);
+                }
             }
+            
             // $randIndex = array_rand($polanco);
 
             // $this->assign($polanco[$randIndex],$event->evento['prospecto'],$desarrollo);
