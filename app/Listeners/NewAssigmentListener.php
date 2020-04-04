@@ -117,8 +117,8 @@ class NewAssigmentListener
         ];
 
         $polanco = [
-                    'c3d94d64-e966-44a8-9a03-6ed97e79688b',
-                    '5ba84206-494d-45d4-b186-4e2c19c4c5fb'
+                    '5ba84206-494d-45d4-b186-4e2c19c4c5fb',
+                    'c3d94d64-e966-44a8-9a03-6ed97e79688b'
                 ];
         $napoles = [
                     '09e78cf0-1bac-46ed-8945-5adb0f642840',
@@ -136,7 +136,7 @@ class NewAssigmentListener
                             ->where('prospectos.deleted_at',null)
                             ->whereDate('prospectos.created_at',DB::raw('CURDATE()'))
                             ->count();
-            if($prospectos_today >0){
+            if($prospectos_today > 0){
                 
                 $remainder = $prospectos_today % 2;
                 echo $prospectos_today;
