@@ -238,7 +238,7 @@ class NewAssigmentListener
             $pivot_col_pros->id_prospecto = $prospecto->id_prospecto;
             $pivot_col_pros->save();
             $prospecto->desarrollo = $desarrollo;
-            $this->sendMail($id, $prospecto);
+            //$this->sendMail($id, $prospecto);
             //$this->sendSMS($id, $prospecto);
 
     }
