@@ -200,14 +200,14 @@ class NewAssigmentListener
                             ->whereDate('prospectos.created_at',DB::raw('CURDATE()'))
                             ->count();
 
-            $remainder = $prospectos_today % 2;
-            echo $remainder;
-            echo $prospectos_today;
-            if($remainder == 0){
-                $this->assign($napoles[0],$event->evento['prospecto'],$desarrollo);
-            }else{
-                $this->assign($napoles[1],$event->evento['prospecto'],$desarrollo);
-            }
+            $remainder = intval($prospectos_today) % 2;
+            echo 'Moudlo '.$remainder.' ';
+            echo 'Total de leads '.intval($prospectos_today);
+            // if($remainder == 0){
+            //     $this->assign($napoles[0],$event->evento['prospecto'],$desarrollo);
+            // }else{
+            //     $this->assign($napoles[1],$event->evento['prospecto'],$desarrollo);
+            // }
             // $ejecutivo3 = $assigment_gfa['ejecutivo_3']['fechas'];
             
             // foreach($ejecutivo3 as $key=>$value){
