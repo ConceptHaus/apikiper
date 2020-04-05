@@ -317,35 +317,36 @@ class FormsController extends Controller
 
 
 
-          if(isset($data['lead_campaign'])){
+            if(isset($data['lead_campaign'])){
 
-            $campaign = new CampaignInfo();
-            $campaign->utm_term = (isset($data['lead_keyword']) ? $data['lead_keyword'] : ' ');
-            $campaign->utm_campaign = (isset($data['lead_campaign']) ? $data['lead_campaign'] : 'orgánico');
-            $campaign->id_forms = $verify;
-            $prospecto->campaign()->save($campaign);
+              $campaign = new CampaignInfo();
+              $campaign->utm_term = (isset($data['lead_keyword']) ? $data['lead_keyword'] : ' ');
+              $campaign->utm_campaign = (isset($data['lead_campaign']) ? $data['lead_campaign'] : 'orgánico');
+              $campaign->id_forms = $verify;
+              $prospecto->campaign()->save($campaign);
 
-            $etiqueta = Etiqueta::where('nombre','=',$campaign->utm_campaign)->first();
-            
-            if(!$etiqueta){
-                $etiqueta = new Etiqueta;
-                $etiqueta->nombre = $campaign->utm_campaign;
-                $etiqueta->status = 1;
-                $etiqueta->save();
+              $etiqueta = Etiqueta::where('nombre','=',$campaign->utm_campaign)->first();
+              
+              if(!$etiqueta){
+                  $etiqueta = new Etiqueta;
+                  $etiqueta->nombre = $campaign->utm_campaign;
+                  $etiqueta->status = 1;
+                  $etiqueta->save();
+              }
+
+              $etiqueta_prospecto = new EtiquetasProspecto;
+              $etiqueta_prospecto->id_etiqueta = $etiqueta->id_etiqueta;
+              $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
             }
-
-            $etiqueta_prospecto = new EtiquetasProspecto;
-            $etiqueta_prospecto->id_etiqueta = $etiqueta->id_etiqueta;
-            $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
-        }
         
-        if(isset($data['assigment'])){
-          $data_event['prospecto'] = $prospecto;
-          $data_event['desarrollo'] = $data['assigment'];
-          event(new NewAssigment($data_event));
-        }
-        event(new NewCall($prospecto));
-
+          if(isset($data['assigment'])){
+            $data_event['prospecto'] = $prospecto;
+            $data_event['desarrollo'] = $data['assigment'];
+            event(new NewAssigment($data_event));
+          }else{
+            event(new NewCall($prospecto));
+          }
+        
         }else{
 
           $prospecto->nombre = $data['nombre'];
