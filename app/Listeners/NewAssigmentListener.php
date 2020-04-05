@@ -189,7 +189,7 @@ class NewAssigmentListener
             //     if($date->between($ejecutivo5[$key][0],$ejecutivo5[$key][1],true)){
     
             //         $this->assign($assigment_gfa['ejecutivo_5']['id'], $event->evento['prospecto'],$desarrollo);
-            //     }
+            //     }p
             // }
         }else if($desarrollo === 'napoles'){
             $prospectos_today = DB::table('prospectos')
@@ -197,7 +197,7 @@ class NewAssigmentListener
                             ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
                             ->where('etiquetas.nombre','like','%napoles%')
                             ->where('prospectos.deleted_at',null)
-                            ->whereDate('prospectos.created_at',DB::raw('CURDATE()'))
+                            ->where(DB::raw('date(prospectos.created_at)'),Carbon::today())
                             ->count();
 
             $remainder = intval($prospectos_today) % 2;
