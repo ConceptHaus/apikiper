@@ -140,7 +140,7 @@ class NewAssigmentListener
             if($prospectos_today > 0){
                 
                 $remainder = $prospectos_today->count() % 2;
-                echo 'Moudlo '.$remainder.' ';
+                echo 'Módulo '.$remainder.' ';
                 echo 'Total de leads '.$prospectos_today->count();
                 if($remainder == 0){
                     $this->assign($polanco[0],$event->evento['prospecto'],$desarrollo);
@@ -205,7 +205,7 @@ class NewAssigmentListener
             if($prospectos_today > 0){
                 
                 $remainder = $prospectos_today->count() % 2;
-                echo 'Moudlo '.$remainder.' ';
+                echo 'Módulo '.$remainder.' ';
                 echo 'Total de leads '.$prospectos_today->count();
                 if($remainder == 0){
                     $this->assign($napoles[0],$event->evento['prospecto'],$desarrollo);
