@@ -134,7 +134,7 @@ class NewAssigmentListener
                             ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
                             ->where('etiquetas.nombre','like','%polanco%')
                             ->where('prospectos.deleted_at',null)
-                            ->whereDate('prospectos.created_at',DB::raw('CURDATE()'))
+                            ->where(DB::raw('date(prospectos.created_at)'),Carbon::today())
                             ->count();
             //if($prospectos_today > 0){
                 
