@@ -130,12 +130,13 @@ class NewAssigmentListener
         if($desarrollo === 'polanco'){
             
             $prospectos_today = DB::table('prospectos')
-                            ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
-                            ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
-                            ->where('etiquetas.nombre','like','%polanco%')
-                            ->where('prospectos.deleted_at',null)
-                            ->where(DB::raw('date(prospectos.created_at)'),Carbon::today())
-                            ->count();
+                                ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
+                                ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
+                                ->where('etiquetas.nombre','like','%polanco%')
+                                ->where('prospectos.deleted_at',null)
+                                ->where(DB::raw('date(prospectos.created_at)'),Carbon::today())
+                                ->groupBy('prospectos.id_prospecto')
+                                ->count();
             //if($prospectos_today > 0){
                 
                 $remainder = intval($prospectos_today) % 2;
@@ -199,6 +200,7 @@ class NewAssigmentListener
                             ->where('etiquetas.nombre','like','%napoles%')
                             ->where('prospectos.deleted_at',null)
                             ->where(DB::raw('date(prospectos.created_at)'),Carbon::today())
+                            ->groupBy('prospectos.id_prospecto')
                             ->count();
 
             $remainder = intval($prospectos_today) % 2;
