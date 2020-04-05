@@ -137,17 +137,17 @@ class NewAssigmentListener
                             ->where(DB::raw('date(prospectos.created_at)'),Carbon::today())
                             ->groupBy('prospectos.id_prospecto')
                             ->get();
-            //if($prospectos_today > 0){
+            if($prospectos_today > 0){
                 
                 $remainder = $prospectos_today->count() % 2;
                 echo 'Moudlo '.$remainder.' ';
                 echo 'Total de leads '.$prospectos_today->count();
-                // if($remainder == 0){
-                //     $this->assign($polanco[0],$event->evento['prospecto'],$desarrollo);
-                // }else{
-                //     $this->assign($polanco[1],$event->evento['prospecto'],$desarrollo);
-                // }
-            //}
+                if($remainder == 0){
+                    $this->assign($polanco[0],$event->evento['prospecto'],$desarrollo);
+                }else{
+                    $this->assign($polanco[1],$event->evento['prospecto'],$desarrollo);
+                }
+            }
             
             // $randIndex = array_rand($polanco);
 
@@ -202,15 +202,17 @@ class NewAssigmentListener
                             ->where(DB::raw('date(prospectos.created_at)'),Carbon::today())
                             ->groupBy('prospectos.id_prospecto')
                             ->get();
-            
-            $remainder = $prospectos_today->count() % 2;
-            echo 'Moudlo '.$remainder.' ';
-            echo 'Total de leads '.$prospectos_today->count();
-            // if($remainder == 0){
-            //     $this->assign($napoles[0],$event->evento['prospecto'],$desarrollo);
-            // }else{
-            //     $this->assign($napoles[1],$event->evento['prospecto'],$desarrollo);
-            // }
+            if($prospectos_today > 0){
+                
+                $remainder = $prospectos_today->count() % 2;
+                echo 'Moudlo '.$remainder.' ';
+                echo 'Total de leads '.$prospectos_today->count();
+                if($remainder == 0){
+                    $this->assign($napoles[0],$event->evento['prospecto'],$desarrollo);
+                }else{
+                    $this->assign($napoles[1],$event->evento['prospecto'],$desarrollo);
+                }
+            }
             // $ejecutivo3 = $assigment_gfa['ejecutivo_3']['fechas'];
             
             // foreach($ejecutivo3 as $key=>$value){
@@ -242,7 +244,7 @@ class NewAssigmentListener
             $pivot_col_pros->id_prospecto = $prospecto->id_prospecto;
             $pivot_col_pros->save();
             $prospecto->desarrollo = $desarrollo;
-            //$this->sendMail($id, $prospecto);
+            $this->sendMail($id, $prospecto);
             //$this->sendSMS($id, $prospecto);
 
     }
