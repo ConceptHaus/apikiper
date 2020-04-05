@@ -137,7 +137,7 @@ class NewAssigmentListener
                             ->where(DB::raw('date(prospectos.created_at)'),Carbon::today())
                             ->groupBy('prospectos.id_prospecto')
                             ->get();
-            if($prospectos_today > 0){
+            if($prospectos_today->count() > 0){
                 
                 $remainder = $prospectos_today->count() % 2;
                 echo 'Módulo '.$remainder.' ';
@@ -202,7 +202,7 @@ class NewAssigmentListener
                             ->where(DB::raw('date(prospectos.created_at)'),Carbon::today())
                             ->groupBy('prospectos.id_prospecto')
                             ->get();
-            if($prospectos_today > 0){
+            if($prospectos_today->count() > 0){
                 
                 $remainder = $prospectos_today->count() % 2;
                 echo 'Módulo '.$remainder.' ';
