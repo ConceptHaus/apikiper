@@ -201,6 +201,7 @@ class NewAssigmentListener
                             ->count();
 
             $remainder = $prospectos_today % 2;
+            echo $remainder;
             echo $prospectos_today;
             if($remainder == 0){
                 $this->assign($napoles[0],$event->evento['prospecto'],$desarrollo);
