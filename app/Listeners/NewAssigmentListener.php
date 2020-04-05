@@ -130,18 +130,18 @@ class NewAssigmentListener
         if($desarrollo === 'polanco'){
             
             $prospectos_today = DB::table('prospectos')
-                                ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
-                                ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
-                                ->where('etiquetas.nombre','like','%polanco%')
-                                ->where('prospectos.deleted_at',null)
-                                ->where(DB::raw('date(prospectos.created_at)'),Carbon::today())
-                                ->groupBy('prospectos.id_prospecto')
-                                ->count();
+                            ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
+                            ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
+                            ->where('etiquetas.nombre','like','%polanco%')
+                            ->where('prospectos.deleted_at',null)
+                            ->where(DB::raw('date(prospectos.created_at)'),Carbon::today())
+                            ->groupBy('prospectos.id_prospecto')
+                            ->get();
             //if($prospectos_today > 0){
                 
-                $remainder = intval($prospectos_today) % 2;
+                $remainder = $prospectos_today->count() % 2;
                 echo 'Moudlo '.$remainder.' ';
-                echo 'Total de leads '.intval($prospectos_today);
+                echo 'Total de leads '.$prospectos_today->count();
                 // if($remainder == 0){
                 //     $this->assign($polanco[0],$event->evento['prospecto'],$desarrollo);
                 // }else{
@@ -201,11 +201,11 @@ class NewAssigmentListener
                             ->where('prospectos.deleted_at',null)
                             ->where(DB::raw('date(prospectos.created_at)'),Carbon::today())
                             ->groupBy('prospectos.id_prospecto')
-                            ->count();
-
-            $remainder = intval($prospectos_today) % 2;
+                            ->get();
+            
+            $remainder = $prospectos_today->count() % 2;
             echo 'Moudlo '.$remainder.' ';
-            echo 'Total de leads '.intval($prospectos_today);
+            echo 'Total de leads '.$prospectos_today->count();
             // if($remainder == 0){
             //     $this->assign($napoles[0],$event->evento['prospecto'],$desarrollo);
             // }else{
