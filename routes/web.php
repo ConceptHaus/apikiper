@@ -17,16 +17,16 @@ Route::get('/', function(){
     return response()->json(['Error'=>'Nothing here. ⚠️'],200);
 });
 Route::get('/weekly_report', function(){
-    $attach = [public_path('reports/Reporte_Avenue_Polanco.xlsx'),public_path('reports/Reporte_Avenue_Napoles.xlsx')];
-    Mail::to(['recepcion@avenuepolanco.mx','fvazquez@residencialavenue.mx'])
-            ->cc(['sergio@concepthaus.mx',
-                  'lolita@concepthaus.mx',
-                  'mfasja@gfa.com.mx',
-                  'cgorshtein@gfa.com.mx',
-                  'ngorshtein@gfa.com.mx',
-                  'hhidalgo@gfa.com.mx'])
+   // $attach = [public_path('reports/Reporte_Avenue_Polanco.xlsx'),public_path('reports/Reporte_Avenue_Napoles.xlsx')];
+    // Mail::to(['recepcion@avenuepolanco.mx','fvazquez@residencialavenue.mx'])
+    //         ->cc(['sergio@concepthaus.mx',
+    //               'lolita@concepthaus.mx',
+    //               'mfasja@gfa.com.mx',
+    //               'cgorshtein@gfa.com.mx',
+    //               'ngorshtein@gfa.com.mx',
+    //               'hhidalgo@gfa.com.mx'])
 
-            ->send(new WeeklyReport($attach));
+    //         ->send(new WeeklyReport($attach));
     try {
 
         return response()->json("Email Sent!");
