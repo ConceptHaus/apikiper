@@ -117,8 +117,8 @@ class NewAssigmentListener
         ];
 
         $polanco = [
-                    '5ba84206-494d-45d4-b186-4e2c19c4c5fb',
-                    'c3d94d64-e966-44a8-9a03-6ed97e79688b'
+                    'c3d94d64-e966-44a8-9a03-6ed97e79688b',
+                    '5ba84206-494d-45d4-b186-4e2c19c4c5fb'
                 ];
         $napoles = [
                     '09e78cf0-1bac-46ed-8945-5adb0f642840',
