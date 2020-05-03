@@ -134,7 +134,7 @@ class NewAssigmentListener
                             ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
                             ->where('etiquetas.nombre','like','%polanco%')
                             ->where('prospectos.deleted_at',null)
-                            ->where(DB::raw('date(prospectos.created_at)'),Carbon::today())
+                            ->where('prospectos.fuente','!=',3)
                             ->groupBy('prospectos.id_prospecto')
                             ->get();
             if($prospectos_today->count() > 0){
@@ -199,7 +199,7 @@ class NewAssigmentListener
                             ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
                             ->where('etiquetas.nombre','like','%napoles%')
                             ->where('prospectos.deleted_at',null)
-                            ->where(DB::raw('date(prospectos.created_at)'),Carbon::today())
+                            ->where('prospectos.fuente','!=',3)
                             ->groupBy('prospectos.id_prospecto')
                             ->get();
             if($prospectos_today->count() > 0){
