@@ -29,7 +29,7 @@ class WeeklyReport extends Mailable
      */
     public function build()
     {
-        $email = $this->from('activity@kiper.io','Kiper')->subject('Reporte Semanal 27/04/2020 - 03/05/2020 | Kiper')->view('mailing.report');
+        $email = $this->from('activity@kiper.io','Kiper')->subject('Reporte Semanal 04/05/2020 - 10/05/2020 | Kiper')->view('mailing.report');
                  
         foreach($this->attachment as $attach){
             $email->attach($attach);
