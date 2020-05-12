@@ -1778,7 +1778,7 @@ class DataViewsController extends Controller
             DB::commit();
             $data_event['colaborador'] = $colaborador;
             $data_event['prospecto'] = $prospecto;
-            //event(new AssignProspecto($data_event));
+            event(new AssignProspecto($data_event));
             return response()->json([
                 'error'=>false,
                 'message'=>'El prospecto se ha asignado correctamente.'
