@@ -49,6 +49,8 @@ class ProspectosReports implements WithHeadings,FromCollection{
                 ->leftjoin('colaborador_prospecto','colaborador_prospecto.id_prospecto','prospectos.id_prospecto')
                 ->leftjoin('users','users.id','colaborador_prospecto.id_colaborador')
                 ->leftjoin('medio_contacto_prospectos','prospectos.id_prospecto','medio_contacto_prospectos.id_prospecto')
+                ->leftjoin('etiquetas_prospectos','prospectos.id_prospecto','etiquetas_prospectos.id_prospecto')
+                ->leftjoin('etiquetas','etiquetas_prospectos.id_etiqueta','etiquetas.id_etiqueta')
                 //->where('medio_contacto_prospectos.id_mediocontacto_catalogo','=',1)
                 ->whereNull('prospectos.deleted_at')
                 ->groupBy('prospectos.id_prospecto')
@@ -62,7 +64,8 @@ class ProspectosReports implements WithHeadings,FromCollection{
                         'detalle_prospecto.telefono',
                         'prospectos.correo as mail',
                         'detalle_prospecto.nota as comentarios',
-                        'medio_contacto_prospectos.descripcion as seguimiento'
+                        DB::raw("group_concat(medio_contacto_prospectos.descripcion SEPARATOR '  --  ') as seguimiento"),
+                        DB::raw("group_concat(etiquetas.nombre SEPARATOR '  --  ') as etiquetas")
                         )->get();
                 
         }
@@ -89,7 +92,8 @@ class ProspectosReports implements WithHeadings,FromCollection{
                         'detalle_prospecto.telefono',
                         'prospectos.correo as mail',
                         'detalle_prospecto.nota as comentarios',
-                        'medio_contacto_prospectos.descripcion as seguimiento'
+                        DB::raw("group_concat(medio_contacto_prospectos.descripcion SEPARATOR '  --  ') as seguimiento"),
+                        DB::raw("group_concat(etiquetas.nombre SEPARATOR '  --  ') as etiquetas")
                         )->get();
         }
         return DB::table('prospectos')
@@ -119,7 +123,8 @@ class ProspectosReports implements WithHeadings,FromCollection{
                         'detalle_prospecto.telefono',
                         'prospectos.correo as mail',
                         'detalle_prospecto.nota as comentarios',
-                        'medio_contacto_prospectos.descripcion as seguimiento'
+                        DB::raw("group_concat(medio_contacto_prospectos.descripcion SEPARATOR '  --  ') as seguimiento"),
+                        DB::raw("group_concat(etiquetas.nombre SEPARATOR '  --  ') as etiquetas")
                         )->get();
     }
     public function headings() : array

@@ -939,7 +939,8 @@ class ProspectosController extends Controller
             'Teléfono',
             'Mail',
             'Comentarios',
-            'Seguimiento'
+            'Seguimiento',
+            'Etiquetas'
         ];
         if($admin && $rol == 0){
              $desarrollo = 'all';
