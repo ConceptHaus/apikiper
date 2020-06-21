@@ -42,7 +42,7 @@ class AssignProspectoListener
         $mail_data['email'] = $user->email;
         $mail_data['nombre'] = $user->nombre;
         $mail_data['asunto'] = 'Te han asignado un prospecto 😁 🎉';
-        $mail_data['email_de'] = 'activity@kiper.io';
+        $mail_data['email_de'] = 'activity@kiper.app';
         $mail_data['nombre_de'] = 'Kiper';
 
         $mail_data['nombre_p'] = $data->nombre;

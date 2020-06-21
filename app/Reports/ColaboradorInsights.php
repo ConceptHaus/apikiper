@@ -49,7 +49,7 @@ class ColaboradorInsights{
                 // echo $inicio.' '.$fin;
                 //echo '---'.$data['user']->email.' '.$data['result'].'---';
                 Mailgun::send('mailing.reportes',$data, function($message) use ($data){
-                    $message->from('activity@kiper.io','Kiper');
+                    $message->from('activity@kiper.app','Kiper');
                     $message->subject('↗️ 📆 ¿Hacemos números? | Reporte Semanal');
                     //$message->to('57dced4c42-3a998f@inbox.mailtrap.io');
                     $message->to($data['user']->email,$data['user']->nombre.' '.$data['user']->apellido);

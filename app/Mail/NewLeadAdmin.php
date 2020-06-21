@@ -31,7 +31,7 @@ class NewLeadAdmin extends Mailable
     public function build()
     {
         return $this->subject("Nuevo prospecto vía {$this->data->fuente->nombre} 🎉")
-                    ->from('activity@kiper.io','Kiper')
+                    ->from('activity@kiper.app','Kiper')
                     ->view('mailing.newlead_admin');
     }
 }

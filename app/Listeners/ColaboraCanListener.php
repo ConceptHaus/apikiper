@@ -50,7 +50,7 @@ class ColaboraCanListener{
         $data['term_p'] = (isset($actividad->campaign->utm_term) ? $actividad->campaign->utm_term : 'orgánico');
 
         Mailgun::send('mailing.template_newlead',$data, function($message) use ($data){
-           $message->from('activity@kiper.io','Kiper'); 
+           $message->from('activity@kiper.app','Kiper'); 
            $message->subject('Tienes un nuevo prospecto 😁 🎉');
            $message->to($data['email_de']);
            $message->cc('evelyn@co-labora.mx');

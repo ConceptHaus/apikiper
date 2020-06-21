@@ -40,7 +40,7 @@ class NewLead extends Mailable
         }
         
         return $this->subject("Nuevo prospecto vía {$this->data->fuente->nombre} 🎉")
-                    ->from('activity@kiper.io','Kiper')
+                    ->from('activity@kiper.app','Kiper')
                     ->cc($this->data->admin)
                     ->view('mailing.newlead');
     }

@@ -56,7 +56,7 @@ class NewCallListener
 
             $data['email'] = $array_admins;
             $data['asunto'] = 'Un nuevo prospecto te ha llamado ☎️ 😁 🎉';
-            $data['email_de'] = 'activity@kiper.io';
+            $data['email_de'] = 'activity@kiper.app';
             $data['nombre_de'] = 'Kiper';
 
             
