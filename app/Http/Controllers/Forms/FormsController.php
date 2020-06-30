@@ -153,7 +153,7 @@ class FormsController extends Controller
             }catch(Exception $e){
 
               return response()->json([
-                'message'=>'Error',
+                'message'=>$e,
                 'error'=>true
               ],401);
             }
