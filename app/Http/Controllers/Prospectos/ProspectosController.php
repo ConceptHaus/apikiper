@@ -964,6 +964,7 @@ class ProspectosController extends Controller
             'nombre'=>'required|string|max:255',
             //'apellido'=>'required|string|max:255',
             'correo'=>'required|email|max:255|unique:prospectos,correo',
+            'telefono'=>'required|unique:detalle_prospecto,telefono|'
 
         ]);
 
