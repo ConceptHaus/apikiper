@@ -144,7 +144,7 @@ class FormsController extends Controller
               
               else{
                 return response()->json([
-                  'message'=>'Error: email repetido',
+                  'message'=>'Error: e-mail o teléfono repetido',
                   'error'=>true
                 ],406);
               }
@@ -430,6 +430,7 @@ class FormsController extends Controller
     public function validadorProspecto(array $data){
         return Validator::make($data,[
           'correo'=>'required|email|max:255|unique:prospectos,correo',
+          'telefono'=>'required|unique:detalle_prospecto,telefono|'
         ]);
     }
     public function validatorForm(array $data){
