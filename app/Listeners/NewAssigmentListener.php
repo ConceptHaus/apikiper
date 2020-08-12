@@ -17,6 +17,7 @@ use Carbon\CarbonPeriod;
 use Twilio\Rest\Client;
 use Mailgun;
 use DB;
+use Illuminate\Support\Arr;
 
 class Data{}
 class NewAssigmentListener
@@ -118,13 +119,20 @@ class NewAssigmentListener
 
         $polanco = [
                     'c3d94d64-e966-44a8-9a03-6ed97e79688b',
-                    '5ba84206-494d-45d4-b186-4e2c19c4c5fb'
+                    '5ba84206-494d-45d4-b186-4e2c19c4c5fb',
+                    '09e78cf0-1bac-46ed-8945-5adb0f642840',
+                    'fae9e0c4-78b5-478b-ba19-cf58a2593c21',
+                    '776150e5-0f8f-414f-a987-9e4d52522105'
                 ];
         $napoles = [
+                    'c3d94d64-e966-44a8-9a03-6ed97e79688b',
+                    '5ba84206-494d-45d4-b186-4e2c19c4c5fb',
                     '09e78cf0-1bac-46ed-8945-5adb0f642840',
-                    'fae9e0c4-78b5-478b-ba19-cf58a2593c21'
+                    'fae9e0c4-78b5-478b-ba19-cf58a2593c21',
+                    '776150e5-0f8f-414f-a987-9e4d52522105'
 
         ];
+        $random_broker=Arr::random($polanco);
         $date = Carbon::now();
         $desarrollo = $event->evento['desarrollo']; 
         if($desarrollo === 'polanco'){
@@ -140,13 +148,14 @@ class NewAssigmentListener
             if($prospectos_today->count() > 0){
                 
                 $remainder = $prospectos_today->count() % 2;
-                echo 'Módulo '.$remainder.' ';
+                echo 'Colaborador '.$random_broker.' ';
                 echo 'Total de leads '.$prospectos_today->count();
-                if($remainder == 0){
-                    $this->assign($polanco[0],$event->evento['prospecto'],$desarrollo);
-                }else{
-                    $this->assign($polanco[1],$event->evento['prospecto'],$desarrollo);
-                }
+                $this->assign($random_broker,$event->evento['prospecto'],$desarrollo);
+                // if($remainder == 0){
+                //     $this->assign($polanco[0],$event->evento['prospecto'],$desarrollo);
+                // }else{
+                //     $this->assign($polanco[1],$event->evento['prospecto'],$desarrollo);
+                // }
             }
             
             // $randIndex = array_rand($polanco);
@@ -205,13 +214,14 @@ class NewAssigmentListener
             if($prospectos_today->count() > 0){
                 
                 $remainder = $prospectos_today->count() % 2;
-                echo 'Módulo '.$remainder.' ';
+                echo 'Colaborador '.$random_broker.' ';
                 echo 'Total de leads '.$prospectos_today->count();
-                if($remainder == 0){
-                    $this->assign($napoles[0],$event->evento['prospecto'],$desarrollo);
-                }else{
-                    $this->assign($napoles[1],$event->evento['prospecto'],$desarrollo);
-                }
+                $this->assign($random_broker,$event->evento['prospecto'],$desarrollo);
+                // if($remainder == 0){
+                //     $this->assign($napoles[0],$event->evento['prospecto'],$desarrollo);
+                // }else{
+                //     $this->assign($napoles[1],$event->evento['prospecto'],$desarrollo);
+                // }
             }
             // $ejecutivo3 = $assigment_gfa['ejecutivo_3']['fechas'];
             
@@ -244,7 +254,7 @@ class NewAssigmentListener
             $pivot_col_pros->id_prospecto = $prospecto->id_prospecto;
             $pivot_col_pros->save();
             $prospecto->desarrollo = $desarrollo;
-            $this->sendMail($id, $prospecto);
+            //$this->sendMail($id, $prospecto);
             //$this->sendSMS($id, $prospecto);
 
     }
