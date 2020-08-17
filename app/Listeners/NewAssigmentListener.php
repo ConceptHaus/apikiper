@@ -200,7 +200,7 @@ class NewAssigmentListener
             //     if($date->between($ejecutivo5[$key][0],$ejecutivo5[$key][1],true)){
     
             //         $this->assign($assigment_gfa['ejecutivo_5']['id'], $event->evento['prospecto'],$desarrollo);
-            //     }p
+            //     }
             // }
         }else if($desarrollo === 'napoles'){
             $prospectos_today = DB::table('prospectos')
