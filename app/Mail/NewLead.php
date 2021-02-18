@@ -37,6 +37,8 @@ class NewLead extends Mailable
         else if($this->data->desarrollo == 'napoles'){
             $this->data->admin = DB::table('users')->where('rol','=',2)
                                                    ->orWhere('is_admin','=',1)->get();
+        } else {
+            $this->data->admin = DB::table('users')->where('is_admin','=',1)->get();
         }
         
         return $this->subject("Nuevo prospecto vía {$this->data->fuente->nombre} 🎉")
