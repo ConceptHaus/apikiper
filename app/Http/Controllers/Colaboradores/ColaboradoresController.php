@@ -94,7 +94,7 @@ class ColaboradoresController extends Controller
 
                     $foto_colaborador = new FotoColaborador;
                     if(!isset($request->image))
-                        $foto_colaborador->url_foto = 'https://s3.us-east-2.amazonaws.com/kiperbucket/generales/kiper-default.svg';
+                        $foto_colaborador->url_foto = 'https://kiper-bucket.s3.us-east-2.amazonaws.com/generales/kiper-default.svg';
                     else
                     {
                         $foto_colaborador->url_foto = $this->uploadFilesS3($request->image, $request->image->getClientOriginalName());

@@ -262,7 +262,7 @@ class UserController extends Controller
                 $user->detalle()->save($user_ext);
 
                 $foto_user = new FotoColaborador;
-                $foto_user->url_foto = 'https://s3.us-east-2.amazonaws.com/kiperbucket/generales/kiper-default.svg';
+                $foto_user->url_foto = 'https://kiper-bucket.s3.us-east-2.amazonaws.com/generales/kiper-default.svg';
 
                 $user->foto()->save($foto_user);
 

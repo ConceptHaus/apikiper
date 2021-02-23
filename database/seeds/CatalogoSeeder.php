@@ -12,10 +12,10 @@ class CatalogoSeeder extends Seeder
     public function run()
     {
         //Categorias fuentes
-        DB::table('cat_fuentes')->insert(['nombre'=>'Facebook','url'=>'https://s3.us-east-2.amazonaws.com/kiperbucket/generales/facebook.svg','status'=>1 ,'created_at'=> now()]);
-        DB::table('cat_fuentes')->insert(['nombre'=>'Google','url'=>'https://s3.us-east-2.amazonaws.com/kiperbucket/generales/google.svg','status'=>1 ,'created_at'=> now()]);
-        DB::table('cat_fuentes')->insert(['nombre'=>'Manual','url'=>'https://s3.us-east-2.amazonaws.com/kiperbucket/generales/manual.svg','status'=>1 ,'created_at'=> now()]);
-        DB::table('cat_fuentes')->insert(['nombre'=>'Llamada','url'=>'https://s3.us-east-2.amazonaws.com/kiperbucket/generales/incoming-call2.svg','status'=>1 ,'created_at'=> now()]);
+        DB::table('cat_fuentes')->insert(['nombre'=>'Facebook','url'=>'https://kiper-bucket.s3.us-east-2.amazonaws.com/generales/facebook.svg','status'=>1 ,'created_at'=> now()]);
+        DB::table('cat_fuentes')->insert(['nombre'=>'Google','url'=>'https://kiper-bucket.s3.us-east-2.amazonaws.com/generales/google.svg','status'=>1 ,'created_at'=> now()]);
+        DB::table('cat_fuentes')->insert(['nombre'=>'Manual','url'=>'https://kiper-bucket.s3.us-east-2.amazonaws.com/generales/manual.svg','status'=>1 ,'created_at'=> now()]);
+        DB::table('cat_fuentes')->insert(['nombre'=>'Llamada','url'=>'https://kiper-bucket.s3.us-east-2.amazonaws.com/generales/incoming-call2.svg','status'=>1 ,'created_at'=> now()]);
         //Categorias Status Oportunidad
         DB::table('cat_status_oportunidad')->insert(['status'=>'Cotizado','color'=>'#fac219','created_at'=> now()]);
         DB::table('cat_status_oportunidad')->insert(['status'=>'Cerrado','color'=>'#37af9b','created_at'=> now()]);
