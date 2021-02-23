@@ -140,7 +140,7 @@ class NewAssigmentListener
                         // Lunes 22 Febrero 15 a 19
                         // Lunes 01 Marzo 10 a 15
                         [Carbon::create(2021,2,15,10,0,0),Carbon::create(2021,2,15,15,0,0)],
-                        [Carbon::create(2021,2,22,15,0,1),Carbon::create(2021,2,22,19,0,0)],
+                        [Carbon::create(2021,2,22,15,0,1),Carbon::create(2021,2,22,23,59,59)],
                         [Carbon::create(2021,3,1,10,0,0),Carbon::create(2021,3,1,15,0,0)],
                     ]       
                 ],
