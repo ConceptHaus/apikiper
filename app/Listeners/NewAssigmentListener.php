@@ -83,7 +83,8 @@ class NewAssigmentListener
                     ]       
                 ],
                 'ejecutivo_3'=>[
-                    'id'=>'51b9ddd4-262d-4d96-a8f9-655b10a38b86',
+                    'id'=>'091e0ea2-5843-4523-b21c-b6347cf6006a',
+                    //id anterior 51b9ddd4-262d-4d96-a8f9-655b10a38b86
                     'nombre'=>'Gloria Macias',
                     'fechas'=>[
                         // 03 Marzo 3:00 PM - 7:00 PM Miércoles
