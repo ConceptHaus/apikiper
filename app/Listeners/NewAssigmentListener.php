@@ -43,26 +43,26 @@ class NewAssigmentListener
                     'id'=>'4f0b2f78-c6a0-4bab-9054-ede329cb5ce9',
                     'nombre'=>'Berenice Iturbide',
                     'fechas' => [
-                        // Viernes 19 Febrero 15 a 19
-                        // Martes 23 Febrero 10 a 15
-                        [Carbon::create(2021,2,19,15,0,1),Carbon::create(2021,2,19,19,0,0)],
-                        [Carbon::create(2021,2,23,10,0,0),Carbon::create(2021,2,23,15,0,0)],
+                        // Miércoles 03 marzo 10:00-3:00 PM
+                        // Lunes 08 marzo 10:00-3:00 PM
+                        [Carbon::create(2021,3,3,10,0,0),Carbon::create(2021,3,3,15,0,0)],
+                        [Carbon::create(2021,3,8,10,0,0),Carbon::create(2021,3,8,15,0,0)],
                     ]
                 ],
                 'ejecutivo_1' => [
                     'id'=>'3d7bff59-b743-4949-bb51-51716e73a942',
                     'nombre'=>'Álvaro Sainz',
                     'fechas'=>[
-                        // Martes 16 Febrero 15 a 19
-                        // Miercoles 24 Febrero 10 a 15
-                        // Lunes 01 Marzo 15 a 19
-                        [Carbon::create(2021,2,16,15,0,1),Carbon::create(2021,2,16,19,0,0)],
-                        [Carbon::create(2021,2,24,10,0,0),Carbon::create(2021,2,24,15,0,0)],
+                        // 01 Marzo 3:01 PM - 7:00 PM Lunes
+                        // 09 Marzo 3:00 PM - 7:00 PM Martes
+                        // 11 Marzo 3:00 PM - 7:00 PM Jueves
                         [Carbon::create(2021,3,1,15,0,1),Carbon::create(2021,3,1,19,0,0)],
+                        [Carbon::create(2021,3,9,15,0,1),Carbon::create(2021,3,9,19,0,0)],
+                        [Carbon::create(2021,3,11,15,0,1),Carbon::create(2021,3,11,19,0,0)],
                     ]
                     
                 ],
-                'ejecutivo_2'=>[
+                /*'ejecutivo_2'=>[
                     'id'=>'d32f23d4-d56b-4ccd-a892-a51c5399ee80',
                     'nombre'=>'Daniel Mosqueira',
                     'fechas'=>[
@@ -71,77 +71,85 @@ class NewAssigmentListener
                         [Carbon::create(2021,2,16,10,0,0),Carbon::create(2021,2,16,15,0,0)],
                         [Carbon::create(2021,2,25,15,0,1),Carbon::create(2021,2,25,19,0,0)],
                     ]       
-                ],
-                'ejecutivo_3'=>[
+                ],*/
+                'ejecutivo_2'=>[
                     'id'=>'6fba4841-31cf-40f8-af8e-7a5544b81557',
                     'nombre'=>'José Jaime Flores',
                     'fechas'=>[
-                        // Lunes 15 Febrero 15 a 19
-                        // Viernes 26 Febrero 10 a 15
-                        [Carbon::create(2021,2,15,15,0,1),Carbon::create(2021,2,15,19,0,0)],
-                        [Carbon::create(2021,2,26,10,0,0),Carbon::create(2021,2,26,15,0,0)],                    
+                        // 04 Marzo 3:00 PM - 7:00 PM Jueves
+                        // 12 Marzo 3:00 PM - 7:00 PM Viernes
+                        [Carbon::create(2021,3,4,15,0,1),Carbon::create(2021,3,4,19,0,0)],
+                        [Carbon::create(2021,3,12,15,0,1),Carbon::create(2021,3,12,19,0,0)],                    
                     ]       
                 ],
-                'ejecutivo_4'=>[
+                'ejecutivo_3'=>[
                     'id'=>'51b9ddd4-262d-4d96-a8f9-655b10a38b86',
                     'nombre'=>'Gloria Macias',
                     'fechas'=>[
-                        // Miercoles 17 Ferbero 10 a 15
-                        // Viernes 26 Febrero 15 a 19
-                        [Carbon::create(2021,2,17,10,0,0),Carbon::create(2021,2,17,15,0,0)],
-                        [Carbon::create(2021,2,26,15,0,1),Carbon::create(2021,2,26,19,0,0)],                            
+                        // 03 Marzo 3:00 PM - 7:00 PM Miércoles
+                        // 10 Marzo 10:00 AM - 3:00 PM Miércoles
+                        [Carbon::create(2021,3,3,15,0,1),Carbon::create(2021,3,3,19,0,0)],
+                        [Carbon::create(2021,3,10,10,0,0),Carbon::create(2021,3,10,15,0,0)],                            
                     ]       
                 ], 
-                'ejecutivo_5'=>[
+                'ejecutivo_4'=>[
                     'id'=>'820fccc7-f20a-4505-8848-874d3a5d0944',
                     'nombre'=>'Laura Flores',
                     'fechas'=>[
-                        // Miercoles 17 Febrero 15 a 19
-                        // Jueves 25 Febrero 10 a 15
-                        [Carbon::create(2021,2,17,15,0,1),Carbon::create(2021,2,17,19,0,0)],
-                        [Carbon::create(2021,2,25,10,0,0),Carbon::create(2021,2,25,15,0,0)],
+                        // 02 Marzo 3:00 PM Martes
+                        // 06 Marzo 10:00 AM Sábado
+                        // 15 Marzo 3:00 PM Lunes
+                        [Carbon::create(2021,3,2,15,0,1),Carbon::create(2021,3,2,19,0,0)],
+                        [Carbon::create(2021,3,6,10,0,0),Carbon::create(2021,3,6,15,0,0)],
+                        [Carbon::create(2021,3,15,15,0,1),Carbon::create(2021,3,15,19,0,0)]
                     ]       
                 ],
-                'ejecutivo_6'=>[
+                'ejecutivo_5'=>[
                     'id'=>'be1bbb44-8acf-41db-b61e-b1d53b7c8d42',
                     'nombre'=>'Mónica Sánchez',
                     'fechas'=>[
-                        // Jueves 18 Febrero 10 a 15
-                        // Miercoles 24 de Febrero 15 a 19
-                        [Carbon::create(2021,2,18,10,0,0),Carbon::create(2021,2,18,15,0,0)],
-                        [Carbon::create(2021,2,24,15,0,1),Carbon::create(2021,2,24,19,0,0)], 
+                        // 04 Marzo Jueves 10:00 AM
+                        // 09 Marzo Martes 03:00 PM
+                        // 13 Marzo Sábado 10:00 AM
+                        [Carbon::create(2021,3,4,10,0,0),Carbon::create(2021,3,4,15,0,0)],
+                        [Carbon::create(2021,3,9,15,0,1),Carbon::create(2021,3,9,19,0,0)],
+                        [Carbon::create(2021,3,13,10,0,0),Carbon::create(2021,3,13,15,0,0)]
                     ]       
                 ],
-                'ejecutivo_7'=>[
+                'ejecutivo_6'=>[
                     'id'=>'16ab8dac-4083-4b8a-8d39-2c923688c810',
                     'nombre'=>'José Rentería',
                     'fechas'=>[
-                        // Jueves 18 de Febrero 15 a 19
-                        // Lunes 22 Febrero 10 a 15
-                        [Carbon::create(2021,2,18,15,0,1),Carbon::create(2021,2,18,19,0,0)],
-                        [Carbon::create(2021,2,22,10,0,0),Carbon::create(2021,2,22,15,0,0)], 
+                        // 05 Marzo Viernes 10:00 AM
+                        // 10 Marzo Miércoles 3:00 PM
+                        // 15 Marzo Lunes 10:00 AM
+                        [Carbon::create(2021,3,5,10,0,0),Carbon::create(2021,3,5,15,0,1)],
+                        [Carbon::create(2021,3,10,15,0,1),Carbon::create(2021,3,10,19,0,0)],
+                        [Carbon::create(2021,3,15,10,0,0),Carbon::create(2021,3,15,15,0,0)]
                     ]       
                 ],
-                'ejecutivo_8'=>[
+                'ejecutivo_7'=>[
                     'id'=>'c6092094-bd54-445e-848d-4bd3fb79bd7e',
                     'nombre'=>'Mauricio Montaño',
                     'fechas'=>[
-                        // Viernes 19 Ferebro 10 a 15
-                        // Martes 23 Febrero 15 a 19
-                        [Carbon::create(2021,2,19,10,0,0),Carbon::create(2021,2,19,15,0,0)],
-                        [Carbon::create(2021,2,23,15,0,1),Carbon::create(2021,2,23,19,0,0)],
+                        // 02 Marzo Martes 10:00 AM
+                        // 08 Marzo Lunes 3:00 PM
+                        // 12 Marzo Viernes 10:00 AM
+                        [Carbon::create(2021,3,2,10,0,0),Carbon::create(2021,3,2,15,0,0)],
+                        [Carbon::create(2021,3,8,15,0,1),Carbon::create(2021,3,8,19,0,0)],
+                        [Carbon::create(2021,3,12,10,0,0),Carbon::create(2021,3,12,15,0,0)]
                     ]       
                 ],
-                'ejecutivo_9'=>[
+                'ejecutivo_8'=>[
                     'id'=>'a5b1ff68-8a09-4392-a517-57f1da9a61f0',
                     'nombre'=>'Patricia Rivera',
                     'fechas'=>[
-                        // Lunes 15 Febrero 10 a 15
-                        // Lunes 22 Febrero 15 a 19
-                        // Lunes 01 Marzo 10 a 15
-                        [Carbon::create(2021,2,15,10,0,0),Carbon::create(2021,2,15,15,0,0)],
-                        [Carbon::create(2021,2,22,15,0,1),Carbon::create(2021,2,22,23,59,59)],
-                        [Carbon::create(2021,3,1,10,0,0),Carbon::create(2021,3,1,15,0,0)],
+                        // 01 Marzo Lunes 10:00 AM
+                        // 05 Marzo Viernes 3:00 PM
+                        // 11 Marzo Jueves 10:00 AM
+                        [Carbon::create(2021,3,1,10,0,0),Carbon::create(2021,3,15,15,0,0)],
+                        [Carbon::create(2021,3,5,15,0,1),Carbon::create(2021,3,5,19,0,0)],
+                        [Carbon::create(2021,3,11,10,0,0),Carbon::create(2021,3,11,15,0,0)]
                     ]       
                 ],
             ];
