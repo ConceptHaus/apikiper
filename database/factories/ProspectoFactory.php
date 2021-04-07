@@ -8,7 +8,7 @@ $factory->define(App\Modelos\Prospecto\Prospecto::class, function (Faker $faker)
         'nombre'=>$faker->firstNameFemale,
         'apellido'=>$faker->lastName,
         'correo'=>$faker->unique()->safeEmail,
-        'fuente'=>$faker->randomElement(['Facebook','Google','Manual'])
+        'fuente'=>$faker->randomElement([1,2,3,4])
     ];
 });
 
