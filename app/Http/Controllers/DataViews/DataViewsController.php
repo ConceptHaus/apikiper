@@ -39,6 +39,7 @@ use App\Events\Historial;
 use App\Events\Event;
 use App\Events\AssignProspecto;
 use App\Modelos\Empresa\EmpresaProspecto;
+use App\Modelos\Role;
 use Mailgun;
 use DB;
 use Mail;
@@ -46,7 +47,7 @@ use Mail;
 
 class DataViewsController extends Controller
 {
-  
+
     public function dashboardPorFecha($inicio, $fin){
         $auth = $this->guard()->user();  
         //return $inicio.' '.$fin;
@@ -94,10 +95,12 @@ class DataViewsController extends Controller
 
 
     public function prospectos(){
-
-
+        $users_with_permission= User::getUsersWithPermission('prospectos.read.all2'); 
+        print_r($users_with_permission);
+        $permisos = getAuthenticatedUserPermissions();
+        
         $total_prospectos = Prospecto::all()->count();
-
+        
         $nocontactados_prospectos = DB::table('prospectos')
                                     ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
                                     ->wherenull('prospectos.deleted_at')
@@ -182,7 +185,7 @@ class DataViewsController extends Controller
                     ->where('etiquetas.nombre','like','%napoles%')
                     ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
         }
-        else if($auth->is_admin){
+        else if(in_array(PROSPECTOS_LEER_TODOS, $permisos)){
                 $prospectos = Prospecto::with('detalle_prospecto')
                                 ->with('colaborador_prospecto.colaborador.detalle')
                                 ->with('fuente')
@@ -255,8 +258,10 @@ class DataViewsController extends Controller
             ],200);
     }
     
-    
     public function prospectosstatus($status){
+        
+        $permisos = getAuthenticatedUserPermissions();
+        
         $auth = $this->guard()->user();
         $prospectos_status = CatStatusProspecto::get();
         $colaboradores = User::all();
@@ -307,7 +312,7 @@ class DataViewsController extends Controller
                         ->groupBy('prospectos.id_prospecto')
                         ->get();
         }
-        else if($auth->is_admin){
+        else if(in_array(PROSPECTOS_LEER_TODOS, $permisos)){
             
             $prospectos = Prospecto::with('detalle_prospecto')
                                 ->with('colaborador_prospecto.colaborador.detalle')
@@ -374,6 +379,7 @@ class DataViewsController extends Controller
             ]
             ],200);
     }
+    
     public function oportunidadesByUser($id){
         $oportunidades_total = DB::table('oportunidades')
                             ->whereNull('oportunidades.deleted_at')
@@ -504,7 +510,6 @@ class DataViewsController extends Controller
             ]
             ],200);
     }
-
 
     public function mis_oportunidades_status($status){
 
@@ -1276,7 +1281,7 @@ class DataViewsController extends Controller
               ]
   
               ],200);
-      }
+    }
 
     public function estadisticas_finanzas_semanal(){
       $inicioSemana = Carbon::now()->startOfWeek();
@@ -1511,6 +1516,7 @@ class DataViewsController extends Controller
             'error'=>false
             ],200);
     }
+
     public function serviciosAjustes(){
         $servicios = DB::table('cat_servicios')
         // ->where('status', 1)

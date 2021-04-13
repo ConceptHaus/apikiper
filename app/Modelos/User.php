@@ -41,7 +41,9 @@ class User extends Authenticatable implements JWTSubject
         'password', 'remember_token'
     ];
 
-     protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at'];
+
+    public $incrementing = false;
 
     public function detalle(){
         return $this->hasOne('App\Modelos\Colaborador\DetalleColaborador','id_colaborador','id');
@@ -124,5 +126,19 @@ class User extends Authenticatable implements JWTSubject
     public function role()
     {
         return $this->hasOne('App\Modelos\Role', 'id', 'role_id');
+    }
+
+    public static function getUsersWithPermission($permission_string)
+    {
+        $users = User::select('users.*', 'roles.acciones')
+                ->where('roles.acciones', 'like', '%'.$permission_string.'%')
+                ->join('roles', 'users.role_id', '=', 'roles.id')
+                ->get()->toArray();
+             
+                
+      //return User::find("f79cfdbf-faae-470f-9a76-6a77e91f220c")->role()->where('role.actions', 'like', '%'.$permission_string.'%')->first();
+                return $users;
+
+
     }
 }

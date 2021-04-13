@@ -128,8 +128,8 @@ class UserController extends Controller
                         ->select('url_foto')
                         ->first();
         //$permisos[] = Auth::user()->role->acciones;
-        $permisos[] = Auth::user()->role;
-
+        $permisos = Auth::user()->role->acciones;
+        
         return response()->json([
             'error'=>false,
             'user'=>$this->guard()->user(),

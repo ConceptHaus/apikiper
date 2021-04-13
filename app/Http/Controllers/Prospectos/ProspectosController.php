@@ -251,8 +251,10 @@ class ProspectosController extends Controller
     }
 
     public function getAllProspectos(){
-        $auth = $this->guard()->user();
-        if($auth->is_admin){
+
+        $permisos = getAuthenticatedUserPermissions();
+
+        if(in_array(PROSPECTOS_LEER_TODOS, $permisos)){
             $prospectos = Prospecto::GetAllProspectos();
             $prospectos_total = Prospecto::count();
             $prospectos_sin_contactar = Prospecto::join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
