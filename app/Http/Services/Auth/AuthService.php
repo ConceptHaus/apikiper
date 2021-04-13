@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthService
 {
-    public function getUserAuthInfo($rol){
+    public function getUserAuthInfo(){
         return Auth::guard()->user();
     }
 }
