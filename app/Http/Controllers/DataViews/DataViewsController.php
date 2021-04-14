@@ -39,7 +39,7 @@ use App\Events\Historial;
 use App\Events\Event;
 use App\Events\AssignProspecto;
 use App\Modelos\Empresa\EmpresaProspecto;
-use App\Modelos\Role;
+use App\Http\Enums\Permissions;
 use Mailgun;
 use DB;
 use Mail;
@@ -95,9 +95,8 @@ class DataViewsController extends Controller
 
 
     public function prospectos(){
-        $users_with_permission= User::getUsersWithPermission('prospectos.read.all2'); 
-        print_r($users_with_permission);
-        $permisos = getAuthenticatedUserPermissions();
+        
+        $permisos = User::getAuthenticatedUserPermissions();
         
         $total_prospectos = Prospecto::all()->count();
         
@@ -185,7 +184,7 @@ class DataViewsController extends Controller
                     ->where('etiquetas.nombre','like','%napoles%')
                     ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
         }
-        else if(in_array(PROSPECTOS_LEER_TODOS, $permisos)){
+        else if(in_array(Permissions::PROSPECTOS_READ_ALL, $permisos)){
                 $prospectos = Prospecto::with('detalle_prospecto')
                                 ->with('colaborador_prospecto.colaborador.detalle')
                                 ->with('fuente')
@@ -201,7 +200,7 @@ class DataViewsController extends Controller
                                 ->orderBy('prospectos.created_at','desc')
                                 //->groupBy('prospectos.id_prospecto')
                                 ->get();
-        }else{
+        }else if(in_array(Permissions::PROSPECTOS_READ_OWN, $permisos)){
                 $prospectos = Prospecto::with('detalle_prospecto')
                                 ->with('colaborador_prospecto.colaborador.detalle')
                                 ->with('fuente')
@@ -235,6 +234,11 @@ class DataViewsController extends Controller
                                 ->wherenull('prospectos.deleted_at')
                                 ->wherenull('prospectos.deleted_at')
                                 ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
+        }else{
+            $prospectos                 = [];
+            $total_prospectos           = [];
+            $origen                     = [];
+            $nocontactados_prospectos   = [];    
         }
         
         $colaboradores = User::all();
@@ -312,7 +316,7 @@ class DataViewsController extends Controller
                         ->groupBy('prospectos.id_prospecto')
                         ->get();
         }
-        else if(in_array(PROSPECTOS_LEER_TODOS, $permisos)){
+        else if(in_array(Permissions::PROSPECTOS_READ_ALL, $permisos)){
             
             $prospectos = Prospecto::with('detalle_prospecto')
                                 ->with('colaborador_prospecto.colaborador.detalle')

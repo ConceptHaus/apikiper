@@ -127,8 +127,8 @@ class UserController extends Controller
         $img = FotoColaborador::where('id_colaborador', $this->guard()->user()->id)
                         ->select('url_foto')
                         ->first();
-        //$permisos[] = Auth::user()->role->acciones;
-        $permisos = Auth::user()->role->acciones;
+        $permisos   = array(); 
+        $permisos[] = Auth::user()->role->acciones;
         
         return response()->json([
             'error'=>false,
