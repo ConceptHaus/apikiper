@@ -166,6 +166,7 @@ Route::prefix('/v1/oportunidades')->group(function(){
 
 Route::prefix('/v1/generales')->group(function(){
 Route::get('/prueba', 'Prospectos\ProspectosListController@findProspectos');
+Route::get('/prospectosPrueba/{status}','Prospectos\ProspectosListNotContactedController@findProspectosNotContacted');
 
     Route::get('/industrias', 'DataViews\DataViewsController@getIndustrias');
     Route::middleware(['auth','cors'])->group(function(){

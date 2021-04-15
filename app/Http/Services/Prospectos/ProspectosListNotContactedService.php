@@ -2,8 +2,8 @@
 
 namespace App\Http\Services\Prospectos;
 
-use App\Http\Repositories\Prospectos\ProspectosListRep;
-// use App\Http\DTOs\Datatable\DatatableResponseDTO;
+use App\Http\Repositories\Prospectos\ProspectosListNotContactedRep;
+use App\Http\DTOs\Datatable\DatatableResponseDTO;
 
 class ProspectosListNotContactedService
 {    
@@ -12,7 +12,7 @@ class ProspectosListNotContactedService
         define("POLANCO", 1);
         define("NAPOLES", 2);
         $etiqueta = $rol == POLANCO ? POLANCO : NAPOLES;
-        $object = new ProspectosListRep;
+        $object = new ProspectosListNotContactedRep;
         return $object->findAllProspectosByEtiqueta($etiqueta);
     }
 
@@ -64,10 +64,10 @@ class ProspectosListNotContactedService
         $response = new DatatableResponseDTO();
         $object = new ProspectosListNotContactedRep;
 
-        $catalago_fuentes = $this->catalogo_fuentes();
-        $origen = $this->origen();
+        $catalago_fuentes = $object->catalogo_fuentes();
+        $origen = $object->origen();
 
-        $response->data["prospectos"] = $object->createPageForProspectosNotContactedForAdmin($id, $status);
+        $response->data["prospectos"] = $object->createPageForProspectosNotContactedForColaborador($id, $status);
         $response->data["prospectos_fuente"] = $object->FuentesChecker($catalago_fuentes, $origen);
         $response->data["prospectos_status"] = $object->prospectos_status();
         $response->data["colaboradores"] = $object->colaboradores();

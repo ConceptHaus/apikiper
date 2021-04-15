@@ -3,6 +3,8 @@
 namespace App\Http\Repositories\Prospectos;
 
 use App\Modelos\Prospecto\Prospecto;
+use App\Modelos\Prospecto\CatStatusProspecto;
+
 use Illuminate\Support\Facades\DB;
 
 class ProspectosListNotContactedRep

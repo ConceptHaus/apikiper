@@ -29,12 +29,12 @@ class ProspectosListNotContactedController extends Controller
 
         try{
             if($auth->rol == POLANCO || $auth->rol == NAPOLES){
-                $response = $proListServ->getProspectosNotContactedPageByRol($auth->rol, $status);
+                $response = $proListNContServ->getProspectosNotContactedPageByRol($auth->rol, $status);
     
             }else if($auth->is_admin){
-                $response->data = $proListServ->getProspectosNotContactedPageForAdmin($status);
+                $response->data = $proListNContServ->getProspectosNotContactedPageForAdmin($status);
             }else{
-                $response = $proListServ->getProspectosNotContactedPageForColaborador($auth->id, $status);
+                $response = $proListNContServ->getProspectosNotContactedPageForColaborador($auth->id, $status);
                 return response()->json([$response], 200);
                 $response->recordsTotal = $response->recordsTotal;
             }
