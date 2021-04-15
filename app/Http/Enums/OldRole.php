@@ -1,5 +1,8 @@
 <?php
 namespace App\Http\Enums;
 
-define("POLANCO", 1);
-define("NAPOLES", 2);
+class OldRole
+{
+    const POLANCO = 1;
+    const NAPOLES   = 2;
+}

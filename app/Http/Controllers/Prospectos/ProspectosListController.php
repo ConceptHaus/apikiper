@@ -17,6 +17,9 @@ use App\Http\Services\Prospectos\ProspectosListService;
 
 use App\Http\DTOs\Datatable\DatatableResponseDTO;
 
+use App\Modelos\User;
+use \App\Http\Enums\Permissions;
+
 class ProspectosListController extends Controller
 {   
     // public function prueba(){
@@ -51,23 +54,24 @@ class ProspectosListController extends Controller
     // }
     
     public function findProspectos(){
-        define("POLANCO", 1);
-        define("NAPOLES", 2);
         $auth = new AuthService();
         $auth = $auth->getUserAuthInfo(); 
         $response = new DatatableResponseDTO();
         $proListServ = new ProspectosListService();
 
+        $permisos = User::getAuthenticatedUserPermissions();
         try{
-            if($auth->rol == POLANCO || $auth->rol == NAPOLES){
+            if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
                 $response = $proListServ->getProspectosPageByRol($auth->rol);
     
-            }else if($auth->is_admin){
-                $response->data = $proListServ->getProspectosPageForAdmin();
+
+            }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
+                $response = ProspectosListService::getProspectosPageForAdmin();
+    
+            }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
+                $response->data = ProspectosListService::getAllProspectosPageByColaborador($auth->id);
             }else{
-                $response = $proListServ->getAllProspectosPageByColaborador($auth->id);
-                return response()->json([$response], 200);
-                $response->recordsTotal = $response->recordsTotal;
+                $response = [];    
             }
 
             return response()->json($response, 200);
