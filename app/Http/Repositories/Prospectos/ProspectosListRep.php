@@ -132,6 +132,9 @@ class ProspectosListRep
             ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
             ->join('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
             ->where('users.id', $id_colaborador)
+            ->wherenull('colaborador_prospecto.deleted_at')
+            ->wherenull('prospectos.deleted_at')
+            ->orderBy('prospectos.created_at','desc')
             ->select('prospectos.id_prospecto', 'prospectos.nombre as nombre_prospecto', 'prospectos.apellido', 'prospectos.correo', 'detalle_prospecto.telefono', 'users.nombre', 'prospectos.created_at', 'cat_status_prospecto.status', 'cat_fuentes.id_fuente', 'cat_fuentes.url', 'detalle_prospecto.whatsapp')
             ->get();
 
