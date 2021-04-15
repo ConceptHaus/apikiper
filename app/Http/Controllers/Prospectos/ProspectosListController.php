@@ -7,22 +7,26 @@ use Illuminate\Http\Response;
 
 use App\Http\Enums\OldRole;
 use App\Http\Services\Auth\AuthService;
+use App\Modelos\User;
+use \App\Http\Enums\Permissions;
 
 class ProspectosListController extends Controller
 {   
     public function findProspectos(){
         $auth = AuthService::getUserAuthInfo(); 
         $response = new DatatableResponseDTO();
-
+        $permisos = User::getAuthenticatedUserPermissions();
         try{
             if($auth->rol == OldRole::POLANCO() || $auth->rol == OldRole::NAPOLES()){
                 $response = ProspectosListService::getProspectosPageByRol($auth->rol);
     
-            }else if($auth->is_admin){
+            }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
                 $response = ProspectosListService::getProspectosPageForAdmin();
     
-            }else{
+            }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
                 $response->data = ProspectosListService::getAllProspectosPageByColaborador($auth->id);
+            }else{
+                $response = [];    
             }
 
             return response()->json(json_encode($response), 200);

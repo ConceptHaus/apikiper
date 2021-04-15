@@ -142,7 +142,7 @@ class User extends Authenticatable implements JWTSubject
                                 'users.role_id')
                 ->where('roles.acciones', 'like', '%'.$permission_string.'%')
                 ->join('roles', 'users.role_id', '=', 'roles.id')
-                ->get()->toArray();
+                ->get();
 
         return $users;
     }

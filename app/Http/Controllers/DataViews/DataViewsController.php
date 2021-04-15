@@ -184,7 +184,7 @@ class DataViewsController extends Controller
                     ->where('etiquetas.nombre','like','%napoles%')
                     ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
         }
-        else if(in_array(Permissions::PROSPECTOS_READ_ALL, $permisos)){
+        else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
                 $prospectos = Prospecto::with('detalle_prospecto')
                                 ->with('colaborador_prospecto.colaborador.detalle')
                                 ->with('fuente')
@@ -200,7 +200,7 @@ class DataViewsController extends Controller
                                 ->orderBy('prospectos.created_at','desc')
                                 //->groupBy('prospectos.id_prospecto')
                                 ->get();
-        }else if(in_array(Permissions::PROSPECTOS_READ_OWN, $permisos)){
+        }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
                 $prospectos = Prospecto::with('detalle_prospecto')
                                 ->with('colaborador_prospecto.colaborador.detalle')
                                 ->with('fuente')
@@ -264,7 +264,7 @@ class DataViewsController extends Controller
     
     public function prospectosstatus($status){
         
-        $permisos = getAuthenticatedUserPermissions();
+        $permisos = User::getAuthenticatedUserPermissions();
         
         $auth = $this->guard()->user();
         $prospectos_status = CatStatusProspecto::get();
@@ -316,7 +316,7 @@ class DataViewsController extends Controller
                         ->groupBy('prospectos.id_prospecto')
                         ->get();
         }
-        else if(in_array(Permissions::PROSPECTOS_READ_ALL, $permisos)){
+        else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
             
             $prospectos = Prospecto::with('detalle_prospecto')
                                 ->with('colaborador_prospecto.colaborador.detalle')
@@ -335,8 +335,7 @@ class DataViewsController extends Controller
                                 ->orderBy('prospectos.created_at','desc')
                                 //->groupBy('prospectos.id_prospecto')
                                 ->get();
-        }
-        else{
+        }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
             $prospectos = DB::table('prospectos')
                         ->join('detalle_prospecto','detalle_prospecto.id_prospecto','prospectos.id_prospecto')
                         ->join('status_prospecto','status_prospecto.id_prospecto','prospectos.id_prospecto')
@@ -355,6 +354,11 @@ class DataViewsController extends Controller
                         ->orderBy('status_prospecto.updated_at','desc')
                         ->groupBy('prospectos.id_prospecto')
                         ->get();
+        }else{
+            $prospectos                 = [];
+            $total_prospectos           = [];
+            $origen                     = [];
+            $nocontactados_prospectos   = [];    
         }
         
         foreach($prospectos as $p){
