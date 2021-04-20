@@ -17,6 +17,7 @@ class CreateRolesTable extends Migration
             $table->increments('id');
             $table->string('nombre');
             $table->json('acciones')->nullable();
+            $table->integer('is_visible')->default(1);
             $table->timestamps();
         });
     }

@@ -30,11 +30,23 @@ class RolesTableSeeder extends Seeder
         $new_rol                = new Role();
         $new_rol->nombre        = "Cuentas Kiper";
         //$new_rol->acciones      = "";
+        $new_rol->is_visible    = 0;
         $new_rol->save();
 
         $new_rol                = new Role();
         $new_rol->nombre        = "Administrador Kiper";
-        //$new_rol->descripcion   = "";
+        $new_rol->acciones      = '["prospectos.read.all",
+                                    "fe.sidebar.operaciones.generales",
+                                    "fe.sidebar.estadisticas",
+                                    "fe.sidebar.newsletter",
+                                    "fe.sidebar.ajustes.integraciones",
+                                    "fe.sidebar.ajustes.colaboradores",
+                                    "fe.sidebar.ajustes.servicios",
+                                    "fe.sidebar.ajustes.etiquetas",
+                                    "fe.sidebar.ajustes.estatus",
+                                    "fe.colaboradores.nuevo"
+                                    ]';
+        $new_rol->is_visible    = 0;
         $new_rol->save();
     }
 }

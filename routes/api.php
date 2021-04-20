@@ -254,3 +254,10 @@ Route::prefix('/v1/mailing')->group(function(){
         Route::delete('/{id}','Mailing\MailingController@deleteMailing');
     });
 });
+
+
+Route::prefix('/v1/roles')->group(function(){
+    Route::middleware(['auth','cors'])->group(function(){
+        Route::get('/','Roles\RolesController@getAll');
+    });
+});
