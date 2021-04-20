@@ -60,8 +60,8 @@ class NewAssigmentListener
                         // Miércoles 14 Marzo 12:00 AM-3:00 PM
                         // Lunes 19 Marzo 12:00 AM-3:00 PM
                         // Viernes 23 Marzo 15:00 PM-12:00 AM
-                        [Carbon::create(2021,4,14,01,0,1),Carbon::create(2021,4,14,15,0,0)],
-                        [Carbon::create(2021,4,19,01,0,1),Carbon::create(2021,4,19,15,0,0)],
+                        [Carbon::create(2021,4,14,00,0,1),Carbon::create(2021,4,14,15,0,0)],
+                        [Carbon::create(2021,4,19,00,0,1),Carbon::create(2021,4,19,15,0,0)],
                         [Carbon::create(2021,4,23,15,0,1),Carbon::create(2021,4,23,24,0,0)]
                     ]
                     
@@ -85,8 +85,8 @@ class NewAssigmentListener
                         // Martes 20 abril 12:00 AM-3:00 PM
                         // Sábado 24 abril 12:00 AM-3:00 PM
                         [Carbon::create(2021,4,14,15,0,1),Carbon::create(2021,4,14,24,0,0)],
-                        [Carbon::create(2021,4,20,01,0,1),Carbon::create(2021,4,20,15,0,0)],
-                        [Carbon::create(2021,4,24,01,0,1),Carbon::create(2021,4,24,15,0,0)]                  
+                        [Carbon::create(2021,4,20,00,0,1),Carbon::create(2021,4,20,15,0,0)],
+                        [Carbon::create(2021,4,24,00,0,1),Carbon::create(2021,4,24,15,0,0)]                  
                     ]       
                 ],
                 'ejecutivo_3'=>[
@@ -98,9 +98,9 @@ class NewAssigmentListener
                         // Jueves 15 abril 00:00 PM - 15:00 PM
                         // Martes 20 abril 15:00 PM - 24:00 AM
                         // Viernes 23 abril 00:00 PM - 15:00 AM
-                        [Carbon::create(2021,4,15,01,0,1),Carbon::create(2021,4,15,15,0,0)],
+                        [Carbon::create(2021,4,15,00,0,1),Carbon::create(2021,4,15,15,0,0)],
                         [Carbon::create(2021,4,20,15,0,1),Carbon::create(2021,4,20,24,0,0)],
-                        [Carbon::create(2021,4,23,01,0,1),Carbon::create(2021,4,23,15,0,0)]                           
+                        [Carbon::create(2021,4,23,00,0,1),Carbon::create(2021,4,23,15,0,0)]                           
                     ]       
                 ], 
                 'ejecutivo_4'=>[
@@ -112,7 +112,7 @@ class NewAssigmentListener
                         // Sábado 17 abril 00:00 PM - 15:00 PM
                         // Jueves 22 abril 15:00 PM - 24:00 AM
                         [Carbon::create(2021,4,12,15,0,1),Carbon::create(2021,4,12,24,0,0)],
-                        [Carbon::create(2021,4,17,01,0,1),Carbon::create(2021,4,17,15,0,0)],
+                        [Carbon::create(2021,4,17,00,0,1),Carbon::create(2021,4,17,15,0,0)],
                         [Carbon::create(2021,4,22,15,0,1),Carbon::create(2021,4,22,24,0,0)]
                     ]       
                 ],
@@ -136,7 +136,7 @@ class NewAssigmentListener
                         // Viernes 16 abril 01:00 AM - 15:00 PM
                         // Miércoles 21 abril 15:00 PM - 24:00 AM
                         [Carbon::create(2021,4,13,15,0,1),Carbon::create(2021,4,13,24,0,0)],
-                        [Carbon::create(2021,4,16,01,0,1),Carbon::create(2021,4,16,15,0,0)],
+                        [Carbon::create(2021,4,16,00,0,1),Carbon::create(2021,4,16,15,0,0)],
                         [Carbon::create(2021,4,21,15,0,1),Carbon::create(2021,4,21,24,0,0)]
                     ]       
                 ],
@@ -149,10 +149,10 @@ class NewAssigmentListener
                         // Viernes 16 abril 01:00 AM - 15:00 PM
                         // Lunes 19 abril 15:00 PM - 24:00 AM
                         // Lunes 26 abril 01:00 AM - 15:00 PM
-                        [Carbon::create(2021,4,13,01,0,1),Carbon::create(2021,4,13,15,0,0)],
-                        [Carbon::create(2021,4,16,01,0,1),Carbon::create(2021,4,16,15,0,0)],
+                        [Carbon::create(2021,4,13,00,0,1),Carbon::create(2021,4,13,15,0,0)],
+                        [Carbon::create(2021,4,16,00,0,1),Carbon::create(2021,4,16,15,0,0)],
                         [Carbon::create(2021,4,19,15,0,1),Carbon::create(2021,4,19,24,0,0)],
-                        [Carbon::create(2021,4,26,01,0,1),Carbon::create(2021,4,26,15,0,0)]
+                        [Carbon::create(2021,4,26,00,0,1),Carbon::create(2021,4,26,15,0,0)]
                     ]       
                 ],
                 'ejecutivo_8'=>[
@@ -162,7 +162,7 @@ class NewAssigmentListener
                         // Lunes 12 abril 01:00 AM - 15:00 PM
                         // Viernes 16 abril 15:00 PM - 24:00 AM
                         // Miércoles 21 abril 15:00 PM - 24:00 AM
-                        [Carbon::create(2021,4,12,01,0,1),Carbon::create(2021,4,12,15,0,0)],
+                        [Carbon::create(2021,4,12,00,0,1),Carbon::create(2021,4,12,15,0,0)],
                         [Carbon::create(2021,4,16,15,0,1),Carbon::create(2021,4,16,24,0,0)],
                         [Carbon::create(2021,4,21,15,0,1),Carbon::create(2021,4,21,24,0,0)]
                     ]       
