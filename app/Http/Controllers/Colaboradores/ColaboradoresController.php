@@ -21,7 +21,7 @@ use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use RuntimeException;
 use App\Events\Historial;
 use App\Events\Event;
-
+use App\Http\Services\Colaboradores\ColaboradoresService;
 
 use DB;
 use Mail;
@@ -29,30 +29,19 @@ use Mailgun;
 
 class ColaboradoresController extends Controller
 {
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'nombre' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'apellido'=> 'required|string|max:255',
-            // 'is_admin'=> 'required|max:255',
-            'role_id' => 'required|integer',
-            'puesto' => 'required|string|max:255',
-            'telefono'=> 'required|string|max:255',
-            //'fecha_nacimiento'=> 'required|string|max:255'
-        ]);
-    }
-    protected function validatorUpdate(array $data)
-    {
-        return Validator::make($data, [
-            'nombre' => 'required|string|max:255',
-            'apellido'=> 'required|string|max:255',
-            // 'is_admin'=> 'required|boolean|max:255',
-            'puesto' => 'required|string|max:255',
-            'telefono'=> 'required|string|max:255',
-            //'fecha_nacimiento'=> 'required|string|max:255'
-        ]);
-    }
+    // protected function validator(array $data)
+    // {
+    //     return Validator::make($data, [
+    //         'nombre' => 'required|string|max:255',
+    //         'email' => 'required|string|email|max:255|unique:users',
+    //         'apellido'=> 'required|string|max:255',
+    //         // 'is_admin'=> 'required|max:255',
+    //         'role_id' => 'required|integer',
+    //         'puesto' => 'required|string|max:255',
+    //         'telefono'=> 'required|string|max:255',
+    //         //'fecha_nacimiento'=> 'required|string|max:255'
+    //     ]);
+    // }
 
     protected function validatorDelete(array $data)
     {
@@ -63,78 +52,106 @@ class ColaboradoresController extends Controller
     }
 
     public function registerColaborador(Request $request){
-            $validator = $this->validator($request->all());
+            // $validator = $this->validator($request->all());
+            $validator = ColaboradoresService:: validator($request->all());
             $auth = $this->guard()->user();
+            
             if($validator->passes()){
-                 try{
 
-                    DB::beginTransaction();
-                    $colaborador = new User;
-                    $colaborador->nombre = $request->nombre;
-                    $colaborador->apellido = $request->apellido;
-                    $colaborador->email = $request->email;
-                    $pass = str_random(8);
-                    $colaborador->password = bcrypt($pass);
-                    $colaborador->role_id = $request->role_id;
-                    $colaborador->status = 1;
+                $new_colaborador    = array('nombre'            => $request->nombre,
+                                            'apellido'          => $request->apellido,
+                                            'email'             => $request->email,
+                                            'role_id'           => $request->role_id,
+                                            'puesto'            => $request->puesto,
+                                            'telefono'          => $request->telefono,
+                                            'celular'           => $request->celular,
+                                            'fecha_nacimiento'  => $request->fecha_nacimiento );
 
-                    $colaborador_ext = new DetalleColaborador;
-                    $colaborador_ext->puesto = $request->puesto;
-                    $colaborador_ext->telefono = $request->telefono;
-                    $colaborador_ext->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular),10);
-                    $colaborador_ext->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
-                    $colaborador_ext->fecha_nacimiento = $request->fecha_nacimiento;
-                    $colaborador->save();
-                    $colaborador->detalle()->save($colaborador_ext);
+                $colaborador = ColaboradoresService::createColaborador($new_colaborador, $auth);
 
-                    $foto_colaborador = new FotoColaborador;
-                    if(!isset($request->image))
-                        $foto_colaborador->url_foto = 'https://kiper-bucket.s3.us-east-2.amazonaws.com/generales/kiper-default.svg';
-                    else
-                    {
-                        $foto_colaborador->url_foto = $this->uploadFilesS3($request->image, $request->image->getClientOriginalName());
-                    }
+                if(!$colaborador['error']){
+                    return response()->json([
+                                'message'   => $colaborador['message'],
+                                'error'     => $colaborador['error'],
+                                'data'      => $colaborador['data']
+                            ],200);
+                }else{
+                    return response()->json([
+                                'message'   => $colaborador['message'],
+                                'error'     => $colaborador['error'],
+                            ],400);    
+                } 
 
-                    $colaborador->foto()->save($foto_colaborador);
+                // try{
 
-                    $arrayColaborador = $colaborador->toArray();
-                    $arrayColaborador['pass'] = $pass;
-                    $arrayColaborador['link'] = env('URL_FRONT');
-                    $arrayColaborador['dominio'] = env('DOMINIO');
+                //     DB::beginTransaction();
+                //     $colaborador = new User;
+                //     $colaborador->nombre = $request->nombre;
+                //     $colaborador->apellido = $request->apellido;
+                //     $colaborador->email = $request->email;
+                //     $pass = str_random(8);
+                //     $colaborador->password = bcrypt($pass);
+                //     $colaborador->role_id = $request->role_id;
 
-                    Mailgun::send('auth.emails.register',$arrayColaborador,function ($contacto) use ($arrayColaborador){
-                       // $message->tag('myTag');
-                       $contacto->from('contacto@kiper.app', 'Kiper');
-                       // $message->testmode(true);
-                       $contacto->subject('Termina tu registro en Kiper');
-                       $contacto->to($arrayColaborador['email'],$arrayColaborador['nombre']);
-                   });
+                //     $colaborador->status = 1;
 
-                    DB::commit();
-                    //Historial
-                        $actividad = activity('colaborador')
-                                ->performedOn($colaborador)
-                                ->causedBy($auth)
-                                ->withProperties(['accion'=>'Agregó','color'=>'#39ce5f'])
-                                ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion un nuevo colaborador.</span>');
+                //     $colaborador_ext = new DetalleColaborador;
+                //     $colaborador_ext->puesto = $request->puesto;
+                //     $colaborador_ext->telefono = $request->telefono;
+                //     $colaborador_ext->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular),10);
+                //     $colaborador_ext->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
+                //     $colaborador_ext->fecha_nacimiento = $request->fecha_nacimiento;
+                //     $colaborador->save();
+                //     $colaborador->detalle()->save($colaborador_ext);
+
+                //     $foto_colaborador = new FotoColaborador;
+                //     if(!isset($request->image))
+                //         $foto_colaborador->url_foto = 'https://kiper-bucket.s3.us-east-2.amazonaws.com/generales/kiper-default.svg';
+                //     else
+                //     {
+                //         $foto_colaborador->url_foto = $this->uploadFilesS3($request->image, $request->image->getClientOriginalName());
+                //     }
+
+                //     $colaborador->foto()->save($foto_colaborador);
+
+                //     $arrayColaborador = $colaborador->toArray();
+                //     $arrayColaborador['pass'] = $pass;
+                //     $arrayColaborador['link'] = env('URL_FRONT');
+                //     $arrayColaborador['dominio'] = env('DOMINIO');
+
+                //     Mailgun::send('auth.emails.register',$arrayColaborador,function ($contacto) use ($arrayColaborador){
+                //        // $message->tag('myTag');
+                //        $contacto->from('contacto@kiper.app', 'Kiper');
+                //        // $message->testmode(true);
+                //        $contacto->subject('Termina tu registro en Kiper');
+                //        $contacto->to($arrayColaborador['email'],$arrayColaborador['nombre']);
+                //    });
+
+                //     DB::commit();
+                //     //Historial
+                //         $actividad = activity('colaborador')
+                //                 ->performedOn($colaborador)
+                //                 ->causedBy($auth)
+                //                 ->withProperties(['accion'=>'Agregó','color'=>'#39ce5f'])
+                //                 ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion un nuevo colaborador.</span>');
                                 
-                        event( new Historial($actividad));
+                //         event( new Historial($actividad));
 
 
-                    return response()->json([
-                        'message'=>'Registro Correcto',
-                        'error'=>false,
-                        'data'=> $this->transformColaboradorToJson($colaborador,$colaborador_ext)
-                    ],200);
+                //     return response()->json([
+                //         'message'=>'Registro Correcto',
+                //         'error'=>false,
+                //         'data'=> $this->transformColaboradorToJson($colaborador,$colaborador_ext)
+                //     ],200);
 
-                }catch(Excpetion $e){
-                    DB::rollBack();
-                    Bugsnag::notifyException(new RuntimeException("No se pudo agregar un colaborador"));
-                    return response()->json([
-                        'message'=>$e,
-                        'error'=>true
-                    ],400);
-                }
+                // }catch(Excpetion $e){
+                //     DB::rollBack();
+                //     Bugsnag::notifyException(new RuntimeException("No se pudo agregar un colaborador"));
+                //     return response()->json([
+                //         'message'=>$e,
+                //         'error'=>true
+                //     ],400);
+                // }
             }
             $errores = $validator->errors()->toArray();
 
@@ -270,63 +287,46 @@ class ColaboradoresController extends Controller
         }
     }
 
-    public function updateColaborador(Request $request){
-        $auth = $this->guard()->user();
-        $validator = $this->validatorUpdate($request->all());
+    public function updateColaborador(Request $request)
+    {
+        $auth       = $this->guard()->user();
+        $validator  = ColaboradoresService::validatorUpdate($request->all());
 
         if($validator->passes()){
 
-          $id_colaborador = $request->id;
-          $colaborador = User::where('id',$id_colaborador)->first();
-          $colaborador_ext = DetalleColaborador::where('id_colaborador',$id_colaborador)->first();
+            $id_colaborador     = $request->id;
+            $colaborador        = ColaboradoresService::getColaborador($id_colaborador);
+            $colaborador_ext    = ColaboradoresService::getColaboradorExt($id_colaborador);
+            $colaborador_info   = array('id'                => $request->id,
+                                        'nombre'            => $request->nombre,
+                                        'apellido'          => $request->apellido,
+                                        'role_id'           => $request->role_id,
+                                        'puesto'            => $request->puesto,
+                                        'telefono'          => $request->telefono,
+                                        'celular'           => $request->celular,
+                                        'fecha_nacimiento'  => $request->fecha_nacimiento );
+            $update_colaborador = ColaboradoresService::updateColaborador($colaborador_info, $colaborador,  $colaborador_ext, $auth);
 
-            try{
-            DB::beginTransaction();
-            $colaborador->nombre = $request->nombre;
-            $colaborador->apellido = $request->apellido;
-            $colaborador_ext->puesto = $request->puesto;
-            $colaborador_ext->telefono = $request->telefono;
-            $colaborador_ext->celular = $request->celular;
-            $colaborador_ext->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
-            $colaborador_ext->fecha_nacimiento = $request->fecha_nacimiento;
-            $colaborador->save();
-            $colaborador->detalle()->save($colaborador_ext);
-            $colaboradorRes = User::GetOneUser($id_colaborador);
-            DB::commit();
-
-            //Historial
-                $actividad = activity()
-                    ->performedOn($colaborador)
-                    ->causedBy($auth)
-                    ->withProperties(['accion'=>'Editó','color'=>'#ffcf4c'])
-                    ->useLog('colaborador')
-                    ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion el perfil de un colaborador.</span>');
-                
-                event( new Historial($actividad));
-
-            return response()->json([
-                'message'=>'Correcto',
-                'error'=>false,
-                'data'=>$colaboradorRes
-                ]);
-
-            }catch(Exception $e){
-                DB::rollBack();
-                Bugsnag::notifyException(new RuntimeException("El usuario no pudo editar el perfil de un colaborador"));
+            if(!$update_colaborador['error']){
                 return response()->json([
-                    'message'=>$e,
-                    'error'=>true
+                    'message'   =>'Correcto',
+                    'error'     =>$update_colaborador['error'],
+                    'data'      =>$update_colaborador['data']
+                ]);
+            }else{
+                return response()->json([
+                    'message'   =>$update_colaborador['message'],
+                    'error'     =>$update_colaborador['error']
                 ],400);
             }
         }
 
         $errores = $validator->errors()->toArray();
 
-            return response()->json([
-                'error'=>true,
-                'messages'=> $errores
-            ],400);
-
+        return response()->json([
+            'error'=>true,
+            'messages'=> $errores
+        ],400);
     }
 
     public function deleteColaborador(Request $request){
@@ -413,16 +413,16 @@ class ColaboradoresController extends Controller
 
     }
 
-    public function transformColaboradorToJson(User $colaborador, DetalleColaborador $colaborador_ext){
-        return [
-                'nombre' => $colaborador->nombre,
-                'apellido'=>$colaborador->apellido,
-                'email'=> $colaborador->email,
-                'puesto'=> $colaborador_ext->puesto,
-                'telefono'=> $colaborador_ext->telefono,
-                'fecha_nacimiento'=>$colaborador_ext->fecha_nacimiento,
-        ];
-    }
+    // public function transformColaboradorToJson(User $colaborador, DetalleColaborador $colaborador_ext){
+    //     return [
+    //             'nombre' => $colaborador->nombre,
+    //             'apellido'=>$colaborador->apellido,
+    //             'email'=> $colaborador->email,
+    //             'puesto'=> $colaborador_ext->puesto,
+    //             'telefono'=> $colaborador_ext->telefono,
+    //             'fecha_nacimiento'=>$colaborador_ext->fecha_nacimiento,
+    //     ];
+    // }
 
     public function addFoto(Request $request, $id){
         //return $request->all();
