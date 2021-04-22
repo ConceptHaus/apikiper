@@ -7,6 +7,7 @@ use App\Modelos\Colaborador\DetalleColaborador;
 use App\Modelos\Colaborador\FotoColaborador;
 use App\Events\Historial;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+use Illuminate\Support\Facades\Storage;
 
 use Mailgun;
 use DB;
@@ -92,14 +93,14 @@ class ColaboradoresRep
             $colaborador->save();
             $colaborador->detalle()->save($colaborador_ext);
 
-            // $foto_colaborador = new FotoColaborador;
-            // if(!isset($request->image))
-            //     $foto_colaborador->url_foto = 'https://kiper-bucket.s3.us-east-2.amazonaws.com/generales/kiper-default.svg';
-            // else{
-            //     $foto_colaborador->url_foto =ColaboradoresRep::uploadFilesS3($request->image, $request->image->getClientOriginalName());
-            // }
+            $foto_colaborador = new FotoColaborador;
+            if(!isset($request->image))
+                $foto_colaborador->url_foto = 'https://kiper-bucket.s3.us-east-2.amazonaws.com/generales/kiper-default.svg';
+            else{
+                $foto_colaborador->url_foto =ColaboradoresRep::uploadFilesS3($request->image, $request->image->getClientOriginalName());
+            }
 
-            // $colaborador->foto()->save($foto_colaborador);
+            $colaborador->foto()->save($foto_colaborador);
 
             $arrayColaborador = $colaborador->toArray();
             $arrayColaborador['pass'] = $pass;
@@ -124,13 +125,6 @@ class ColaboradoresRep
                         
                 event( new Historial($actividad));
 
-
-            // return response()->json([
-            //     'message'=>'Registro Correcto',
-            //     'error'=>false,
-            //     'data'=> $this->transformColaboradorToJson($colaborador,$colaborador_ext)
-            // ],200);
-
             $response   = array('message'   => 'Registro Correcto',
                                 'error'     => false,
                                 'data'      => ColaboradoresRep::transformColaboradorToJson($colaborador,$colaborador_ext));
@@ -138,11 +132,7 @@ class ColaboradoresRep
         }catch(Excpetion $e){
             DB::rollBack();
             Bugsnag::notifyException(new RuntimeException("No se pudo agregar un colaborador"));
-            // return response()->json([
-            //     'message'=>$e,
-            //     'error'=>true
-            // ],400);
-
+            
             $response   = array('message'   => $e,
                                 'error'     => true);
         }

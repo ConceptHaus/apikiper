@@ -29,20 +29,7 @@ use Mailgun;
 
 class ColaboradoresController extends Controller
 {
-    // protected function validator(array $data)
-    // {
-    //     return Validator::make($data, [
-    //         'nombre' => 'required|string|max:255',
-    //         'email' => 'required|string|email|max:255|unique:users',
-    //         'apellido'=> 'required|string|max:255',
-    //         // 'is_admin'=> 'required|max:255',
-    //         'role_id' => 'required|integer',
-    //         'puesto' => 'required|string|max:255',
-    //         'telefono'=> 'required|string|max:255',
-    //         //'fecha_nacimiento'=> 'required|string|max:255'
-    //     ]);
-    // }
-
+    
     protected function validatorDelete(array $data)
     {
         return Validator::make($data, [
@@ -52,12 +39,10 @@ class ColaboradoresController extends Controller
     }
 
     public function registerColaborador(Request $request){
-            // $validator = $this->validator($request->all());
             $validator = ColaboradoresService:: validator($request->all());
             $auth = $this->guard()->user();
             
             if($validator->passes()){
-
                 $new_colaborador    = array('nombre'            => $request->nombre,
                                             'apellido'          => $request->apellido,
                                             'email'             => $request->email,
@@ -70,6 +55,7 @@ class ColaboradoresController extends Controller
                 $colaborador = ColaboradoresService::createColaborador($new_colaborador, $auth);
 
                 if(!$colaborador['error']){
+                    
                     return response()->json([
                                 'message'   => $colaborador['message'],
                                 'error'     => $colaborador['error'],
@@ -80,78 +66,7 @@ class ColaboradoresController extends Controller
                                 'message'   => $colaborador['message'],
                                 'error'     => $colaborador['error'],
                             ],400);    
-                } 
-
-                // try{
-
-                //     DB::beginTransaction();
-                //     $colaborador = new User;
-                //     $colaborador->nombre = $request->nombre;
-                //     $colaborador->apellido = $request->apellido;
-                //     $colaborador->email = $request->email;
-                //     $pass = str_random(8);
-                //     $colaborador->password = bcrypt($pass);
-                //     $colaborador->role_id = $request->role_id;
-
-                //     $colaborador->status = 1;
-
-                //     $colaborador_ext = new DetalleColaborador;
-                //     $colaborador_ext->puesto = $request->puesto;
-                //     $colaborador_ext->telefono = $request->telefono;
-                //     $colaborador_ext->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular),10);
-                //     $colaborador_ext->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
-                //     $colaborador_ext->fecha_nacimiento = $request->fecha_nacimiento;
-                //     $colaborador->save();
-                //     $colaborador->detalle()->save($colaborador_ext);
-
-                //     $foto_colaborador = new FotoColaborador;
-                //     if(!isset($request->image))
-                //         $foto_colaborador->url_foto = 'https://kiper-bucket.s3.us-east-2.amazonaws.com/generales/kiper-default.svg';
-                //     else
-                //     {
-                //         $foto_colaborador->url_foto = $this->uploadFilesS3($request->image, $request->image->getClientOriginalName());
-                //     }
-
-                //     $colaborador->foto()->save($foto_colaborador);
-
-                //     $arrayColaborador = $colaborador->toArray();
-                //     $arrayColaborador['pass'] = $pass;
-                //     $arrayColaborador['link'] = env('URL_FRONT');
-                //     $arrayColaborador['dominio'] = env('DOMINIO');
-
-                //     Mailgun::send('auth.emails.register',$arrayColaborador,function ($contacto) use ($arrayColaborador){
-                //        // $message->tag('myTag');
-                //        $contacto->from('contacto@kiper.app', 'Kiper');
-                //        // $message->testmode(true);
-                //        $contacto->subject('Termina tu registro en Kiper');
-                //        $contacto->to($arrayColaborador['email'],$arrayColaborador['nombre']);
-                //    });
-
-                //     DB::commit();
-                //     //Historial
-                //         $actividad = activity('colaborador')
-                //                 ->performedOn($colaborador)
-                //                 ->causedBy($auth)
-                //                 ->withProperties(['accion'=>'Agregó','color'=>'#39ce5f'])
-                //                 ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion un nuevo colaborador.</span>');
-                                
-                //         event( new Historial($actividad));
-
-
-                //     return response()->json([
-                //         'message'=>'Registro Correcto',
-                //         'error'=>false,
-                //         'data'=> $this->transformColaboradorToJson($colaborador,$colaborador_ext)
-                //     ],200);
-
-                // }catch(Excpetion $e){
-                //     DB::rollBack();
-                //     Bugsnag::notifyException(new RuntimeException("No se pudo agregar un colaborador"));
-                //     return response()->json([
-                //         'message'=>$e,
-                //         'error'=>true
-                //     ],400);
-                // }
+                }
             }
             $errores = $validator->errors()->toArray();
 
@@ -159,7 +74,6 @@ class ColaboradoresController extends Controller
                 'error'=>true,
                 'messages'=> $errores
             ],400);
-
     }
 
     public function getAllColaboradores(){
