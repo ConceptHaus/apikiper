@@ -9,88 +9,213 @@ use Illuminate\Support\Facades\DB;
 
 class ProspectosListRep
 {
-    public function createPageForProspectosForRol($rol){
+    public function createPageForProspectosForRol($id_colaborador, $rol, $paginacion){
+        $search = $paginacion->search;
+        $orderBy = ProspectosListRep::getOrderBy($paginacion->nColumn);
+
         if ($rol == 1) {
-            return Prospecto::with('detalle_prospecto')
-                        ->with('colaborador_prospecto.colaborador.detalle')
-                        ->with('fuente')
-                        ->with('status_prospecto.status')
-                        ->with('prospectos_empresas')
-                        ->with('prospectos_empresas.empresas')
-                        ->with('etiquetas_prospecto')
-                        ->leftjoin('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
-                        ->leftjoin('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
-                        ->where('etiquetas.nombre','like','%polanco%')
-                        ->groupby('prospectos.id_prospecto')
-                        ->orderBy('prospectos.created_at','desc')
-                        ->select('*','prospectos.created_at','prospectos.nombre','etiquetas.nombre AS nombre_etiqueta')
-                        ->get();
+            return DB::table('prospectos')
+            ->join('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->join('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
+            ->join('status_prospecto', 'status_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
+            ->join('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
+            ->join('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
+            ->wherenull('prospectos.deleted_at')
+            ->where('etiquetas.nombre','like','%polanco%')
+            ->where('users.id', '=', $id_colaborador)
+            ->where(function ($query) use ($search) {
+                $query->orWhere('prospectos.nombre', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.apellido', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.correo', 'like', '%'.$search.'%')
+                        ->orWhere('detalle_prospecto.telefono', 'like', '%'.$search.'%')
+                        ->orWhere('users.nombre', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.created_at', 'like', '%'.$search.'%')
+                        ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
+                        ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%');
+            })
+            ->select(
+                'prospectos.id_prospecto', 
+                DB::raw('CONCAT(prospectos.nombre, " ", prospectos.apellido) AS nombre_prospecto'), 
+                'prospectos.correo', 
+                'detalle_prospecto.telefono', 
+                'users.nombre', 
+                'prospectos.created_at', 
+                'cat_status_prospecto.status', 
+                'cat_fuentes.nombre as fuente', 
+                'cat_fuentes.url', 
+                'detalle_prospecto.whatsapp'
+            )
+            ->groupby('prospectos.id_prospecto')
+            ->orderBy($orderBy, $paginacion->order)
+            ->paginate($paginacion->length, ['*'], null, $paginacion->start);
+
         } else if($rol == 2){
-            return  Prospecto::with('detalle_prospecto')
-                        ->with('colaborador_prospecto.colaborador.detalle')
-                        ->with('fuente')
-                        ->with('prospectos_empresas')
-                        ->with('prospectos_empresas.empresas')
-                        ->with('status_prospecto.status')
-                        ->with('etiquetas_prospecto')
-                        ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
-                        ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
-                        ->where('etiquetas.nombre','like','%napoles%')
-                        ->select('*','prospectos.created_at','prospectos.nombre','etiquetas.nombre AS nombre_etiqueta')
-                        ->orderBy('prospectos.created_at','desc')
-                        ->groupby('prospectos.id_prospecto')
-                        ->get();
+            return DB::table('prospectos')
+            ->join('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->join('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
+            ->join('status_prospecto', 'status_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
+            ->join('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
+            ->join('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
+            ->wherenull('prospectos.deleted_at')
+            ->where('etiquetas.nombre','like','%napoles%')
+            ->where('users.id', '=', $id_colaborador)
+            ->where(function ($query) use ($search) {
+                $query->orWhere('prospectos.nombre', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.apellido', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.correo', 'like', '%'.$search.'%')
+                        ->orWhere('detalle_prospecto.telefono', 'like', '%'.$search.'%')
+                        ->orWhere('users.nombre', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.created_at', 'like', '%'.$search.'%')
+                        ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
+                        ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%');
+            })
+            ->select(
+                'prospectos.id_prospecto', 
+                DB::raw('CONCAT(prospectos.nombre, " ", prospectos.apellido) AS nombre_prospecto'), 
+                'prospectos.correo', 
+                'detalle_prospecto.telefono', 
+                'users.nombre', 
+                'prospectos.created_at', 
+                'cat_status_prospecto.status', 
+                'cat_fuentes.nombre as fuente', 
+                'cat_fuentes.url', 
+                'detalle_prospecto.whatsapp'
+            )
+            ->groupby('prospectos.id_prospecto')
+            ->orderBy($orderBy, $paginacion->order)
+            ->paginate($paginacion->length, ['*'], null, $paginacion->start);
         } else {
             return "";
         }
         
     }
 
-    public function getProspectosNotContactedCountByRol($rol){
+    public function countProspectosForRol($id_colaborador, $rol){
+
         if ($rol == 1) {
             return DB::table('prospectos')
-                        ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
-                        ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
-                        ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
-                        ->wherenull('prospectos.deleted_at')
-                        ->where('etiquetas.nombre','like','%polanco%')
-                        ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
+            ->join('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->join('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
+            ->join('status_prospecto', 'status_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
+            ->join('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
+            ->join('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
+            ->wherenull('prospectos.deleted_at')
+            ->where('etiquetas.nombre','like','%polanco%')
+            ->where('users.id', '=', $id_colaborador)
+            ->select(
+                'prospectos.id_prospecto', 
+                DB::raw('CONCAT(prospectos.nombre, " ", prospectos.apellido) AS nombre_prospecto'), 
+                'prospectos.correo', 
+                'detalle_prospecto.telefono', 
+                'users.nombre', 
+                'prospectos.created_at', 
+                'cat_status_prospecto.status', 
+                'cat_fuentes.nombre as fuente', 
+                'cat_fuentes.url', 
+                'detalle_prospecto.whatsapp'
+            )
+            ->count();
 
-        } else if ($rol == 2) {
+        } else if($rol == 2){
             return DB::table('prospectos')
-            ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
-            ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
+            ->join('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->join('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
+            ->join('status_prospecto', 'status_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
+            ->join('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
+            ->join('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', '=', 'prospectos.id_prospecto')
             ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
             ->wherenull('prospectos.deleted_at')
             ->where('etiquetas.nombre','like','%napoles%')
-            ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
+            ->where('users.id', '=', $id_colaborador)
+            ->select(
+                'prospectos.id_prospecto', 
+                DB::raw('CONCAT(prospectos.nombre, " ", prospectos.apellido) AS nombre_prospecto'), 
+                'prospectos.correo', 
+                'detalle_prospecto.telefono', 
+                'users.nombre', 
+                'prospectos.created_at', 
+                'cat_status_prospecto.status', 
+                'cat_fuentes.nombre as fuente', 
+                'cat_fuentes.url', 
+                'detalle_prospecto.whatsapp'
+            )
+            ->count();
+        } else {
+            return "";
+        }
+        
+    }
+
+    public function getProspectosNotContactedCountByRol($id_colaborador, $rol){
+        if ($rol == 1) {
+            return DB::table('prospectos')
+                        ->distinct()
+                        ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+                        ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
+                        ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
+                        ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+                        ->wherenull('prospectos.deleted_at')
+                        ->where('colaborador_prospecto.id_colaborador','=', $id_colaborador)
+                        ->where('etiquetas.nombre','like','%polanco%')
+                        ->where('status_prospecto.id_cat_status_prospecto','=',2)
+                        ->count();
+
+        } else if ($rol == 2) {
+            return DB::table('prospectos')
+                        ->distinct()
+                        ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
+                        ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
+                        ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
+                        ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+                        ->wherenull('prospectos.deleted_at')
+                        ->where('colaborador_prospecto.id_colaborador','=', $id_colaborador)
+                        ->where('etiquetas.nombre','like','%napoles%')
+                        ->where('status_prospecto.id_cat_status_prospecto','=',2)
+                        ->count();
 
         } else {
             return "";
         }
     }
 
-    public function getOrigenByRol($rol){
+    public function getOrigenByRol($id_colaborador, $rol){
         if($rol == 1){
             return DB::table('prospectos')
                 ->distinct()
                 ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                 ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
                 ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
+                ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
                 ->wherenull('prospectos.deleted_at')
+                ->where('colaborador_prospecto.id_colaborador','=', $id_colaborador)
                 ->where('etiquetas.nombre','like','%polanco%')
                 ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status', DB::raw('count(DISTINCT(prospectos.id_prospecto)) as total, cat_fuentes.nombre'))
                 ->groupBy('cat_fuentes.nombre')
                 ->get();
         } else if($rol == 2){
             return DB::table('prospectos')
+                ->distinct()
                 ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                 ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
                 ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
+                ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
                 ->wherenull('prospectos.deleted_at')
+                ->where('colaborador_prospecto.id_colaborador','=', $id_colaborador)
                 ->where('etiquetas.nombre','like','%napoles%')
-                ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(DISTINCT(prospectos.id_prospecto)) as total, cat_fuentes.nombre'))
-                ->groupBy('cat_fuentes.nombre')->get();
+                ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status', DB::raw('count(DISTINCT(prospectos.id_prospecto)) as total, cat_fuentes.nombre'))
+                ->groupBy('cat_fuentes.nombre')
+                ->get();
         } else {
             return "";
         }

@@ -36,7 +36,7 @@ class ProspectosListController extends Controller
         
         try{
             if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
-                $response = $proListServ->getProspectosPageByRol($auth->rol);
+                $response = $proListServ->getProspectosPageByRol($auth->id, $auth->rol, $paginacion);
     
             }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
                 $response = $proListServ->getProspectosPageForAdmin($paginacion);
@@ -58,23 +58,25 @@ class ProspectosListController extends Controller
         }
     }
 
-    public function findCountProspectos(){
+    public function findCountProspectos(Request $request){
         $auth = new AuthService();
         $auth = $auth->getUserAuthInfo(); 
         $response = new DatatableResponseDTO();
         $proListServ = new ProspectosListService();
 
+        $paginacion = $this->findPaginacion($request);
+
         $permisos = User::getAuthenticatedUserPermissions();
 
         try{
-            if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
-                $response = $proListServ->getCountProspectosByRol($auth->rol);
-    
-            }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
+            if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
                 $response = $proListServ->getCountProspectosForAdmin();
     
+            }else if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
+                $response = $proListServ->getCountProspectosByRol($auth->id, $auth->rol, $paginacion);
+    
             }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
-                $response = $proListServ->getCountAllProspectosByColaborador($auth->id);
+                $response = $proListServ->getCountAllProspectosByColaborador($auth->id, $paginacion);
 
             }else{
                 $response = [];    
@@ -100,7 +102,7 @@ class ProspectosListController extends Controller
 
         try{
             if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
-                $response = $proListServ->getCountProspectosNotContactedByRol($auth->rol);
+                $response = $proListServ->getCountProspectosNotContactedByRol($auth->id, $auth->rol);
     
             }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
                 $response = $proListServ->getCountProspectosNotContactedByAdmin();
@@ -144,7 +146,7 @@ class ProspectosListController extends Controller
 
         try{
             if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
-                $response = $proListServ->getProspectosFuentesdByRol($auth->rol);
+                $response = $proListServ->getProspectosFuentesdByRol($auth->id, $auth->rol);
     
             }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
                 $response = $proListServ->getProspectosFuentesByAdmin();

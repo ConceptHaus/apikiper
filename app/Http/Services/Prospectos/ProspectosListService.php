@@ -8,14 +8,21 @@ use App\Http\DTOs\Datatable\DatatableResponseDTO;
 class ProspectosListService
 {    
     /*----------------------- LISTA DE PROSPECTOS --------------------------*/
-    public function getProspectosPageByRol($rol/*, page_params*/){
+    public function getProspectosPageByRol($id_colaborador, $rol, $paginacion){
         $response = new DatatableResponseDTO();
         $object = new ProspectosListRep;
+
+        $paginacion->start = ProspectosListService::getStart($paginacion);
 
         $response->message = "Correcto";
         $response->error = false;
 
-        $response->data["prospectos"] =  $object->createPageForProspectosForRol($rol);
+        $datos = $object->createPageForProspectosForRol($id_colaborador, $rol, $paginacion);
+        $response->data =  $datos->items("data");
+
+        $response->recordsTotal = $datos->total();
+        $response->draw = 0;
+        $response->recordsFiltered = $response->recordsTotal;
 
         return $response;
     }
@@ -63,23 +70,27 @@ class ProspectosListService
     public function getCountProspectosForAdmin(){
         $object = new ProspectosListRep;
 
-        $response->data["prospectos_total"] = $object->createPageForProspectosForAdmin()->count();
+        $response->data["prospectos_total"] = $object->getProspectosCountByAdmin();
 
         return $response;
     }
 
-    public function getCountAllProspectosByColaborador($id_colaborador){
+    public function getCountAllProspectosByColaborador($id_colaborador, $paginacion){
         $object = new ProspectosListRep;
 
-        $response->data["prospectos_total"] = $object->createPageForProspectosByColaborador($id_colaborador)->count();
+        $paginacion->start = ProspectosListService::getStart($paginacion);
+
+        $response->data["prospectos_total"] = $object->getProspectosCountByColaborador($id_colaborador);
 
         return $response;
     }
 
-    public function getCountProspectosByRol(){
+    public function getCountProspectosByRol($id_colaborador, $rol, $paginacion){
         $object = new ProspectosListRep;
+        
+        $paginacion->start = ProspectosListService::getStart($paginacion);
 
-        $response->data["prospectos_total"] = $object->createPageForProspectosForRol($rol)->count();
+        $response->data["prospectos_total"] = $object->countProspectosForRol($id_colaborador, $rol);
 
         return $response;
     }
@@ -100,10 +111,10 @@ class ProspectosListService
         return $response;
     }
 
-    public function getCountProspectosNotContactedByRol($rol){
+    public function getCountProspectosNotContactedByRol($id_colaborador, $rol){
         $object = new ProspectosListRep;
 
-        $response->data["prospectos_nocontactados"] = $object->getProspectosNotContactedCountByRol($rol);
+        $response->data["prospectos_nocontactados"] = $object->getProspectosNotContactedCountByRol($id_colaborador, $rol);
 
         return $response;
     }
@@ -131,11 +142,11 @@ class ProspectosListService
         return $response;
     }
 
-    public function getProspectosFuentesdByRol($rol){
+    public function getProspectosFuentesdByRol($id_colaborador, $rol){
         $object = new ProspectosListRep;
 
         $catalogo_fuentes = $object->getCatalogosFuentes();
-        $origen = $object->getOrigenByRol($rol);
+        $origen = $object->getOrigenByRol($id_colaborador, $rol);
 
         $response->data["prospectos_fuente"] = $object->fuentesChecker($catalogo_fuentes,$origen);
 
