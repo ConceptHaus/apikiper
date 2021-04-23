@@ -166,6 +166,13 @@ Route::prefix('/v1/oportunidades')->group(function(){
 
 Route::prefix('/v1/generales')->group(function(){
 Route::get('/prueba', 'Prospectos\ProspectosListController@findProspectos');
+Route::post('/prueba2', 'Prospectos\ProspectosListController@findProspectos')->middleware('auth:api');
+Route::get('/count', 'Prospectos\ProspectosListController@findCountProspectos');
+Route::get('/countNT', 'Prospectos\ProspectosListController@findCountProspectosNotContacted');
+Route::get('/prospectosFuente', 'Prospectos\ProspectosListController@findProspectosFuentes');
+Route::get('/prospectosStatus', 'Prospectos\ProspectosListController@findProspectosStatus');
+Route::get('/prospectosColaborador', 'Prospectos\ProspectosListController@findProspectosColaborador');
+Route::get('/prospectosEtiquetas', 'Prospectos\ProspectosListController@findProspectosEtiquetas');
 Route::get('/prospectosPrueba/{status}','Prospectos\ProspectosListNotContactedController@findProspectosNotContacted');
 
     Route::get('/industrias', 'DataViews\DataViewsController@getIndustrias');

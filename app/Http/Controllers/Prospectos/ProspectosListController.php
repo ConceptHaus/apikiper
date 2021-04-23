@@ -16,60 +16,34 @@ use App\Http\Services\Auth\AuthService;
 use App\Http\Services\Prospectos\ProspectosListService;
 
 use App\Http\DTOs\Datatable\DatatableResponseDTO;
+use App\Http\DTOs\Datatable\PagingInfoDTO;
 
 use App\Modelos\User;
 use \App\Http\Enums\Permissions;
 
 class ProspectosListController extends Controller
 {   
-    // public function prueba(){
-    //     $response = new DatatableResponseDTO();
-    //     $response->error = false;
-    //     $response->draw = 0;
-    //     $response->recordsTotal = 2;
-    //     $response->recordsFiltered = 2;
-    //     $response->data = array("prospecto2" => array("id_prospecto" => "0193538c-1d11-366b-90ab-4b4b1b4017d1",
-    //                                                 "nombre" => "Luisa",
-    //                                                 "apellido" => "Altenwerth",
-    //                                                 "correo" => "ladd@sdsnad.com",
-    //                                                 "fuente" => array("id_fuente" => 2,
-    //                                                             "nombre" => "Google")
-    //                                                 ),
-    //                                                 array("id_prospecto" => "nfuef748rbjdfb784f",
-    //                                                 "nombre" => "Fernanda",
-    //                                                 "apellido" => "Altamira",
-    //                                                 "correo" => "aaaaa@dddddd.com",
-    //                                                 "fuente" => array("id_fuente" => 1,
-    //                                                             "nombre" => "Facebook")
-    //                                                 ),
-    //                                                 array("id_prospecto" => "4r4r4r4r4r4r4r4r",
-    //                                                 "nombre" => "Jose",
-    //                                                 "apellido" => "Pepe",
-    //                                                 "correo" => "rrrrrrrrrr@hhhhhhhhhh.com",
-    //                                                 "fuente" => array("id_fuente" => 1,
-    //                                                             "nombre" => "Facebook")
-    //                                                 )
-    //                                 );
-    //     return response()->json($response, 200);
-    // }
-    
-    public function findProspectos(){
+
+    public function findProspectos(Request $request){
         $auth = new AuthService();
         $auth = $auth->getUserAuthInfo(); 
         $response = new DatatableResponseDTO();
         $proListServ = new ProspectosListService();
 
+        $paginacion = $this->findPaginacion($request);
+        
         $permisos = User::getAuthenticatedUserPermissions();
+        
         try{
             if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
                 $response = $proListServ->getProspectosPageByRol($auth->rol);
     
-
             }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
-                $response = ProspectosListService::getProspectosPageForAdmin();
+                $response = $proListServ->getProspectosPageForAdmin($paginacion);
     
             }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
-                $response->data = ProspectosListService::getAllProspectosPageByColaborador($auth->id);
+                $response = $proListServ->getAllProspectosPageByColaborador($auth->id, $paginacion);
+
             }else{
                 $response = [];    
             }
@@ -78,6 +52,165 @@ class ProspectosListController extends Controller
 
         }catch(Exception $e){
             echo 'ProspectosListController.findProspectos',  $e->getMessage(); 
+
+            $response->error = 'Ocurrio un error inesperado';
+            return response()->json($response, 500);
+        }
+    }
+
+    public function findCountProspectos(){
+        $auth = new AuthService();
+        $auth = $auth->getUserAuthInfo(); 
+        $response = new DatatableResponseDTO();
+        $proListServ = new ProspectosListService();
+
+        $permisos = User::getAuthenticatedUserPermissions();
+
+        try{
+            if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
+                $response = $proListServ->getCountProspectosByRol($auth->rol);
+    
+            }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
+                $response = $proListServ->getCountProspectosForAdmin();
+    
+            }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
+                $response = $proListServ->getCountAllProspectosByColaborador($auth->id);
+
+            }else{
+                $response = [];    
+            }
+
+            return response()->json($response, 200);
+
+        }catch(Exception $e){
+            echo 'ProspectosListController.findCountProspectos',  $e->getMessage(); 
+
+            $response->error = 'Ocurrio un error inesperado';
+            return response()->json($response, 500);
+        }
+    }
+
+    public function findCountProspectosNotContacted(){
+        $auth = new AuthService();
+        $auth = $auth->getUserAuthInfo(); 
+        $response = new DatatableResponseDTO();
+        $proListServ = new ProspectosListService();
+
+        $permisos = User::getAuthenticatedUserPermissions();
+
+        try{
+            if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
+                $response = $proListServ->getCountProspectosNotContactedByRol($auth->rol);
+    
+            }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
+                $response = $proListServ->getCountProspectosNotContactedByAdmin();
+    
+            }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
+                $response = $proListServ->getCountAllProspectosNotContactedByColaborador($auth->id);
+
+            }else{
+                $response = [];    
+            }
+
+            return response()->json($response, 200);
+
+        }catch(Exception $e){
+            echo 'ProspectosListController.findCountProspectosNotContacted',  $e->getMessage(); 
+
+            $response->error = 'Ocurrio un error inesperado';
+            return response()->json($response, 500);
+        }
+    }
+
+    public function findPaginacion($request){
+        $response = new PagingInfoDTO();
+
+        $response->start = $request->input("start");
+        $response->length = $request->input("length");
+        $response->search = $request->input("search.value");
+        $response->order = $request->input("order.0.dir");
+        $response->nColumn = $request->input("order.0.column");
+
+        return $response;
+    }
+
+    public function findProspectosFuentes(){
+        $auth = new AuthService();
+        $auth = $auth->getUserAuthInfo(); 
+        $response = new DatatableResponseDTO();
+        $proListServ = new ProspectosListService();
+
+        $permisos = User::getAuthenticatedUserPermissions();
+
+        try{
+            if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
+                $response = $proListServ->getProspectosFuentesdByRol($auth->rol);
+    
+            }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
+                $response = $proListServ->getProspectosFuentesByAdmin();
+    
+            }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
+                $response = $proListServ->getProspectosFuentesByColaborador($auth->id);
+
+            }else{
+                $response = [];    
+            }
+
+            return response()->json($response, 200);
+
+        }catch(Exception $e){
+            echo 'ProspectosListController.findProspectosFuentes',  $e->getMessage(); 
+
+            $response->error = 'Ocurrio un error inesperado';
+            return response()->json($response, 500);
+        }
+    }
+
+    public function findProspectosStatus(){
+        $response = new DatatableResponseDTO();
+        $proListServ = new ProspectosListService();
+
+        try{
+            $response = $proListServ->getProspectosStatus();
+
+            return response()->json($response, 200);
+
+        }catch(Exception $e){
+            echo 'ProspectosListController.findProspectosStatus',  $e->getMessage(); 
+
+            $response->error = 'Ocurrio un error inesperado';
+            return response()->json($response, 500);
+        }
+    }
+
+    public function findProspectosColaborador(){
+        $response = new DatatableResponseDTO();
+        $proListServ = new ProspectosListService();
+
+        try{
+            $response = $proListServ->getProspectosColaboradores();
+
+            return response()->json($response, 200);
+
+        }catch(Exception $e){
+            echo 'ProspectosListController.findProspectosColaborador',  $e->getMessage(); 
+
+            $response->error = 'Ocurrio un error inesperado';
+            return response()->json($response, 500);
+        }
+    }
+
+    public function findProspectosEtiquetas(){
+        $response = new DatatableResponseDTO();
+        $proListServ = new ProspectosListService();
+
+        try{
+            $response = $proListServ->getProspectosEtiquetas();
+
+            return response()->json($response, 200);
+
+        }catch(Exception $e){
+            echo 'ProspectosListController.findProspectosEtiquetas',  $e->getMessage(); 
 
             $response->error = 'Ocurrio un error inesperado';
             return response()->json($response, 500);

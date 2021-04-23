@@ -4,22 +4,23 @@ namespace App\Http\Repositories\Prospectos;
 
 use App\Modelos\Prospecto\Prospecto;
 use App\Modelos\Prospecto\CatStatusProspecto;
+use App\Modelos\User;
 
 use Illuminate\Support\Facades\DB;
 
 class ProspectosListNotContactedRep
 {
-    public function prospectos_status(){
+    public function getProspectosStatus(){
         $prospectos_status = CatStatusProspecto::get();
         return $prospectos_status;
     }
 
-    public function colaboradores(){
+    public function getColaboradores(){
         $colaboradores = User::all();
         return $colaboradores;
     }
 
-    public function etiquetas(){
+    public function getEtiquetas(){
         $etiquetas = DB::table('etiquetas')->select('*')->get();
         return $etiquetas;
     }
@@ -83,7 +84,7 @@ class ProspectosListNotContactedRep
     }
 
     public function createPageForProspectosNotContactedForAdmin($status){
-        $prospectos = Prospecto::with('detalle_prospecto')
+        return Prospecto::with('detalle_prospecto')
                                 ->with('colaborador_prospecto.colaborador.detalle')
                                 ->with('fuente')
                                 /*->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', 'prospectos.id_prospecto')
@@ -103,7 +104,7 @@ class ProspectosListNotContactedRep
     }
 
     public function createPageForProspectosNotContactedForColaborador($id, $status){
-        $prospectos = DB::table('prospectos')
+        return DB::table('prospectos')
                         ->join('detalle_prospecto','detalle_prospecto.id_prospecto','prospectos.id_prospecto')
                         ->join('status_prospecto','status_prospecto.id_prospecto','prospectos.id_prospecto')
                         ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
@@ -122,17 +123,6 @@ class ProspectosListNotContactedRep
                         ->groupBy('prospectos.id_prospecto')
                         ->get();
     }
-
-
-
-
-
-
-
-
-
-
-
 
     public function FuentesChecker($catalogo,$consulta){
 
