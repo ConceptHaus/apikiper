@@ -214,7 +214,7 @@ Route::prefix('/v1/generales')->group(function(){
         //PUT
         Route::put('/etiquetas','DataViews\DataViewsController@updateEtiquetas');
         Route::put('/servicios','DataViews\DataViewsController@updateServicios');
-        Route::put('/status','DataViews\DataViewsController@updateStatus');
+// Route::put('/status','DataViews\DataViewsController@updateStatus');
         Route::put('/prospectos/colaborador','DataViews\DataViewsController@updateColaborador');
 
         //DELETE
@@ -252,5 +252,26 @@ Route::prefix('/v1/mailing')->group(function(){
         Route::get('/{id}','Mailing\MailingController@getOne');
         Route::put('/update','Mailing\MailingController@updateMailing');
         Route::delete('/{id}','Mailing\MailingController@deleteMailing');
+    });
+});
+
+
+Route::prefix('/v1/roles')->group(function(){
+    Route::middleware(['auth','cors'])->group(function(){
+        Route::get('/','Roles\RolesController@getAll');
+    });
+});
+
+Route::prefix('/v1/funnel')->group(function(){
+    Route::middleware(['auth','cors'])->group(function(){
+        Route::get('/stages','Funnel\FunnelController@getFunnelStages');
+        Route::post('/createStage','Funnel\FunnelController@createFunnelStage');
+    });
+});
+
+Route::prefix('/v1/status_oportunidades')->group(function(){
+    Route::middleware(['auth','cors'])->group(function(){
+        Route::delete('/{id}','Funnel\FunnelController@deleteStatus');
+        Route::put('/updateStatus','Funnel\FunnelController@updateStatus');
     });
 });

@@ -40,7 +40,7 @@ use App\Modelos\Prospecto\StatusProspecto;
 use App\Modelos\Prospecto\CatStatusProspecto;
 use App\Events\Historial;
 use App\Events\Event;
-
+use \App\Http\Enums\Permissions;
 use App\Imports\ProspectosImport;
 use App\Exports\ProspectosReports;
 use Excel;
@@ -251,20 +251,26 @@ class ProspectosController extends Controller
     }
 
     public function getAllProspectos(){
-        $auth = $this->guard()->user();
-        if($auth->is_admin){
+
+        $permisos = User::getAuthenticatedUserPermissions();
+
+        if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
             $prospectos = Prospecto::GetAllProspectos();
             $prospectos_total = Prospecto::count();
             $prospectos_sin_contactar = Prospecto::join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
                                     ->where('status_prospecto.id_cat_status_prospecto','=',1)->count(); 
-        }
-        else{
+        }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
             $prospectos = Prospecto::join('colaborador_prospecto','colaborador_prospecto.id_prospecto','prospectos.id_prospecto')
                                     ->where('colaborador_prospecto.id_colaborador',$auth->id)->get();
             $prospectos_total = Prospecto::join('colaborador_prospecto','colaborador_prospecto.id_prospecto','prospectos.id_prospecto')
-                                    ->where('colaborador_prospecto.id_colaborador',$auth->id)->count();
+                                        ->where('colaborador_prospecto.id_colaborador',$auth->id)->count();
             $prospectos_sin_contactar = Prospecto::join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
-                                    ->where('status_prospecto.id_cat_status_prospecto','=',1)->count(); 
+                                                ->where('status_prospecto.id_cat_status_prospecto','=',1)->count();
+        }
+        else{
+            $prospectos                 = [];
+            $prospectos_total           = [];
+            $prospectos_sin_contactar   = [];    
         }
         
         return response()->json([
