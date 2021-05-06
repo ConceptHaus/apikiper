@@ -5,11 +5,12 @@ use Illuminate\Support\Facades\Validator;
 
 class FunnelService
 {
-    public static function getFunnelStages(){
-        $funnel_stages = FunnelRep::getFunnelStages();
-        return $funnel_stages;
+    
+    public static function getCatStatusOportunidades(){
+        $cat_status_oportunidades = FunnelRep::getCatStatusOportunidades();
+        return $cat_status_oportunidades;
     }
-
+    
     public static function validator(array $data)
     {
         return Validator::make($data, [
@@ -32,5 +33,22 @@ class FunnelService
     public static function updateStatusOportunidad($estatus)
     {
         return FunnelRep::updateStatusOportunidad($estatus);    
+    }
+
+    /*
+    |  Funnel
+    */
+
+    // public static function getFunnelStages(){
+    //     return FunnelRep::getFunnelStages();
+    // }
+
+    public static function getMisOportunidadesByFunnelStage($colaborador_id){
+        $funnel_stages = FunnelRep::getMisOportunidadesByFunnelStage($colaborador_id);
+        return $funnel_stages;
+    }
+
+    public static function updateOportunidadStatus($oportunidad_id, $new_status){
+        return FunnelRep::updateOportunidadStatus($oportunidad_id, $new_status);
     }
 }

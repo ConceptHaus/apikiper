@@ -146,4 +146,11 @@ class User extends Authenticatable implements JWTSubject
 
         return $users;
     }
+
+    public function  scopeGetUsersWithVisibleRole($query){
+        return $query->with('detalle','foto')
+                     ->where('role_id', '<', 4)
+                     ->orderBy('created_at','desc')
+                     ->get();
+    }
 }
