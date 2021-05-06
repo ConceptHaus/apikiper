@@ -266,6 +266,8 @@ Route::prefix('/v1/funnel')->group(function(){
     Route::middleware(['auth','cors'])->group(function(){
         Route::get('/stages','Funnel\FunnelController@getFunnelStages');
         Route::post('/createStage','Funnel\FunnelController@createFunnelStage');
+        Route::get('/mis-oportunidades','Funnel\FunnelController@getMisOportunidades');
+        Route::post('/update-status-oportunidad','Funnel\FunnelController@updateOportunidadStatus');
     });
 });
 
@@ -273,5 +275,6 @@ Route::prefix('/v1/status_oportunidades')->group(function(){
     Route::middleware(['auth','cors'])->group(function(){
         Route::delete('/{id}','Funnel\FunnelController@deleteStatus');
         Route::put('/updateStatus','Funnel\FunnelController@updateStatus');
+        Route::get('/','Funnel\FunnelController@getCatStatusOportunidades');
     });
 });

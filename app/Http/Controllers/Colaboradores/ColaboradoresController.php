@@ -77,7 +77,7 @@ class ColaboradoresController extends Controller
     }
 
     public function getAllColaboradores(){
-        $colaboradores = User::GetallUsers();
+        $colaboradores = User::GetUsersWithVisibleRole();
 
         if ($colaboradores) {
           return response()->json([

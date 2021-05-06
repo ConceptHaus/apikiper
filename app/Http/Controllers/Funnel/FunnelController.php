@@ -12,12 +12,13 @@ use Auth;
 
 class FunnelController extends Controller
 {
-    public function getFunnelStages(Request $request)
+    
+    public function getCatStatusOportunidades(Request $request)
     {    
-        $funnel_stages = FunnelService::getFunnelStages();
+        $cat_status_oportunidades = FunnelService::getCatStatusOportunidades();
         return response()->json([
-            'error'=>false,
-            'data'=>$funnel_stages,
+            'error' => false,
+            'data'  => $cat_status_oportunidades,
         ],200);
     }
 
@@ -96,6 +97,39 @@ class FunnelController extends Controller
                         'error'     => $update_status_oportunidad['error'],
                     ],400);    
         }  
+    }
+
+    /*
+    |  Funnel
+    */
+
+    public function getFunnelStages(Request $request)
+    {    
+        $funnel_stages = FunnelService::getFunnelStages();
+        return response()->json([
+            'error'=>false,
+            'data'=>$funnel_stages,
+        ],200);
+    }
+    
+    public function getMisOportunidades(Request $request)
+    {    
+        $colaborador_id = Auth::user()->id;
+        $funnel_stages = FunnelService::getMisOportunidadesByFunnelStage($colaborador_id);
+        return response()->json([
+            'error'=>false,
+            'data'=>$funnel_stages,
+        ],200);
+    }
+
+    public function updateOportunidadStatus(Request $request)
+    {    
+        // print_r($request->input());
+        $oportunidad = FunnelService::updateOportunidadStatus($request->id_oportunidad, $request->target_status);
+        return response()->json([
+            'error'=>false,
+            'data'=>$oportunidad,
+        ],200);
     }
    
 }
