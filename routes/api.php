@@ -24,7 +24,7 @@ Route::prefix('/v1')->group(function(){
         Route::post('/google','Integraciones\GoogleController@googleApi');
         Route::post('/google/callback','Integraciones\GoogleController@googleApiCallback');
         Route::get('/template',function(){return view('mailing.template_one');});
-        Route::get('/download/prospectos/{admin}/{rol}/{id_user}','Prospectos\ProspectosController@downloadProspectos');
+        Route::get('/download/prospectos/{admin}/{rol}/{id_user}/{correos}/{nombre}/{telefono}/{status}/{grupo}/{etiquetas}/{fechaInicio}/{fechaFin}/{colaboradores}','Prospectos\ProspectosController@downloadProspectos');
     });
 });
 
@@ -167,8 +167,10 @@ Route::prefix('/v1/oportunidades')->group(function(){
 Route::prefix('/v1/generales')->group(function(){
     Route::get('/industrias', 'DataViews\DataViewsController@getIndustrias');
     Route::middleware(['auth','cors'])->group(function(){
-        Route::get('/prueba', 'Prospectos\ProspectosListController@findProspectos');
-        Route::post('/prueba2', 'Prospectos\ProspectosListController@findProspectos')->middleware('auth:api');
+        Route::get('/correos', 'Prospectos\ProspectosListController@findProspectosCorreos');
+        Route::get('/prospectosNombres', 'Prospectos\ProspectosListController@findProspectosNombres');
+        Route::get('/prospectosTelefono', 'Prospectos\ProspectosListController@findProspectosTelefono');
+        Route::post('/table', 'Prospectos\ProspectosListController@findProspectos')->middleware('auth:api');
         Route::get('/count', 'Prospectos\ProspectosListController@findCountProspectos');
         Route::get('/countNT', 'Prospectos\ProspectosListController@findCountProspectosNotContacted');
         Route::get('/prospectosFuente', 'Prospectos\ProspectosListController@findProspectosFuentes');

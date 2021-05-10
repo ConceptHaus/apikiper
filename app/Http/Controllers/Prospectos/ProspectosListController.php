@@ -31,18 +31,28 @@ class ProspectosListController extends Controller
         $proListServ = new ProspectosListService();
 
         $paginacion = $this->findPaginacion($request);
+
+        $correos = json_decode($request->correos);
+        $nombres = json_decode($request->nombres);
+        $telefonos = json_decode($request->telefonos);
+        $estatus = json_decode($request->estatus);
+        $fuente = json_decode($request->fuente);
+        $etiqueta = json_decode($request->etiqueta);
+        $fechaInicio = json_decode($request->fechaInicio);
+        $fechaFin = json_decode($request->fechaFin);
+        $colaboradores = json_decode($request->colaborador);
         
         $permisos = User::getAuthenticatedUserPermissions();
         
         try{
             if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
-                $response = $proListServ->getProspectosPageByRol($auth->id, $auth->rol, $paginacion);
+                $response = $proListServ->getProspectosPageByRol($auth->id, $auth->rol, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin);
     
             }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
-                $response = $proListServ->getProspectosPageForAdmin($paginacion);
+                $response = $proListServ->getProspectosPageForAdmin($paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores);
     
             }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
-                $response = $proListServ->getAllProspectosPageByColaborador($auth->id, $paginacion);
+                $response = $proListServ->getAllProspectosPageByColaborador($auth->id, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin);
 
             }else{
                 $response = [];    
@@ -218,5 +228,102 @@ class ProspectosListController extends Controller
             return response()->json($response, 500);
         }
     }
+
+    public function findProspectosCorreos(){
+        $auth = new AuthService();
+        $auth = $auth->getUserAuthInfo(); 
+        $response = new DatatableResponseDTO();
+        $proListServ = new ProspectosListService();
+
+        $permisos = User::getAuthenticatedUserPermissions();
+
+        try{
+            if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
+                $response = $proListServ->getProspectosCorreos($auth->id, $auth->rol);
+    
+            }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
+                $response = $proListServ->getProspectosCorreos();
+    
+            }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
+                $response = $proListServ->getProspectosCorreos($auth->id);
+
+            }else{
+                $response = [];    
+            }
+
+            return response()->json($response, 200);
+
+        }catch(Exception $e){
+            echo 'ProspectosListController.findProspectosCorreos',  $e->getMessage(); 
+
+            $response->error = 'Ocurrio un error inesperado';
+            return response()->json($response, 500);
+        }
+    }
+
+    public function findProspectosNombres(){
+        $auth = new AuthService();
+        $auth = $auth->getUserAuthInfo(); 
+        $response = new DatatableResponseDTO();
+        $proListServ = new ProspectosListService();
+
+        $permisos = User::getAuthenticatedUserPermissions();
+
+        try{
+            if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
+                $response = $proListServ->getProspectosNombre($auth->id, $auth->rol);
+    
+            }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
+                $response = $proListServ->getProspectosNombre();
+    
+            }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
+                $response = $proListServ->getProspectosNombre($auth->id);
+
+            }else{
+                $response = [];    
+            }
+
+            return response()->json($response, 200);
+
+        }catch(Exception $e){
+            echo 'ProspectosListController.findProspectosNombres',  $e->getMessage(); 
+
+            $response->error = 'Ocurrio un error inesperado';
+            return response()->json($response, 500);
+        }
+    }
+
+    public function findProspectosTelefono(){
+        $auth = new AuthService();
+        $auth = $auth->getUserAuthInfo(); 
+        $response = new DatatableResponseDTO();
+        $proListServ = new ProspectosListService();
+
+        $permisos = User::getAuthenticatedUserPermissions();
+
+        try{
+            if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
+                $response = $proListServ->getProspectosTelefono($auth->id, $auth->rol);
+    
+            }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
+                $response = $proListServ->getProspectosTelefono();
+    
+            }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
+                $response = $proListServ->getProspectosTelefono($auth->id);
+
+            }else{
+                $response = [];    
+            }
+
+            return response()->json($response, 200);
+
+        }catch(Exception $e){
+            echo 'ProspectosListController.findProspectosTelefono',  $e->getMessage(); 
+
+            $response->error = 'Ocurrio un error inesperado';
+            return response()->json($response, 500);
+        }
+    }
+
 
 }

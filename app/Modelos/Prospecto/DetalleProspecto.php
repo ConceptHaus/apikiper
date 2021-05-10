@@ -17,6 +17,7 @@ class DetalleProspecto extends Model
         'id_prospecto',
         'puesto',
         'empresa',
+        'extension',
         'telefono',
         'celular',
         'whatsapp',

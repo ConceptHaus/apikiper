@@ -8,7 +8,7 @@ use App\Http\DTOs\Datatable\DatatableResponseDTO;
 class ProspectosListService
 {    
     /*----------------------- LISTA DE PROSPECTOS --------------------------*/
-    public function getProspectosPageByRol($id_colaborador, $rol, $paginacion){
+    public function getProspectosPageByRol($id_colaborador, $rol, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin){
         $response = new DatatableResponseDTO();
         $object = new ProspectosListRep;
 
@@ -17,7 +17,7 @@ class ProspectosListService
         $response->message = "Correcto";
         $response->error = false;
 
-        $datos = $object->createPageForProspectosForRol($id_colaborador, $rol, $paginacion);
+        $datos = $object->createPageForProspectosForRol($id_colaborador, $rol, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin);
         $response->data =  $datos->items("data");
 
         $response->recordsTotal = $datos->total();
@@ -27,7 +27,7 @@ class ProspectosListService
         return $response;
     }
 
-    public function getProspectosPageForAdmin($paginacion){
+    public function getProspectosPageForAdmin($paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores){
         $response = new DatatableResponseDTO();
         $object = new ProspectosListRep;
 
@@ -36,7 +36,7 @@ class ProspectosListService
         $response->message = "Correcto";
         $response->error = false;
 
-        $datos =  $object->createPageForProspectosForAdmin($paginacion);
+        $datos =  $object->createPageForProspectosForAdmin($paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores);
         $response->data = $datos->items("data");
 
         $response->recordsTotal = $datos->total();
@@ -46,7 +46,7 @@ class ProspectosListService
         return $response;
     }
 
-    public function getAllProspectosPageByColaborador($id_colaborador, $paginacion){
+    public function getAllProspectosPageByColaborador($id_colaborador, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin){
         $response = new DatatableResponseDTO;
         $object = new ProspectosListRep;
 
@@ -55,7 +55,7 @@ class ProspectosListService
         $response->message = "Correcto";
         $response->error = false;
 
-        $datos = $object->createPageForProspectosByColaborador($id_colaborador, $paginacion);
+        $datos = $object->createPageForProspectosByColaborador($id_colaborador, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin);
         $response->data = $datos->items("data");
         
         $response->recordsTotal = $datos->total();
@@ -196,6 +196,41 @@ class ProspectosListService
         } else {
             return $paginacion->start = ($paginacion->start / $paginacion->length) + 1;   
         }
+    }
+
+    public function getProspectosCorreosdByRol($id_colaborador, $rol){
+        $object = new ProspectosListRep;
+
+        $catalogo_fuentes = $object->getCatalogosFuentes();
+        $origen = $object->getOrigenByRol($id_colaborador, $rol);
+
+        $response->data["prospectos_fuente"] = $object->fuentesChecker($catalogo_fuentes,$origen);
+
+        return $response;
+    }
+
+    public function getProspectosCorreos($id_colaborador=null, $rol=null){
+        $object = new ProspectosListRep;
+
+        $response->data["prospectos_correos"] = $object->getCorreos($id_colaborador, $rol);
+
+        return $response;
+    }
+
+    public function getProspectosNombre($id_colaborador=null, $rol=null){
+        $object = new ProspectosListRep;
+
+        $response->data["prospectos_nombre"] = $object->getNombres($id_colaborador, $rol);
+
+        return $response;
+    }
+
+    public function getProspectosTelefono($id_colaborador=null, $rol=null){
+        $object = new ProspectosListRep;
+
+        $response->data["prospectos_telefono"] = $object->getTelefono($id_colaborador, $rol);
+
+        return $response;
     }
 
 }
