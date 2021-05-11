@@ -17,10 +17,12 @@ class DetalleProspecto extends Model
         'id_prospecto',
         'puesto',
         'empresa',
+        'extension',
         'telefono',
         'celular',
         'whatsapp',
-        'nota'
+        'nota',
+        'extension'
     ];
 
     public function prospecto(){

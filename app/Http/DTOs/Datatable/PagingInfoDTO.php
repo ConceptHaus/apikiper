@@ -2,10 +2,11 @@
 
 namespace App\Http\DTOs\Datatable;
 
-class PaginInfoDTO
+class PagingInfoDTO
 {
     public $start;
     public $length;
     public $search;
     public $order;
+    public $nColumn;
 }
