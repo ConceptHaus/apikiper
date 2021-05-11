@@ -268,6 +268,7 @@ Route::prefix('/v1/funnel')->group(function(){
         Route::post('/createStage','Funnel\FunnelController@createFunnelStage');
         Route::get('/mis-oportunidades','Funnel\FunnelController@getMisOportunidades');
         Route::post('/update-status-oportunidad','Funnel\FunnelController@updateOportunidadStatus');
+        Route::post('/{colaborador_id}','Funnel\FunnelController@getColaboradorOportunidades');
     });
 });
 

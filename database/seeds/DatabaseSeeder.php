@@ -19,6 +19,9 @@ class DatabaseSeeder extends Seeder
         $this->call(CatIndustriaSeeder::class);
         $this->call(CatStatusProspectoTableSeeder::class);
         $this->call(CatStatusOportunidadTableSeeder::class);
+        $this->call(RolesTableSeeder::class);
+        $this->call(SettingsTableSeeder::class);
+
         $etiquetas = factory(App\Modelos\Extras\Etiqueta::class,1500)->create();
         $servicios = factory(App\Modelos\Oportunidad\CatServicios::class,150)->create();
         $medios_contacto = factory(App\Modelos\Prospecto\CatMedioContacto::class,5)->create();

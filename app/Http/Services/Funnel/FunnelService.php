@@ -44,11 +44,19 @@ class FunnelService
     // }
 
     public static function getMisOportunidadesByFunnelStage($colaborador_id){
-        $funnel_stages = FunnelRep::getMisOportunidadesByFunnelStage($colaborador_id);
-        return $funnel_stages;
+        return FunnelRep::getMisOportunidadesByFunnelStage($colaborador_id);
     }
 
     public static function updateOportunidadStatus($oportunidad_id, $new_status){
         return FunnelRep::updateOportunidadStatus($oportunidad_id, $new_status);
+    }
+
+    public static function getColaboradoresWithOportunidades(){
+        return FunnelRep::getColaboradoresWithOportunidades();
+    }
+
+    public static function getOportunidadesByFunnelStage()
+    {
+        return FunnelRep::getOportunidadesByFunnelStage();
     }
 }

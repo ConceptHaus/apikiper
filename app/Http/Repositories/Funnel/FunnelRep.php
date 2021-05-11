@@ -43,26 +43,32 @@ class FunnelRep
 
     public static function  deleteStatusOportunidad($id)
     {
-        
-        try{
-            DB::beginTransaction();
-            
-            CatStatusOportunidad::where('id_cat_status_oportunidad', $id)->delete();
-            
-            DB::commit();
-            
-            $response   = array('message'   => 'Status oportunidad eliminado de manera correcta',
-                                'error'     => false,
+        $oportunidades = FunnelRep::oportunidadesPorStatus($id);
+        // print_r($oportunidades);
+        if(count($oportunidades) > 0){
+            $response   = array('message'   => 'No se pudo eliminar el estatus de oportunidad porque tiene oportunidades activas',
+                                'error'     => true,
                                 'data'      =>'');
+        }else{
+            try{
+                DB::beginTransaction();
+                
+                CatStatusOportunidad::where('id_cat_status_oportunidad', $id)->delete();
+                
+                DB::commit();
+                
+                $response   = array('message'   => 'Se eliminó el estatus de oportunidad con éxito',
+                                    'error'     => false,
+                                    'data'      =>'');
+            }
+            catch(Excpetion $e){
+                DB::rollBack();
+                Bugsnag::notifyException(new RuntimeException("No se pudo eliminar el estatus de oportunidad"));
+                
+                $response   = array('message'   => $e,
+                                    'error'     => true);
+            }
         }
-        catch(Excpetion $e){
-            DB::rollBack();
-            Bugsnag::notifyException(new RuntimeException("No se pudo eliminar el status de oportunidad"));
-            
-            $response   = array('message'   => $e,
-                                'error'     => true);
-        }
-
         return $response;
     }
 
@@ -106,6 +112,7 @@ class FunnelRep
 
     public static function getMisOportunidadesByFunnelStage($colaborador_id)
     {
+        // print_r($colaborador_id);
         $oportunidades = array();
         $oportunidades['funnel_stages'] =   CatStatusOportunidad::where('funnel_visible',1)
                                                                 ->orderBy('funnel_order', 'asc')
@@ -113,7 +120,9 @@ class FunnelRep
         
         if(!empty($oportunidades['funnel_stages'])){
             foreach ($oportunidades['funnel_stages'] as $key => $funnel_stage) {
-                $oportunidades['funnel_stages'][$key]['oportunidades'] = FunnelRep::oportunidadesPorColaboradorPorStatus($colaborador_id, $funnel_stage['id_cat_status_oportunidad']);
+                $oportunidades['funnel_stages'][$key]['oportunidades']          = FunnelRep::oportunidadesPorColaboradorPorStatus($colaborador_id, $funnel_stage['id_cat_status_oportunidad']);
+                $oportunidades['funnel_stages'][$key]['total_oportunidades']    = FunnelRep::getTotalCountOportunidades($oportunidades['funnel_stages'][$key]['oportunidades']);
+                $oportunidades['funnel_stages'][$key]['total_valor']            = FunnelRep::getTotalValueOportunidades($oportunidades['funnel_stages'][$key]['oportunidades']);
             }
         }
         return $oportunidades;
@@ -123,17 +132,43 @@ class FunnelRep
     {
         $oportunidades = DB::table('oportunidades')
                         ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                        ->join('users','colaborador_oportunidad.id_colaborador','users.id')
                         ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
                         ->join('detalle_oportunidad','colaborador_oportunidad.id_oportunidad','detalle_oportunidad.id_oportunidad')
                         ->whereNull('oportunidades.deleted_at')
                         ->where('colaborador_oportunidad.id_colaborador','=',$colaborador_id)
-                        ->where('status_oportunidad.id_cat_status_oportunidad','=',$status_id)->get();
+                        ->where('status_oportunidad.id_cat_status_oportunidad','=',$status_id)
+                        ->get();
         if(!empty($oportunidades)){
             //Drag & Drop Properties for plugin
             foreach($oportunidades as $key => $oportunidad){
                 $oportunidades[$key]->effectAllowed = "move";
                 $oportunidades[$key]->disable = false;
-                $oportunidades[$key]->valor = "$ ".number_format($oportunidades[$key]->valor, 2);
+                $oportunidades[$key]->value = "$ ".number_format($oportunidades[$key]->valor, 2);
+                $oportunidades[$key]->valor = $oportunidades[$key]->valor;
+            }
+        }
+
+        return $oportunidades;
+    }
+
+    public static function oportunidadesPorStatus($status_id)
+    {
+        $oportunidades = DB::table('oportunidades')
+                        ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                        ->join('users','colaborador_oportunidad.id_colaborador','users.id')
+                        ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                        ->join('detalle_oportunidad','colaborador_oportunidad.id_oportunidad','detalle_oportunidad.id_oportunidad')
+                        ->whereNull('oportunidades.deleted_at')
+                        ->where('status_oportunidad.id_cat_status_oportunidad','=',$status_id)
+                        ->get();
+        if(!empty($oportunidades)){
+            //Drag & Drop Properties for plugin
+            foreach($oportunidades as $key => $oportunidad){
+                $oportunidades[$key]->effectAllowed = "move";
+                $oportunidades[$key]->disable = false;
+                $oportunidades[$key]->value = "$ ".number_format($oportunidades[$key]->valor, 2);
+                $oportunidades[$key]->valor = $oportunidades[$key]->valor;
             }
         }
 
@@ -165,6 +200,81 @@ class FunnelRep
         }
 
         return $response;
+    }
+
+    public static function getColaboradoresWithOportunidades()
+    {
+        $colaboradores = DB::table('users')
+                        ->select('users.nombre', 'users.apellido', 'users.id')
+                        ->join('colaborador_oportunidad','colaborador_oportunidad.id_colaborador','users.id')
+                        ->join('oportunidades','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                        ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                        ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
+                        ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                        ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                        ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                        ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                        ->join('servicio_oportunidad','servicio_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                        ->join('cat_servicios','cat_servicios.id_servicio_cat','servicio_oportunidad.id_servicio_cat')
+                        ->whereNull('oportunidades.deleted_at')
+                        ->whereNUll('detalle_oportunidad.deleted_at')
+                        ->whereNull('oportunidad_prospecto.deleted_at')
+                        ->whereNull('colaborador_oportunidad.deleted_at')
+                        ->whereNull('users.deleted_at')
+                        ->whereNull('prospectos.deleted_at')
+                        ->whereNull('status_oportunidad.deleted_at')
+                        ->whereNull('servicio_oportunidad.deleted_at')
+                        ->orderBy('users.nombre', 'asc')
+                        ->groupBy('users.id')
+                        ->get();
+
+        return $colaboradores;
+    }
+
+    public static function getOportunidadesByFunnelStage()
+    {
+        $oportunidades = array();
+        $oportunidades['funnel_stages'] =   CatStatusOportunidad::where('funnel_visible',1)
+                                                                ->orderBy('funnel_order', 'asc')
+                                                                ->get();
+        
+        if(!empty($oportunidades['funnel_stages'])){
+            foreach ($oportunidades['funnel_stages'] as $key => $funnel_stage) {
+                $oportunidades['funnel_stages'][$key]['oportunidades']          = FunnelRep::oportunidadesPorStatus($funnel_stage['id_cat_status_oportunidad']);
+                $oportunidades['funnel_stages'][$key]['total_oportunidades']    = FunnelRep::getTotalCountOportunidades($oportunidades['funnel_stages'][$key]['oportunidades']);
+                $oportunidades['funnel_stages'][$key]['total_valor']            = FunnelRep::getTotalValueOportunidades($oportunidades['funnel_stages'][$key]['oportunidades']);
+            }
+        }
+        return $oportunidades;
+    }
+
+    public static function getTotalValueOportunidades($oportunidades)
+    {
+        $total = 0;
+        if(!empty($oportunidades)){
+            foreach ($oportunidades as $key => $oportunidad) {
+               $total = $total + $oportunidad->valor;
+            }    
+        }
+        if($total > 0){
+            return "$ ".number_format($total, 2);
+        }else{
+            return "";
+        }
+        
+    }
+
+    public static function getTotalCountOportunidades($oportunidades)
+    {
+        $total_count    = "";
+        $count          = count($oportunidades);
+
+        if($count > 0){
+            $items       = ($count == 1) ? "item" : "items" ;
+            $total_count = " | " . $count . " " . $items;
+        }
+
+        return $total_count;
     }
 
 }
