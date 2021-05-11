@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 
 use App\Http\Services\Funnel\FunnelService;
+use App\Modelos\User;
+use App\Http\Enums\Permissions;
 use DB;
 use Auth;
 
@@ -115,7 +117,16 @@ class FunnelController extends Controller
     public function getMisOportunidades(Request $request)
     {    
         $colaborador_id = Auth::user()->id;
-        $funnel_stages = FunnelService::getMisOportunidadesByFunnelStage($colaborador_id);
+        $permisos = User::getAuthenticatedUserPermissions();
+        
+        if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
+            $funnel_stages                  = FunnelService::getOportunidadesByFunnelStage();
+            $funnel_stages['colaboradores'] = FunnelService::getColaboradoresWithOportunidades();
+        }else{
+        $funnel_stages                      = FunnelService::getMisOportunidadesByFunnelStage($colaborador_id);
+            $funnel_stages['colaboradores'] = []; 
+        }
+
         return response()->json([
             'error'=>false,
             'data'=>$funnel_stages,
@@ -130,6 +141,27 @@ class FunnelController extends Controller
             'error'=>false,
             'data'=>$oportunidad,
         ],200);
+    }
+
+    public function getColaboradorOportunidades(Request $request, $colaborador_id)
+    {
+        $permisos = User::getAuthenticatedUserPermissions();
+        // print_r($colaborador_id);
+        if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
+            $funnel_stages                  = FunnelService::getMisOportunidadesByFunnelStage($colaborador_id);
+            $funnel_stages['colaboradores'] = FunnelService::getColaboradoresWithOportunidades();
+            // $funnel_stages['colaborador']   = $colaborador_id;
+
+            return response()->json([
+                'error'=>false,
+                'data'=>$funnel_stages,
+            ],200);
+        }else{
+            return response()->json([
+                'error'=>true,
+                'data'=>[],
+            ],200);
+        }
     }
    
 }
