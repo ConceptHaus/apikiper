@@ -14,7 +14,7 @@ class EmpresaSeeder extends Seeder
      */
     public function run()
     {
-        // $empresa = factory(Empresa::class,10)->create();
+        $empresa = factory(Empresa::class,10)->create();
         $empresaProspecto = factory(EmpresaProspecto::class,1517)->create();
     }
 }

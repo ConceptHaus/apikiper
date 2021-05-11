@@ -30,6 +30,6 @@ $factory->define(App\Modelos\Empresa\EmpresaProspecto::class, function(Faker $fa
     $prospecto = App\Modelos\Prospecto\Prospecto::pluck('id_prospecto')->toArray();
     return [
         'id_empresa'=>$faker->randomElement($empresa),
-        'id_prospecto'=>$faker->randomElement($prospecto)
+        'id_prospecto'=>$faker->unique()->randomElement($prospecto)
     ];
 });

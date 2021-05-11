@@ -14,15 +14,15 @@ class ProspectosListRep
         $orderBy = ProspectosListRep::getOrderBy($paginacion->nColumn);
 
         if ($rol == 1) {
-            return DB::table('prospectos')
-            ->join('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
-            ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            return DB::table('colaborador_prospecto')
+            ->join('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
+            ->rightjoin('prospectos', 'prospectos.id_prospecto', '=', 'detalle_prospecto.id_prospecto')
             ->join('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
-            ->join('status_prospecto', 'status_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
-            ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
-            ->join('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
-            ->join('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', '=', 'prospectos.id_prospecto')
-            ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
+            ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
+            ->leftjoin('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
+            ->leftjoin('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
+            ->leftjoin('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'colaborador_prospecto.id_prospecto')
+            ->leftjoin('etiquetas', 'etiquetas.id_etiqueta', 'etiquetas_prospectos.id_etiqueta')
             ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
             ->leftjoin('empresas', 'prospectos_empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
             ->wherenull('prospectos.deleted_at')
@@ -93,15 +93,15 @@ class ProspectosListRep
             ->paginate($paginacion->length, ['*'], null, $paginacion->start);
 
         } else if($rol == 2){
-            return DB::table('prospectos')
-            ->join('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
-            ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            return DB::table('colaborador_prospecto')
+            ->join('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
+            ->rightjoin('prospectos', 'prospectos.id_prospecto', '=', 'detalle_prospecto.id_prospecto')
             ->join('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
-            ->join('status_prospecto', 'status_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
-            ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
-            ->join('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
-            ->leftjoin('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', '=', 'prospectos.id_prospecto')
-            ->leftjoin('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
+            ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
+            ->leftjoin('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
+            ->leftjoin('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
+            ->leftjoin('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'colaborador_prospecto.id_prospecto')
+            ->leftjoin('etiquetas', 'etiquetas.id_etiqueta', 'etiquetas_prospectos.id_etiqueta')
             ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
             ->leftjoin('empresas', 'prospectos_empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
             ->wherenull('prospectos.deleted_at')
@@ -307,13 +307,13 @@ class ProspectosListRep
         $search = $paginacion->search;
         $orderBy = ProspectosListRep::getOrderBy($paginacion->nColumn);
 
-        return DB::table('prospectos')
-            ->join('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
-            ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'detalle_prospecto.id_prospecto')
+        return DB::table('colaborador_prospecto')
+            ->join('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
+            ->rightjoin('prospectos', 'prospectos.id_prospecto', '=', 'detalle_prospecto.id_prospecto')
             ->join('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
-            ->join('status_prospecto', 'status_prospecto.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
-            ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
-            ->join('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
+            ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
+            ->leftjoin('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
+            ->leftjoin('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
             ->leftjoin('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'colaborador_prospecto.id_prospecto')
             ->leftjoin('etiquetas', 'etiquetas.id_etiqueta', 'etiquetas_prospectos.id_etiqueta')
             ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
@@ -387,7 +387,7 @@ class ProspectosListRep
 
             )
             ->orderBy($orderBy, $paginacion->order)
-            ->groupby('colaborador_prospecto.id_colaborador_prospecto')
+            ->groupby('prospectos.id_prospecto')
             ->paginate($paginacion->length, ['*'], null, $paginacion->start);
     }
 
@@ -416,17 +416,17 @@ class ProspectosListRep
         $search = $paginacion->search;
         $orderBy = ProspectosListRep::getOrderBy($paginacion->nColumn);
         
-        return DB::table('prospectos')
-            ->join('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
-            ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+        return DB::table('colaborador_prospecto')
+            ->join('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
+            ->rightjoin('prospectos', 'prospectos.id_prospecto', '=', 'detalle_prospecto.id_prospecto')
             ->join('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
-            ->join('status_prospecto', 'status_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
-            ->join('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
-            ->join('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
+            ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
+            ->leftjoin('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
+            ->leftjoin('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
             ->leftjoin('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'colaborador_prospecto.id_prospecto')
             ->leftjoin('etiquetas', 'etiquetas.id_etiqueta', 'etiquetas_prospectos.id_etiqueta')
-            ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'prospectos.id_prospecto')
-            ->leftjoin('empresas', 'empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
+            ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
+            ->leftjoin('empresas', 'prospectos_empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
             ->wherenull('prospectos.deleted_at')
             ->where('users.id', '=', $id_colaborador)
             ->where(function ($query) use ($search) {
