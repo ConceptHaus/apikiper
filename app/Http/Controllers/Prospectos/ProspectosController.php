@@ -73,6 +73,7 @@ class ProspectosController extends Controller
                 $prospecto->nombre = $request->nombre;
                 $prospecto->apellido = $request->apellido;
                 $prospecto->correo = $request->correo;
+                $prospectoDetalle->extension = $request->extension;
                 $prospectoDetalle->telefono = $request->telefono;
                 $prospectoDetalle->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular),10);
                 $prospectoDetalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
@@ -147,6 +148,9 @@ class ProspectosController extends Controller
                             $detalle_oportunidad->valor = $oportunidad['valor'];
                         else
                             $detalle_oportunidad->valor = 0;
+
+                        if(isset($oportunidad['meses']))
+                            $detalle_oportunidad->meses = $oportunidad['meses'];
                         $nueva_oportunidad->detalle_oportunidad()->save($detalle_oportunidad);
 
 
@@ -547,6 +551,7 @@ class ProspectosController extends Controller
                 $detalle_oportunidad = new DetalleOportunidad;
                 $detalle_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                 $detalle_oportunidad->valor = $request->valor;
+                $detalle_oportunidad->meses = $request->meses;
                 $detalle_oportunidad->save();
 
                 //Cambio de Status Prospecto
@@ -933,7 +938,16 @@ class ProspectosController extends Controller
         ]);
     }
 
-    public function downloadProspectos($admin,$rol,$id_user){
+    public function downloadProspectos($admin,$rol,$id_user, $correos, $nombre, $telefono, $status, $grupo, $etiquetas, $fechaInicio, $fechaFin, $colaboradores){
+        $correos = json_decode($correos);
+        $nombre = json_decode($nombre);
+        $telefono = json_decode($telefono);
+        $status = json_decode($status);
+        $fuente = json_decode($grupo);
+        $etiqueta = json_decode($etiquetas);
+        $fechaInicio = json_decode($fechaInicio);
+        $fechaFin = json_decode($fechaFin);
+        $colaboradores = json_decode($colaboradores);
         
         $date = Carbon::now();
         $headings = [
@@ -946,7 +960,8 @@ class ProspectosController extends Controller
             'Mail',
             'Comentarios',
             'Seguimiento',
-            'Etiquetas'
+            'Etiquetas',
+            'Empresa'
         ];
         if($admin && $rol == 0){
              $desarrollo = 'all';
@@ -960,17 +975,17 @@ class ProspectosController extends Controller
         else if(!$admin && $rol == 0){
             $desarrollo = 'user';
         }
-        return (new ProspectosReports($headings,$desarrollo,$id_user))->download("{$date}_{$desarrollo}_reporte.xlsx");
+        return (new ProspectosReports($headings,$desarrollo,$id_user, $correos, $nombre, $telefono, $status, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores))->download("{$date}_{$desarrollo}_reporte.xlsx");
     }
 
     //Functiones auxiliares
     public function validadorProspectos(array $data){
 
         return Validator::make($data,[
-            'nombre'=>'required|string|max:255',
+            // 'nombre'=>'required|string|max:255',
             //'apellido'=>'required|string|max:255',
             'correo'=>'required|email|max:255|unique:prospectos,correo',
-            'telefono'=>'required|unique:detalle_prospecto,telefono|'
+            // 'telefono'=>'unique:detalle_prospecto,telefono|'
 
         ]);
 
