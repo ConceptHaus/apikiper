@@ -17,7 +17,7 @@ class CreateTableProspectosEmpresas extends Migration
         Schema::create('prospectos_empresas', function (Blueprint $table) {
             $table->increments('id_prospecto_empresa')->unsigned();
 
-            $table->uuid('id_prospecto');
+            $table->uuid('id_prospecto')->unique();
             $table->foreign('id_prospecto')->references('id_prospecto')->on('prospectos')->onDelete('cascade');
 
             $table->uuid('id_empresa');

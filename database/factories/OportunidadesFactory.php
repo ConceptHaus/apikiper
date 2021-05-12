@@ -12,7 +12,8 @@ $factory->define(App\Modelos\Oportunidad\Oportunidad::class, function (Faker $fa
 $factory->define(App\Modelos\Oportunidad\DetalleOportunidad::class, function (Faker $faker) {
     return [
         'descripcion'=> $faker->realText($maxNbChars = 30),
-        'valor'=>$faker->numberBetween($min=80000, $max=660000)
+        'valor'=>$faker->numberBetween($min=80000, $max=660000),
+        'meses'=>$faker->randomDigit()
     ];
 });
 

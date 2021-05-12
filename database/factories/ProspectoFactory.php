@@ -20,6 +20,7 @@ $factory->define(App\Modelos\Prospecto\DetalleProspecto::class, function (Faker 
         'celular'=>$faker->tollFreePhoneNumber,
         'whatsapp'=>$faker->e164PhoneNumber,
         'nota'=>$faker->sentence,
+        'extension'=>$faker->buildingNumber,
     ];
 });
 
