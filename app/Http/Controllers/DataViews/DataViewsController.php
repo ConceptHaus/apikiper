@@ -478,7 +478,7 @@ class DataViewsController extends Controller
                             ->whereNull('status_oportunidad.deleted_at')
                             ->whereNull('servicio_oportunidad.deleted_at')
                             ->whereNull('users.deleted_at')
-                            ->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','detalle_oportunidad.valor','cat_status_oportunidad.status','cat_status_oportunidad.color as color_status','cat_status_oportunidad.id_cat_status_oportunidad as id_status','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.nombre as fuente_url','oportunidades.created_at','users.id as id_colaborador', 'users.nombre as asignado_nombre', 'users.apellido as asignado_apellido')
+                            ->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','detalle_oportunidad.valor','detalle_oportunidad.meses','cat_status_oportunidad.status','cat_status_oportunidad.color as color_status','cat_status_oportunidad.id_cat_status_oportunidad as id_status','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.nombre as fuente_url','oportunidades.created_at','users.id as id_colaborador', 'users.nombre as asignado_nombre', 'users.apellido as asignado_apellido')
                             ->orderBy('status_oportunidad.updated_at','desc')
                             ->get();
 
@@ -576,7 +576,7 @@ class DataViewsController extends Controller
                             ->wherenull('oportunidad_prospecto.deleted_at')
                             ->wherenull('prospectos.deleted_at')
                             ->wherenull('status_oportunidad.deleted_at')
-                            ->wherenull('servicio_oportunidad.deleted_at')->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','detalle_oportunidad.valor','cat_status_oportunidad.status','cat_status_oportunidad.id_cat_status_oportunidad as id_status','cat_status_oportunidad.color as color_status','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','users.id as id_colaborador','users.nombre as asignado_nombre', 'users.apellido as asignado_apellido','oportunidades.created_at')
+                            ->wherenull('servicio_oportunidad.deleted_at')->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','detalle_oportunidad.valor','detalle_oportunidad.meses','cat_status_oportunidad.status','cat_status_oportunidad.id_cat_status_oportunidad as id_status','cat_status_oportunidad.color as color_status','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','users.id as id_colaborador','users.nombre as asignado_nombre', 'users.apellido as asignado_apellido','oportunidades.created_at')
                             ->where('colaborador_oportunidad.id_colaborador','=',$id)
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',intval($status))
                             ->get();
@@ -2533,7 +2533,7 @@ class DataViewsController extends Controller
     public function ingresos_por_periodo_por_status($inicio, $fin, $status,$auth)
     {   
         if($auth->is_admin){
-            return DB::table('oportunidades')
+            $ingresos = DB::table('oportunidades')
                 ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
                 ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                 ->wherenull('oportunidades.deleted_at')
@@ -2541,7 +2541,13 @@ class DataViewsController extends Controller
                 ->wherenull('status_oportunidad.deleted_at')
                 ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
                 ->where('status_oportunidad.id_cat_status_oportunidad',$status)
-                ->sum('detalle_oportunidad.valor');   
+                ->select(DB::raw('sum(detalle_oportunidad.valor * detalle_oportunidad.meses) as valor'))
+                ->get();
+            
+            foreach ($ingresos as $ingreso) {
+                $ingresos = $ingreso->valor;
+            }
+            return $ingresos;
         }
             return DB::table('oportunidades')
                 ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
@@ -2552,8 +2558,13 @@ class DataViewsController extends Controller
                 ->wherenull('detalle_oportunidad.deleted_at')
                 ->wherenull('status_oportunidad.deleted_at')
                 ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
-                ->where('status_oportunidad.id_cat_status_oportunidad',$status)
-                ->sum('detalle_oportunidad.valor');
+                ->select(DB::raw('sum(detalle_oportunidad.valor * detalle_oportunidad.meses) as valor'))
+                ->get();
+            
+            foreach ($ingresos as $ingreso) {
+                $ingresos = $ingreso->valor;
+            }
+            return $ingresos;
             
     }
 

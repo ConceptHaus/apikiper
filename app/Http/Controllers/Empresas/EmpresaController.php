@@ -17,6 +17,7 @@ use DB;
 
 class EmpresaController extends Controller
 {
+
     public function registerCompany(Request $request){
         
         try{
