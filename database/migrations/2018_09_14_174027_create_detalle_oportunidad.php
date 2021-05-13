@@ -23,6 +23,7 @@ class CreateDetalleOportunidad extends Migration
 
             $table->string('descripcion')->nullable();
             $table->integer('valor')->nullable();
+            $table->integer('meses')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
