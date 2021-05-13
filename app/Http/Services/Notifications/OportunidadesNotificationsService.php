@@ -13,6 +13,13 @@ class OportunidadesNotificationsService
         return OportunidadesNotificationsRep::getOportunidadesToSendNotifications($start_date);
     }
 
+    public static function getOportunidadesToEscalateForAdmin()
+    {
+       
+        $max_notification_attempts = SettingsService::getOportunidadesMaxNotificationAttempts();
+        return OportunidadesNotificationsRep::getOportunidadesToEscalateForAdmin($max_notification_attempts);
+    }
+
     public static function getTimeStampAsStartDate($hours)
     {
         $now        = date('Y-m-d H:i:s');

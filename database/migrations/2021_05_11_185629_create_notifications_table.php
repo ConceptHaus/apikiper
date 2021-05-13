@@ -19,7 +19,7 @@ class CreateNotificationsTable extends Migration
             $table->uuid('source_id');
             $table->enum('notification_type', ['prospecto', 'oportunidad']);
             $table->integer('inactivity_period')->comment('amount|hours');
-            $table->enum('status', ['no-leido', 'leido'])->default('no-leido');
+            $table->enum('status', ['no-leido', 'leido', 'escalado','resuelto'])->default('no-leido');
             $table->integer('attempts')->default(0);
             $table->timestamps();
         });

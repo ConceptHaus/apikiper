@@ -13,4 +13,8 @@ class NotificationsController extends Controller
     public function getOportunidadesToSendNotifications(){
         return OportunidadesNotificationsService::getOportunidadesToSendNotifications();
     }
+
+    public function getOportunidadesToEscalateForAdmin(){
+        return OportunidadesNotificationsService::getOportunidadesToEscalateForAdmin();
+    }
 }

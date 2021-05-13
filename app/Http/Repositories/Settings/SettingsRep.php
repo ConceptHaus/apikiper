@@ -13,4 +13,11 @@ class SettingsRep
         return $setting->value;
     }
 
+    public static function getOportunidadesNotificationAttempts()
+    {
+        $setting = Setting::where('setting', 'oportunidades_max_notification_attempt')->first();
+
+        return $setting->value;
+    }
+
 }

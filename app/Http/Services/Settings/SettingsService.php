@@ -18,4 +18,8 @@ class SettingsService
         }
         return $hours;
     }
+
+    public static function getOportunidadesMaxNotificationAttempts(){
+        return SettingsRep::getOportunidadesNotificationAttempts();   
+    }
 }

@@ -31,4 +31,29 @@ class OportunidadesNotificationsRep
         return $oportunidades;
     }
 
+    public static function getOportunidadesToEscalateForAdmin($attempts){
+        
+        $oportunidades  = Notification::select ('notifications.id',
+                                                'notifications.colaborador_id',
+                                                'notifications.source_id',
+                                                'notifications.notification_type',
+                                                'notifications.status as notification_status',
+                                                'notifications.attempts',
+                                                'detalle_oportunidad.valor',
+                                                'cat_status_oportunidad.status',
+                                                'notifications.inactivity_period',
+                                                'users.nombre',
+                                                'users.apellido',
+                                                'users.email')
+                                        ->join('users','notifications.colaborador_id','users.id')
+                                        ->join('status_oportunidad','notifications.source_id','status_oportunidad.id_oportunidad')
+                                        ->join('detalle_oportunidad','notifications.source_id','detalle_oportunidad.id_oportunidad')
+                                        ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                                        ->where('notifications.attempts', '>=', $attempts)
+                                        ->where('notifications.status', '!=', 'resuelto')
+                                        ->get();
+        
+        return $oportunidades;
+    }
+
 }
