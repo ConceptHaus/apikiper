@@ -14,7 +14,7 @@ class UpdateUniqueIdProspectoToProspectosEmpresas extends Migration
     public function up()
     {
         Schema::table('prospectos_empresas', function (Blueprint $table) {
-            $table->uuid('id_prospecto')->unique()->change();
+            $table->unique('id_prospecto')->change();
         });
     }
 
