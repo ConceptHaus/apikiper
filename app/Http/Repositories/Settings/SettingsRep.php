@@ -16,6 +16,11 @@ class SettingsRep
     public static function getOportunidadesNotificationAttempts()
     {
         $setting = Setting::where('setting', 'oportunidades_max_notification_attempt')->first();
+    }
+    
+    public static function getProspectosMaxTimeInactivity()
+    {
+        $setting = Setting::where('setting', 'prospectos_max_time_inactivity')->first();
 
         return $setting->value;
     }

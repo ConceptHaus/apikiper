@@ -296,5 +296,6 @@ Route::prefix('/v1/notifcations')->group(function(){
     // Route::middleware(['auth','cors'])->group(function(){
         Route::get('/oportunidades','Notifications\NotificationsController@getOportunidadesToSendNotifications');
         Route::get('/oportunidades-to-be-escalated','Notifications\NotificationsController@getOportunidadesToEscalateForAdmin');
+        Route::get('/prospectos','Notifications\NotificationsController@getProspectosToSendNotifications');
     // });
 });

@@ -25,6 +25,8 @@ class UpdateUniqueIdProspectoToProspectosEmpresas extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('prospectos_empresas', function (Blueprint $table) {
+            $table->dropUnique('id_prospecto');
+        });
     }
 }

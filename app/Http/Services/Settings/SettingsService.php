@@ -9,6 +9,11 @@ class SettingsService
         return SettingsService::getValueInHours($setting);
     }
 
+    public static function getProspectosMaxTimeInactivity(){
+        $setting = SettingsRep::getProspectosMaxTimeInactivity();
+        return SettingsService::getValueInHours($setting);
+    }
+
     public static function getValueInHours($value)
     {
         $values = explode("|", $value);
