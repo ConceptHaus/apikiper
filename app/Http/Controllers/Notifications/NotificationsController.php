@@ -10,11 +10,14 @@ use Auth;
 
 class NotificationsController extends Controller
 {
-    public function getOportunidadesToSendNotifications(){
+    public function getOportunidadesToSendNotifications()
+    {
         return OportunidadesNotificationsService::getOportunidadesToSendNotifications();
     }
 
-    public function getOportunidadesToEscalateForAdmin(){
-        return OportunidadesNotificationsService::getOportunidadesToEscalateForAdmin();
+    public function getOportunidadesToEscalateForAdmin()
+    {
+       return OportunidadesNotificationsService::getOportunidadesToEscalateForAdmin();
     }
+
 }

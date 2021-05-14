@@ -56,4 +56,24 @@ class OportunidadesNotificationsRep
         return $oportunidades;
     }
 
+    public static function increaseAttemptsforExisitingNotification($oportunidad_id)
+    {
+        $oportunidad = Notification::where('source_id', $oportunidad_id)->where('notification_type', 'oportunidad')->first();
+
+        if (!empty($oportunidad)) {
+            $oportunidad->attempts = $oportunidad->attempts + 1;
+            $oportunidad->save();
+        }
+    }
+
+    public static function changeStatusforExisitingNotification($oportunidad_id, $new_status)
+    {
+        $oportunidad = Notification::where('source_id', $oportunidad_id)->first();
+
+        if (!empty($oportunidad)) {
+            $oportunidad->status = $new_status;
+            $oportunidad->save();
+        }
+    }
+
 }
