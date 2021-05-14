@@ -12,7 +12,7 @@ class OportunidadesNotificationsRep
         $end_date = date('Y-m-d H:i:s');
 
         $oportunidades =    Oportunidad::select('oportunidades.id_oportunidad',
-                                                'oportunidades.nombre_oportunidad',
+                                                'oportunidades.nombre_oportunidad')
                                                 'status_oportunidad.updated_at',
                                                 'detalle_oportunidad.valor',
                                                 'cat_status_oportunidad.status',

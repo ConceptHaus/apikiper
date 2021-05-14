@@ -13,4 +13,11 @@ class SettingsRep
         return $setting->value;
     }
 
+    public static function getProspectosMaxTimeInactivity()
+    {
+        $setting = Setting::where('setting', 'prospectos_max_time_inactivity')->first();
+
+        return $setting->value;
+    }
+
 }
