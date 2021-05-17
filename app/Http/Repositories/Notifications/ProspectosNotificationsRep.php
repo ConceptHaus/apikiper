@@ -4,6 +4,7 @@ namespace App\Http\Repositories\Notifications;
 
 use App\Modelos\Notification;
 use App\Modelos\Prospecto\Prospecto;
+use DB;
 
 class ProspectosNotificationsRep
 {
