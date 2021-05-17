@@ -1,30 +1,38 @@
 <?php
 namespace App\Http\Services\Settings;
 use App\Http\Repositories\Settings\SettingsRep;
+use App\Http\Services\UtilService;
 
 class SettingsService
 {
-    public static function getOportunidadesMaxTimeInactivity(){
-        $setting = SettingsRep::getOportunidadesMaxTimeInactivity();
-        return SettingsService::getValueInHours($setting);
-    }
+    /*
+    | Oportunidades
+    */
 
-    public static function getProspectosMaxTimeInactivity(){
-        $setting = SettingsRep::getProspectosMaxTimeInactivity();
-        return SettingsService::getValueInHours($setting);
-    }
-
-    public static function getValueInHours($value)
+    public static function getOportunidadesMaxTimeInactivity()
     {
-        $values = explode("|", $value);
-        $hours  = $values[0];
-        if ($values[1] == "days") {
-            $hours = $values[0] * 24;
-        }
-        return $hours;
+        $setting = SettingsRep::getOportunidadesMaxTimeInactivity();
+        return UtilService::getValueInHours($setting);
     }
 
-    public static function getOportunidadesMaxNotificationAttempts(){
-        return SettingsRep::getOportunidadesNotificationAttempts();   
+    public static function getOportunidadesMaxNotificationAttempts()
+    {
+        return SettingsRep::getOportunidadesMaxNotificationAttempts();   
     }
+
+    /*
+    | Prospectos
+    */
+
+    public static function getProspectosMaxTimeInactivity()
+    {
+        $setting = SettingsRep::getProspectosMaxTimeInactivity();
+        return UtilService::getValueInHours($setting);
+    }
+
+    public static function getProspectosMaxNotificationAttempts()
+    {
+        return SettingsRep::getProspectosMaxNotificationAttempts();   
+    }
+    
 }

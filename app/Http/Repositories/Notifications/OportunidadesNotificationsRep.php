@@ -12,13 +12,14 @@ class OportunidadesNotificationsRep
         $end_date = date('Y-m-d H:i:s');
 
         $oportunidades =    Oportunidad::select('oportunidades.id_oportunidad',
-                                                'oportunidades.nombre_oportunidad')
+                                                'oportunidades.nombre_oportunidad',
                                                 'status_oportunidad.updated_at',
                                                 'detalle_oportunidad.valor',
                                                 'cat_status_oportunidad.status',
                                                 'users.nombre',
                                                 'users.apellido',
-                                                'users.email')
+                                                'users.email',
+                                                'users.id as colaborador_id')
                                         ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                                         ->join('users','colaborador_oportunidad.id_colaborador','users.id')
                                         ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
@@ -31,7 +32,7 @@ class OportunidadesNotificationsRep
         return $oportunidades;
     }
 
-    public static function getOportunidadesToEscalateForAdmin($attempts){
+    public static function getOportunidadesToEscalateForAdmin($max_notification_attempts){
         
         $oportunidades  = Notification::select ('notifications.id',
                                                 'notifications.colaborador_id',
@@ -49,14 +50,14 @@ class OportunidadesNotificationsRep
                                         ->join('status_oportunidad','notifications.source_id','status_oportunidad.id_oportunidad')
                                         ->join('detalle_oportunidad','notifications.source_id','detalle_oportunidad.id_oportunidad')
                                         ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
-                                        ->where('notifications.attempts', '>=', $attempts)
+                                        ->where('notifications.attempts', '>=', $max_notification_attempts)
                                         ->where('notifications.status', '!=', 'resuelto')
                                         ->get();
         
         return $oportunidades;
     }
 
-    public static function increaseAttemptsforExisitingNotification($oportunidad_id)
+    public static function increaseAttemptsforExisitingOportunidadNotification($oportunidad_id)
     {
         $oportunidad = Notification::where('source_id', $oportunidad_id)->where('notification_type', 'oportunidad')->first();
 
@@ -66,7 +67,7 @@ class OportunidadesNotificationsRep
         }
     }
 
-    public static function changeStatusforExisitingNotification($oportunidad_id, $new_status)
+    public static function changeStatusforExisitingOportunidadNotification($oportunidad_id, $new_status)
     {
         $oportunidad = Notification::where('source_id', $oportunidad_id)->first();
 

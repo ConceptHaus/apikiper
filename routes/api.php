@@ -294,8 +294,11 @@ Route::prefix('/v1/status_oportunidades')->group(function(){
 
 Route::prefix('/v1/notifcations')->group(function(){
     // Route::middleware(['auth','cors'])->group(function(){
+        // Oportunidades
         Route::get('/oportunidades','Notifications\NotificationsController@getOportunidadesToSendNotifications');
         Route::get('/oportunidades-to-be-escalated','Notifications\NotificationsController@getOportunidadesToEscalateForAdmin');
+        // Prospectos
         Route::get('/prospectos','Notifications\NotificationsController@getProspectosToSendNotifications');
+        Route::get('/prospectos-to-be-escalated','Notifications\NotificationsController@getProspectosToEscalateForAdmin');
     // });
 });
