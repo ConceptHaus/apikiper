@@ -13,6 +13,10 @@ class ProspectosNotificationsService
         return ProspectosNotificationsRep::getProspectosToSendNotifications($start_date);
     }
 
+    public static function insertProspectosToSendNotifications($prospectos){
+        return ProspectosNotificationsRep::insertProspectosToSendNotifications($prospectos);
+    }
+
     public static function getTimeStampAsStartDate($hours)
     {
         $now        = date('Y-m-d H:i:s');

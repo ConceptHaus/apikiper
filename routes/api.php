@@ -293,8 +293,10 @@ Route::prefix('/v1/status_oportunidades')->group(function(){
 });
 
 Route::prefix('/v1/notifcations')->group(function(){
+    Route::get('/oportunidades','Notifications\NotificationsController@getOportunidadesToSendNotifications');
+    Route::get('/prospectos','Notifications\NotificationsController@getProspectosToSendNotifications');
+    Route::get('/countNotifications','Notifications\NotificationsController@countNotifications');
     Route::middleware(['auth','cors'])->group(function(){
-        Route::get('/oportunidades','Notifications\NotificationsController@getOportunidadesToSendNotifications');
-        Route::get('/prospectos','Notifications\NotificationsController@getProspectosToSendNotifications');
+        
     });
 });

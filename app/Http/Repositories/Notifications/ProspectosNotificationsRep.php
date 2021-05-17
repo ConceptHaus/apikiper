@@ -4,6 +4,7 @@ namespace App\Http\Repositories\Notifications;
 
 use App\Modelos\Notification;
 use App\Modelos\Prospecto\Prospecto;
+use DB;
 
 class ProspectosNotificationsRep
 {
@@ -16,6 +17,7 @@ class ProspectosNotificationsRep
                                                 'status_prospecto.updated_at',
                                                 'detalle_prospecto.telefono',
                                                 'cat_status_prospecto.status',
+                                                'colaborador_prospecto.id_colaborador',
                                                 'users.nombre',
                                                 'users.apellido',
                                                 'users.email')
@@ -29,6 +31,13 @@ class ProspectosNotificationsRep
                                         ->get();
         
         return $prospectos;
+    }
+
+    public static function insertProspectosToSendNotifications($prospectos){
+
+        foreach ($prospectos as $key => $value) {
+            DB::table('notifications')->insert(['colaborador_id'=>$value['id_colaborador'],'source_id'=>$value['id_prospecto'],'notification_type'=>'prospecto' ,'inactivity_period'=> 48, 'status'=>'no-leido', 'attempts'=>1, 'created_at'=>now(), 'updated_at'=>now()]);
+        }
     }
 
 }

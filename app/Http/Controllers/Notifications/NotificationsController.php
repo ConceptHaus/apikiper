@@ -18,4 +18,13 @@ class NotificationsController extends Controller
     public function getProspectosToSendNotifications(){
         return ProspectosNotificationsService::getProspectosToSendNotifications();
     }
+
+    public function insertProspectosToSendNotifications(){
+        $prospectos = ProspectosNotificationsService::getProspectosToSendNotifications();
+        return ProspectosNotificationsService::insertProspectosToSendNotifications($prospectos);
+    }
+
+    public function countNotifications(){
+        return 5;
+    }
 }

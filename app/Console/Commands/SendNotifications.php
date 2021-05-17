@@ -5,6 +5,9 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;
 
+use App\Http\Controllers\Notifications\NotificationsController;
+use DB;
+
 class SendNotifications extends Command
 {
     /**
@@ -38,7 +41,9 @@ class SendNotifications extends Command
      */
     public function handle()
     {
-        Schema::drop('prueba');
-        $this->info('Word of the Day sent to All Users');
+        $notificaciones = new NotificationsController;
+        $notificaciones->insertProspectosToSendNotifications();
+
+        $this->info('Se ejecuto la funcion con exito');
     }
 }
