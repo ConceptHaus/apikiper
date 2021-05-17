@@ -43,26 +43,27 @@ class NewAssigmentListener
                     'id'=>'4f0b2f78-c6a0-4bab-9054-ede329cb5ce9',
                     'nombre'=>'Berenice Iturbide',
                     'fechas' => [
-                        //Código de guardia 140
-                        // Jueves 15 abril 15:00 PM-12:00 AM
-                        // Jueves 22 abril 12:00 AM-3:00 PM
-                        // Lunes 26 abril 15:00 PM-12:00 AM
-                        [Carbon::create(2021,4,15,15,0,1),Carbon::create(2021,4,15,24,0,0)],
-                        [Carbon::create(2021,4,22,01,0,1),Carbon::create(2021,4,22,15,0,0)],
-                        [Carbon::create(2021,4,26,15,0,1),Carbon::create(2021,4,26,24,0,0)]
+                        //Código de guardia 140 AZUL
+                        // Miércoles 12 mayo 15:00 PM-24:00 PM
+                        // Miércoles 18 mayo 10:00 PM -15:00 PM
+                        // Jueves 20 mayo 15:00 PM- 24:00 AM
+                        
+                        [Carbon::create(2021,5,12,15,0,1),Carbon::create(2021,5,12,24,0,0)],
+                        [Carbon::create(2021,5,18,24,0,1),Carbon::create(2021,5,18,15,0,0)],
+                        [Carbon::create(2021,5,20,15,0,1),Carbon::create(2021,5,20,24,0,0)]
                     ]
                 ],
                 'ejecutivo_1' => [
                     'id'=>'3d7bff59-b743-4949-bb51-51716e73a942',
                     'nombre'=>'Álvaro Sainz',
                     'fechas'=>[
-                        //Código de guardia 160
-                        // Miércoles 14 Marzo 12:00 AM-3:00 PM
-                        // Lunes 19 Marzo 12:00 AM-3:00 PM
-                        // Viernes 23 Marzo 15:00 PM-12:00 AM
-                        [Carbon::create(2021,4,14,00,0,1),Carbon::create(2021,4,14,15,0,0)],
-                        [Carbon::create(2021,4,19,00,0,1),Carbon::create(2021,4,19,15,0,0)],
-                        [Carbon::create(2021,4,23,15,0,1),Carbon::create(2021,4,23,24,0,0)]
+                        //Código de guardia 160 VERDE
+                        // Miércoles 12 Mayo 10:00 AM-15:00 PM
+                        // Lunes 17 Mayo 15:00 AM-19:00 PM
+                        // Viernes 21 Mayo 10:00 PM-15:00 PM
+                        [Carbon::create(2021,5,12,24,0,1),Carbon::create(2021,5,12,10,0,0)],
+                        [Carbon::create(2021,5,17,15,0,1),Carbon::create(2021,5,17,24,0,0)],
+                        [Carbon::create(2021,5,21,24,0,1),Carbon::create(2021,5,21,15,0,0)]
                     ]
                     
                 ],
@@ -80,13 +81,13 @@ class NewAssigmentListener
                     'id'=>'6fba4841-31cf-40f8-af8e-7a5544b81557',
                     'nombre'=>'José Jaime Flores',
                     'fechas'=>[
-                        //Código de guardia 31
-                        // Miércoles 14 abril 15:00 PM-12:00 AM
-                        // Martes 20 abril 12:00 AM-3:00 PM
-                        // Sábado 24 abril 12:00 AM-3:00 PM
-                        [Carbon::create(2021,4,14,15,0,1),Carbon::create(2021,4,14,24,0,0)],
-                        [Carbon::create(2021,4,20,00,0,1),Carbon::create(2021,4,20,15,0,0)],
-                        [Carbon::create(2021,4,24,00,0,1),Carbon::create(2021,4,24,15,0,0)]                  
+                        //Código de guardia 31 NARANJA
+                        // Lunes 10 mayo 10:00 AM - 15:00 PM
+                        // Viernes 14 mayo 15:00 PM - 19:00 PM
+                        // Jueves 20 mayo 10:00 AM - 3:00 PM
+                        [Carbon::create(2021,5,10,24,0,1),Carbon::create(2021,5,10,15,0,0)],
+                        [Carbon::create(2021,5,14,15,0,1),Carbon::create(2021,5,14,24,0,0)],
+                        [Carbon::create(2021,5,20,24,0,1),Carbon::create(2021,5,20,15,0,0)]                  
                     ]       
                 ],
                 'ejecutivo_3'=>[
@@ -94,26 +95,26 @@ class NewAssigmentListener
                     //id anterior 51b9ddd4-262d-4d96-a8f9-655b10a38b86
                     'nombre'=>'Gloria Macias',
                     'fechas'=>[
-                        //Código de guardia 39
-                        // Jueves 15 abril 00:00 PM - 15:00 PM
-                        // Martes 20 abril 15:00 PM - 24:00 AM
-                        // Viernes 23 abril 00:00 PM - 15:00 AM
-                        [Carbon::create(2021,4,15,00,0,1),Carbon::create(2021,4,15,15,0,0)],
-                        [Carbon::create(2021,4,20,15,0,1),Carbon::create(2021,4,20,24,0,0)],
-                        [Carbon::create(2021,4,23,00,0,1),Carbon::create(2021,4,23,15,0,0)]                           
+                        //Código de guardia 39 ROJO
+                        // Jueves 13 Mayo 15:00 PM - 19:00 PM
+                        // Miércoles 19 Mayo 10:00 AM - 15:00 AM
+                        // Viernes 24 Mayo 10:00 AM - 15:00 AM
+                        [Carbon::create(2021,5,13,15,0,1),Carbon::create(2021,5,13,24,0,0)],
+                        [Carbon::create(2021,5,19,24,0,1),Carbon::create(2021,5,19,10,0,0)],
+                        [Carbon::create(2021,5,24,24,0,1),Carbon::create(2021,5,24,10,0,0)]                           
                     ]       
                 ], 
                 'ejecutivo_4'=>[
                     'id'=>'820fccc7-f20a-4505-8848-874d3a5d0944',
                     'nombre'=>'Laura Flores',
                     'fechas'=>[
-                        //Código de guardia 87
-                        // Lunes 12 abril 15:00 PM - 24:00 AM
-                        // Sábado 17 abril 00:00 PM - 15:00 PM
-                        // Jueves 22 abril 15:00 PM - 24:00 AM
-                        [Carbon::create(2021,4,12,15,0,1),Carbon::create(2021,4,12,24,0,0)],
-                        [Carbon::create(2021,4,17,00,0,1),Carbon::create(2021,4,17,15,0,0)],
-                        [Carbon::create(2021,4,22,15,0,1),Carbon::create(2021,4,22,24,0,0)]
+                        //Código de guardia 87 MOSTAZA
+                        // Jueves 13 Mayo 10:00 AM - 15:00 PM
+                        // Lunes 17 Mayo 10:00 AM - 15:00 PM
+                        // Lunes 24 Mayo 15:00 PM - 24:00 AM
+                        [Carbon::create(2021,5,13,24,0,1),Carbon::create(2021,5,13,15,0,0)],
+                        [Carbon::create(2021,5,17,24,0,1),Carbon::create(2021,5,17,15,0,0)],
+                        [Carbon::create(2021,5,24,15,0,1),Carbon::create(2021,5,24,24,0,0)]
                     ]       
                 ],
                 'ejecutivo_5'=>[
@@ -131,28 +132,27 @@ class NewAssigmentListener
                     'id'=>'16ab8dac-4083-4b8a-8d39-2c923688c810',
                     'nombre'=>'José Rentería',
                     'fechas'=>[
-                        // Código de guardia 59
-                        // Martes 13 abril 15:00 PM - 24:00 AM
-                        // Viernes 16 abril 01:00 AM - 15:00 PM
-                        // Miércoles 21 abril 15:00 PM - 24:00 AM
-                        [Carbon::create(2021,4,13,15,0,1),Carbon::create(2021,4,13,24,0,0)],
-                        [Carbon::create(2021,4,16,00,0,1),Carbon::create(2021,4,16,15,0,0)],
-                        [Carbon::create(2021,4,21,15,0,1),Carbon::create(2021,4,21,24,0,0)]
+                        // Código de guardia 59 ROSA
+                        // Lunes 10 Mayo 15:00 PM - 24:00 AM
+                        // Viernes 14 Mayo 10:00 AM - 15:00 PM
+                        // Sábado 22 Mayo 10:00 AM - 15:00 PM
+                        [Carbon::create(2021,5,10,15,0,1),Carbon::create(2021,5,10,24,0,0)],
+                        [Carbon::create(2021,5,14,24,0,1),Carbon::create(2021,5,14,15,0,0)],
+                        [Carbon::create(2021,5,22,24,0,1),Carbon::create(2021,5,22,15,0,0)]
                     ]       
                 ],
                 'ejecutivo_7'=>[
                     'id'=>'c6092094-bd54-445e-848d-4bd3fb79bd7e',
                     'nombre'=>'Mauricio Montaño',
                     'fechas'=>[
-                        // Código de guardia 72
-                        // Martes 13 abril 01:00 AM - 15:00 PM
-                        // Viernes 16 abril 01:00 AM - 15:00 PM
-                        // Lunes 19 abril 15:00 PM - 24:00 AM
-                        // Lunes 26 abril 01:00 AM - 15:00 PM
-                        [Carbon::create(2021,4,13,00,0,1),Carbon::create(2021,4,13,15,0,0)],
-                        [Carbon::create(2021,4,16,00,0,1),Carbon::create(2021,4,16,15,0,0)],
-                        [Carbon::create(2021,4,19,15,0,1),Carbon::create(2021,4,19,24,0,0)],
-                        [Carbon::create(2021,4,26,00,0,1),Carbon::create(2021,4,26,15,0,0)]
+                        // Código de guardia 72 MORADO
+                        // Martes 11 Mayo 10:00 AM - 15:00 PM
+                        // Martes 18 Mayo 15:00 PM - 19:00 PM
+                        // Viernes 21 Mayo 15:00 PM - 19:00 PM
+
+                        [Carbon::create(2021,5,11,24,0,1),Carbon::create(2021,5,11,15,0,0)],
+                        [Carbon::create(2021,5,18,15,0,1),Carbon::create(2021,5,18,24,0,0)],
+                        [Carbon::create(2021,5,21,15,0,1),Carbon::create(2021,5,21,24,0,0)]
                     ]       
                 ],
                 'ejecutivo_8'=>[
