@@ -7,8 +7,8 @@ use App\Modelos\Oportunidad\Oportunidad;
 
 class OportunidadesNotificationsRep
 {
-    public static function getOportunidadesToSendNotifications($start_date){
-        
+    public static function getOportunidadesToSendNotifications($start_date)
+    {
         $end_date = date('Y-m-d H:i:s');
 
         $oportunidades =    Oportunidad::select('oportunidades.id_oportunidad',
@@ -27,12 +27,14 @@ class OportunidadesNotificationsRep
                                         ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
                                         ->where('status_oportunidad.updated_at', '<=', $start_date)
                                         ->groupBy('oportunidades.id_oportunidad')
-                                        ->get();
+                                        ->get()
+                                        ->toArray();
         
         return $oportunidades;
     }
 
-    public static function getOportunidadesToEscalateForAdmin($max_notification_attempts){
+    public static function getOportunidadesToEscalateForAdmin($max_notification_attempts)
+    {
         
         $oportunidades  = Notification::select ('notifications.id',
                                                 'notifications.colaborador_id',
@@ -59,7 +61,10 @@ class OportunidadesNotificationsRep
 
     public static function increaseAttemptsforExisitingOportunidadNotification($oportunidad_id)
     {
-        $oportunidad = Notification::where('source_id', $oportunidad_id)->where('notification_type', 'oportunidad')->first();
+        $oportunidad =  Notification::where('source_id', $oportunidad_id)
+                                    ->where('notification_type', 'oportunidad')
+                                    ->where('status', '!=', 'resuleto')
+                                    ->first();
 
         if (!empty($oportunidad)) {
             $oportunidad->attempts = $oportunidad->attempts + 1;
@@ -75,6 +80,53 @@ class OportunidadesNotificationsRep
             $oportunidad->status = $new_status;
             $oportunidad->save();
         }
+    }
+
+    public static function createOportunidadNotification($oportunidad)
+    {
+        $notificaton                    = new Notification;
+        $notificaton->colaborador_id    = $oportunidad['colaborador_id'];
+        $notificaton->source_id         = $oportunidad['id_oportunidad'];
+        $notificaton->notification_type = 'oportunidad';
+        $notificaton->inactivity_period = $oportunidad['inactivity_period'];
+        $notificaton->status            = 'no-leido';
+        $notificaton->attempts          = $oportunidad['attempts'];
+        $notificaton->save();
+    }
+
+    public static function checkOportunidadNotification($oportunidad_id)
+    {
+        $exisiting_notification = Notification::where('source_id', $oportunidad_id)->first();
+       
+        if (!empty($exisiting_notification)) {
+            return $exisiting_notification;
+        }else{
+            return [];
+        }
+    }
+
+    public static function updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad_id)
+    {
+        $oportunidad =  Notification::where('source_id', $oportunidad_id)
+                                    ->where('notification_type', 'oportunidad')
+                                    ->where('status', '!=', 'resuleto')
+                                    ->first();
+
+        if (!empty($oportunidad)) {
+            $oportunidad->attempts          = $oportunidad->attempts + 1;
+            $oportunidad->inactivity_period = $oportunidad->inactivity_period + 24;
+            $oportunidad->save();
+
+            return $oportunidad;
+        }
+    }
+
+    public static function getExisitingOportunidadesNotifications()
+    {
+        return  Notification::where('notification_type', 'oportunidad')
+                            ->where('status', '!=', 'resuleto')
+                            ->get()
+                            ->toArray();   
     }
 
 }

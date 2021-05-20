@@ -42,7 +42,7 @@ class SendNotifications extends Command
     public function handle()
     {
         $notificaciones = new NotificationsController;
-        $notificaciones->insertProspectosToSendNotifications();
+        $notificaciones->sendNotifications();
 
         $this->info('Se ejecuto la funcion con exito');
     }

@@ -13,7 +13,7 @@ class ProspectosNotificationsRep
         $end_date = date('Y-m-d H:i:s');
 
         $prospectos = Prospecto::select('prospectos.id_prospecto',
-                                        'prospectos.nombre',
+                                        'prospectos.nombre as nombre_prospecto',
                                         'status_prospecto.updated_at',
                                         'detalle_prospecto.telefono',
                                         'cat_status_prospecto.status',
@@ -28,7 +28,8 @@ class ProspectosNotificationsRep
                                 ->join('cat_status_prospecto','cat_status_prospecto.id_cat_status_prospecto','status_prospecto.id_cat_status_prospecto')
                                 ->where('status_prospecto.updated_at', '<=', $start_date)
                                 ->groupBy('prospectos.id_prospecto')
-                                ->get();
+                                ->get()
+                                ->toArray();
         
         return $prospectos;
     }
@@ -59,7 +60,10 @@ class ProspectosNotificationsRep
 
     public static function increaseAttemptsforExisitingProspectoNotification($prospecto_id)
     {
-        $prospecto = Notification::where('source_id', $prospecto_id)->where('notification_type', 'prospecto')->first();
+        $prospecto  =   Notification::where('source_id', $prospecto_id)
+                                    ->where('notification_type', 'prospecto')
+                                    ->where('status', '!=', 'resuleto')
+                                    ->first();
 
         if (!empty($prospecto)) {
             $prospecto->attempts = $prospecto->attempts + 1;
@@ -70,11 +74,58 @@ class ProspectosNotificationsRep
     public static function changeStatusforExisitingProspectoNotification($prospecto_id, $new_status)
     {
         $prospecto = Notification::where('source_id', $prospecto_id)->first();
-
+        
         if (!empty($prospecto)) {
             $prospecto->status = $new_status;
             $prospecto->save();
         }
+    }
+
+    public static function createProspectoNotification($prospecto)
+    {
+        $notificaton                    = new Notification;
+        $notificaton->colaborador_id    = $prospecto['colaborador_id'];
+        $notificaton->source_id         = $prospecto['id_prospecto'];
+        $notificaton->notification_type = 'prospecto';
+        $notificaton->inactivity_period = $prospecto['inactivity_period'];
+        $notificaton->status            = 'no-leido';
+        $notificaton->attempts          = $prospecto['attempts'];
+        $notificaton->save();
+    }
+
+    public static function checkProspectoNotification($prospecto_id)
+    {
+        $exisiting_notification = Notification::where('source_id', $prospecto_id)->first();
+       
+        if (!empty($exisiting_notification)) {
+            return $exisiting_notification;
+        }else{
+            return [];
+        }
+    }
+
+    public static function updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto_id)
+    {
+        $prospecto =  Notification::where('source_id', $prospecto_id)
+                                    ->where('notification_type', 'prospecto')
+                                    ->where('status', '!=', 'resuleto')
+                                    ->first();
+
+        if (!empty($prospecto)) {
+            $prospecto->attempts          = $prospecto->attempts + 1;
+            $prospecto->inactivity_period = $prospecto->inactivity_period + 24;
+            $prospecto->save();
+
+            return $prospecto;
+        }
+    }
+
+    public static function getExisitingProspectosNotifications()
+    {
+        return  Notification::where('notification_type', 'prospecto')
+                            ->where('status', '!=', 'resuleto')
+                            ->get()
+                            ->toArray();   
     }
 
 }

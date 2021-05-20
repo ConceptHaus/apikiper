@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Services\Notifications\OportunidadesNotificationsService;
 use App\Http\Services\Notifications\ProspectosNotificationsService;
 use Auth;
-
+use Mail;
 
 class NotificationsController extends Controller
 {
@@ -36,5 +36,15 @@ class NotificationsController extends Controller
     public function getProspectosToEscalateForAdmin()
     {
        return ProspectosNotificationsService::getProspectosToEscalateForAdmin();
+    }
+
+    /*
+    | Cron
+    */
+
+    public function sendNotifications()
+    {
+        OportunidadesNotificationsService::sendNotifications();
+        ProspectosNotificationsService::sendNotifications();
     }
 }
