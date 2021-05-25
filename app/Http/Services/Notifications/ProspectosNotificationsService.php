@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Services\Notifications;
 use App\Http\Repositories\Notifications\ProspectosNotificationsRep;
+use App\Http\Repositories\Users\UsersRep;
 use App\Http\Services\Settings\SettingsService;
 use App\Http\Services\UtilService;
 use Mailgun;
@@ -94,6 +95,49 @@ class ProspectosNotificationsService
             $m->to($msg['email'], $msg['colaborador'])->subject($msg['subject']);
             $m->from('notificaciones@kiper.com.mx', 'Kiper');
         });
+    }
+
+    public static function escalateNotifications()
+    {
+        $notifications =ProspectosNotificationsService::getProspectosToEscalateForAdmin();
+        // print_r($notifications);
+        
+        if (count($notifications) > 0) {
+            $admins =ProspectosNotificationsService::getAdminsToSendoportunidadNotificationEscalation(3);
+            // print_r($admins);
+            if (count($admins) > 0) {
+                foreach ($notifications as $key => $notification) {
+                   ProspectosNotificationsRep::changeStatusforExisitingProspectoNotification($notification['source_id'], 'escalado');
+                   ProspectosNotificationsService::sendProspectoEscalationEmail($notification, $admins);
+                }
+            }
+        }
+    }
+
+    public static function sendProspectoEscalationEmail($notification, $admins)
+    {
+        foreach ($admins as $key => $admin) {
+            $msg = array(
+                'subject'            => 'Escalamiento de Prospecto '.$notification['nombre_prospecto'].' por inactividad',
+                'email'              => $admin['email'],
+                'colaborador'        => $admin['nombre'].' '.$admin['apellido'],
+                'nombre_oportunidad' => $notification['nombre_prospecto'],
+                'attempt'            => $notification['attempts'],
+                'inactivity_period'  => $notification['inactivity_period'],
+                'id_prospecto'       => $notification['source_id'],
+                'admin'              => $admin['nombre'].' '.$admin['apellido'],
+            );
+
+            Mailgun::send('mailing.inactivity_escaleted_prospecto', ['msg' => $msg], function ($m) use ($msg){
+                $m->to($msg['email'], $msg['admin'])->subject($msg['subject']);
+                $m->from('notificaciones@kiper.com.mx', 'Kiper');
+            });
+        }  
+    }
+    
+    public static function getAdminsToSendoportunidadNotificationEscalation($role_id)
+    {
+        return UsersRep::getUsersByRoleId($role_id);    
     }
 
 }

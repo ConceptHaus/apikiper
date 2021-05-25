@@ -46,14 +46,17 @@ class ProspectosNotificationsRep
                                             'cat_status_prospecto.status',
                                             'users.nombre',
                                             'users.apellido',
-                                            'users.email')
+                                            'users.email',
+                                            'prospectos.nombre as nombre_prospecto')
                                     ->join('users','notifications.colaborador_id','users.id')
                                     ->join('status_prospecto','notifications.source_id','status_prospecto.id_prospecto')
                                     ->join('detalle_prospecto','notifications.source_id','detalle_prospecto.id_prospecto')
+                                    ->join('prospectos','prospectos.id_prospecto','detalle_prospecto.id_prospecto')
                                     ->join('cat_status_prospecto','cat_status_prospecto.id_cat_status_prospecto','status_prospecto.id_cat_status_prospecto')
                                     ->where('notifications.attempts', '>=', $max_notification_attempts)
                                     ->where('notifications.status', '!=', 'resuelto')
-                                    ->get();
+                                    ->get()
+                                    ->toArray();
         
         return $prospectos;
     }

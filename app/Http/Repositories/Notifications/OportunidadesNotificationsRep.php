@@ -47,14 +47,18 @@ class OportunidadesNotificationsRep
                                                 'notifications.inactivity_period',
                                                 'users.nombre',
                                                 'users.apellido',
-                                                'users.email')
+                                                'users.email',
+                                                'oportunidades.nombre_oportunidad',
+                                                'detalle_oportunidad.descripcion')
                                         ->join('users','notifications.colaborador_id','users.id')
                                         ->join('status_oportunidad','notifications.source_id','status_oportunidad.id_oportunidad')
                                         ->join('detalle_oportunidad','notifications.source_id','detalle_oportunidad.id_oportunidad')
+                                        ->join('oportunidades','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
                                         ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
                                         ->where('notifications.attempts', '>=', $max_notification_attempts)
                                         ->where('notifications.status', '!=', 'resuelto')
-                                        ->get();
+                                        ->get()
+                                        ->toArray();
         
         return $oportunidades;
     }

@@ -47,4 +47,10 @@ class NotificationsController extends Controller
         OportunidadesNotificationsService::sendNotifications();
         ProspectosNotificationsService::sendNotifications();
     }
+
+    public function escalateNotifications()
+    {
+        OportunidadesNotificationsService::escalateNotifications();
+        ProspectosNotificationsService::escalateNotifications();
+    }
 }

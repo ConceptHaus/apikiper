@@ -15,7 +15,7 @@ class SendNotifications extends Command
      *
      * @var string
      */
-    protected $signature = 'send:notifications';
+    protected $signature = 'inactivity_notifications:send';
 
     /**
      * The console command description.
@@ -42,7 +42,8 @@ class SendNotifications extends Command
     public function handle()
     {
         $notificaciones = new NotificationsController;
-        $notificaciones->sendNotifications();
+        // $notificaciones->sendNotifications();
+        // $notificaciones->escalateNotifications();
 
         $this->info('Se ejecuto la funcion con exito');
     }
