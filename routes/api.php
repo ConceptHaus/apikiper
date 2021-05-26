@@ -307,12 +307,12 @@ Route::prefix('/v1/notifcations')->group(function(){
         Route::get('/getProspectos','Notifications\NotificationsController@getProspectosNotifications');
 
         // Admin Settings
-        Route::post('/postSettingNotificationAdmin','Notifications\NotificationsController@postSettingNotificationAdmin');
-        Route::get('/getSettingNotificationAdministrador','Notifications\NotificationsController@getSettingNotificationAdministrador');
+        Route::post('/postSettingNotificationAdmin','SettingsUserNotifications\SettingsUserNotificationsController@postSettingNotificationAdmin');
+        Route::get('/getSettingNotificationAdministrador','SettingsUserNotifications\SettingsUserNotificationsController@getSettingNotificationAdministrador');
 
         // Personal Settings
-        Route::post('/postSettingNotificationColaborador','Notifications\NotificationsController@postSettingNotificationColaborador');
-        Route::get('/getSettingNotificationColaborador','Notifications\NotificationsController@getSettingNotificationColaborador');
+        Route::post('/postSettingNotificationColaborador','SettingsUserNotifications\SettingsUserNotificationsController@postSettingNotificationColaborador');
+        Route::get('/getSettingNotificationColaborador','SettingsUserNotifications\SettingsUserNotificationsController@getSettingNotificationColaborador');
         
     // });
 });

@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Notifications;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Services\Notifications\OportunidadesNotificationsService;
-use App\Http\Services\Notifications\ProspectosNotificationsService;
+use App\Http\Services\SettingsNotifications\OportunidadesNotificationsService;
 use Auth;
 use Mail;
 use App\Http\Services\Auth\AuthService;
@@ -96,21 +95,5 @@ class NotificationsController extends Controller
         $source_id = $request->source_id;
 
         return ProspectosNotificationsService::updateStatusNotification($source_id);
-    }
-
-    public function postSettingNotificationAdmin(Request $request){
-        return ProspectosNotificationsService::postSettingNotificationAdmin($request);
-    }
-
-    public function postSettingNotificationColaborador(Request $request){
-        return ProspectosNotificationsService::postSettingNotificationColaborador($request);
-    }
-
-    public function getSettingNotificationColaborador(Request $request){
-        return ProspectosNotificationsService::getSettingNotificationColaborador($request);
-    }
-
-    public function getSettingNotificationAdministrador(Request $request){
-        return ProspectosNotificationsService::getSettingNotificationAdministrador($request);
     }
 }
