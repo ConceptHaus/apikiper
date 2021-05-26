@@ -295,11 +295,24 @@ Route::prefix('/v1/status_oportunidades')->group(function(){
 Route::prefix('/v1/notifcations')->group(function(){
     // Route::middleware(['auth','cors'])->group(function(){
         Route::get('/countNotifications','Notifications\NotificationsController@countNotifications');
+        Route::post('/updateNotification','Notifications\NotificationsController@updateStatusNotification');
+        
         // Oportunidades
         Route::get('/oportunidades','Notifications\NotificationsController@getOportunidadesToSendNotifications');
         Route::get('/oportunidades-to-be-escalated','Notifications\NotificationsController@getOportunidadesToEscalateForAdmin');
+        Route::get('/getOportunidades','Notifications\NotificationsController@getOportunidadesNotifications');
         // Prospectos
         Route::get('/prospectos','Notifications\NotificationsController@getProspectosToSendNotifications');
         Route::get('/prospectos-to-be-escalated','Notifications\NotificationsController@getProspectosToEscalateForAdmin');
+        Route::get('/getProspectos','Notifications\NotificationsController@getProspectosNotifications');
+
+        // Admin Settings
+        Route::post('/postSettingNotificationAdmin','Notifications\NotificationsController@postSettingNotificationAdmin');
+        Route::get('/getSettingNotificationAdministrador','Notifications\NotificationsController@getSettingNotificationAdministrador');
+
+        // Personal Settings
+        Route::post('/postSettingNotificationColaborador','Notifications\NotificationsController@postSettingNotificationColaborador');
+        Route::get('/getSettingNotificationColaborador','Notifications\NotificationsController@getSettingNotificationColaborador');
+        
     // });
 });
