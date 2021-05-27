@@ -30,7 +30,7 @@
         "optimus/heimdal": "~1.0",
         "php-http/guzzle6-adapter": "^1.1",
         "pulkitjalan/google-apiclient": "^3.1",
-        "pusher/pusher-php-server": "~3.0",
+        "pusher/pusher-php-server": "~4.1.4",
         "spatie/calendar-links": "^1.2",
         "spatie/laravel-activitylog": "^3.1",
         "twilio/sdk": "^5.24",
