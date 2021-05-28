@@ -24,7 +24,7 @@ class SettingsUserNotificationsController extends Controller
         return SettingsUserNotificationsService::getSettingNotificationColaborador($request);
     }
 
-    public function getSettingNotificationAdministrador(Request $request){
-        return SettingsUserNotificationsService::getSettingNotificationAdministrador($request);
+    public function getSettingNotificationAdministrador(){
+        return SettingsUserNotificationsService::getSettingNotificationAdministrador();
     }
 }

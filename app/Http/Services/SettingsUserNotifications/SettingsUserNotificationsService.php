@@ -12,6 +12,70 @@ class SettingsUserNotificationsService
     }
 
     public static function postSettingNotificationColaborador($params){
+        $settingsAdmin = SettingsUserNotificationsService::getSettingNotificationAdministrador();
+        $setting = json_decode($settingsAdmin, TRUE);
+        // print($params);
+        // return $params;
+        if ($setting["max_prosp_time"] == "days") {
+            $max_prosp = $setting["max_prosp"] * 24;
+            if ($max_prosp == 1) {
+                $tiempoP = "día";
+            } else {
+                $tiempoP = "días";
+            }
+        } else {
+            $max_prosp = $setting["max_prosp"];
+            if ($max_prosp == 1) {
+                $tiempoP = "hora";
+            } else {
+                $tiempoP = "horas";
+            }
+        }
+        if ($params->timePC == "days") {
+            $max_time_prospect_colab = $params->max_time_prospect_colab * 24;
+        } else {
+            $max_time_prospect_colab = $params->max_time_prospect_colab;
+        }
+
+
+
+
+        if ($setting["max_oportu_time"] == "days") {
+            $max_oportu = $setting["max_oportu"] * 24;
+            if ($max_oportu == 1) {
+                $tiempoO = "día";
+            } else {
+                $tiempoO = "días";
+            }
+        } else {
+            $max_oportu = $setting["max_oportu"];
+            if ($max_oportu == 1) {
+                $tiempoO = "hora";
+            } else {
+                $tiempoO = "horas";
+            }
+        }
+        if ($params->timeOC == "days") {
+            $max_time_oportu_colab = $params->max_time_oportu_colab * 24;
+        } else {
+            $max_time_oportu_colab = $params->max_time_oportu_colab;
+        }
+
+
+
+        if ( $max_prosp < $max_time_prospect_colab) {
+            return response()->json([
+                'error'=>true,
+                'mensaje'=>"La configuracion maxima para prospectos es: " . $setting["max_prosp"] ." ". $tiempoP
+            ]);
+        } 
+        if ( $max_oportu < $max_time_oportu_colab) {
+            return response()->json([
+                'error'=>true,
+                'mensaje'=>"La configuracion maxima para oportunidades es: " . $setting["max_oportu"] ." ". $tiempoO
+            ]);
+        } 
+        
         return SettingsUserNotificationsRep::postSettingNotificationColaborador($params);
     }
 
@@ -34,8 +98,8 @@ class SettingsUserNotificationsService
         return $settingNotification;
     }
 
-    public static function getSettingNotificationAdministrador($params){
-        $settings = SettingsUserNotificationsRep::getSettingNotificationAdministrador($params);
+    public static function getSettingNotificationAdministrador(){
+        $settings = SettingsUserNotificationsRep::getSettingNotificationAdministrador();
         $setting = new SettingsDTO();
 
         foreach ($settings as $key => $value) {

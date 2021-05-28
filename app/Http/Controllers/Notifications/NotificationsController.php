@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Notifications;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Services\SettingsNotifications\OportunidadesNotificationsService;
+use App\Http\Services\Notifications\ProspectosNotificationsService;
+use App\Http\Services\Notifications\OportunidadesNotificationsService;
 use Auth;
 use Mail;
 use App\Http\Services\Auth\AuthService;
