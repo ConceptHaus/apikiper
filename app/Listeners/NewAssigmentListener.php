@@ -44,13 +44,14 @@ class NewAssigmentListener
                     'nombre'=>'Berenice Iturbide',
                     'fechas' => [
                         //Código de guardia 140 AZUL
-                        // Miércoles 12 mayo 15:00 PM-24:00 PM
-                        // Miércoles 18 mayo 10:00 PM -15:00 PM
-                        // Jueves 20 mayo 15:00 PM- 24:00 AM
+                        // Jueves 27 mayo 15:00 PM- 24:00 AM
+                        // Viernes 04 junio 10:00 AM-15:00 PM
+                        // Lunes 07 junio 10:00 AM -15:00 PM
                         
-                        [Carbon::create(2021,5,12,15,0,1),Carbon::create(2021,5,12,24,0,0)],
-                        [Carbon::create(2021,5,18,24,0,1),Carbon::create(2021,5,18,15,0,0)],
-                        [Carbon::create(2021,5,20,15,0,1),Carbon::create(2021,5,20,24,0,0)]
+                        
+                        [Carbon::create(2021,5,27,15,0,1),Carbon::create(2021,5,27,24,0,0)],
+                        [Carbon::create(2021,6,4,00,0,1),Carbon::create(2021,6,4,15,0,0)],
+                        [Carbon::create(2021,6,7,00,0,1),Carbon::create(2021,6,7,15,0,0)]
                     ]
                 ],
                 'ejecutivo_1' => [
@@ -58,12 +59,12 @@ class NewAssigmentListener
                     'nombre'=>'Álvaro Sainz',
                     'fechas'=>[
                         //Código de guardia 160 VERDE
-                        // Miércoles 12 Mayo 10:00 AM-15:00 PM
-                        // Lunes 17 Mayo 15:00 AM-19:00 PM
-                        // Viernes 21 Mayo 10:00 PM-15:00 PM
-                        [Carbon::create(2021,5,12,24,0,1),Carbon::create(2021,5,12,10,0,0)],
-                        [Carbon::create(2021,5,17,15,0,1),Carbon::create(2021,5,17,24,0,0)],
-                        [Carbon::create(2021,5,21,24,0,1),Carbon::create(2021,5,21,15,0,0)]
+                        // Lunes 24 Mayo 15:00 PM - 24:00 PM
+                        // Viernes 28 Mayo 00:01 AM - 15:00 PM
+                        // Martes 01 Junio 15:00 PM - 24:00 PM
+                        [Carbon::create(2021,5,24,15,0,0),Carbon::create(2021,5,24,24,0,0)],
+                        [Carbon::create(2021,5,28,00,0,1),Carbon::create(2021,5,28,15,0,0)],
+                        [Carbon::create(2021,6,01,15,0,0),Carbon::create(2021,6,01,24,0,0)]
                     ]
                     
                 ],
@@ -82,12 +83,12 @@ class NewAssigmentListener
                     'nombre'=>'José Jaime Flores',
                     'fechas'=>[
                         //Código de guardia 31 NARANJA
-                        // Lunes 10 mayo 10:00 AM - 15:00 PM
-                        // Viernes 14 mayo 15:00 PM - 19:00 PM
-                        // Jueves 20 mayo 10:00 AM - 3:00 PM
-                        [Carbon::create(2021,5,10,24,0,1),Carbon::create(2021,5,10,15,0,0)],
-                        [Carbon::create(2021,5,14,15,0,1),Carbon::create(2021,5,14,24,0,0)],
-                        [Carbon::create(2021,5,20,24,0,1),Carbon::create(2021,5,20,15,0,0)]                  
+                        // Lunes 24 mayo 15:00 PM - 24:00 PM
+                        // Viernes 28 mayo 00:00 AM - 15:00 PM
+                        // Martes 1 junio 15:00 PM - 24:00 PM
+                        [Carbon::create(2021,5,24,15,0,0),Carbon::create(2021,5,24,24,0,0)],
+                        [Carbon::create(2021,5,28,00,0,1),Carbon::create(2021,5,28,15,0,0)],
+                        [Carbon::create(2021,6,1,15,0,0),Carbon::create(2021,6,1,24,0,0)]                  
                     ]       
                 ],
                 'ejecutivo_3'=>[
@@ -96,12 +97,12 @@ class NewAssigmentListener
                     'nombre'=>'Gloria Macias',
                     'fechas'=>[
                         //Código de guardia 39 ROJO
-                        // Jueves 13 Mayo 15:00 PM - 19:00 PM
-                        // Miércoles 19 Mayo 10:00 AM - 15:00 AM
-                        // Viernes 24 Mayo 10:00 AM - 15:00 AM
-                        [Carbon::create(2021,5,13,15,0,1),Carbon::create(2021,5,13,24,0,0)],
-                        [Carbon::create(2021,5,19,24,0,1),Carbon::create(2021,5,19,10,0,0)],
-                        [Carbon::create(2021,5,24,24,0,1),Carbon::create(2021,5,24,10,0,0)]                           
+                        // Lunes 24 Mayo 10:00 AM - 15:00 PM
+                        // Sábado 29 Mayo 10:00 AM - 15:00 AM
+                        // Lunes 7 junio 15:00 PM - 24:00 AM
+                        [Carbon::create(2021,5,24,00,0,1),Carbon::create(2021,5,24,15,0,0)],
+                        [Carbon::create(2021,5,29,00,0,1),Carbon::create(2021,5,29,15,0,0)],
+                        [Carbon::create(2021,6,7,15,0,1),Carbon::create(2021,6,7,24,0,0)]                           
                     ]       
                 ], 
                 'ejecutivo_4'=>[
@@ -109,12 +110,12 @@ class NewAssigmentListener
                     'nombre'=>'Laura Flores',
                     'fechas'=>[
                         //Código de guardia 87 MOSTAZA
-                        // Jueves 13 Mayo 10:00 AM - 15:00 PM
-                        // Lunes 17 Mayo 10:00 AM - 15:00 PM
-                        // Lunes 24 Mayo 15:00 PM - 24:00 AM
-                        [Carbon::create(2021,5,13,24,0,1),Carbon::create(2021,5,13,15,0,0)],
-                        [Carbon::create(2021,5,17,24,0,1),Carbon::create(2021,5,17,15,0,0)],
-                        [Carbon::create(2021,5,24,15,0,1),Carbon::create(2021,5,24,24,0,0)]
+                        // Martes 25 Mayo 15:00 PM - 24:00 PM
+                        // Martes 1 Junio 10:00 AM - 15:00 PM
+                        // Jueves 3 junio 15:00 PM - 24:00 AM
+                        [Carbon::create(2021,5,25,15,0,1),Carbon::create(2021,5,25,24,0,0)],
+                        [Carbon::create(2021,6,1,00,0,1),Carbon::create(2021,6,1,15,0,0)],
+                        [Carbon::create(2021,6,3,15,0,1),Carbon::create(2021,5,3,24,0,0)]
                     ]       
                 ],
                 'ejecutivo_5'=>[
@@ -133,12 +134,12 @@ class NewAssigmentListener
                     'nombre'=>'José Rentería',
                     'fechas'=>[
                         // Código de guardia 59 ROSA
-                        // Lunes 10 Mayo 15:00 PM - 24:00 AM
-                        // Viernes 14 Mayo 10:00 AM - 15:00 PM
-                        // Sábado 22 Mayo 10:00 AM - 15:00 PM
-                        [Carbon::create(2021,5,10,15,0,1),Carbon::create(2021,5,10,24,0,0)],
-                        [Carbon::create(2021,5,14,24,0,1),Carbon::create(2021,5,14,15,0,0)],
-                        [Carbon::create(2021,5,22,24,0,1),Carbon::create(2021,5,22,15,0,0)]
+                        // Miércoles 26 Mayo 15:00 PM - 24:00 AM
+                        // Lunes 31 Mayo 15:00 PM - 24:00 AM
+                        // Sábado 05 junio 10:00 AM - 15:00 PM
+                        [Carbon::create(2021,5,26,15,0,1),Carbon::create(2021,5,26,24,0,0)],
+                        [Carbon::create(2021,5,31,15,0,1),Carbon::create(2021,5,31,24,0,0)],
+                        [Carbon::create(2021,6,5,00,0,1),Carbon::create(2021,6,5,15,0,0)]
                     ]       
                 ],
                 'ejecutivo_7'=>[
@@ -146,13 +147,13 @@ class NewAssigmentListener
                     'nombre'=>'Mauricio Montaño',
                     'fechas'=>[
                         // Código de guardia 72 MORADO
-                        // Martes 11 Mayo 10:00 AM - 15:00 PM
-                        // Martes 18 Mayo 15:00 PM - 19:00 PM
-                        // Viernes 21 Mayo 15:00 PM - 19:00 PM
+                        // Martes 25 mayo 10:00 AM - 15:00 PM
+                        // Viernes 28 Mayo 15:00 PM - 19:00 PM
+                        // Jueves 3 junio 10:00 AM - 15:00 PM
 
-                        [Carbon::create(2021,5,11,24,0,1),Carbon::create(2021,5,11,15,0,0)],
-                        [Carbon::create(2021,5,18,15,0,1),Carbon::create(2021,5,18,24,0,0)],
-                        [Carbon::create(2021,5,21,15,0,1),Carbon::create(2021,5,21,24,0,0)]
+                        [Carbon::create(2021,5,25,00,0,1),Carbon::create(2021,5,25,15,0,0)],
+                        [Carbon::create(2021,5,28,15,0,1),Carbon::create(2021,5,28,24,0,0)],
+                        [Carbon::create(2021,6,3,00,0,1),Carbon::create(2021,6,3,15,0,0)]
                     ]       
                 ],
                 'ejecutivo_8'=>[
