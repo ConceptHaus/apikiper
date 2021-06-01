@@ -13,7 +13,9 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        '\App\Console\Commands\SendReminders'
+        // Commands\SendNotifications::class,
+        '\App\Console\Commands\SendReminders',
+        '\App\Console\Commands\SendNotifications'
     ];
 
     /**
@@ -24,11 +26,17 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+
+        // $schedule->command('send:notifications')
+        //     ->everyMinute();
         // $schedule->command('inspire')
         //          ->hourly();
 
         $schedule->command('reminders:send')->everyMinute()
         ->appendOutputTo(storage_path('logs/examplecommands.log'));
+
+        $schedule->command('inactivity_notifications:send')->daily()
+        ->appendOutputTo(storage_path('logs/inactivity_notifications.log'));
     }
 
     /**

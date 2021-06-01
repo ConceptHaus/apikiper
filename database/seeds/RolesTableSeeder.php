@@ -14,12 +14,14 @@ class RolesTableSeeder extends Seeder
     {
         $new_rol                = new Role();
         $new_rol->nombre        = "Colaborador";
-        $new_rol->acciones      = '["prospectos.read.own"]';
+        $new_rol->acciones      = '["prospectos.read.own",
+                                    "fe.sidebar.ajustes.notificaciones"]';
         $new_rol->save();
 
         $new_rol                = new Role();
         $new_rol->nombre        = "Lider Colaboradores";
-        $new_rol->acciones      = '["prospectos.read.all"]';
+        $new_rol->acciones      = '["prospectos.read.all",
+                                    "fe.sidebar.ajustes.notificaciones"]';
         $new_rol->save();
 
         $new_rol                = new Role();
@@ -56,7 +58,9 @@ class RolesTableSeeder extends Seeder
                                     "fe.sidebar.ajustes.etiquetas",
                                     "fe.sidebar.ajustes.estatus",
                                     "fe.colaboradores.nuevo",
-                                    "fe.oportunidades.read.all"
+                                    "fe.oportunidades.read.all",
+                                    "fe.sidebar.ajustes.notificaciones",
+                                    "fe.ajustes.notifications.email.escalation"
                                     ]';
         $new_rol->is_visible    = 0;
         $new_rol->save();
