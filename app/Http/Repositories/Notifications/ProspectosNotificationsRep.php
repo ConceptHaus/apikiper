@@ -141,34 +141,46 @@ class ProspectosNotificationsRep
     }
 
     public static function getProspectosNotifications($id_user, $limit){
-        return Notification::select('notifications.*', 'prospectos.*', 
-                            DB::raw('CONCAT(users.nombre," ",users.apellido) as colaborador'),
-                            DB::raw("DATEDIFF(now(),notifications.created_at)as days")
-                            )
-                ->leftjoin('prospectos', 'prospectos.id_prospecto', '=', 'notifications.source_id')
-                ->leftjoin('users', 'users.id', '=', 'notifications.colaborador_id')
-                ->where('colaborador_id', $id_user)
-                ->where('notifications.notification_type', 'prospecto')
-                ->orderby('notifications.created_at', 'desc')
-                ->take($limit)
-                ->get();
+        return DB::select("select n.*, p.*,
+        CONCAT(u.nombre, ' ', u.apellido) as colaborador,
+        DATEDIFF(now(),n.created_at)as days
+            from notifications n
+            left join prospectos p on p.id_prospecto = n.source_id
+            left join users u on u.id = n.colaborador_id
+            where n.id in (select id from notifications n2
+                        where DATEDIFF(NOW(), n2.updated_at) <= 3
+                        and n2.status = 'leido'
+                        and n2.notification_type = 'prospecto')
+            or ( n.status = 'no-leido'
+            or n.status = 'escalado')
+            and n.notification_type = 'prospecto'
+            and  n.colaborador_id = '".$id_user."'
+            group by n.source_id
+            order by n.status = 'escalado' desc, n.status = 'no-leido' desc, n.created_at desc, n.status asc
+            limit ".$limit."");
     }
 
     public static function getOportunidadesNotifications($id_user, $limit){
-        return Notification::select('notifications.*', 'oportunidades.*', 
-                            DB::raw('CONCAT(users.nombre," ",users.apellido) as colaborador'),
-                            DB::raw("DATEDIFF(now(),notifications.created_at)as days"),
-                            DB::raw('CONCAT(prospectos.nombre," ",prospectos.apellido) as prospecto')
-                            )
-                ->leftjoin('oportunidades', 'oportunidades.id_oportunidad', '=', 'notifications.source_id')
-                ->leftjoin('users', 'users.id', '=', 'notifications.colaborador_id')
-                ->leftjoin('oportunidad_prospecto', 'oportunidad_prospecto.id_oportunidad', '=', 'oportunidades.id_oportunidad')
-                ->leftjoin('prospectos', 'prospectos.id_prospecto', '=', 'oportunidad_prospecto.id_prospecto')
-                ->where('colaborador_id', $id_user)
-                ->where('notifications.notification_type', 'oportunidad')
-                ->orderby('notifications.created_at', 'desc')
-                ->take($limit)
-                ->get();
+        return DB::select("select n.*, p.*, o.*, 
+                            CONCAT(u.nombre, ' ', u.apellido) as colaborador, 
+                            DATEDIFF(now(),n.created_at)as days,
+                            CONCAT(p.nombre, ' ', p.apellido) as prospecto
+                                from notifications n
+                                left join oportunidades o on o.id_oportunidad = n.source_id
+                                left join users u on u.id = n.colaborador_id
+                                left join oportunidad_prospecto op on op.id_oportunidad = o.id_oportunidad
+                                left join prospectos p on p.id_prospecto = op.id_prospecto
+                                where n.id in (select id from notifications n2
+                                            where DATEDIFF(NOW(), n2.updated_at) <= 3
+                                            and n2.status = 'leido'
+                                            and n2.notification_type = 'oportunidad')
+                                or ( n.status = 'no-leido'
+                                or n.status = 'escalado')
+                                and n.notification_type = 'oportunidad'
+                                and  n.colaborador_id = '".$id_user."'
+                                group by n.source_id
+                                order by n.status = 'escalado' desc, n.status = 'no-leido' desc, n.created_at desc, n.status asc
+                                limit ".$limit."");
     }
 
     public static function updateStatusNotification($source_id){

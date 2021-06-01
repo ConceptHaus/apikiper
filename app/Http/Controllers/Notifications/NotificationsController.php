@@ -58,7 +58,7 @@ class NotificationsController extends Controller
     
     public function countNotifications(){
         $auth = new AuthService();
-        $auth = $auth->getUserAuthInfo(); 
+        $auth = $auth->getUserAuthInfo();
 
         return ProspectosNotificationsService::getCountNotifications($auth->id);
     }
