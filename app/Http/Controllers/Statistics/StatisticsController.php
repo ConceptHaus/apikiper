@@ -32,4 +32,10 @@ class StatisticsController extends Controller
         
         return StatisticsService::FunnelOportunidades($request->start_date, $request->end_date, $user_id);
     }
+
+    public function monthlySalesHistory(Request $request){
+        $user_id = (is_null($request->user_id)) ? NULL : $request->user_id;
+
+        return StatisticsService::monthlySalesHistory($request->start_date, $request->end_date, $user_id);
+    }
 }
