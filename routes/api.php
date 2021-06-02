@@ -293,7 +293,7 @@ Route::prefix('/v1/status_oportunidades')->group(function(){
 });
 
 Route::prefix('/v1/notifcations')->group(function(){
-    // Route::middleware(['auth','cors'])->group(function(){
+    Route::middleware(['auth','cors'])->group(function(){
         Route::get('/countNotifications','Notifications\NotificationsController@countNotifications');
         Route::post('/updateNotification','Notifications\NotificationsController@updateStatusNotification');
         
@@ -314,5 +314,5 @@ Route::prefix('/v1/notifcations')->group(function(){
         Route::post('/postSettingNotificationColaborador','SettingsUserNotifications\SettingsUserNotificationsController@postSettingNotificationColaborador');
         Route::get('/getSettingNotificationColaborador','SettingsUserNotifications\SettingsUserNotificationsController@getSettingNotificationColaborador');
         
-    // });
+    });
 });
