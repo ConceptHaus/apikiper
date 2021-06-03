@@ -93,7 +93,7 @@ class OportunidadesNotificationsRep
         $notificaton->source_id         = $oportunidad['id_oportunidad'];
         $notificaton->notification_type = 'oportunidad';
         $notificaton->inactivity_period = $oportunidad['inactivity_period'];
-        $notificaton->status            = 'no-leido';
+        $notificaton->view            = 'no-leido';
         $notificaton->attempts          = $oportunidad['attempts'];
         $notificaton->save();
     }

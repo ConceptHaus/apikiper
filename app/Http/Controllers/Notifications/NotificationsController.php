@@ -13,6 +13,20 @@ use App\Http\Services\Auth\AuthService;
 
 class NotificationsController extends Controller
 {
+
+    public function countNotifications(){
+        $auth = new AuthService();
+        $auth = $auth->getUserAuthInfo();
+
+        return ProspectosNotificationsService::getCountNotifications($auth->id);
+    }
+
+    public function updateStatusNotification(Request $request){
+        $source_id = $request->source_id;
+
+        return ProspectosNotificationsService::updateStatusNotification($source_id);
+    }
+    
     /*
     | Oportunidades
     */
@@ -27,6 +41,20 @@ class NotificationsController extends Controller
        return OportunidadesNotificationsService::getOportunidadesToEscalateForAdmin();
     }
 
+    public function getOportunidadesNotifications(Request $request){
+        $auth = new AuthService();
+        $auth = $auth->getUserAuthInfo();
+        $limit = $request->limit;
+
+        if ($limit == 0) {
+            $limit = 3;
+        } else {
+            $limit = $limit + 2;
+        }
+        
+        return ProspectosNotificationsService::getOportunidadesNotifications($auth->id, $limit);
+    }
+
     /*
     | Prospectos
     */
@@ -38,29 +66,6 @@ class NotificationsController extends Controller
     public function getProspectosToEscalateForAdmin()
     {
        return ProspectosNotificationsService::getProspectosToEscalateForAdmin();
-    }
-
-    /*
-    | Cron
-    */
-
-    public function sendNotifications()
-    {
-        OportunidadesNotificationsService::sendNotifications();
-        ProspectosNotificationsService::sendNotifications();
-    }
-
-    public function escalateNotifications()
-    {
-        OportunidadesNotificationsService::escalateNotifications();
-        ProspectosNotificationsService::escalateNotifications();
-    }
-    
-    public function countNotifications(){
-        $auth = new AuthService();
-        $auth = $auth->getUserAuthInfo();
-
-        return ProspectosNotificationsService::getCountNotifications($auth->id);
     }
 
     public function getProspectosNotifications(Request $request){
@@ -78,23 +83,19 @@ class NotificationsController extends Controller
         return ProspectosNotificationsService::getProspectosNotifications($auth->id, $limit);
     }
 
-    public function getOportunidadesNotifications(Request $request){
-        $auth = new AuthService();
-        $auth = $auth->getUserAuthInfo();
-        $limit = $request->limit;
+    /*
+    | Cron
+    */
 
-        if ($limit == 0) {
-            $limit = 3;
-        } else {
-            $limit = $limit + 2;
-        }
-        
-        return ProspectosNotificationsService::getOportunidadesNotifications($auth->id, $limit);
+    public function sendNotifications()
+    {
+        OportunidadesNotificationsService::sendNotifications();
+        ProspectosNotificationsService::sendNotifications();
     }
 
-    public function updateStatusNotification(Request $request){
-        $source_id = $request->source_id;
-
-        return ProspectosNotificationsService::updateStatusNotification($source_id);
+    public function escalateNotifications()
+    {
+        OportunidadesNotificationsService::escalateNotifications();
+        ProspectosNotificationsService::escalateNotifications();
     }
 }
