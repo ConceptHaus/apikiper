@@ -61,7 +61,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                 ->leftjoin('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'colaborador_prospecto.id_prospecto')
                 ->leftjoin('etiquetas', 'etiquetas.id_etiqueta', 'etiquetas_prospectos.id_etiqueta')
                 ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
-                ->leftjoin('empresas', 'prospectos_empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
+                ->leftjoin('empresas', 'empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
                 ->leftjoin('medio_contacto_prospectos','prospectos.id_prospecto','medio_contacto_prospectos.id_prospecto')
                 ->whereNull('prospectos.deleted_at')
                 ->groupBy('prospectos.id_prospecto')
@@ -109,7 +109,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                     });
                 })
                 ->select(
-                        DB::raw('CONCAT(users.nombre," ",users.apellido) as asesor'),
+                        DB::raw('IFNULL(CONCAT(users.nombre," ",users.apellido), "Sin Asignar") as asesor'),
                         'prospectos.created_at as fecha',
                         'cat_status_prospecto.status as estado',
                         'cat_fuentes.nombre as como se enteró',
@@ -119,7 +119,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                         'detalle_prospecto.nota as comentarios',
                         DB::raw("group_concat(medio_contacto_prospectos.descripcion SEPARATOR '  --  ') as seguimiento"),
                         DB::raw("group_concat(etiquetas.nombre SEPARATOR '  --  ') as etiquetas"),
-                        'empresas.nombre AS nombre_empresa'
+                        DB::raw('IFNULL(empresas.nombre, "Sin Asignar") as nombre_empresa')
                         )->get();
                 
         } else if($desarrollo == 'user'){

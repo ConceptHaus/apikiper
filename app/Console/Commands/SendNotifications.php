@@ -42,8 +42,8 @@ class SendNotifications extends Command
     public function handle()
     {
         $notificaciones = new NotificationsController;
-        $notificaciones->sendNotifications();
-        $notificaciones->escalateNotifications();
+        // $notificaciones->sendNotifications();
+        // $notificaciones->escalateNotifications();
 
         $this->info('Se ejecuto la funcion con exito');
     }
