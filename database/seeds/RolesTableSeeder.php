@@ -21,7 +21,8 @@ class RolesTableSeeder extends Seeder
         $new_rol                = new Role();
         $new_rol->nombre        = "Lider Colaboradores";
         $new_rol->acciones      = '["prospectos.read.all",
-                                    "fe.sidebar.ajustes.notificaciones"]';
+                                    "fe.sidebar.ajustes.notificaciones",
+                                    "fe.sidebar.ajustes.colaboradores"]';
         $new_rol->save();
 
         $new_rol                = new Role();
