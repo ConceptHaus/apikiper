@@ -18,7 +18,7 @@ class ColaboradoresRep
 {
     
     public static function getRolesByRoleID($role_id){
-        return Role::all()->where('id', '<', $role_id)->where('is_visible', '=', 1);
+        return Role::all()->where('id', '<=', $role_id)->where('is_visible', '=', 1);
     }
 
     public static function getColaborador($id_colaborador)

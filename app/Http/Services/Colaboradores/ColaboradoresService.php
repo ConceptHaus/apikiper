@@ -13,9 +13,9 @@ class ColaboradoresService
             'nombre' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'apellido'=> 'required|string|max:255',
-            'role_id' => 'required|integer',
+            'role_id' => 'required|numeric|min:0|not_in:0',
             'puesto' => 'required|string|max:255',
-            'telefono'=> 'required|string|max:255'
+            'telefono'=> 'required|string|max:12'
         ]);
     }
 
