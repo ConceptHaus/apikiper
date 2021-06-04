@@ -15,7 +15,8 @@ class StatusOportunidad extends Model
     protected $fillable = [
         'id_status_oportunidad',
         'id_oportunidad',
-        'id_cat_status_oportunidad'
+        'id_cat_status_oportunidad',
+        'updated_at'
     ];
 
     public function oportunidad(){
