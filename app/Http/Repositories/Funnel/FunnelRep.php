@@ -264,7 +264,7 @@ class FunnelRep
         
     }
 
-    public static function getTotalCountOportunidades($oportunidades)
+    public static function getTotalCountOportunidadesItemsString($oportunidades)
     {
         $total_count    = "";
         $count          = count($oportunidades);
@@ -275,6 +275,11 @@ class FunnelRep
         }
 
         return $total_count;
+    }
+
+    public static function getTotalCountOportunidades($oportunidades)
+    {
+        return count($oportunidades);
     }
 
 }

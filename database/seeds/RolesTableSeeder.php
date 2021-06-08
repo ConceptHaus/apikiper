@@ -15,34 +15,45 @@ class RolesTableSeeder extends Seeder
         $new_rol                = new Role();
         $new_rol->nombre        = "Colaborador";
         $new_rol->acciones      = '["prospectos.read.own",
-                                    "fe.sidebar.ajustes.notificaciones"]';
+                                    "oportunidades.read.own",
+                                    "fe.sidebar.ajustes.notificaciones",
+                                    "fe.oportunidades.read.own"
+                                    ]';
         $new_rol->save();
 
         $new_rol                = new Role();
         $new_rol->nombre        = "Lider Colaboradores";
         $new_rol->acciones      = '["prospectos.read.all",
+                                    "oportunidades.read.all",
                                     "fe.sidebar.ajustes.notificaciones",
-                                    "fe.sidebar.ajustes.colaboradores"]';
+                                    "fe.sidebar.ajustes.colaboradores",
+                                    "fe.oportunidades.read.all",
+                                    "fe.sidebar.oportunidades.generales"
+                                    ]';
         $new_rol->save();
 
         $new_rol                = new Role();
         $new_rol->nombre        = "Admin Cliente";
         $new_rol->acciones      = '["prospectos.read.all",
+                                    "oportunidades.read.all",
                                     "fe.sidebar.oportunidades.generales",
                                     "fe.sidebar.newsletter",
                                     "fe.sidebar.ajustes.colaboradores",
                                     "fe.colaboradores.nuevo",
-                                    "fe.oportunidades.read.all"
+                                    "fe.oportunidades.read.all",
+                                    "fe.sidebar.ajustes.estatus"
                                     ]';
         $new_rol->save();
 
         $new_rol                = new Role();
         $new_rol->nombre        = "Cuentas Kiper";
         $new_rol->acciones      = '["prospectos.read.all",
+                                    "oportunidades.read.all",
                                     "fe.sidebar.oportunidades.generales",
                                     "fe.sidebar.ajustes.colaboradores",
                                     "fe.colaboradores.nuevo",
-                                    "fe.oportunidades.read.all"
+                                    "fe.oportunidades.read.all",
+                                    "fe.sidebar.ajustes.estatus"
                                     ]'; 
         $new_rol->is_visible    = 0;
         $new_rol->save();
@@ -50,6 +61,7 @@ class RolesTableSeeder extends Seeder
         $new_rol                = new Role();
         $new_rol->nombre        = "Administrador Kiper";
         $new_rol->acciones      = '["prospectos.read.all",
+                                    "oportunidades.read.all",
                                     "fe.sidebar.oportunidades.generales",
                                     "fe.sidebar.estadisticas",
                                     "fe.sidebar.newsletter",

@@ -119,14 +119,14 @@ class FunnelController extends Controller
         $colaborador_id = Auth::user()->id;
         $permisos = User::getAuthenticatedUserPermissions();
         
-        if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
+        if(in_array(Permissions::OPORTUNIDADES_READ_ALL, $permisos)){
             $funnel_stages                  = FunnelService::getOportunidadesByFunnelStage();
             $funnel_stages['colaboradores'] = FunnelService::getColaboradoresWithOportunidades();
         }else{
-        $funnel_stages                      = FunnelService::getMisOportunidadesByFunnelStage($colaborador_id);
+            $funnel_stages                  = FunnelService::getMisOportunidadesByFunnelStage($colaborador_id);
             $funnel_stages['colaboradores'] = []; 
         }
-
+        
         return response()->json([
             'error'=>false,
             'data'=>$funnel_stages,
@@ -147,7 +147,7 @@ class FunnelController extends Controller
     {
         $permisos = User::getAuthenticatedUserPermissions();
         // print_r($colaborador_id);
-        if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
+        if(in_array(Permissions::OPORTUNIDADES_READ_ALL, $permisos)){
             $funnel_stages                  = FunnelService::getMisOportunidadesByFunnelStage($colaborador_id);
             $funnel_stages['colaboradores'] = FunnelService::getColaboradoresWithOportunidades();
             // $funnel_stages['colaborador']   = $colaborador_id;
