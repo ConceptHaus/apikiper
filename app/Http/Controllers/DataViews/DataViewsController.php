@@ -1478,6 +1478,7 @@ class DataViewsController extends Controller
         
         $catalogo_status = DB::table('cat_status_oportunidad')
                     ->select('id_cat_status_oportunidad as id','status as nombre','color')
+                    ->wherenull('cat_status_oportunidad.deleted_at')
                     ->get();
         $catalogo_status_select = DB::table('cat_status_oportunidad')
                     ->join('status_oportunidad', 'status_oportunidad.id_cat_status_oportunidad', 'cat_status_oportunidad.id_cat_status_oportunidad')
