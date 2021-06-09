@@ -21,7 +21,8 @@ class SettingsUserNotificationsController extends Controller
     }
 
     public function getSettingNotificationColaborador(Request $request){
-        return SettingsUserNotificationsService::getSettingNotificationColaborador($request);
+        $id_user = $request->id_usuario;
+        return SettingsUserNotificationsService::getSettingNotificationColaborador($id_user);
     }
 
     public function getSettingNotificationAdministrador(){

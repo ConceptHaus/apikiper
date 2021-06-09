@@ -4,6 +4,7 @@ use App\Http\Repositories\Notifications\ProspectosNotificationsRep;
 use App\Http\Repositories\Users\UsersRep;
 use App\Http\Services\Settings\SettingsService;
 use App\Http\Services\UtilService;
+use App\Http\Services\SettingsUserNotifications\SettingsUserNotificationsService;
 use Mailgun;
 
 use App\Http\DTOs\Settings\SettingsDTO;
@@ -109,6 +110,7 @@ class ProspectosNotificationsService
             // print_r($admins);
             if (count($admins) > 0) {
                 foreach ($notifications as $key => $notification) {
+                    // print_r($notification);
                    ProspectosNotificationsRep::changeStatusforExisitingProspectoNotification($notification['source_id'], 'escalado');
                    ProspectosNotificationsService::sendProspectoEscalationEmail($notification, $admins);
                 }
@@ -118,22 +120,29 @@ class ProspectosNotificationsService
 
     public static function sendProspectoEscalationEmail($notification, $admins)
     {
+        // print_r($admins);
         foreach ($admins as $key => $admin) {
-            $msg = array(
-                'subject'            => 'Escalamiento de Prospecto '.$notification['nombre_prospecto'].' por inactividad',
-                'email'              => $admin['email'],
-                'colaborador'        => $admin['nombre'].' '.$admin['apellido'],
-                'nombre_oportunidad' => $notification['nombre_prospecto'],
-                'attempt'            => $notification['attempts'],
-                'inactivity_period'  => $notification['inactivity_period'],
-                'id_prospecto'       => $notification['source_id'],
-                'admin'              => $admin['nombre'].' '.$admin['apellido'],
-            );
+            $settingsAdmin = SettingsUserNotificationsService::getSettingsNotificationUser($admin["id"]);
+            print_r($settingsAdmin);
+            //     print_r($settingsAdmin["settingProspecto"]);
+            if ($settingsAdmin["settingProspecto"] == '') {
+               
+                $msg = array(
+                    'subject'            => 'Escalamiento de Prospecto '.$notification['nombre_prospecto'].' por inactividad',
+                    'email'              => $admin['email'],
+                    'colaborador'        => $admin['nombre'].' '.$admin['apellido'],
+                    'nombre_oportunidad' => $notification['nombre_prospecto'],
+                    'attempt'            => $notification['attempts'],
+                    'inactivity_period'  => $notification['inactivity_period'],
+                    'id_prospecto'       => $notification['source_id'],
+                    'admin'              => $admin['nombre'].' '.$admin['apellido'],
+                );
 
-            Mailgun::send('mailing.inactivity_escaleted_prospecto', ['msg' => $msg], function ($m) use ($msg){
-                $m->to($msg['email'], $msg['admin'])->subject($msg['subject']);
-                $m->from('notificaciones@kiper.com.mx', 'Kiper');
-            });
+                Mailgun::send('mailing.inactivity_escaleted_prospecto', ['msg' => $msg], function ($m) use ($msg){
+                    $m->to($msg['email'], $msg['admin'])->subject($msg['subject']);
+                    $m->from('notificaciones@kiper.com.mx', 'Kiper');
+                });
+            }
         }  
     }
     
