@@ -79,8 +79,12 @@ class SettingsUserNotificationsService
         return SettingsUserNotificationsRep::postSettingNotificationColaborador($params);
     }
 
-    public static function getSettingNotificationColaborador($params){
-        $settingNotification = SettingsUserNotificationsRep::getSettingNotificationColaborador($params);
+    public static function getSettingNotificationUser($id_user){
+        return SettingsUserNotificationsRep::getSettingNotificationUser($id_user);
+    }
+
+    public static function getSettingNotificationColaborador($id_user){
+        $settingNotification = SettingsUserNotificationsRep::getSettingNotificationColaborador($id_user);
         $settingNotification->configuraciones = json_decode($settingNotification->configuraciones);
 
         $value_prospectos = json_encode($settingNotification->configuraciones->prospectos_max_time_inactivity);
@@ -96,6 +100,50 @@ class SettingsUserNotificationsService
         $settingNotification->timeOC = $value_oportunidades[1];
 
         return $settingNotification;
+    }
+
+    public static function getSettingsNotificationUser($id_user){
+        $settingNotification = SettingsUserNotificationsRep::getSettingsNotificationColaborador($id_user);
+
+        // print_r($settingNotification);
+        $udpateNotification = '';
+        $settingUser = array();
+
+        foreach ($settingNotification as $key => $value) {
+            $udpateNotification = $value["updated_at"];
+
+            $json = json_decode($value["configuraciones"], true);
+            $value_prospectos = $json["prospectos_max_time_inactivity"];
+            $value_prospectos = str_replace('"', '', explode("|", $value_prospectos)); 
+
+            $value_oportunidades = $json["oportunidades_max_time_inactivity"];
+            $value_oportunidades = str_replace('"', '', explode("|", $value_oportunidades)); 
+
+            $settingUser["max_time_prospect_colab"] = $value_prospectos[0];
+            $settingUser["timePC"] = $value_prospectos[1];
+
+            $settingUser["max_time_oportu_colab"] = $value_oportunidades[0];
+            $settingUser["timeOC"] = $value_oportunidades[1];
+
+            $settingUser["settingProspecto"] = json_decode($json["disable_email_notification_escalated_prospectos"]);
+            $settingUser["settingOportunidad"] = json_decode($json["disable_email_notification_escalated_oportunidades"]);
+        }
+        // print_r($value);
+
+        // print_r($settingUser);
+        // $value_prospectos = json_encode($settingNotification->configuraciones->prospectos_max_time_inactivity);
+        // $value_prospectos = str_replace('"', '', explode("|", $value_prospectos)); 
+
+        // $value_oportunidades = json_encode($settingNotification->configuraciones->oportunidades_max_time_inactivity);
+        // $value_oportunidades = str_replace('"', '', explode("|", $value_oportunidades)); 
+
+        // $settingNotification2["max_time_prospect_colab"] = $value_prospectos[0];
+        // $settingNotification2["timePC"] = $value_prospectos[1];
+
+        // $settingNotification2["max_time_oportu_colab"] = $value_oportunidades[0];
+        // $settingNotification2["timeOC"] = $value_oportunidades[1];
+        // print_r($settingUser);
+        return $settingUser;
     }
 
     public static function getSettingNotificationAdministrador(){
