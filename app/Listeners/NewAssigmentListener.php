@@ -47,11 +47,14 @@ class NewAssigmentListener
                         // Jueves 27 mayo 15:00 PM- 24:00 AM
                         // Viernes 04 junio 10:00 AM-15:00 PM
                         // Lunes 07 junio 10:00 AM -15:00 PM
-                        
+                        // Jueves 10 junio 15:00 PM- 24:00 AM
+                        // Lunes 21 junio 15:00 PM- 24:00 AM
                         
                         [Carbon::create(2021,5,27,15,0,1),Carbon::create(2021,5,27,24,0,0)],
                         [Carbon::create(2021,6,4,00,0,1),Carbon::create(2021,6,4,15,0,0)],
-                        [Carbon::create(2021,6,7,00,0,1),Carbon::create(2021,6,7,15,0,0)]
+                        [Carbon::create(2021,6,7,00,0,1),Carbon::create(2021,6,7,15,0,0)],
+                        [Carbon::create(2021,6,10,15,0,1),Carbon::create(2021,6,10,24,0,0)],
+                        [Carbon::create(2021,6,21,15,0,1),Carbon::create(2021,6,21,24,0,0)]
                     ]
                 ],
                 'ejecutivo_1' => [
@@ -64,7 +67,10 @@ class NewAssigmentListener
                         // Martes 01 Junio 15:00 PM - 24:00 PM
                         [Carbon::create(2021,5,24,15,0,0),Carbon::create(2021,5,24,24,0,0)],
                         [Carbon::create(2021,5,28,00,0,1),Carbon::create(2021,5,28,15,0,0)],
-                        [Carbon::create(2021,6,01,15,0,0),Carbon::create(2021,6,01,24,0,0)]
+                        [Carbon::create(2021,6,1,15,0,0),Carbon::create(2021,6,1,24,0,0)],
+                        [Carbon::create(2021,6,9,00,0,1),Carbon::create(2021,6,9,15,0,0)],
+                        [Carbon::create(2021,6,16,15,0,1),Carbon::create(2021,6,16,24,0,0)],
+                        [Carbon::create(2021,6,17,00,0,1),Carbon::create(2021,6,17,15,0,0)]
                     ]
                     
                 ],
@@ -88,7 +94,9 @@ class NewAssigmentListener
                         // Martes 1 junio 15:00 PM - 24:00 PM
                         [Carbon::create(2021,5,24,15,0,0),Carbon::create(2021,5,24,24,0,0)],
                         [Carbon::create(2021,5,28,00,0,1),Carbon::create(2021,5,28,15,0,0)],
-                        [Carbon::create(2021,6,1,15,0,0),Carbon::create(2021,6,1,24,0,0)]                  
+                        [Carbon::create(2021,6,9,15,0,0),Carbon::create(2021,6,9,24,0,0)],
+                        [Carbon::create(2021,6,16,00,0,1),Carbon::create(2021,6,16,15,0,0)],
+                        [Carbon::create(2021,6,18,15,0,0),Carbon::create(2021,6,18,24,0,0)]                  
                     ]       
                 ],
                 'ejecutivo_3'=>[
@@ -102,7 +110,9 @@ class NewAssigmentListener
                         // Lunes 7 junio 15:00 PM - 24:00 AM
                         [Carbon::create(2021,5,24,00,0,1),Carbon::create(2021,5,24,15,0,0)],
                         [Carbon::create(2021,5,29,00,0,1),Carbon::create(2021,5,29,15,0,0)],
-                        [Carbon::create(2021,6,7,15,0,1),Carbon::create(2021,6,7,24,0,0)]                           
+                        [Carbon::create(2021,6,7,15,0,1),Carbon::create(2021,6,7,24,0,0)],
+                        [Carbon::create(2021,6,11,15,0,1),Carbon::create(2021,6,11,24,0,0)],
+                        [Carbon::create(2021,6,15,00,0,1),Carbon::create(2021,6,15,15,0,0)]                         
                     ]       
                 ], 
                 'ejecutivo_4'=>[
@@ -115,7 +125,10 @@ class NewAssigmentListener
                         // Jueves 3 junio 15:00 PM - 24:00 AM
                         [Carbon::create(2021,5,25,15,0,1),Carbon::create(2021,5,25,24,0,0)],
                         [Carbon::create(2021,6,1,00,0,1),Carbon::create(2021,6,1,15,0,0)],
-                        [Carbon::create(2021,6,3,15,0,1),Carbon::create(2021,5,3,24,0,0)]
+                        [Carbon::create(2021,6,3,15,0,1),Carbon::create(2021,6,3,24,0,0)],
+                        [Carbon::create(2021,6,8,00,0,1),Carbon::create(2021,6,8,15,0,0)],
+                        [Carbon::create(2021,6,14,15,0,1),Carbon::create(2021,6,14,24,0,0)],
+                        [Carbon::create(2021,6,18,00,0,1),Carbon::create(2021,6,18,15,0,0)]
                     ]       
                 ],
                 'ejecutivo_5'=>[
@@ -139,7 +152,11 @@ class NewAssigmentListener
                         // Sábado 05 junio 10:00 AM - 15:00 PM
                         [Carbon::create(2021,5,26,15,0,1),Carbon::create(2021,5,26,24,0,0)],
                         [Carbon::create(2021,5,31,15,0,1),Carbon::create(2021,5,31,24,0,0)],
-                        [Carbon::create(2021,6,5,00,0,1),Carbon::create(2021,6,5,15,0,0)]
+                        [Carbon::create(2021,6,5,00,0,1),Carbon::create(2021,6,5,15,0,0)],
+                        [Carbon::create(2021,6,7,00,0,1),Carbon::create(2021,6,7,15,0,0)],
+                        [Carbon::create(2021,6,10,00,0,1),Carbon::create(2021,6,10,15,0,0)],
+                        [Carbon::create(2021,6,12,00,0,1),Carbon::create(2021,6,12,15,0,0)],
+                        [Carbon::create(2021,6,17,15,0,1),Carbon::create(2021,6,17,24,0,0)]
                     ]       
                 ],
                 'ejecutivo_7'=>[
@@ -153,7 +170,10 @@ class NewAssigmentListener
 
                         [Carbon::create(2021,5,25,00,0,1),Carbon::create(2021,5,25,15,0,0)],
                         [Carbon::create(2021,5,28,15,0,1),Carbon::create(2021,5,28,24,0,0)],
-                        [Carbon::create(2021,6,3,00,0,1),Carbon::create(2021,6,3,15,0,0)]
+                        [Carbon::create(2021,6,3,00,0,1),Carbon::create(2021,6,3,15,0,0)],
+                        [Carbon::create(2021,6,8,15,0,1),Carbon::create(2021,6,8,24,0,0)],
+                        [Carbon::create(2021,6,14,00,0,1),Carbon::create(2021,6,14,15,0,0)],
+                        [Carbon::create(2021,6,21,00,0,1),Carbon::create(2021,6,21,15,0,0)]
                     ]       
                 ],
                 'ejecutivo_8'=>[
