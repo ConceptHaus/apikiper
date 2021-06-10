@@ -44,12 +44,14 @@ use Mailgun;
 use DB;
 use Mail;
 
+use App\Http\Services\Roles\RolesService;
+
 
 class DataViewsController extends Controller
 {
 
     public function dashboardPorFecha($inicio, $fin){
-        $auth = $this->guard()->user();  
+        $auth = $this->guard()->user();
         //return $inicio.' '.$fin;
         //Oportunidades Cotizadas
         //Oportunidades Cerradas
@@ -63,7 +65,7 @@ class DataViewsController extends Controller
         
         $oportuniades_cerradas = $this->oportunidades_por_periodo_por_status($inicioSemana,$finSemana,2,$auth);
         $oportunidades_cotizadas = $this->oportunidades_por_periodo_por_status($inicioSemana,$finSemana,1,$auth);
-        $colaboradores = $this->dashboard_colaboradores_periodo($inicioSemana,$finSemana);
+        $colaboradores = $this->dashboard_colaboradores_periodo($inicioSemana,$finSemana); //
         $prospectos_sin_contactar = $this->prospectos_sin_contactar($auth);
         $ingresos = $this->ingresos_por_periodo_por_status($inicioSemana,$finSemana,2, $auth);
         $origen = $this->origen_por_periodo($inicioSemana, $finSemana, $auth);
@@ -75,7 +77,7 @@ class DataViewsController extends Controller
             
             $activity = null;
         }
-        
+
         return response()->json([
             'message'=>'Success',
             'error'=>false,
@@ -1588,34 +1590,42 @@ class DataViewsController extends Controller
 
     //PUT
     public function updateEtiquetas(Request $request){
+        $validador = $this->validadorServicio($request->all());
 
         $id = $request->id_etiqueta;
 
-        try{
-            DB::beginTransaction();
+        if($validador->passes()){
+            try{
+                DB::beginTransaction();
 
-            $etiqueta = Etiqueta::where('id_etiqueta',$id)->first();
-            $etiqueta->nombre = $request->nombre;
-            $etiqueta->descripcion = $request->descripcion;
-            $etiqueta->status = $request->status;
-            $etiqueta->save();
+                $etiqueta = Etiqueta::where('id_etiqueta',$id)->first();
+                $etiqueta->nombre = $request->nombre;
+                $etiqueta->descripcion = $request->descripcion;
+                $etiqueta->status = $request->status;
+                $etiqueta->save();
 
-            DB::commit();
+                DB::commit();
 
-            return response()->json([
-                    'error'=>false,
-                    'message'=>'Registo Correcto',
-                    'data'=>$etiqueta
-                ],200);
+                return response()->json([
+                        'error'=>false,
+                        'message'=>'Registo Correcto',
+                        'data'=>$etiqueta
+                    ],200);
 
-        }catch(Exception $e){
-            DB::rollBack();
-            Bugsnag::notifyException(new RuntimeException("No se pudo editar una etiqueta"));
-            return response()->json([
-                'error'=>true,
-                'message'=>$e
-            ],400);
+            }catch(Exception $e){
+                DB::rollBack();
+                Bugsnag::notifyException(new RuntimeException("No se pudo editar una etiqueta"));
+                return response()->json([
+                    'error'=>true,
+                    'message'=>$e
+                ],400);
+            }
         }
+        $errores = $validador->errors()->toArray();
+        return response()->json([
+            'error'=>true,
+            'message'=>$errores
+        ],400);
 
     }
 
@@ -1653,7 +1663,7 @@ class DataViewsController extends Controller
 
     //POST
     public function addServicios(Request $request){
-        $validador = $this->validadorEtiqueta($request->all());
+        $validador = $this->validadorServicio($request->all());
 
         if($validador->passes()){
             try{
@@ -1689,32 +1699,41 @@ class DataViewsController extends Controller
 
     //PUT
     public function updateServicios(Request $request){
+        $validador = $this->validadorServicio($request->all());
+        
         $id = $request->id_servicio;
 
-        try{
-            DB::beginTransaction();
-            $servicio = CatServicios::where('id_servicio_cat',$id)->first();
-            $servicio->nombre = $request->nombre;
-            $servicio->descripcion = $request->descripcion;
-            $servicio->status = $request->status;
-            $servicio->save();
-            DB::commit();
+        if($validador->passes()){
+            try{
+                DB::beginTransaction();
+                $servicio = CatServicios::where('id_servicio_cat',$id)->first();
+                $servicio->nombre = $request->nombre;
+                $servicio->descripcion = $request->descripcion;
+                $servicio->status = $request->status;
+                $servicio->save();
+                DB::commit();
 
-            return response()->json([
-                'error'=>false,
-                'message'=>'Registro Correcto',
-                'data'=>$servicio
-            ]);
+                return response()->json([
+                    'error'=>false,
+                    'message'=>'Registro Correcto',
+                    'data'=>$servicio
+                ]);
 
-        }catch(Exception $e){
-            DB::rollBack();
-            Bugsnag::notifyException(new RuntimeException("No se pudo editar un servicio"));
-            return response()->json([
-                'error'=>true,
-                'message'=>$e
+            }catch(Exception $e){
+                DB::rollBack();
+                Bugsnag::notifyException(new RuntimeException("No se pudo editar un servicio"));
+                return response()->json([
+                    'error'=>true,
+                    'message'=>$e
 
-            ],400);
+                ],400);
+            }
         }
+        $errores = $validador->errors()->toArray();
+        return response()->json([
+            'error'=>true,
+            'message'=>$errores
+        ],400);
     }
 
     public function deleteServicios($id){
@@ -1813,7 +1832,14 @@ class DataViewsController extends Controller
     //AUX
     public function validadorEtiqueta(array $data){
         return Validator::make($data,[
-            'nombre'=>'required|string',
+            'nombre'=>'required|string|unique:etiquetas',
+
+        ]);
+    }
+
+    public function validadorServicio(array $data){
+        return Validator::make($data,[
+            'nombre'=>'required|string|unique:cat_servicios',
 
         ]);
     }
@@ -2502,7 +2528,7 @@ class DataViewsController extends Controller
 
     public function oportunidades_por_periodo_por_status($inicio, $fin, $status, $auth)
     {
-        if($auth->is_admin){
+        if($auth->role_id >= 3){
             return DB::table('oportunidades')
             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
             ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
@@ -2533,7 +2559,7 @@ class DataViewsController extends Controller
 
     public function ingresos_por_periodo_por_status($inicio, $fin, $status,$auth)
     {   
-        if($auth->is_admin){
+        if($auth->role_id >= 3){
             $ingresos = DB::table('oportunidades')
                 ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
                 ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
@@ -2550,7 +2576,7 @@ class DataViewsController extends Controller
             }
             return $ingresos;
         }
-            return DB::table('oportunidades')
+            $ingresos = DB::table('oportunidades')
                 ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
                 ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                 ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
@@ -2571,7 +2597,7 @@ class DataViewsController extends Controller
 
     public function origen_por_periodo($inicio, $fin,$auth)
     {
-        if($auth->is_admin){
+        if($auth->role_id >= 3){
             return DB::table('prospectos')
                 ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                 ->wherenull('prospectos.deleted_at')
@@ -2704,7 +2730,7 @@ class DataViewsController extends Controller
             ->get();
     }
     public function prospectos_sin_contactar($auth){
-        if($auth->is_admin){
+        if($auth->role_id >= 3){
             return DB::table('prospectos')
             ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
             ->wherenull('prospectos.deleted_at')

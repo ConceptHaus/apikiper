@@ -159,6 +159,14 @@ class ProspectosNotificationsService
         return ProspectosNotificationsRep::getProspectosNotifications($id_user, $limit);
     }
 
+    public static function getCountProspectosNotifications($id_user){
+        return ProspectosNotificationsRep::getCountProspectosNotifications($id_user);
+    }
+
+    public static function getCountOportunidadesNotifications($id_user){
+        return ProspectosNotificationsRep::getCountOportunidadesNotifications($id_user);
+    }
+
     public static function getOportunidadesNotifications($id_user, $limit){
         return ProspectosNotificationsRep::getOportunidadesNotifications($id_user, $limit);
     }

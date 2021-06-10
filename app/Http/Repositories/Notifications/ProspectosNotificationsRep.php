@@ -168,6 +168,30 @@ class ProspectosNotificationsRep
             limit ".$limit."");
     }
 
+    public static function getCountProspectosNotifications($id_user){
+        return DB::table('notifications')
+                ->where('colaborador_id', $id_user)
+                ->where('view', 'no-leido')
+                ->where('notification_type', 'prospecto')
+                ->where(function ($query) {
+                    $query->where('status', '!=', 'resuelto');
+                    $query->orWhereNull('status');
+                })
+                ->count();
+    }
+
+    public static function getCountOportunidadesNotifications($id_user){
+        return DB::table('notifications')
+                ->where('colaborador_id', $id_user)
+                ->where('view', 'no-leido')
+                ->where('notification_type', 'oportunidad')
+                ->where(function ($query) {
+                    $query->where('status', '!=', 'resuelto');
+                    $query->orWhereNull('status');
+                })
+                ->count();
+    }
+
     public static function getOportunidadesNotifications($id_user, $limit){
         return DB::select("select n.*, p.*, o.*, 
                             CONCAT(u.nombre, ' ', u.apellido) as colaborador, 

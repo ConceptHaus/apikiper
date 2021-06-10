@@ -305,6 +305,8 @@ Route::prefix('/v1/notifcations')->group(function(){
         Route::get('/prospectos','Notifications\NotificationsController@getProspectosToSendNotifications');
         Route::get('/prospectos-to-be-escalated','Notifications\NotificationsController@getProspectosToEscalateForAdmin');
         Route::get('/getProspectos','Notifications\NotificationsController@getProspectosNotifications');
+        Route::get('/getCountProspectos','Notifications\NotificationsController@getCountProspectosNotifications');
+        Route::get('/getCountOportunidades','Notifications\NotificationsController@getCountOportunidadesNotifications');
 
         // Admin Settings
         Route::post('/postSettingNotificationAdmin','SettingsUserNotifications\SettingsUserNotificationsController@postSettingNotificationAdmin');
