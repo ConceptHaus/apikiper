@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateNombreToProspectos extends Migration
+class UpdateNombreprospectoToProspectos extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,7 @@ class UpdateNombreToProspectos extends Migration
      */
     public function up()
     {
-        Schema::table('prospectos', function (Blueprint $table) {
-            $table->string('nombre')->nullable(false)->change();
-        });
+        return DB::select("ALTER TABLE prospectos MODIFY nombre varchar(255) null;");
     }
 
     /**
@@ -25,8 +23,8 @@ class UpdateNombreToProspectos extends Migration
      */
     public function down()
     {
-        Schema::table('prospectos', function (Blueprint $table) {
-            $table->string('nombre')->nullable(true)->change();
-        });
+        return DB::select("ALTER TABLE prospectos MODIFY nombre varchar(255) not null;");
     }
 }
+
+

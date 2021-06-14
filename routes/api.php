@@ -165,8 +165,8 @@ Route::prefix('/v1/oportunidades')->group(function(){
 //DataViews
 
 Route::prefix('/v1/generales')->group(function(){
-    Route::get('/industrias', 'DataViews\DataViewsController@getIndustrias');
     Route::middleware(['auth','cors'])->group(function(){
+        Route::get('/industrias', 'DataViews\DataViewsController@getIndustrias');
         Route::get('/correos', 'Prospectos\ProspectosListController@findProspectosCorreos');
         Route::get('/prospectosNombres', 'Prospectos\ProspectosListController@findProspectosNombres');
         Route::get('/prospectosTelefono', 'Prospectos\ProspectosListController@findProspectosTelefono');
@@ -305,6 +305,8 @@ Route::prefix('/v1/notifcations')->group(function(){
         Route::get('/prospectos','Notifications\NotificationsController@getProspectosToSendNotifications');
         Route::get('/prospectos-to-be-escalated','Notifications\NotificationsController@getProspectosToEscalateForAdmin');
         Route::get('/getProspectos','Notifications\NotificationsController@getProspectosNotifications');
+        Route::get('/getCountProspectos','Notifications\NotificationsController@getCountProspectosNotifications');
+        Route::get('/getCountOportunidades','Notifications\NotificationsController@getCountOportunidadesNotifications');
 
         // Admin Settings
         Route::post('/postSettingNotificationAdmin','SettingsUserNotifications\SettingsUserNotificationsController@postSettingNotificationAdmin');

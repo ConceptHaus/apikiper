@@ -168,6 +168,14 @@ class ProspectosNotificationsRep
             limit ".$limit."");
     }
 
+    public static function getCountProspectosNotifications($id_user){
+        return count(ProspectosNotificationsRep::getProspectosNotifications($id_user, $limit=100000000000000000));
+    }
+
+    public static function getCountOportunidadesNotifications($id_user){
+        return count(ProspectosNotificationsRep::getOportunidadesNotifications($id_user, $limit=100000000000000000));
+    }
+
     public static function getOportunidadesNotifications($id_user, $limit){
         return DB::select("select n.*, p.*, o.*, 
                             CONCAT(u.nombre, ' ', u.apellido) as colaborador, 
