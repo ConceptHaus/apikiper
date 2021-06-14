@@ -50,10 +50,19 @@ class FunnelController extends Controller
             }
         }
         $errores = $validator->errors()->toArray();
+        
+        $errores_msg = array();
+
+        if (!empty($errores)) {
+            foreach ($errores as $key => $error_m) {
+                $errores_msg[] = $error_m[0];
+                break;
+            }
+        }
 
         return response()->json([
             'error'=>true,
-            'messages'=> $errores
+            'messages'=> $errores_msg
         ],400);
     }
 
