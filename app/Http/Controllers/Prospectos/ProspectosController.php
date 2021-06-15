@@ -29,7 +29,7 @@ use App\Modelos\Oportunidad\ProspectoOportunidad;
 
 use App\Modelos\Empresa\Empresa;
 use App\Modelos\Empresa\EmpresaProspecto;
-
+use App\Http\Services\Auth\AuthService;
 
 use App\Evento;
 use App\Modelos\Extras\RecordatorioProspecto;
@@ -938,7 +938,7 @@ class ProspectosController extends Controller
         ]);
     }
 
-    public function downloadProspectos($admin,$rol,$id_user, $correos, $nombre, $telefono, $status, $grupo, $etiquetas, $fechaInicio, $fechaFin, $colaboradores){
+    public function downloadProspectos($role_id, $rol, $id_user, $correos, $nombre, $telefono, $status, $grupo, $etiquetas, $fechaInicio, $fechaFin, $colaboradores){
         $correos = json_decode($correos);
         $nombre = json_decode($nombre);
         $telefono = json_decode($telefono);
@@ -963,17 +963,19 @@ class ProspectosController extends Controller
             'Etiquetas',
             'Empresa'
         ];
-        if($admin && $rol == 0){
-             $desarrollo = 'all';
-        }
-        else if($rol == 1){
-             $desarrollo='polanco';
-        }
-        else if($rol == 2){
-             $desarrollo='napoles';
-        }
-        else if(!$admin && $rol == 0){
+
+        if($rol == 1){
+            $desarrollo='polanco';
+
+        }else if($rol == 2){
+            $desarrollo='napoles';
+
+        }else if($role_id >= 3){
+            $desarrollo = 'all';
+
+        }else {
             $desarrollo = 'user';
+            
         }
         return (new ProspectosReports($headings,$desarrollo,$id_user, $correos, $nombre, $telefono, $status, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores))->download("{$date}_{$desarrollo}_reporte.xlsx");
     }

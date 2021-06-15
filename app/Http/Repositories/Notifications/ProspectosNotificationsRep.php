@@ -102,11 +102,7 @@ class ProspectosNotificationsRep
     {
         $exisiting_notification = Notification::where('source_id', $prospecto_id)->first();
        
-        if (!empty($exisiting_notification)) {
-            return $exisiting_notification;
-        }else{
-            return [];
-        }
+        return !empty($exisiting_notification)? $exisiting_notification: [];
     }
 
     public static function updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto_id)
@@ -144,7 +140,7 @@ class ProspectosNotificationsRep
                 ->count();
     }
 
-    public static function getProspectosNotifications($id_user, $limit){
+    public static function getProspectosNotifications($id_user, $limit){        
         return DB::select("select n.*, p.*,
         CONCAT(u.nombre, ' ', u.apellido) as colaborador,
         DATEDIFF(now(),n.created_at)as days
