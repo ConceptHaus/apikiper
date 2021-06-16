@@ -16,6 +16,7 @@ class OportunidadesNotificationsRep
                                                 'status_oportunidad.updated_at',
                                                 'detalle_oportunidad.valor',
                                                 'cat_status_oportunidad.status',
+                                                'users.id as colaborador_id',
                                                 'users.nombre',
                                                 'users.apellido',
                                                 'users.email',

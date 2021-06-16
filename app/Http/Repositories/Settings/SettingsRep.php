@@ -42,4 +42,15 @@ class SettingsRep
         return $setting->value;
     }
 
+    /*
+    | Cat Status Oportunidad
+    */
+
+    public static function getMaxEstatusOportunidadMaxCount()
+    {
+        $setting = Setting::where('setting', 'oportunidades_status_max_count')->first();
+
+        return $setting->value;
+    }
+
 }
