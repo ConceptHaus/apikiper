@@ -34,5 +34,14 @@ class SettingsService
     {
         return SettingsRep::getProspectosMaxNotificationAttempts();   
     }
+
+    /*
+    | Cat Status Oportunidad
+    */
+
+    public static function getMaxEstatusOportunidadMaxCount()
+    {
+        return SettingsRep::getMaxEstatusOportunidadMaxCount();
+    }
     
 }

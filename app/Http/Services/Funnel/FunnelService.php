@@ -2,6 +2,7 @@
 namespace App\Http\Services\Funnel;
 use App\Http\Repositories\Funnel\FunnelRep;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Services\Settings\SettingsService;
 
 class FunnelService
 {
@@ -20,6 +21,15 @@ class FunnelService
         ]);
     }
 
+    public static function validatorUpdate(array $data)
+    {
+        return Validator::make($data, [
+            'nombre' => 'required|string|max:255|unique:cat_status_oportunidad,status,'.$data['id_cat_status_oportunidad'],
+            'color' => 'required',
+            'funnel_visible' => 'required'
+        ]);
+    }
+
     public static function createFunnelStage($new_stage)
     {
         return FunnelRep::createFunnelStage($new_stage);
@@ -33,6 +43,16 @@ class FunnelService
     public static function updateStatusOportunidad($estatus)
     {
         return FunnelRep::updateStatusOportunidad($estatus);    
+    }
+
+    public static function getMaxEstatusOportunidadMaxCount()
+    {
+        return SettingsService::getMaxEstatusOportunidadMaxCount();
+    }
+
+    public static function updateStatusOportunidadVisibles($status_oportunidad_visibles)
+    {
+        return FunnelRep::updateStatusOportunidadVisibles($status_oportunidad_visibles);
     }
 
     /*

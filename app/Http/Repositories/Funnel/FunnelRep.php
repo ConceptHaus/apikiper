@@ -5,12 +5,13 @@ namespace App\Http\Repositories\Funnel;
 use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Modelos\Oportunidad\StatusOportunidad;
 use DB;
+use Log;
 
 class FunnelRep
 {
     public static function getCatStatusOportunidades()
     {
-        return CatStatusOportunidad::all();
+        return CatStatusOportunidad::orderBy('funnel_visible', 'ASC')->orderBy('funnel_order', 'ASC')->get();
     }
 
     public static function createFunnelStage($new_cat_status_oportunidad)
@@ -78,11 +79,43 @@ class FunnelRep
         try{
             DB::beginTransaction();
             
-            $cat_status_oportunidad                 = CatStatusOportunidad::find($estatus['id_cat_status_oportunidad']);
+            $cat_status_oportunidad = CatStatusOportunidad::find($estatus['id_cat_status_oportunidad']);
+            $new_position_in_funnel = 0;
+            $old_position_in_funnel = 0;
+            
+            if($cat_status_oportunidad->funnel_visible == 0 && $estatus['funnel_visible'] == 1){
+                $last_item_order = CatStatusOportunidad::where("funnel_visible", 1)->orderBy("funnel_order", "DESC")->first();  
+                if(isset($last_item_order->funnel_order)){
+                    $new_position_in_funnel = $last_item_order->funnel_order + 1;
+                }   
+            }
+
+            if($cat_status_oportunidad->funnel_visible == 1 && $estatus['funnel_visible'] == 0){
+                $old_position_in_funnel = $cat_status_oportunidad->funnel_order;
+                $last_items =   CatStatusOportunidad::where("funnel_visible", 1)
+                                                    ->where("funnel_order", ">", $old_position_in_funnel)
+                                                    ->orderBy("funnel_order", "ASC")
+                                                    ->get();  
+                
+                if(count($last_items) > 0){
+                    foreach ($last_items as $key => $last_item) {
+                        $status_to_be_updated = CatStatusOportunidad::find($last_item->id_cat_status_oportunidad);
+                        $status_to_be_updated->funnel_order = $status_to_be_updated->funnel_order - 1;
+                        $status_to_be_updated->save();
+                    }
+                }    
+            }
+
+            if($cat_status_oportunidad->funnel_visible == 1 && $estatus['funnel_visible'] == 1){
+                $new_position_in_funnel = $cat_status_oportunidad->funnel_order;    
+            }
+            
             $cat_status_oportunidad->status         = $estatus['status'];
             $cat_status_oportunidad->funnel_visible = $estatus['funnel_visible'];
             $cat_status_oportunidad->color          = $estatus['color'];
+            $cat_status_oportunidad->funnel_order   = ($estatus['funnel_visible']) ? $new_position_in_funnel : NULL;
             $cat_status_oportunidad->save();
+            
             
             DB::commit();
             
@@ -97,6 +130,26 @@ class FunnelRep
             $response   = array('message'   => $e,
                                 'error'     => true);
         }
+
+        return $response;
+    }
+
+    public static function  updateStatusOportunidadVisibles($status_oportunidad_visibles)
+    {
+         
+        if(count($status_oportunidad_visibles) > 0){
+            foreach ($status_oportunidad_visibles as $key => $status_oportunidad_visible) {
+                $status_to_be_updated = CatStatusOportunidad::find($status_oportunidad_visible['id_cat_status_oportunidad']);
+                $status_to_be_updated->funnel_order = $status_oportunidad_visible['funnel_order'];
+                $status_to_be_updated->save();
+            }
+        }   
+          
+        $response   = array(
+            // 'message'   => 'Status oportunidad actualizado de manera correcta',
+            //                 'error'     => false,
+                            'data'      => $status_oportunidad_visible['id_cat_status_oportunidad']);
+        
 
         return $response;
     }
