@@ -27,7 +27,7 @@ class FunnelController extends Controller
     public function createFunnelStage(Request $request)
     {
         $validator = FunnelService::validator($request->all());
-        // print_r($request->input()); return [];
+        
         if($validator->passes()){
             $new_stage = array( 'nombre'         => $request->nombre,
                                 'color'          => $request->color,
@@ -87,27 +87,52 @@ class FunnelController extends Controller
 
     public function updateStatus(Request $request)
     {
-        // print_r($request->input()); return [];
-        $estatus    = array('id_cat_status_oportunidad' => $request->id_cat_status_oportunidad,
-                            'status'                    => $request->status,
-                            'funnel_visible'            => $request->funnel_visible,
-                            'color'                     => $request->color);
-       
-        $update_status_oportunidad = FunnelService::updateStatusOportunidad($estatus);
+        // $validator = FunnelService::validatorUpdate($request->all());
+        
+        // if($validator->passes()){
+            $estatus    = array('id_cat_status_oportunidad' => $request->id_cat_status_oportunidad,
+                                'status'                    => $request->status,
+                                'funnel_visible'            => $request->funnel_visible,
+                                'color'                     => $request->color);
+        
+            $update_status_oportunidad = FunnelService::updateStatusOportunidad($estatus);
 
-        if(!$update_status_oportunidad['error']){
-            
-            return response()->json([
-                        'message'   => $update_status_oportunidad['message'],
-                        'error'     => $update_status_oportunidad['error'],
-                        'data'      => $update_status_oportunidad['data']
-                    ],200);
-        }else{
-            return response()->json([
-                        'message'   => $update_status_oportunidad['message'],
-                        'error'     => $update_status_oportunidad['error'],
-                    ],400);    
-        }  
+            if(!$update_status_oportunidad['error']){
+                
+                return response()->json([
+                            'message'   => $update_status_oportunidad['message'],
+                            'error'     => $update_status_oportunidad['error'],
+                            'data'      => $update_status_oportunidad['data']
+                        ],200);
+            }else{
+                return response()->json([
+                            'message'   => $update_status_oportunidad['message'],
+                            'error'     => $update_status_oportunidad['error'],
+                        ],400);    
+            }
+        // }
+        
+        // $errores = $validator->errors()->toArray();
+        
+        // $errores_msg = array();
+
+        // if (!empty($errores)) {
+        //     foreach ($errores as $key => $error_m) {
+        //         $errores_msg[] = $error_m[0];
+        //         break;
+        //     }
+        // }
+
+        // return response()->json([
+        //     'error'=>true,
+        //     'messages'=> $errores_msg
+        // ],400);
+    }
+
+    public function updateOportunidadStatusVisibles(Request $request)
+    {
+        
+        return FunnelService::updateStatusOportunidadVisibles($request->input());    
     }
 
     /*
@@ -171,6 +196,16 @@ class FunnelController extends Controller
                 'data'=>[],
             ],200);
         }
+    }
+
+    public function getMaxEstatusOportunidadMaxCount(){
+        
+        $max_count = FunnelService::getMaxEstatusOportunidadMaxCount();
+        
+        return response()->json([
+            'error'=>false,
+            'data'=>$max_count,
+        ],200);
     }
    
 }

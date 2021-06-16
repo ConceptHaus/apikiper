@@ -289,6 +289,8 @@ Route::prefix('/v1/status_oportunidades')->group(function(){
         Route::delete('/{id}','Funnel\FunnelController@deleteStatus');
         Route::put('/updateStatus','Funnel\FunnelController@updateStatus');
         Route::get('/','Funnel\FunnelController@getCatStatusOportunidades');
+        Route::get('/get_max_count','Funnel\FunnelController@getMaxEstatusOportunidadMaxCount');
+        Route::post('/update-status-oportunidad-visibles','Funnel\FunnelController@updateOportunidadStatusVisibles');
     });
 });
 
