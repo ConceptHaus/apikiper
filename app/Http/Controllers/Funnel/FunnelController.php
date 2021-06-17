@@ -29,7 +29,7 @@ class FunnelController extends Controller
         $validator = FunnelService::validator($request->all());
         
         if($validator->passes()){
-            $new_stage = array( 'nombre'         => $request->nombre,
+            $new_stage = array( 'status'         => $request->status,
                                 'color'          => $request->color,
                                 'funnel_visible' => $request->funnel_visible);
 
@@ -119,7 +119,7 @@ class FunnelController extends Controller
         // if (!empty($errores)) {
         //     foreach ($errores as $key => $error_m) {
         //         $errores_msg[] = $error_m[0];
-        //         break;
+        //         // break;
         //     }
         // }
 
