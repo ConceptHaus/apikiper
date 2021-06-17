@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Modelos\User;
 use App\Modelos\Colaborador\DetalleColaborador;
 use App\Modelos\Colaborador\FotoColaborador;
+use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Events\Historial;
 use App\Events\Event;
 use DB;
@@ -113,9 +114,8 @@ class UserController extends Controller
                                     ->where('colaborador_oportunidad.id_colaborador',$id_user)
                                     ->select('cat_status_oportunidad.id_cat_status_oportunidad','cat_status_oportunidad.color',DB::raw('count(*) as total, cat_status_oportunidad.status'))->groupBy('cat_status_oportunidad.status')
                                     ->get();
-        $catalogo_status = DB::table('cat_status_oportunidad')
-                    ->select('id_cat_status_oportunidad','status','color')
-                    ->get();
+        
+        $catalogo_status = CatStatusOportunidad::all();
 
         $recordatorios = DB::table('recordatorios_prospecto')
                         ->join('detalle_recordatorio_prospecto','detalle_recordatorio_prospecto.id_recordatorio_prospecto','recordatorios_prospecto.id_recordatorio_prospecto')
@@ -135,6 +135,7 @@ class UserController extends Controller
             'detalle'=>$detalle,
             'img_perfil'=>$img,
             'status'=>$this->StatusChecker($catalogo_status,$status_genericos),
+            'status_genericos'=>$status_genericos,
             'oportunidades'=>[
                 'status_1'=>$this->statusEmpty($status_1,1),
                 'status_2'=>$this->statusEmpty($status_2,2),

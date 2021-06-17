@@ -20,7 +20,7 @@ class FunnelRep
             DB::beginTransaction();
             
             $cat_status_oportunidad                 = new CatStatusOportunidad;
-            $cat_status_oportunidad->status         = $new_cat_status_oportunidad['nombre'];
+            $cat_status_oportunidad->status         = $new_cat_status_oportunidad['status'];
             $cat_status_oportunidad->color          = $new_cat_status_oportunidad['color'];
             $cat_status_oportunidad->funnel_visible = ($new_cat_status_oportunidad['funnel_visible']) ? 1 : 0;
             $cat_status_oportunidad->save();

@@ -29,7 +29,7 @@ class FunnelController extends Controller
         $validator = FunnelService::validator($request->all());
         
         if($validator->passes()){
-            $new_stage = array( 'nombre'         => $request->nombre,
+            $new_stage = array( 'status'         => $request->status,
                                 'color'          => $request->color,
                                 'funnel_visible' => $request->funnel_visible);
 
@@ -87,10 +87,11 @@ class FunnelController extends Controller
 
     public function updateStatus(Request $request)
     {
-        // $validator = FunnelService::validatorUpdate($request->all());
+        $validator = FunnelService::validatorUpdate($request->all());
         
-        // if($validator->passes()){
-            $estatus    = array('id_cat_status_oportunidad' => $request->id_cat_status_oportunidad,
+        if($validator->passes()){
+
+           $estatus    = array('id_cat_status_oportunidad'  => $request->id_cat_status_oportunidad,
                                 'status'                    => $request->status,
                                 'funnel_visible'            => $request->funnel_visible,
                                 'color'                     => $request->color);
@@ -110,23 +111,23 @@ class FunnelController extends Controller
                             'error'     => $update_status_oportunidad['error'],
                         ],400);    
             }
-        // }
+        }
         
-        // $errores = $validator->errors()->toArray();
+        $errores = $validator->errors()->toArray();
         
-        // $errores_msg = array();
+        $errores_msg = array();
 
-        // if (!empty($errores)) {
-        //     foreach ($errores as $key => $error_m) {
-        //         $errores_msg[] = $error_m[0];
-        //         break;
-        //     }
-        // }
+        if (!empty($errores)) {
+            foreach ($errores as $key => $error_m) {
+                $errores_msg[] = $error_m[0];
+                // break;
+            }
+        }
 
-        // return response()->json([
-        //     'error'=>true,
-        //     'messages'=> $errores_msg
-        // ],400);
+        return response()->json([
+            'error'=>true,
+            'messages'=> $errores_msg
+        ],400);
     }
 
     public function updateOportunidadStatusVisibles(Request $request)
