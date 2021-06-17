@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateNombreToProspectos extends Migration
+class AddViewToNotifications extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class UpdateNombreToProspectos extends Migration
      */
     public function up()
     {
-        Schema::table('prospectos', function (Blueprint $table) {
-            $table->string('nombre')->nullable(false)->change();
+        Schema::table('notifications', function (Blueprint $table) {
+            $table->enum('view', ['no-leido', 'leido'])->default('no-leido');
         });
     }
 
@@ -25,8 +25,8 @@ class UpdateNombreToProspectos extends Migration
      */
     public function down()
     {
-        Schema::table('prospectos', function (Blueprint $table) {
-            $table->string('nombre')->nullable(true)->change();
+        Schema::table('notifications', function (Blueprint $table) {
+            $table->dropColumn('view');
         });
     }
 }

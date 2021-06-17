@@ -93,7 +93,7 @@ class ProspectosNotificationsRep
         $notificaton->source_id         = $prospecto['id_prospecto'];
         $notificaton->notification_type = 'prospecto';
         $notificaton->inactivity_period = $prospecto['inactivity_period'];
-        $notificaton->status            = 'no-leido';
+        $notificaton->view            = 'no-leido';
         $notificaton->attempts          = $prospecto['attempts'];
         $notificaton->save();
     }
@@ -102,11 +102,7 @@ class ProspectosNotificationsRep
     {
         $exisiting_notification = Notification::where('source_id', $prospecto_id)->first();
        
-        if (!empty($exisiting_notification)) {
-            return $exisiting_notification;
-        }else{
-            return [];
-        }
+        return !empty($exisiting_notification)? $exisiting_notification: [];
     }
 
     public static function updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto_id)
@@ -136,11 +132,15 @@ class ProspectosNotificationsRep
     public static function getCountNotifications($id_user){
         return DB::table('notifications')
                 ->where('colaborador_id', $id_user)
-                ->where('status', 'no-leido')
+                ->where('view', 'no-leido')
+                ->where(function ($query) {
+                    $query->where('status', '!=', 'resuelto');
+                    $query->orWhereNull('status');
+                })
                 ->count();
     }
 
-    public static function getProspectosNotifications($id_user, $limit){
+    public static function getProspectosNotifications($id_user, $limit){        
         return DB::select("select n.*, p.*,
         CONCAT(u.nombre, ' ', u.apellido) as colaborador,
         DATEDIFF(now(),n.created_at)as days
@@ -149,15 +149,27 @@ class ProspectosNotificationsRep
             left join users u on u.id = n.colaborador_id
             where n.id in (select id from notifications n2
                         where DATEDIFF(NOW(), n2.updated_at) <= 3
-                        and n2.status = 'leido'
+                        and n2.view = 'leido'
+                        and (n2.status != 'resuelto'
+                            or n2.status is null)
                         and n2.notification_type = 'prospecto')
-            or ( n.status = 'no-leido'
+            or ( n.view = 'no-leido'
             or n.status = 'escalado')
             and n.notification_type = 'prospecto'
+            and (n.status is null
+                or n.status != 'resuelto')
             and  n.colaborador_id = '".$id_user."'
             group by n.source_id
-            order by n.status = 'escalado' desc, n.status = 'no-leido' desc, n.created_at desc, n.status asc
+            order by n.status = 'escalado' desc, n.view = 'no-leido' desc, n.created_at desc, n.view asc
             limit ".$limit."");
+    }
+
+    public static function getCountProspectosNotifications($id_user){
+        return count(ProspectosNotificationsRep::getProspectosNotifications($id_user, $limit=100000000000000000));
+    }
+
+    public static function getCountOportunidadesNotifications($id_user){
+        return count(ProspectosNotificationsRep::getOportunidadesNotifications($id_user, $limit=100000000000000000));
     }
 
     public static function getOportunidadesNotifications($id_user, $limit){
@@ -172,20 +184,24 @@ class ProspectosNotificationsRep
                                 left join prospectos p on p.id_prospecto = op.id_prospecto
                                 where n.id in (select id from notifications n2
                                             where DATEDIFF(NOW(), n2.updated_at) <= 3
-                                            and n2.status = 'leido'
+                                            and n2.view = 'leido'
+                                            and (n2.status != 'resuelto'
+                                            	or n2.status is null)
                                             and n2.notification_type = 'oportunidad')
-                                or ( n.status = 'no-leido'
+                                or ( n.view = 'no-leido'
                                 or n.status = 'escalado')
                                 and n.notification_type = 'oportunidad'
+                                and (n.status is null
+                                    or n.status != 'resuelto')
                                 and  n.colaborador_id = '".$id_user."'
                                 group by n.source_id
-                                order by n.status = 'escalado' desc, n.status = 'no-leido' desc, n.created_at desc, n.status asc
+                                order by n.status = 'escalado' desc, n.view = 'no-leido' desc, n.created_at desc, n.view asc
                                 limit ".$limit."");
     }
 
     public static function updateStatusNotification($source_id){
         $status = Notification::where('source_id', $source_id)->first();
-        $status->status = 'leido';
+        $status->view = 'leido';
         $status->save();
     }
 

@@ -53,8 +53,8 @@ class SettingsUserNotificationsRep
         if (is_null($params->disable_email_notification_oportunidades)) {
             $params->disable_email_notification_oportunidades = false;
         }
-        if (is_null($params->disable_email_notification_prospectos)) {
-            $params->disable_email_notification_prospectos = false;
+        if (is_null($params->disable_email_notification_escalated_prospectos)) {
+            $params->disable_email_notification_escalated_prospectos = false;
         }
         if (is_null($params->disable_email_notification_escalated_oportunidades)) {
             $params->disable_email_notification_escalated_oportunidades = false;
@@ -89,17 +89,31 @@ class SettingsUserNotificationsRep
         
     }
 
-    public static function getSettingNotificationColaborador($params){
+    public static function getSettingNotificationColaborador($id_user){
 
-       $usuario = SettingUserNotification::where('id_user', $params->id_usuario)->first();
+       $usuario = SettingUserNotification::where('id_user', $id_user)->first();
        return $usuario;
         
     }
+
+    public static function getSettingsNotificationColaborador($id_user){
+
+        $usuario = SettingUserNotification::where('id_user', $id_user)->get()->toArray();
+        return $usuario;
+         
+     }
 
     public static function getSettingNotificationAdministrador(){
 
         return $settings = Setting::all();
          
      }
+
+    public static function getSettingNotificationUser($id_user){
+        return DB::table('setting_user_notifications')
+        ->where('id_user', $id_user)
+        ->get()
+        ->toArray();
+    }
 
 }

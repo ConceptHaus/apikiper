@@ -51,17 +51,18 @@ class ProspectosReports implements WithHeadings,FromCollection{
     public function getProspectos($desarrollo, $id_user, $correos, $nombres, $telefonos=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null){
         $user = User::find($id_user);
         if($desarrollo == 'all'){
-            return DB::table('colaborador_prospecto')
-                ->join('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
-                ->rightjoin('prospectos', 'prospectos.id_prospecto', '=', 'detalle_prospecto.id_prospecto')
-                ->join('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
-                ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
+
+            return DB::table('prospectos')
+                ->leftjoin('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+                ->leftjoin('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+                ->leftjoin('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
+                ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
                 ->leftjoin('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
                 ->leftjoin('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
-                ->leftjoin('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'colaborador_prospecto.id_prospecto')
+                ->leftjoin('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'prospectos.id_prospecto')
                 ->leftjoin('etiquetas', 'etiquetas.id_etiqueta', 'etiquetas_prospectos.id_etiqueta')
-                ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
-                ->leftjoin('empresas', 'prospectos_empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
+                ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'prospectos.id_prospecto')
+                ->leftjoin('empresas', 'empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
                 ->leftjoin('medio_contacto_prospectos','prospectos.id_prospecto','medio_contacto_prospectos.id_prospecto')
                 ->whereNull('prospectos.deleted_at')
                 ->groupBy('prospectos.id_prospecto')
@@ -109,7 +110,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                     });
                 })
                 ->select(
-                        DB::raw('CONCAT(users.nombre," ",users.apellido) as asesor'),
+                        DB::raw('IFNULL(CONCAT(users.nombre," ",users.apellido), "Sin Asignar") as asesor'),
                         'prospectos.created_at as fecha',
                         'cat_status_prospecto.status as estado',
                         'cat_fuentes.nombre as como se enteró',
@@ -119,21 +120,21 @@ class ProspectosReports implements WithHeadings,FromCollection{
                         'detalle_prospecto.nota as comentarios',
                         DB::raw("group_concat(medio_contacto_prospectos.descripcion SEPARATOR '  --  ') as seguimiento"),
                         DB::raw("group_concat(etiquetas.nombre SEPARATOR '  --  ') as etiquetas"),
-                        'empresas.nombre AS nombre_empresa'
+                        DB::raw('IFNULL(empresas.nombre, "Sin Asignar") as nombre_empresa')
                         )->get();
                 
         } else if($desarrollo == 'user'){
-            return DB::table('colaborador_prospecto')
-            ->join('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
-            ->rightjoin('prospectos', 'prospectos.id_prospecto', '=', 'detalle_prospecto.id_prospecto')
-            ->join('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
-            ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
+            return DB::table('prospectos')
+            ->leftjoin('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
+            ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
             ->leftjoin('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
             ->leftjoin('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
-            ->leftjoin('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'colaborador_prospecto.id_prospecto')
+            ->leftjoin('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'prospectos.id_prospecto')
             ->leftjoin('etiquetas', 'etiquetas.id_etiqueta', 'etiquetas_prospectos.id_etiqueta')
-            ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
-            ->leftjoin('empresas', 'prospectos_empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
+            ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('empresas', 'empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
                 ->where('users.id','=',$id_user)
                 ->leftjoin('medio_contacto_prospectos','prospectos.id_prospecto','medio_contacto_prospectos.id_prospecto')
                 //->where('medio_contacto_prospectos.id_mediocontacto_catalogo','=',1)
@@ -196,17 +197,17 @@ class ProspectosReports implements WithHeadings,FromCollection{
                         'empresas.nombre AS nombre_empresa'
                         )->get();
         } else {
-            return DB::table('colaborador_prospecto')
-                ->join('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
-                ->rightjoin('prospectos', 'prospectos.id_prospecto', '=', 'detalle_prospecto.id_prospecto')
-                ->join('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
-                ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
+            return  DB::table('prospectos')
+                ->leftjoin('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+                ->leftjoin('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+                ->leftjoin('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
+                ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
                 ->leftjoin('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
                 ->leftjoin('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
-                ->leftjoin('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'colaborador_prospecto.id_prospecto')
+                ->leftjoin('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'prospectos.id_prospecto')
                 ->leftjoin('etiquetas', 'etiquetas.id_etiqueta', 'etiquetas_prospectos.id_etiqueta')
-                ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
-                ->leftjoin('empresas', 'prospectos_empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
+                ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'prospectos.id_prospecto')
+                ->leftjoin('empresas', 'empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
                 ->leftjoin('medio_contacto_prospectos','prospectos.id_prospecto','medio_contacto_prospectos.id_prospecto')
                 ->where([
                             ['etiquetas.nombre','like','%'.$desarrollo.'%'],

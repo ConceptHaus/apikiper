@@ -24,7 +24,7 @@ Route::prefix('/v1')->group(function(){
         Route::post('/google','Integraciones\GoogleController@googleApi');
         Route::post('/google/callback','Integraciones\GoogleController@googleApiCallback');
         Route::get('/template',function(){return view('mailing.template_one');});
-        Route::get('/download/prospectos/{admin}/{rol}/{id_user}/{correos}/{nombre}/{telefono}/{status}/{grupo}/{etiquetas}/{fechaInicio}/{fechaFin}/{colaboradores}','Prospectos\ProspectosController@downloadProspectos');
+        Route::get('/download/prospectos/{role_id}/{rol}/{id_user}/{correos}/{nombre}/{telefono}/{status}/{grupo}/{etiquetas}/{fechaInicio}/{fechaFin}/{colaboradores}','Prospectos\ProspectosController@downloadProspectos');
     });
 });
 
@@ -165,8 +165,8 @@ Route::prefix('/v1/oportunidades')->group(function(){
 //DataViews
 
 Route::prefix('/v1/generales')->group(function(){
-    Route::get('/industrias', 'DataViews\DataViewsController@getIndustrias');
     Route::middleware(['auth','cors'])->group(function(){
+        Route::get('/industrias', 'DataViews\DataViewsController@getIndustrias');
         Route::get('/correos', 'Prospectos\ProspectosListController@findProspectosCorreos');
         Route::get('/prospectosNombres', 'Prospectos\ProspectosListController@findProspectosNombres');
         Route::get('/prospectosTelefono', 'Prospectos\ProspectosListController@findProspectosTelefono');
@@ -307,6 +307,8 @@ Route::prefix('/v1/notifcations')->group(function(){
         Route::get('/prospectos','Notifications\NotificationsController@getProspectosToSendNotifications');
         Route::get('/prospectos-to-be-escalated','Notifications\NotificationsController@getProspectosToEscalateForAdmin');
         Route::get('/getProspectos','Notifications\NotificationsController@getProspectosNotifications');
+        Route::get('/getCountProspectos','Notifications\NotificationsController@getCountProspectosNotifications');
+        Route::get('/getCountOportunidades','Notifications\NotificationsController@getCountOportunidadesNotifications');
 
         // Admin Settings
         Route::post('/postSettingNotificationAdmin','SettingsUserNotifications\SettingsUserNotificationsController@postSettingNotificationAdmin');
