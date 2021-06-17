@@ -653,9 +653,7 @@ class DataViewsController extends Controller
                             ->whereBetween('colaborador_oportunidad.updated_at', array($inicioPeriodo ,$finPeriodo))
                             ->select(DB::raw('count(*) as total, cat_fuentes.nombre'),'cat_fuentes.url','cat_fuentes.status')->groupBy('cat_fuentes.nombre')->get();    
 
-        $catalogo_status = DB::table('cat_status_oportunidad')
-                    ->select('id_cat_status_oportunidad as id','status','color')
-                    ->get();
+                            $catalogo_status = CatStatusOportunidad::all();
 
         $status = DB::table('cat_status_oportunidad')
                       ->select('id_cat_status_oportunidad as id','status','color')->get();
