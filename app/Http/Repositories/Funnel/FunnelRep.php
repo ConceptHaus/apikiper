@@ -4,6 +4,7 @@ namespace App\Http\Repositories\Funnel;
 
 use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Modelos\Oportunidad\StatusOportunidad;
+use App\Http\Services\Funnel\FunnelService;
 use DB;
 use Log;
 
@@ -16,6 +17,15 @@ class FunnelRep
 
     public static function createFunnelStage($new_cat_status_oportunidad)
     {
+        $existing_cat_status_oportunidad = CatStatusOportunidad::all();
+        $max_count = FunnelService::getMaxEstatusOportunidadMaxCount();
+        if (count($existing_cat_status_oportunidad) >= $max_count) {
+            $response   = array('message'   => ['No fue posible crear registro. El límite de estatus oportunidades es '.$max_count],
+                                'error'     => true,
+                                'data'      =>'');
+            return $response;
+        }
+    
         try{
             DB::beginTransaction();
 
