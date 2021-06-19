@@ -62,7 +62,7 @@ class FunnelController extends Controller
 
         return response()->json([
             'error'=>true,
-            'messages'=> $errores_msg
+            'message'=> $errores_msg
         ],400);
     }
 

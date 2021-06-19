@@ -224,9 +224,19 @@ class ProspectosController extends Controller
         }
 
         $errores = $validator->errors()->toArray();
+
+        $errores_msg = array();
+
+        if (!empty($errores)) {
+            foreach ($errores as $key => $error_m) {
+                $errores_msg[] = $error_m[0];
+                break;
+            }
+        }
+
         return response()->json([
                 'error'=>true,
-                'messages'=> $errores
+                'message'=> $errores_msg
         ],400);
     }
 
@@ -984,10 +994,16 @@ class ProspectosController extends Controller
     public function validadorProspectos(array $data){
 
         return Validator::make($data,[
-            // 'nombre'=>'required|string|max:255',
-            //'apellido'=>'required|string|max:255',
-            'correo'=>'required|email|max:255|unique:prospectos,correo',
-            // 'telefono'=>'unique:detalle_prospecto,telefono|'
+            'nombre'    => 'regex:/^[a-zA-Z ]+$/u|max:30',
+            'apellido'  => 'regex:/^[a-zA-Z ]+$/u|max:30',
+            'correo'    => 'required|email|max:30|unique:prospectos,correo',
+            'telefono'  => 'unique:detalle_prospecto,telefono|max:9999999999',
+            'celular'   => 'max:9999999999',
+            'extension' => 'max:999999',
+            // 'empresa'   => 'regex:/^[a-zA-Z ]+$/u|max:50',
+            'puesto'    => 'regex:/^[a-zA-Z ]+$/u|max:35',
+            'nota'      => 'string|max:250',
+
 
         ]);
 

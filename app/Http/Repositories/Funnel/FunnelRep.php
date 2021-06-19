@@ -4,6 +4,7 @@ namespace App\Http\Repositories\Funnel;
 
 use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Modelos\Oportunidad\StatusOportunidad;
+use App\Http\Services\Funnel\FunnelService;
 use DB;
 use Log;
 
@@ -16,13 +17,34 @@ class FunnelRep
 
     public static function createFunnelStage($new_cat_status_oportunidad)
     {
+        $existing_cat_status_oportunidad = CatStatusOportunidad::all();
+        $max_count = FunnelService::getMaxEstatusOportunidadMaxCount();
+        if (count($existing_cat_status_oportunidad) >= $max_count) {
+            $response   = array('message'   => ['No fue posible crear registro. El límite de estatus oportunidades es '.$max_count],
+                                'error'     => true,
+                                'data'      =>'');
+            return $response;
+        }
+    
         try{
             DB::beginTransaction();
-            
+
+            $new_position_in_funnel = NULL;
+
+            if($new_cat_status_oportunidad['funnel_visible'] == 1){
+                $last_item_order = CatStatusOportunidad::where("funnel_visible", 1)->orderBy("funnel_order", "DESC")->first();  
+                if(isset($last_item_order->funnel_order)){
+                    $new_position_in_funnel = $last_item_order->funnel_order + 1;
+                }else{
+                    $new_position_in_funnel = 1;    
+                }
+            }
+
             $cat_status_oportunidad                 = new CatStatusOportunidad;
             $cat_status_oportunidad->status         = $new_cat_status_oportunidad['status'];
             $cat_status_oportunidad->color          = $new_cat_status_oportunidad['color'];
             $cat_status_oportunidad->funnel_visible = ($new_cat_status_oportunidad['funnel_visible']) ? 1 : 0;
+            $cat_status_oportunidad->funnel_order   = $new_position_in_funnel;
             $cat_status_oportunidad->save();
             
             DB::commit();
