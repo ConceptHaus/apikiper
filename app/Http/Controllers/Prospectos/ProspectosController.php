@@ -997,7 +997,7 @@ class ProspectosController extends Controller
             'nombre'    => 'regex:/^[a-zA-Z ]+$/u|max:30',
             'apellido'  => 'regex:/^[a-zA-Z ]+$/u|max:30',
             'correo'    => 'required|email|max:30|unique:prospectos,correo',
-            'telefono'  => 'unique:detalle_prospecto,telefono|max:9999999999',
+            'telefono'  => 'required|unique:detalle_prospecto,telefono|max:9999999999',
             'celular'   => 'max:9999999999',
             'extension' => 'max:999999',
             // 'empresa'   => 'regex:/^[a-zA-Z ]+$/u|max:50',
