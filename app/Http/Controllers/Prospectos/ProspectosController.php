@@ -1002,7 +1002,7 @@ class ProspectosController extends Controller
             'extension' => 'max:999999',
             // 'empresa'   => 'regex:/^[a-zA-Z ]+$/u|max:50',
             'puesto'    => 'regex:/^[a-zA-Z ]+$/u|max:35',
-            'nota'      => 'string|max:250',
+            'nota'      => 'nullable|regex:/^[a-zA-Z0-9 ]+$/u|max:250',
 
 
         ]);

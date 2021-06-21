@@ -15,7 +15,7 @@ class FunnelService
     public static function validator(array $data)
     {
         return Validator::make($data, [
-            'status' => 'required|string|max:30|unique:cat_status_oportunidad,status',
+            'status' => 'required|string|max:20|unique:cat_status_oportunidad,status,NULL,id_cat_status_oportunidad,deleted_at,NULL',
             'color' => 'required',
             'funnel_visible' => 'required'
         ]);
@@ -25,7 +25,7 @@ class FunnelService
     {
 
         return Validator::make($data, [
-            'status' => 'required|string|max:255|unique:cat_status_oportunidad,status,'.$data['id_cat_status_oportunidad'].',id_cat_status_oportunidad',
+            'status' => 'required|string|max:20|unique:cat_status_oportunidad,status,'.$data['id_cat_status_oportunidad'].',id_cat_status_oportunidad,deleted_at,NULL',
             'color' => 'required',
             'funnel_visible' => 'required'
         ]);
