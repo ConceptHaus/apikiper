@@ -994,8 +994,8 @@ class ProspectosController extends Controller
     public function validadorProspectos(array $data){
 
         return Validator::make($data,[
-            'nombre'    => 'regex:/^[a-zA-Z ]+$/u|max:30',
-            'apellido'  => 'regex:/^[a-zA-Z ]+$/u|max:30',
+            'nombre'    => 'nullable|regex:/^[a-zA-Z0-9 ]+$/u|max:30',
+            'apellido'  => 'nullable|regex:/^[a-zA-Z0-9 ]+$/u|max:30',
             'correo'    => 'required|email|max:30|unique:prospectos,correo',
             'telefono'  => 'required|unique:detalle_prospecto,telefono|max:9999999999',
             'celular'   => 'max:9999999999',
