@@ -1000,8 +1000,8 @@ class ProspectosController extends Controller
             'telefono'  => 'required|unique:detalle_prospecto,telefono|max:9999999999',
             'celular'   => 'max:9999999999',
             'extension' => 'max:999999',
-            // 'empresa'   => 'regex:/^[a-zA-Z ]+$/u|max:50',
-            'puesto'    => 'regex:/^[a-zA-Z ]+$/u|max:35',
+            'empresa'   => 'nullable|regex:/^[a-zA-Z0-9 ]+$/u|max:10',
+            'puesto'    => 'nullable|regex:/^[a-zA-Z0-9 ]+$/u|max:35',
             'nota'      => 'nullable|regex:/^[a-zA-Z0-9 ]+$/u|max:250',
 
 
