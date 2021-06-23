@@ -170,7 +170,6 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/correos', 'Prospectos\ProspectosListController@findProspectosCorreos');
         Route::get('/prospectosNombres', 'Prospectos\ProspectosListController@findProspectosNombres');
         Route::get('/prospectosTelefono', 'Prospectos\ProspectosListController@findProspectosTelefono');
-        Route::post('/table', 'Prospectos\ProspectosListController@findProspectos')->middleware('auth:api');
         Route::get('/count', 'Prospectos\ProspectosListController@findCountProspectos');
         Route::get('/countNT', 'Prospectos\ProspectosListController@findCountProspectosNotContacted');
         Route::get('/prospectosFuente', 'Prospectos\ProspectosListController@findProspectosFuentes');
@@ -222,6 +221,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::post('/status-prospecto/{id}', 'DataViews\DataViewsController@cambioStatusProspecto');
         Route::post('/medios-contacto', 'DataViews\DataViewsController@addMedioContactoProspecto');
         Route::post('/medios-contacto-oportunidad', 'DataViews\DataViewsController@addMedioContactoOportunidad');
+        Route::post('/table', 'Prospectos\ProspectosListController@findProspectos')->middleware('auth:api');
 
         //PUT
         Route::put('/etiquetas','DataViews\DataViewsController@updateEtiquetas');

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateNombreToProspectos extends Migration
+class UpdateDefaultProspectosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,10 @@ class UpdateNombreToProspectos extends Migration
     public function up()
     {
         Schema::table('prospectos', function (Blueprint $table) {
-            $table->string('nombre')->nullable(false)->change();
+            $table->string('nombre')->default('n/a')->change();
+            $table->string('apellido')->default('n/a')->change();
+            $table->string('correo')->default('n/a')->change();
+            $table->integer('fuente')->default(3)->unsigned()->change();
         });
     }
 
@@ -26,7 +29,7 @@ class UpdateNombreToProspectos extends Migration
     public function down()
     {
         Schema::table('prospectos', function (Blueprint $table) {
-            $table->string('nombre')->nullable(true)->change();
+            //
         });
     }
 }

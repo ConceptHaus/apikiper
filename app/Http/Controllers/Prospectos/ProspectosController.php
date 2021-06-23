@@ -994,14 +994,14 @@ class ProspectosController extends Controller
     public function validadorProspectos(array $data){
 
         return Validator::make($data,[
-            'nombre'    => 'regex:/^[a-zA-Z ]+$/u|max:30',
-            'apellido'  => 'regex:/^[a-zA-Z ]+$/u|max:30',
+            'nombre'    => 'nullable|regex:/^[a-zA-Z0-9 ]+$/u|max:30',
+            'apellido'  => 'nullable|regex:/^[a-zA-Z0-9 ]+$/u|max:30',
             'correo'    => 'required|email|max:30|unique:prospectos,correo',
             'telefono'  => 'required|unique:detalle_prospecto,telefono|max:9999999999',
             'celular'   => 'max:9999999999',
             'extension' => 'max:999999',
-            // 'empresa'   => 'regex:/^[a-zA-Z ]+$/u|max:50',
-            'puesto'    => 'regex:/^[a-zA-Z ]+$/u|max:35',
+            'empresa'   => 'nullable|regex:/^[a-zA-Z0-9 ]+$/u|max:50',
+            'puesto'    => 'nullable|regex:/^[a-zA-Z0-9 ]+$/u|max:35',
             'nota'      => 'nullable|regex:/^[a-zA-Z0-9 ]+$/u|max:250',
 
 
@@ -1012,7 +1012,7 @@ class ProspectosController extends Controller
     public function validadorOportunidad(array $data){
 
         return Validator::make($data,[
-            'nombre_oportunidad'=>'required|string|max:255',
+            'nombre_oportunidad'=>'required|string|max:40',
             //'id_servicio_cat'=>'required|numeric',
             //'id_colaborador'=>'required|string|max:255'
         ]);
