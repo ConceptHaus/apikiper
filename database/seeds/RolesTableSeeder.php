@@ -27,6 +27,7 @@ class RolesTableSeeder extends Seeder
                                     "oportunidades.read.all",
                                     "fe.sidebar.ajustes.notificaciones",
                                     "fe.sidebar.ajustes.colaboradores",
+                                    "fe.colaboradores.nuevo",
                                     "fe.oportunidades.read.all",
                                     "fe.sidebar.oportunidades.generales",
                                     "fe.sidebar.estadisticas.oportunidades",
@@ -49,7 +50,8 @@ class RolesTableSeeder extends Seeder
                                     "fe.sidebar.estadisticas.prospectos",
                                     "fe.sidebar.estadisticas.colaboradores",
                                     "fe.sidebar.estadisticas.finanzas",
-                                    "fe.sidebar.ajustes.notificaciones"
+                                    "fe.sidebar.ajustes.notificaciones",
+                                    "fe.ajustes.notifications"
                                     ]';
         $new_rol->save();
 
@@ -66,7 +68,8 @@ class RolesTableSeeder extends Seeder
                                     "fe.sidebar.estadisticas.prospectos",
                                     "fe.sidebar.estadisticas.colaboradores",
                                     "fe.sidebar.estadisticas.finanzas",
-                                    "fe.sidebar.ajustes.notificaciones"
+                                    "fe.sidebar.ajustes.notificaciones",
+                                    "fe.ajustes.notifications"
                                     ]'; 
         $new_rol->is_visible    = 0;
         $new_rol->save();

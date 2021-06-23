@@ -1000,7 +1000,7 @@ class ProspectosController extends Controller
             'telefono'  => 'required|unique:detalle_prospecto,telefono|max:9999999999',
             'celular'   => 'max:9999999999',
             'extension' => 'max:999999',
-            'empresa'   => 'nullable|regex:/^[a-zA-Z0-9 ]+$/u|max:10',
+            'empresa'   => 'nullable|regex:/^[a-zA-Z0-9 ]+$/u|max:50',
             'puesto'    => 'nullable|regex:/^[a-zA-Z0-9 ]+$/u|max:35',
             'nota'      => 'nullable|regex:/^[a-zA-Z0-9 ]+$/u|max:250',
 
@@ -1012,7 +1012,7 @@ class ProspectosController extends Controller
     public function validadorOportunidad(array $data){
 
         return Validator::make($data,[
-            'nombre_oportunidad'=>'required|string|max:255',
+            'nombre_oportunidad'=>'required|string|max:40',
             //'id_servicio_cat'=>'required|numeric',
             //'id_colaborador'=>'required|string|max:255'
         ]);
