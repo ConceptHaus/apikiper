@@ -22,7 +22,7 @@ class ProspectosNotificationsRep
                                         'users.nombre',
                                         'users.apellido',
                                         'users.email',
-                                        'users.id as colabrador_id')
+                                        'users.id as colaborador_id')
                                 ->join('colaborador_prospecto','colaborador_prospecto.id_prospecto','prospectos.id_prospecto')
                                 ->join('users','colaborador_prospecto.id_colaborador','users.id')
                                 ->join('status_prospecto','colaborador_prospecto.id_prospecto','status_prospecto.id_prospecto')
@@ -93,7 +93,7 @@ class ProspectosNotificationsRep
         $notificaton->source_id         = $prospecto['id_prospecto'];
         $notificaton->notification_type = 'prospecto';
         $notificaton->inactivity_period = $prospecto['inactivity_period'];
-        $notificaton->view            = 'no-leido';
+        $notificaton->view              = 'no-leido';
         $notificaton->attempts          = $prospecto['attempts'];
         $notificaton->save();
     }

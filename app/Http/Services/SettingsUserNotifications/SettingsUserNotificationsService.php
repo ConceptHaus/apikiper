@@ -85,21 +85,26 @@ class SettingsUserNotificationsService
 
     public static function getSettingNotificationColaborador($id_user){
         $settingNotification = SettingsUserNotificationsRep::getSettingNotificationColaborador($id_user);
-        $settingNotification->configuraciones = json_decode($settingNotification->configuraciones);
+        
+        if(isset($settingNotification->configuraciones)){
+            $settingNotification->configuraciones = json_decode($settingNotification->configuraciones);
 
-        $value_prospectos = json_encode($settingNotification->configuraciones->prospectos_max_time_inactivity);
-        $value_prospectos = str_replace('"', '', explode("|", $value_prospectos)); 
+            $value_prospectos = json_encode($settingNotification->configuraciones->prospectos_max_time_inactivity);
+            $value_prospectos = str_replace('"', '', explode("|", $value_prospectos)); 
 
-        $value_oportunidades = json_encode($settingNotification->configuraciones->oportunidades_max_time_inactivity);
-        $value_oportunidades = str_replace('"', '', explode("|", $value_oportunidades)); 
+            $value_oportunidades = json_encode($settingNotification->configuraciones->oportunidades_max_time_inactivity);
+            $value_oportunidades = str_replace('"', '', explode("|", $value_oportunidades)); 
 
-        $settingNotification->max_time_prospect_colab = $value_prospectos[0];
-        $settingNotification->timePC = $value_prospectos[1];
+            $settingNotification->max_time_prospect_colab = $value_prospectos[0];
+            $settingNotification->timePC = $value_prospectos[1];
 
-        $settingNotification->max_time_oportu_colab = $value_oportunidades[0];
-        $settingNotification->timeOC = $value_oportunidades[1];
+            $settingNotification->max_time_oportu_colab = $value_oportunidades[0];
+            $settingNotification->timeOC = $value_oportunidades[1];
 
-        return $settingNotification;
+            return $settingNotification;
+        }
+
+        return [];
     }
 
     public static function getSettingsNotificationUser($id_user){
