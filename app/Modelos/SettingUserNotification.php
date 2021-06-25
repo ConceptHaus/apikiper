@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SettingUserNotification extends Model
 {
-    protected $table = 'setting_user_notifications';
+    protected $table = 'settings_user';
 
     protected $primaryKey = 'id_configuracion';
 
