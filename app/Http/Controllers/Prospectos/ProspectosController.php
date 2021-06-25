@@ -1002,7 +1002,7 @@ class ProspectosController extends Controller
             'extension' => 'max:999999',
             'empresa'   => 'nullable|regex:/^[a-zA-ZÑñ ]+$/u|max:50',
             'puesto'    => 'nullable|regex:/^[a-zA-ZÑñ ]+$/u|max:35',
-            'nota'      => 'string|max:250',
+            'nota'      => 'nullable|string|max:250',
 
 
         ]);
