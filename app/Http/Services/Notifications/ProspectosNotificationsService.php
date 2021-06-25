@@ -70,8 +70,12 @@ class ProspectosNotificationsService
                     $prospecto['inactivity_period']   = $max_time_inactivity; 
                     ProspectosNotificationsRep::createProspectoNotification($prospecto);
                 }
-                // print_r($prospecto);
-                ProspectosNotificationsService::sendProspectoNotificationEmail($prospecto);
+
+                //Get User's settings to check if they want to receive an email notification
+                $user_settings = SettingsUserNotificationsService::getSettingNotificationColaborador($prospecto['colaborador_id']);
+                if (isset($user_settings->configuraciones->disable_email_notification_prospectos) AND $user_settings->configuraciones->disable_email_notification_prospectos == 0) {
+                    ProspectosNotificationsService::sendProspectoNotificationEmail($prospecto);
+                }
             }
         }else{
             if (count($notifications) > 0) {

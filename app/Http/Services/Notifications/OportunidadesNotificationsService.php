@@ -4,6 +4,7 @@ use App\Http\Repositories\Notifications\OportunidadesNotificationsRep;
 use App\Http\Repositories\Users\UsersRep;
 use App\Http\Services\Settings\SettingsService;
 use App\Http\Services\UtilService;
+use App\Http\Services\SettingsUserNotifications\SettingsUserNotificationsService;
 use Mailgun;
 
 class OportunidadesNotificationsService
@@ -69,7 +70,11 @@ class OportunidadesNotificationsService
                     OportunidadesNotificationsRep::createOportunidadNotification($oportunidad);
                 }
                 // print_r($oportunidad);
-                OportunidadesNotificationsService::sendOportunidadNotificationEmail($oportunidad);
+                //Get User's settings to check if they want to receive an email notification
+                $user_settings = SettingsUserNotificationsService::getSettingNotificationColaborador($oportunidad['colaborador_id']);
+                if (isset($user_settings->configuraciones->disable_email_notification_oportunidades) AND $user_settings->configuraciones->disable_email_notification_oportunidades == 0) {
+                    OportunidadesNotificationsService::sendOportunidadNotificationEmail($oportunidad);
+                }
             }
         }else{
             if (count($notifications) > 0) {

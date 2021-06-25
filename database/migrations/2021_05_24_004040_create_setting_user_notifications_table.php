@@ -13,7 +13,7 @@ class CreateSettingUserNotificationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('setting_user_notifications', function (Blueprint $table) {
+        Schema::create('settings_user', function (Blueprint $table) {
             $table->increments('id_configuracion');
             $table->uuid('id_user')->unique();
             $table->foreign('id_user')->references('id')->on('users');
@@ -29,6 +29,6 @@ class CreateSettingUserNotificationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('setting_user_notifications');
+        Schema::dropIfExists('settings_user');
     }
 }

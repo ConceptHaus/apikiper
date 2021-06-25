@@ -110,7 +110,7 @@ class SettingsUserNotificationsRep
      }
 
     public static function getSettingNotificationUser($id_user){
-        return DB::table('setting_user_notifications')
+        return DB::table('settings_user')
         ->where('id_user', $id_user)
         ->get()
         ->toArray();
