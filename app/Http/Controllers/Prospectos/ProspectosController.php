@@ -997,7 +997,7 @@ class ProspectosController extends Controller
             'nombre'    => 'nullable|regex:/^[a-zA-ZÑñ ]+$/u|max:30',
             'apellido'  => 'nullable|regex:/^[a-zA-ZÑñ ]+$/u|max:30',
             'correo'    => 'required|email|max:30|unique:prospectos,correo',
-            'telefono'  => 'unique:detalle_prospecto,telefono|max:9999999999',
+            'telefono'  => 'required|max:9999999999',
             'celular'   => 'max:9999999999',
             'extension' => 'max:999999',
             'empresa'   => 'nullable|regex:/^[a-zA-ZÑñ ]+$/u|max:50',
