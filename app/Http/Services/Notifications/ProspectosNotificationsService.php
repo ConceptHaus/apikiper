@@ -41,17 +41,32 @@ class ProspectosNotificationsService
 
     public static function sendNotifications()
     {
-        $notifications  = ProspectosNotificationsRep::getExisitingProspectosNotifications();
-        $prospectos     = ProspectosNotificationsService::getProspectosToSendNotifications();
-        
+        $notifications       = ProspectosNotificationsRep::getExisitingProspectosNotifications();
+        $prospectos          = ProspectosNotificationsService::getProspectosToSendNotifications();
+        $max_time_inactivity = SettingsService::getOportunidadesMaxTimeInactivity();
+
         if (count($prospectos) > 0) {
             //Delete no longer inactive prospectos from array
             if (count($notifications) > 0) {
                 foreach ($notifications as $key => $notification) {
                     foreach ($prospectos as $index => $prospecto) {
+                        // if (!in_array($notification['source_id'], $prospecto)) {
+                        //    unset($prospectos[$index]);
+                        //    ProspectosNotificationsService::changeStatusforExisitingProspectoNotification($notification['source_id'], 'resuelto');
+                        // }
+
+                        //Get last update for status prospecto
+                        $inactivity_period = ProspectosNotificationsRep::verifyActivityforProspecto($notification['source_id'], $notification['updated_at']); 
+                        // print_r($inactivity_period);
                         if (!in_array($notification['source_id'], $prospecto)) {
-                           unset($prospectos[$index]);
-                           ProspectosNotificationsService::changeStatusforExisitingProspectoNotification($notification['source_id'], 'resuelto');
+                            if ($inactivity_period <= 0) {
+                                ProspectosNotificationsService::changeStatusforExisitingProspectoNotification($notification['source_id'], 'resuelto');
+                            }
+                        }else{
+                            if ($inactivity_period <= 0) {
+                                unset($prospectos[$index]);
+                                ProspectosNotificationsService::changeStatusforExisitingProspectoNotification($notification['source_id'], 'resuelto');
+                            }
                         }
                     }
                 }
@@ -61,9 +76,12 @@ class ProspectosNotificationsService
             foreach ($prospectos as $key => $prospecto) {
                 $existing_notification = ProspectosNotificationsRep::checkProspectoNotification($prospecto['id_prospecto']);
                 if(isset($existing_notification->id)){
-                    ProspectosNotificationsRep::updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto['id_prospecto']);
+                    $inactivity_period = UtilService::getHoursDifferenceForTimeStamps($existing_notification->updated_at, date('Y-m-d H:i:s'));
+                    $new_inactivity_period = $existing_notification->inactivity_period + $inactivity_period;
+                    $prospecto['inactivity_period'] = $new_inactivity_period; 
+                    ProspectosNotificationsRep::updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto['id_prospecto'], $prospecto['inactivity_period'], true);
                     $prospecto['attempts']            = $existing_notification->attempts;
-                    $prospecto['inactivity_period']   = $existing_notification->inactivity_period;
+                    // $prospecto['inactivity_period']   = $existing_notification->inactivity_period;
                     
                 }else{
                     $prospecto['attempts']            = 1;
@@ -78,11 +96,20 @@ class ProspectosNotificationsService
                 }
             }
         }else{
+            // if (count($notifications) > 0) {
+            //     foreach ($notifications as $key => $notification) {
+            //         ProspectosNotificationsService::changeStatusforExisitingProspectoNotification($notification['source_id'], 'resuelto');    
+            //     }
+            // } 
             if (count($notifications) > 0) {
                 foreach ($notifications as $key => $notification) {
-                    ProspectosNotificationsService::changeStatusforExisitingProspectoNotification($notification['source_id'], 'resuelto');    
+                    //Get last update for status prospecto
+                    $inactivity_period = ProspectosNotificationsRep::verifyActivityforProspecto($notification['source_id'], $notification['updated_at']); 
+                    if ($inactivity_period <= 0) {
+                        ProspectosNotificationsService::changeStatusforExisitingProspectoNotification($notification['source_id'], 'resuelto');
+                    }
                 }
-            }    
+            }      
         }
     }
 
@@ -110,7 +137,7 @@ class ProspectosNotificationsService
         // print_r($notifications);
         
         if (count($notifications) > 0) {
-            $admins =ProspectosNotificationsService::getAdminsToSendoportunidadNotificationEscalation(3);
+            $admins =ProspectosNotificationsService::getAdminsToSendProspectoNotificationEscalation(3);
             // print_r($admins);
             if (count($admins) > 0) {
                 foreach ($notifications as $key => $notification) {
@@ -127,7 +154,7 @@ class ProspectosNotificationsService
         // print_r($admins);
         foreach ($admins as $key => $admin) {
             $settingsAdmin = SettingsUserNotificationsService::getSettingsNotificationUser($admin["id"]);
-            print_r($settingsAdmin);
+            // print_r($settingsAdmin);
             //     print_r($settingsAdmin["settingProspecto"]);
             if ($settingsAdmin["settingProspecto"] == '') {
                
@@ -135,7 +162,7 @@ class ProspectosNotificationsService
                     'subject'            => 'Escalamiento de Prospecto '.$notification['nombre_prospecto'].' por inactividad',
                     'email'              => $admin['email'],
                     'colaborador'        => $admin['nombre'].' '.$admin['apellido'],
-                    'nombre_oportunidad' => $notification['nombre_prospecto'],
+                    'nombre_prospecto'   => $notification['nombre_prospecto'],
                     'attempt'            => $notification['attempts'],
                     'inactivity_period'  => $notification['inactivity_period'],
                     'id_prospecto'       => $notification['source_id'],
@@ -150,7 +177,7 @@ class ProspectosNotificationsService
         }  
     }
     
-    public static function getAdminsToSendoportunidadNotificationEscalation($role_id)
+    public static function getAdminsToSendProspectoNotificationEscalation($role_id)
     {
         return UsersRep::getUsersByRoleId($role_id);    
     }
@@ -253,5 +280,73 @@ class ProspectosNotificationsService
         }
 
         return json_encode($setting);    
+    }
+
+    /*
+    | Send-Notifications-Using-User-Settings
+    */
+
+    public static function sendNotificationsUsingUserSettings()
+    {
+        $users_with_settings = SettingsUserNotificationsService::getUsersWithSettings();
+        // print_r($users_with_settings);
+        if (count($users_with_settings)>0) {
+            foreach ($users_with_settings as $key => $user_with_settings) {
+                $user_settings = SettingsUserNotificationsService::getSettingNotificationColaborador($user_with_settings->id_user);
+                if (isset($user_settings->configuraciones->prospectos_max_time_inactivity)) {
+                    $hours = UtilService::getValueInHours($user_settings->configuraciones->prospectos_max_time_inactivity);
+                    // print($hours);
+                    $start_date = UtilService::getStartDateForNotifications($hours);
+                    // print($start_date);
+                    $prospectos = ProspectosNotificationsRep::getProspectosByColaboradorToSendNotifications($user_settings->id_user, $start_date);
+                    
+                    if(count($prospectos)>0){
+                        // print_r($prospectos);
+                        foreach ($prospectos as $key => $prospecto) {
+                            //Notification
+                            $existing_notification = ProspectosNotificationsRep::checkProspectoNotification($prospecto['id_prospecto']);
+                            if(isset($existing_notification->id)){
+                                $inactivity_period = UtilService::getHoursDifferenceForTimeStamps($existing_notification->updated_at, date('Y-m-d H:i:s'));
+                                $new_inactivity_period = $existing_notification->inactivity_period + $inactivity_period;
+                                $prospecto['inactivity_period'] = $new_inactivity_period; 
+                                ProspectosNotificationsRep::updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto['id_prospecto'], $new_inactivity_period);
+                            }else{
+                                $prospecto['attempts']            = 0;
+                                $prospecto['inactivity_period']   = $hours; 
+                                ProspectosNotificationsRep::createProspectoNotification($prospecto);
+                            }
+                            //Email notification
+                            // print_r($prospecto);
+                            if (isset($user_settings->configuraciones->disable_email_notification_prospectos) AND !$user_settings->configuraciones->disable_email_notification_prospectos) {
+                                // ProspectosNotificationsService::sendProspectoNotificationColaboradorEmail($prospecto);
+                            }
+                        } 
+                    }
+                } 
+                
+            }
+        }
+    }
+
+    public static function getProspectosByColaboradorToSendNotifications($user_id, $start_date)
+    {
+        return ProspectosNotificationsRep::getProspectosByColaboradorToSendNotifications($user_id, $start_date);
+    }
+
+    public static function sendProspectoNotificationColaboradorEmail($prospecto)
+    {
+        $msg = array(
+                    'subject'            => 'Prospecto '.$prospecto['nombre_prospecto'].' sin actividad',
+                    'email'              => $prospecto['email'],
+                    'colaborador'        => $prospecto['nombre'].' '.$prospecto['apellido'],
+                    'nombre_prospecto'   => $prospecto['nombre_prospecto'],
+                    'inactivity_period'  => $prospecto['inactivity_period'],
+                    'id_prospecto'       => $prospecto['id_prospecto']
+                );
+
+        Mailgun::send('mailing.inactivity_prospecto_colaborador', ['msg' => $msg], function ($m) use ($msg){
+            $m->to($msg['email'], $msg['colaborador'])->subject($msg['subject']);
+            $m->from('notificaciones@kiper.com.mx', 'Kiper');
+        });
     }
 }

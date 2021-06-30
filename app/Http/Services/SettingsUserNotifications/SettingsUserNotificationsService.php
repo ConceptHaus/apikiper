@@ -199,4 +199,8 @@ class SettingsUserNotificationsService
 
         return json_encode($setting);    
     }
+
+    public static function getUsersWithSettings(){
+        return SettingsUserNotificationsRep::getUsersWithSettings();
+    }
 }

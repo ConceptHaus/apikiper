@@ -39,17 +39,29 @@ class OportunidadesNotificationsService
 
     public static function sendNotifications()
     {
-        $notifications = OportunidadesNotificationsRep::getExisitingOportunidadesNotifications();
-        $oportunidades = OportunidadesNotificationsService::getOportunidadesToSendNotifications();
+        $notifications       = OportunidadesNotificationsRep::getExisitingOportunidadesNotifications();
+        $oportunidades       = OportunidadesNotificationsService::getOportunidadesToSendNotifications();
+        $max_time_inactivity = SettingsService::getOportunidadesMaxTimeInactivity();
         
+
         if (count($oportunidades) > 0) {
             //Delete no longer inactive oportunidades from array
             if (count($notifications) > 0) {
                 foreach ($notifications as $key => $notification) {
+                    // print_r($notification);
                     foreach ($oportunidades as $index => $oportunidad) {
+                        //Get last update for status oportunidad
+                        $inactivity_period = OportunidadesNotificationsRep::verifyActivityforOportunidad($notification['source_id'], $notification['updated_at']); 
+                        // print_r($inactivity_period);
                         if (!in_array($notification['source_id'], $oportunidad)) {
-                           unset($oportunidades[$index]);
-                           OportunidadesNotificationsService::changeStatusforExisitingOportunidadNotification($notification['source_id'], 'resuelto');
+                            if ($inactivity_period <= 0) {
+                                OportunidadesNotificationsService::changeStatusforExisitingOportunidadNotification($notification['source_id'], 'resuelto');
+                            }
+                        }else{
+                            if ($inactivity_period <= 0) {
+                                unset($oportunidades[$index]);
+                                OportunidadesNotificationsService::changeStatusforExisitingOportunidadNotification($notification['source_id'], 'resuelto');
+                            }
                         }
                     }
                 }
@@ -60,9 +72,12 @@ class OportunidadesNotificationsService
             foreach ($oportunidades as $key => $oportunidad) {
                 $existing_notification = OportunidadesNotificationsRep::checkOportunidadNotification($oportunidad['id_oportunidad']);
                 if(isset($existing_notification->id)){
-                    OportunidadesNotificationsRep::updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad['id_oportunidad']);
+                    $inactivity_period = UtilService::getHoursDifferenceForTimeStamps($existing_notification->updated_at, date('Y-m-d H:i:s'));
+                    $new_inactivity_period = $existing_notification->inactivity_period + $inactivity_period;
+                    $oportunidad['inactivity_period']   = $new_inactivity_period;
+                    OportunidadesNotificationsRep::updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad['id_oportunidad'], $oportunidad['inactivity_period'], true);
                     $oportunidad['attempts']            = $existing_notification->attempts;
-                    $oportunidad['inactivity_period']   = $existing_notification->inactivity_period;
+                    // $oportunidad['inactivity_period']   = $existing_notification->inactivity_period;
                     
                 }else{
                     $oportunidad['attempts']            = 1;
@@ -79,7 +94,11 @@ class OportunidadesNotificationsService
         }else{
             if (count($notifications) > 0) {
                 foreach ($notifications as $key => $notification) {
-                    OportunidadesNotificationsService::changeStatusforExisitingOportunidadNotification($notification['source_id'], 'resuelto');    
+                    //Get last update for status oportunidad
+                    $inactivity_period = OportunidadesNotificationsRep::verifyActivityforOportunidad($notification['source_id'], $notification['updated_at']); 
+                    if ($inactivity_period <= 0) {
+                        OportunidadesNotificationsService::changeStatusforExisitingOportunidadNotification($notification['source_id'], 'resuelto');
+                    }
                 }
             }    
         }
@@ -144,6 +163,73 @@ class OportunidadesNotificationsService
     public static function getAdminsToSendoportunidadNotificationEscalation($role_id)
     {
         return UsersRep::getUsersByRoleId($role_id);    
+    }
+
+    /*
+    | Send-Notifications-Using-User-Settings
+    */
+
+    public static function sendNotificationsUsingUserSettings()
+    {
+        $users_with_settings = SettingsUserNotificationsService::getUsersWithSettings();
+        // print_r($users_with_settings);
+        if (count($users_with_settings)>0) {
+            foreach ($users_with_settings as $key => $user_with_settings) {
+                $user_settings = SettingsUserNotificationsService::getSettingNotificationColaborador($user_with_settings->id_user);
+                if (isset($user_settings->configuraciones->oportunidades_max_time_inactivity)) {
+                    $hours = UtilService::getValueInHours($user_settings->configuraciones->oportunidades_max_time_inactivity);
+                    // print($hours);
+                    $start_date = UtilService::getStartDateForNotifications($hours);
+                    // print($start_date);
+                    $oportunidades = OportunidadesNotificationsService::getOportunidadesByColaboradorToSendNotifications($user_settings->id_user, $start_date);
+                    
+                    if(count($oportunidades)>0){
+                        // print_r($oportunidades);
+                        foreach ($oportunidades as $key => $oportunidad) {
+                            //Notification
+                            $existing_notification = OportunidadesNotificationsRep::checkOportunidadNotification($oportunidad['id_oportunidad']);
+                            if(isset($existing_notification->id)){
+                                $inactivity_period = UtilService::getHoursDifferenceForTimeStamps($existing_notification->updated_at, date('Y-m-d H:i:s'));
+                                $new_inactivity_period = $existing_notification->inactivity_period + $inactivity_period;
+                                $oportunidad['inactivity_period']   = $new_inactivity_period;
+                                OportunidadesNotificationsRep::updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad['id_oportunidad'], $new_inactivity_period);
+                            }else{
+                                $oportunidad['attempts']            = 0;
+                                $oportunidad['inactivity_period']   = $hours; 
+                                OportunidadesNotificationsRep::createOportunidadNotification($oportunidad);
+                            }
+                            //Email notification
+                            if (isset($user_settings->configuraciones->disable_email_notification_oportunidades) AND !$user_settings->configuraciones->disable_email_notification_oportunidades) {
+                                OportunidadesNotificationsService::sendOportunidadNotificationColaboradorEmail($oportunidad);
+                            }
+                        } 
+                    }
+                } 
+                
+            }
+        }
+    }
+
+    public static function getOportunidadesByColaboradorToSendNotifications($user_id, $start_date)
+    {
+        return OportunidadesNotificationsRep::getOportunidadesByColaboradorToSendNotifications($user_id, $start_date);
+    }
+
+    public static function sendOportunidadNotificationColaboradorEmail($oportunidad)
+    {
+        $msg = array(
+                    'subject'            => 'Oportunidad '.$oportunidad['nombre_oportunidad'].' sin actividad',
+                    'email'              => $oportunidad['email'],
+                    'colaborador'        => $oportunidad['nombre'].' '.$oportunidad['apellido'],
+                    'nombre_oportunidad' => $oportunidad['nombre_oportunidad'],
+                    'inactivity_period'  => $oportunidad['inactivity_period'],
+                    'id_oportunidad'     => $oportunidad['id_oportunidad']
+                );
+
+        Mailgun::send('mailing.inactivity_oportunidad_colaborador', ['msg' => $msg], function ($m) use ($msg){
+            $m->to($msg['email'], $msg['colaborador'])->subject($msg['subject']);
+            $m->from('notificaciones@kiper.com.mx', 'Kiper');
+        });
     }
     
 }

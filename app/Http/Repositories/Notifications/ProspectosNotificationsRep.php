@@ -4,8 +4,10 @@ namespace App\Http\Repositories\Notifications;
 
 use App\Modelos\Notification;
 use App\Modelos\Prospecto\Prospecto;
+use App\Modelos\Prospecto\StatusProspecto;
 use App\Modelos\Setting;
 use App\Modelos\SettingUserNotification;
+use App\Http\Services\UtilService;
 use DB;
 
 class ProspectosNotificationsRep
@@ -67,7 +69,10 @@ class ProspectosNotificationsRep
     {
         $prospecto  =   Notification::where('source_id', $prospecto_id)
                                     ->where('notification_type', 'prospecto')
-                                    ->where('status', '!=', 'resuleto')
+                                    ->where(function($q) {
+                                        $q->where('status', '!=', 'resuelto')
+                                          ->orWhereNull('status');
+                                    })
                                     ->first();
 
         if (!empty($prospecto)) {
@@ -105,26 +110,29 @@ class ProspectosNotificationsRep
         return !empty($exisiting_notification)? $exisiting_notification: [];
     }
 
-    public static function updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto_id)
-    {
-        $prospecto =  Notification::where('source_id', $prospecto_id)
-                                    ->where('notification_type', 'prospecto')
-                                    ->where('status', '!=', 'resuleto')
-                                    ->first();
+    // public static function updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto_id)
+    // {
+    //     $prospecto =  Notification::where('source_id', $prospecto_id)
+    //                                 ->where('notification_type', 'prospecto')
+    //                                 ->where('status', '!=', 'resuleto')
+    //                                 ->first();
 
-        if (!empty($prospecto)) {
-            $prospecto->attempts          = $prospecto->attempts + 1;
-            $prospecto->inactivity_period = $prospecto->inactivity_period + 24;
-            $prospecto->save();
+    //     if (!empty($prospecto)) {
+    //         $prospecto->attempts          = $prospecto->attempts + 1;
+    //         $prospecto->inactivity_period = $prospecto->inactivity_period + 24;
+    //         $prospecto->save();
 
-            return $prospecto;
-        }
-    }
+    //         return $prospecto;
+    //     }
+    // }
 
     public static function getExisitingProspectosNotifications()
     {
         return  Notification::where('notification_type', 'prospecto')
-                            ->where('status', '!=', 'resuleto')
+                            ->where(function($q) {
+                                $q->where('status', '!=', 'resuelto')
+                                ->orWhereNull('status');
+                            })
                             ->get()
                             ->toArray();   
     }
@@ -178,7 +186,7 @@ class ProspectosNotificationsRep
                             DATEDIFF(now(),n.created_at)as days,
                             CONCAT(p.nombre, ' ', p.apellido) as prospecto
                                 from notifications n
-                                left join oportunidades o on o.id_oportunidad = n.source_id
+                                left join oportunidades o on o.id_prospecto = n.source_id
                                 left join users u on u.id = n.colaborador_id
                                 left join oportunidad_prospecto op on op.id_oportunidad = o.id_oportunidad
                                 left join prospectos p on p.id_prospecto = op.id_prospecto
@@ -291,5 +299,66 @@ class ProspectosNotificationsRep
         return $settings = Setting::all();
          
      }
+
+     public static function getProspectosByColaboradorToSendNotifications($user_id, $start_date)
+    {
+        $prospectos = Prospecto::select('prospectos.id_prospecto',
+                                        'prospectos.nombre as nombre_prospecto',
+                                        'status_prospecto.updated_at',
+                                        'detalle_prospecto.telefono',
+                                        'cat_status_prospecto.status',
+                                        'users.nombre',
+                                        'users.apellido',
+                                        'users.email',
+                                        'users.id as colaborador_id')
+                                ->join('colaborador_prospecto','colaborador_prospecto.id_prospecto','prospectos.id_prospecto')
+                                ->join('users','colaborador_prospecto.id_colaborador','users.id')
+                                ->join('status_prospecto','colaborador_prospecto.id_prospecto','status_prospecto.id_prospecto')
+                                ->join('detalle_prospecto','colaborador_prospecto.id_prospecto','detalle_prospecto.id_prospecto')
+                                ->join('cat_status_prospecto','cat_status_prospecto.id_cat_status_prospecto','status_prospecto.id_cat_status_prospecto')
+                                ->where('status_prospecto.updated_at', '<=', $start_date)
+                                ->where('colaborador_prospecto.id_colaborador', $user_id)
+                                ->groupBy('prospectos.id_prospecto')
+                                ->get()
+                                ->toArray();
+        
+        return $prospectos;
+    }
+
+    public static function verifyActivityforProspecto($source_id, $notificaton_updated_at)
+    {
+        $inactivity_period = 0;
+
+        $status_prospecto = StatusProspecto::select('*')
+                                                ->where('id_prospecto', $source_id)
+                                                ->first();
+        
+        if (isset($status_prospecto->updated_at)) {
+            $inactivity_period = UtilService::getHoursDifferenceForTimeStamps($status_prospecto->updated_at, $notificaton_updated_at);
+        }
+
+        return $inactivity_period;
+    }
+
+    public static function updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto_id, $new_inactivity_period, $attempts=NULL)
+    {
+        $oportunidad =  Notification::where('source_id', $prospecto_id)
+                                    ->where('notification_type', 'prospecto')
+                                    ->where(function($q) {
+                                        $q->where('status', '!=', 'resuelto')
+                                          ->orWhereNull('status');
+                                    })
+                                    ->first();
+
+        if (!empty($prospecto)) {
+            $prospecto->inactivity_period = $new_inactivity_period;
+            if(!is_null($attempts)){
+                $prospecto->attempts = $prospecto->attempts + 1;
+            }
+            $prospecto->save();
+
+            return $prospecto;
+        }
+    }
 
 }

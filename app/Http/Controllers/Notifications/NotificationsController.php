@@ -103,7 +103,9 @@ class NotificationsController extends Controller
 
     public function sendNotifications()
     {
+        OportunidadesNotificationsService::sendNotificationsUsingUserSettings();
         OportunidadesNotificationsService::sendNotifications();
+        ProspectosNotificationsService::sendNotificationsUsingUserSettings();
         ProspectosNotificationsService::sendNotifications();
     }
 
