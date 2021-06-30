@@ -4,6 +4,8 @@ namespace App\Http\Repositories\Notifications;
 
 use App\Modelos\Notification;
 use App\Modelos\Oportunidad\Oportunidad;
+use App\Modelos\Oportunidad\StatusOportunidad;
+use App\Http\Services\UtilService;
 
 class OportunidadesNotificationsRep
 {
@@ -68,7 +70,10 @@ class OportunidadesNotificationsRep
     {
         $oportunidad =  Notification::where('source_id', $oportunidad_id)
                                     ->where('notification_type', 'oportunidad')
-                                    ->where('status', '!=', 'resuleto')
+                                    ->where(function($q) {
+                                        $q->where('status', '!=', 'resuelto')
+                                          ->orWhereNull('status');
+                                    })
                                     ->first();
 
         if (!empty($oportunidad)) {
@@ -110,16 +115,21 @@ class OportunidadesNotificationsRep
         }
     }
 
-    public static function updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad_id)
+    public static function updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad_id, $new_inactivity_period, $attempts=NULL)
     {
         $oportunidad =  Notification::where('source_id', $oportunidad_id)
                                     ->where('notification_type', 'oportunidad')
-                                    ->where('status', '!=', 'resuleto')
+                                    ->where(function($q) {
+                                        $q->where('status', '!=', 'resuelto')
+                                          ->orWhereNull('status');
+                                    })
                                     ->first();
 
         if (!empty($oportunidad)) {
-            $oportunidad->attempts          = $oportunidad->attempts + 1;
-            $oportunidad->inactivity_period = $oportunidad->inactivity_period + 24;
+            $oportunidad->inactivity_period = $new_inactivity_period;
+            if(!is_null($attempts)){
+                $oportunidad->attempts = $oportunidad->attempts + 1;
+            }
             $oportunidad->save();
 
             return $oportunidad;
@@ -129,9 +139,53 @@ class OportunidadesNotificationsRep
     public static function getExisitingOportunidadesNotifications()
     {
         return  Notification::where('notification_type', 'oportunidad')
-                            ->where('status', '!=', 'resuleto')
+                            ->where(function($q) {
+                                $q->where('status', '!=', 'resuelto')
+                                  ->orWhereNull('status');
+                            })
                             ->get()
                             ->toArray();   
+    }
+
+    public static function getOportunidadesByColaboradorToSendNotifications($user_id, $start_date)
+    {
+        $oportunidades =    Oportunidad::select('oportunidades.id_oportunidad',
+                                                'oportunidades.nombre_oportunidad',
+                                                'status_oportunidad.updated_at',
+                                                'detalle_oportunidad.valor',
+                                                'cat_status_oportunidad.status',
+                                                'users.id as colaborador_id',
+                                                'users.nombre',
+                                                'users.apellido',
+                                                'users.email',
+                                                'users.id as colaborador_id')
+                                        ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                                        ->join('users','colaborador_oportunidad.id_colaborador','users.id')
+                                        ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                                        ->join('detalle_oportunidad','colaborador_oportunidad.id_oportunidad','detalle_oportunidad.id_oportunidad')
+                                        ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                                        ->where('status_oportunidad.updated_at', '<=', $start_date)
+                                        ->where('colaborador_oportunidad.id_colaborador', $user_id)
+                                        ->groupBy('oportunidades.id_oportunidad')
+                                        ->get()
+                                        ->toArray();
+        
+        return $oportunidades;
+    }
+
+    public static function verifyActivityforOportunidad($source_id, $notificaton_updated_at)
+    {
+        $inactivity_period = 0;
+
+        $status_oportunidad = StatusOportunidad::select('*')
+                                                ->where('id_oportunidad', $source_id)
+                                                ->first();
+        
+        if (isset($status_oportunidad->updated_at)) {
+            $inactivity_period = UtilService::getHoursDifferenceForTimeStamps($status_oportunidad->updated_at, $notificaton_updated_at);
+        }
+
+        return $inactivity_period;
     }
 
 }
