@@ -37,4 +37,13 @@ class UtilService
         }
         return $hours;
     }
+
+    public static function getHoursDifferenceForTimeStamps($start, $end)
+    {
+        $start_date = strtotime($start);
+        $end_date   = strtotime($end);
+        $datediff   = $end_date - $start_date;
+
+        return floor($datediff / (60 * 60));
+    }
 }

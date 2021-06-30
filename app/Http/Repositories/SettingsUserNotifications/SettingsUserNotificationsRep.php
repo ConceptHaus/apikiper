@@ -116,4 +116,9 @@ class SettingsUserNotificationsRep
         ->toArray();
     }
 
+    public static function getUsersWithSettings()
+    {
+        return  SettingUserNotification::all();  
+    }
+
 }
