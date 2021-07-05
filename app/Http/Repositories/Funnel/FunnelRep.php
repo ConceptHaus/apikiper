@@ -68,13 +68,39 @@ class FunnelRep
     {
         $oportunidades = FunnelRep::oportunidadesPorStatus($id);
         // print_r($oportunidades);
-        if(count($oportunidades) > 0){
-            $response   = array('message'   => 'No se pudo eliminar el estatus de oportunidad porque tiene oportunidades activas',
+        $status = CatStatusOportunidad::find($id);
+
+        if (isset($status->deletable) AND $status->deletable == 0) {
+            $response   = array('message'   => 'No se pudo eliminar el estatus de oportunidad, este estatus no es elimibale del sistema.',
                                 'error'     => true,
                                 'data'      =>'');
-        }else{
+        }
+        elseif(count($oportunidades) > 0){
+            $response   = array('message'   => 'No se pudo eliminar el estatus de oportunidad porque tiene oportunidades activas.',
+                                'error'     => true,
+                                'data'      =>'');
+        }
+        else{
             try{
                 DB::beginTransaction();
+
+                if($status->funnel_visible == 1){
+                    $old_position_in_funnel = $status->funnel_order;
+                    $last_items =   CatStatusOportunidad::where("funnel_visible", 1)
+                                                        ->where("funnel_order", ">", $old_position_in_funnel)
+                                                        ->orderBy("funnel_order", "ASC")
+                                                        ->get();  
+                    
+                    if(count($last_items) > 0){
+                        foreach ($last_items as $key => $last_item) {
+                            if($last_item->id_cat_status_oportunidad != 1 && $last_item->id_cat_status_oportunidad != 2){
+                                $status_to_be_updated = CatStatusOportunidad::find($last_item->id_cat_status_oportunidad);
+                                $status_to_be_updated->funnel_order = $status_to_be_updated->funnel_order - 1;
+                                $status_to_be_updated->save();
+                            }
+                        }
+                    }    
+                }
                 
                 CatStatusOportunidad::where('id_cat_status_oportunidad', $id)->delete();
                 
@@ -121,9 +147,11 @@ class FunnelRep
                 
                 if(count($last_items) > 0){
                     foreach ($last_items as $key => $last_item) {
-                        $status_to_be_updated = CatStatusOportunidad::find($last_item->id_cat_status_oportunidad);
-                        $status_to_be_updated->funnel_order = $status_to_be_updated->funnel_order - 1;
-                        $status_to_be_updated->save();
+                        if($last_item->id_cat_status_oportunidad != 1 && $last_item->id_cat_status_oportunidad != 2){
+                            $status_to_be_updated = CatStatusOportunidad::find($last_item->id_cat_status_oportunidad);
+                            $status_to_be_updated->funnel_order = $status_to_be_updated->funnel_order - 1;
+                            $status_to_be_updated->save();
+                        }
                     }
                 }    
             }
