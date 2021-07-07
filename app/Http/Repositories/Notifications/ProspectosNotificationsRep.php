@@ -31,6 +31,7 @@ class ProspectosNotificationsRep
                                 ->join('detalle_prospecto','colaborador_prospecto.id_prospecto','detalle_prospecto.id_prospecto')
                                 ->join('cat_status_prospecto','cat_status_prospecto.id_cat_status_prospecto','status_prospecto.id_cat_status_prospecto')
                                 ->where('status_prospecto.updated_at', '<=', $start_date)
+                                ->where('status_prospecto.id_cat_status_prospecto', 2)
                                 ->groupBy('prospectos.id_prospecto')
                                 ->get()
                                 ->toArray();
@@ -317,6 +318,7 @@ class ProspectosNotificationsRep
                                 ->join('detalle_prospecto','colaborador_prospecto.id_prospecto','detalle_prospecto.id_prospecto')
                                 ->join('cat_status_prospecto','cat_status_prospecto.id_cat_status_prospecto','status_prospecto.id_cat_status_prospecto')
                                 ->where('status_prospecto.updated_at', '<=', $start_date)
+                                ->where('status_prospecto.id_cat_status_prospecto', 2)
                                 ->where('colaborador_prospecto.id_colaborador', $user_id)
                                 ->groupBy('prospectos.id_prospecto')
                                 ->get()

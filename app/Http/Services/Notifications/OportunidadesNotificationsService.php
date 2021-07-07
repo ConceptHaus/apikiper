@@ -70,15 +70,16 @@ class OportunidadesNotificationsService
             $max_time_inactivity =  SettingsService::getOportunidadesMaxTimeInactivity();
 
             foreach ($oportunidades as $key => $oportunidad) {
-                $existing_notification = OportunidadesNotificationsRep::checkOportunidadNotification($oportunidad['id_oportunidad']);
+                $existing_notification  = OportunidadesNotificationsRep::checkOportunidadNotification($oportunidad['id_oportunidad']);
+                $inactivity_period      = 0;
                 if(isset($existing_notification->id)){
-                    $inactivity_period = UtilService::getHoursDifferenceForTimeStamps($existing_notification->updated_at, date('Y-m-d H:i:s'));
-                    $new_inactivity_period = $existing_notification->inactivity_period + $inactivity_period;
+                    $inactivity_period                  = UtilService::getHoursDifferenceForTimeStamps($existing_notification->updated_at, date('Y-m-d H:i:s'));
+                    $new_inactivity_period              = $existing_notification->inactivity_period + $inactivity_period;
                     $oportunidad['inactivity_period']   = $new_inactivity_period;
-                    OportunidadesNotificationsRep::updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad['id_oportunidad'], $oportunidad['inactivity_period'], true);
-                    $oportunidad['attempts']            = $existing_notification->attempts;
-                    // $oportunidad['inactivity_period']   = $existing_notification->inactivity_period;
-                    
+                    if ($inactivity_period > $max_time_inactivity) {
+                        $oportunidad['attempts']        = $existing_notification->attempts + 1;
+                        OportunidadesNotificationsRep::updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad['id_oportunidad'], $oportunidad['inactivity_period'], true);
+                    }
                 }else{
                     $oportunidad['attempts']            = 1;
                     $oportunidad['inactivity_period']   = $max_time_inactivity; 
@@ -88,7 +89,9 @@ class OportunidadesNotificationsService
                 //Get User's settings to check if they want to receive an email notification
                 $user_settings = SettingsUserNotificationsService::getSettingNotificationColaborador($oportunidad['colaborador_id']);
                 if (isset($user_settings->configuraciones->disable_email_notification_oportunidades) AND $user_settings->configuraciones->disable_email_notification_oportunidades == 0) {
-                    OportunidadesNotificationsService::sendOportunidadNotificationEmail($oportunidad);
+                    if ($inactivity_period > 0 AND $inactivity_period > ($max_time_inactivity * $oportunidad['attempts'])) {
+                        OportunidadesNotificationsService::sendOportunidadNotificationEmail($oportunidad);
+                    }
                 }
             }
         }else{
@@ -176,22 +179,24 @@ class OportunidadesNotificationsService
         if (count($users_with_settings)>0) {
             foreach ($users_with_settings as $key => $user_with_settings) {
                 $user_settings = SettingsUserNotificationsService::getSettingNotificationColaborador($user_with_settings->id_user);
-                if (isset($user_settings->configuraciones->oportunidades_max_time_inactivity)) {
+                if (isset($user_settings->configuraciones->oportunidades_max_time_inactivity) AND $user_settings->configuraciones->oportunidades_max_time_inactivity > 0 ) {
                     $hours = UtilService::getValueInHours($user_settings->configuraciones->oportunidades_max_time_inactivity);
                     // print($hours);
                     $start_date = UtilService::getStartDateForNotifications($hours);
                     // print($start_date);
                     $oportunidades = OportunidadesNotificationsService::getOportunidadesByColaboradorToSendNotifications($user_settings->id_user, $start_date);
-                    
+                    // print_r($oportunidades);
                     if(count($oportunidades)>0){
                         // print_r($oportunidades);
                         foreach ($oportunidades as $key => $oportunidad) {
                             //Notification
-                            $existing_notification = OportunidadesNotificationsRep::checkOportunidadNotification($oportunidad['id_oportunidad']);
+                            $existing_notification  = OportunidadesNotificationsRep::checkOportunidadNotification($oportunidad['id_oportunidad']);
+                            $inactivity_period      = 0;
                             if(isset($existing_notification->id)){
-                                $inactivity_period = UtilService::getHoursDifferenceForTimeStamps($existing_notification->updated_at, date('Y-m-d H:i:s'));
-                                $new_inactivity_period = $existing_notification->inactivity_period + $inactivity_period;
+                                $inactivity_period                  = UtilService::getHoursDifferenceForTimeStamps($existing_notification->updated_at, date('Y-m-d H:i:s'));
+                                $new_inactivity_period              = $existing_notification->inactivity_period + $inactivity_period;
                                 $oportunidad['inactivity_period']   = $new_inactivity_period;
+                                $oportunidad['attempts']            = $existing_notification->attempts;
                                 OportunidadesNotificationsRep::updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad['id_oportunidad'], $new_inactivity_period);
                             }else{
                                 $oportunidad['attempts']            = 0;
@@ -200,12 +205,19 @@ class OportunidadesNotificationsService
                             }
                             //Email notification
                             if (isset($user_settings->configuraciones->disable_email_notification_oportunidades) AND !$user_settings->configuraciones->disable_email_notification_oportunidades) {
-                                OportunidadesNotificationsService::sendOportunidadNotificationColaboradorEmail($oportunidad);
+                                // print_r($oportunidad);
+                                $attempts = ($oportunidad['attempts'] > 0) ? $oportunidad['attempts'] : 1;
+                                if ($inactivity_period > 0 AND $inactivity_period > ($user_settings->configuraciones->oportunidades_max_time_inactivity * $attempts)) {
+                                    OportunidadesNotificationsService::sendOportunidadNotificationColaboradorEmail($oportunidad);
+                                }
+                                //First notification
+                                if ($oportunidad['attempts'] == 0) {
+                                    OportunidadesNotificationsService::sendOportunidadNotificationColaboradorEmail($oportunidad);
+                                }
                             }
                         } 
                     }
-                } 
-                
+                }   
             }
         }
     }
