@@ -43,7 +43,7 @@ class SendNotifications extends Command
     {
         $notificaciones = new NotificationsController;
         $notificaciones->sendNotifications();
-        // $notificaciones->escalateNotifications();
+        $notificaciones->escalateNotifications();
 
         $this->info('Se ejecuto la funcion con exito');
     }

@@ -74,15 +74,16 @@ class ProspectosNotificationsService
             $max_time_inactivity =  SettingsService::getProspectosMaxTimeInactivity();
             
             foreach ($prospectos as $key => $prospecto) {
-                $existing_notification = ProspectosNotificationsRep::checkProspectoNotification($prospecto['id_prospecto']);
+                $existing_notification  = ProspectosNotificationsRep::checkProspectoNotification($prospecto['id_prospecto']);
+                $inactivity_period      = 0;
                 if(isset($existing_notification->id)){
-                    $inactivity_period = UtilService::getHoursDifferenceForTimeStamps($existing_notification->updated_at, date('Y-m-d H:i:s'));
-                    $new_inactivity_period = $existing_notification->inactivity_period + $inactivity_period;
-                    $prospecto['inactivity_period'] = $new_inactivity_period; 
-                    ProspectosNotificationsRep::updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto['id_prospecto'], $prospecto['inactivity_period'], true);
-                    $prospecto['attempts']            = $existing_notification->attempts;
-                    // $prospecto['inactivity_period']   = $existing_notification->inactivity_period;
-                    
+                    $inactivity_period              = UtilService::getHoursDifferenceForTimeStamps($existing_notification->updated_at, date('Y-m-d H:i:s'));
+                    $new_inactivity_period          = $existing_notification->inactivity_period + $inactivity_period;
+                    $prospecto['inactivity_period'] = $new_inactivity_period;
+                    if ($inactivity_period > $max_time_inactivity) {
+                        $oportunidad['attempts']    = $existing_notification->attempts + 1;
+                        ProspectosNotificationsRep::updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto['id_prospecto'], $prospecto['inactivity_period'], true);
+                    }
                 }else{
                     $prospecto['attempts']            = 1;
                     $prospecto['inactivity_period']   = $max_time_inactivity; 
@@ -92,15 +93,12 @@ class ProspectosNotificationsService
                 //Get User's settings to check if they want to receive an email notification
                 $user_settings = SettingsUserNotificationsService::getSettingNotificationColaborador($prospecto['colaborador_id']);
                 if (isset($user_settings->configuraciones->disable_email_notification_prospectos) AND $user_settings->configuraciones->disable_email_notification_prospectos == 0) {
-                    ProspectosNotificationsService::sendProspectoNotificationEmail($prospecto);
+                    if ($inactivity_period > 0 AND $inactivity_period > ($max_time_inactivity * $oportunidad['attempts'])) {
+                        ProspectosNotificationsService::sendProspectoNotificationEmail($prospecto);
+                    }
                 }
             }
         }else{
-            // if (count($notifications) > 0) {
-            //     foreach ($notifications as $key => $notification) {
-            //         ProspectosNotificationsService::changeStatusforExisitingProspectoNotification($notification['source_id'], 'resuelto');    
-            //     }
-            // } 
             if (count($notifications) > 0) {
                 foreach ($notifications as $key => $notification) {
                     //Get last update for status prospecto
@@ -293,7 +291,7 @@ class ProspectosNotificationsService
         if (count($users_with_settings)>0) {
             foreach ($users_with_settings as $key => $user_with_settings) {
                 $user_settings = SettingsUserNotificationsService::getSettingNotificationColaborador($user_with_settings->id_user);
-                if (isset($user_settings->configuraciones->prospectos_max_time_inactivity)) {
+                if (isset($user_settings->configuraciones->prospectos_max_time_inactivity) AND $user_settings->configuraciones->prospectos_max_time_inactivity > 0 ) {
                     $hours = UtilService::getValueInHours($user_settings->configuraciones->prospectos_max_time_inactivity);
                     // print($hours);
                     $start_date = UtilService::getStartDateForNotifications($hours);
@@ -301,14 +299,16 @@ class ProspectosNotificationsService
                     $prospectos = ProspectosNotificationsRep::getProspectosByColaboradorToSendNotifications($user_settings->id_user, $start_date);
                     
                     if(count($prospectos)>0){
-                        // print_r($prospectos);
+                        // print_r($prospectos); exit;
                         foreach ($prospectos as $key => $prospecto) {
                             //Notification
-                            $existing_notification = ProspectosNotificationsRep::checkProspectoNotification($prospecto['id_prospecto']);
+                            $existing_notification  = ProspectosNotificationsRep::checkProspectoNotification($prospecto['id_prospecto']);
+                            $inactivity_period      = 0;
                             if(isset($existing_notification->id)){
-                                $inactivity_period = UtilService::getHoursDifferenceForTimeStamps($existing_notification->updated_at, date('Y-m-d H:i:s'));
-                                $new_inactivity_period = $existing_notification->inactivity_period + $inactivity_period;
-                                $prospecto['inactivity_period'] = $new_inactivity_period; 
+                                $inactivity_period              = UtilService::getHoursDifferenceForTimeStamps($existing_notification->updated_at, date('Y-m-d H:i:s'));
+                                $new_inactivity_period          = $existing_notification->inactivity_period + $inactivity_period;
+                                $prospecto['inactivity_period'] = $new_inactivity_period;
+                                $prospecto['attempts']          = $existing_notification->attempts;
                                 ProspectosNotificationsRep::updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto['id_prospecto'], $new_inactivity_period);
                             }else{
                                 $prospecto['attempts']            = 0;
@@ -318,7 +318,15 @@ class ProspectosNotificationsService
                             //Email notification
                             // print_r($prospecto);
                             if (isset($user_settings->configuraciones->disable_email_notification_prospectos) AND !$user_settings->configuraciones->disable_email_notification_prospectos) {
-                                // ProspectosNotificationsService::sendProspectoNotificationColaboradorEmail($prospecto);
+                                $attempts = ($prospecto['attempts'] > 0) ? $prospecto['attempts'] : 1;
+                                //Do not send too much emails 
+                                if ($inactivity_period > 0 AND $inactivity_period > ($user_settings->configuraciones->prospectos_max_time_inactivity * $attempts)) {
+                                    ProspectosNotificationsService::sendProspectoNotificationColaboradorEmail($prospecto);
+                                }
+                                //First notification
+                                if ($prospecto['attempts'] == 0) {
+                                    ProspectosNotificationsService::sendProspectoNotificationColaboradorEmail($prospecto);
+                                }
                             }
                         } 
                     }
