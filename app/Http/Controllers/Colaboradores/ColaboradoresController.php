@@ -15,6 +15,7 @@ use App\Modelos\Oportunidad\ArchivosOportunidadColaborador;
 use App\Modelos\Prospecto\ColaboradorProspecto;
 use App\Modelos\Prospecto\ArchivosProspectoColaborador;
 use App\Modelos\Extras\RecordatorioColaborador;
+use App\Modelos\Oportunidad\CatStatusOportunidad;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
@@ -160,9 +161,8 @@ class ColaboradoresController extends Controller
                                     ->where('colaborador_oportunidad.id_colaborador',$id_user)
                                     ->select('cat_status_oportunidad.id_cat_status_oportunidad','cat_status_oportunidad.color',DB::raw('count(*) as total, cat_status_oportunidad.status'))->groupBy('cat_status_oportunidad.status')
                                     ->get();
-        $catalogo_status = DB::table('cat_status_oportunidad')
-                    ->select('id_cat_status_oportunidad','status','color')
-                    ->get();
+        
+        $catalogo_status = CatStatusOportunidad::all();
 
         $recordatorios = DB::table('recordatorios_prospecto')
                       ->join('detalle_recordatorio_prospecto','detalle_recordatorio_prospecto.id_recordatorio_prospecto','recordatorios_prospecto.id_recordatorio_prospecto')
