@@ -135,6 +135,8 @@ class FunnelRep
                 $last_item_order = CatStatusOportunidad::where("funnel_visible", 1)->where("deletable", 1)->orderBy("funnel_order", "DESC")->first();  
                 if(isset($last_item_order->funnel_order)){
                     $new_position_in_funnel = $last_item_order->funnel_order + 1;
+                }else{
+                    $new_position_in_funnel = 2;
                 }   
             }
 
