@@ -51,7 +51,10 @@ class RolesTableSeeder extends Seeder
                                     "fe.sidebar.estadisticas.colaboradores",
                                     "fe.sidebar.estadisticas.finanzas",
                                     "fe.sidebar.ajustes.notificaciones",
-                                    "fe.ajustes.notifications"
+                                    "fe.ajustes.notifications",
+                                    "fe.colaboradores.eliminar",
+                                    "fe.colaboradores.editar",
+                                    "fe.prospectos.asignar"
                                     ]';
         $new_rol->save();
 
@@ -69,7 +72,10 @@ class RolesTableSeeder extends Seeder
                                     "fe.sidebar.estadisticas.colaboradores",
                                     "fe.sidebar.estadisticas.finanzas",
                                     "fe.sidebar.ajustes.notificaciones",
-                                    "fe.ajustes.notifications"
+                                    "fe.ajustes.notifications",
+                                    "fe.colaboradores.eliminar",
+                                    "fe.colaboradores.editar",
+                                    "fe.prospectos.asignar"
                                     ]'; 
         $new_rol->is_visible    = 0;
         $new_rol->save();
@@ -93,7 +99,10 @@ class RolesTableSeeder extends Seeder
                                     "fe.sidebar.estadisticas.oportunidades",
                                     "fe.sidebar.estadisticas.prospectos",
                                     "fe.sidebar.estadisticas.colaboradores",
-                                    "fe.sidebar.estadisticas.finanzas"
+                                    "fe.sidebar.estadisticas.finanzas",
+                                    "fe.colaboradores.eliminar",
+                                    "fe.colaboradores.editar",
+                                    "fe.prospectos.asignar"
                                     ]';
         $new_rol->is_visible    = 0;
         $new_rol->save();
