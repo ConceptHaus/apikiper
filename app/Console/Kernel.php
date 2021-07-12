@@ -27,15 +27,13 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 
-        // $schedule->command('send:notifications')
-        //     ->everyMinute();
-        // $schedule->command('inspire')
-        //          ->hourly();
+        
+        $schedule->command('inspire')->everyMinute();
 
-        $schedule->command('reminders:send')->everyMinute()
-        ->appendOutputTo(storage_path('logs/examplecommands.log'));
+        // $schedule->command('reminders:send')->everyMinute()
+        // ->appendOutputTo(storage_path('logs/examplecommands.log'));
 
-        $schedule->command('inactivity_notifications:send')->daily()
+        $schedule->command('inactivity_notifications:send')->hourly()
         ->appendOutputTo(storage_path('logs/inactivity_notifications.log'));
     }
 
