@@ -51,7 +51,7 @@ class ColaboradoresController extends Controller
                                             'puesto'            => $request->puesto,
                                             'telefono'          => $request->telefono,
                                             'celular'           => $request->celular,
-                                            'fecha_nacimiento'  => $request->fecha_nacimiento );
+                                            'fecha_nacimiento'  => date('Y/n/d') );
 
                 $colaborador = ColaboradoresService::createColaborador($new_colaborador, $auth);
 
@@ -244,10 +244,18 @@ class ColaboradoresController extends Controller
         }
 
         $errores = $validator->errors()->toArray();
+        $errores_msg = array();
 
+        if (!empty($errores)) {
+            foreach ($errores as $key => $error_m) {
+                $errores_msg[] = $error_m[0];
+                break;
+            }
+        }
+        
         return response()->json([
             'error'=>true,
-            'messages'=> $errores
+            'messages'=> $errores_msg
         ],400);
     }
 

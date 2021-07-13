@@ -10,23 +10,25 @@ class ColaboradoresService
     public static function validator(array $data)
     {
         return Validator::make($data, [
-            'nombre' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'apellido'=> 'required|string|max:255',
-            'role_id' => 'required|numeric|min:0|not_in:0',
-            'puesto' => 'required|string|max:255',
-            'telefono'=> 'required|string|max:12'
+            'nombre'    => 'required|regex:/^[a-zA-ZÑñ ]+$/u|max:30',
+            'apellido'  => 'required|regex:/^[a-zA-ZÑñ ]+$/u|max:30',
+            'email'     => 'required|email|max:30|unique:users,email',
+            'role_id'   => 'required|numeric|min:0|not_in:0',
+            'puesto'    => 'required|regex:/^[a-zA-ZÑñ ]+$/u|max:35',
+            'telefono'  => 'required|max:9999999999',
+            'celular'   => 'max:9999999999'
         ]);
     }
 
     public static function validatorUpdate(array $data)
     {
         return Validator::make($data, [
-            'nombre' => 'required|string|max:255',
-            'apellido'=> 'required|string|max:255',
-            'role_id'=> 'required|integer',
-            'puesto' => 'required|string|max:255',
-            'telefono'=> 'required|string|max:255',
+            'nombre'    => 'required|regex:/^[a-zA-ZÑñ ]+$/u|max:30',
+            'apellido'  => 'required|regex:/^[a-zA-ZÑñ ]+$/u|max:30',
+            'role_id'   => 'required|integer',
+            'puesto'    => 'required|string|max:35',
+            'telefono'  => 'required|string|max:255',
+            'celular'   => 'max:9999999999'
         ]);
     }
 
