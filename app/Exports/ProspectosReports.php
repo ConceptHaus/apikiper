@@ -24,7 +24,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
     protected $desarrollo;
     protected $id_user;
     
-    public function __construct($headings, $desarrollo,$id_user, $correos=null, $nombre=null, $telefono=null, $status=null, $grupo=null, $etiquetas=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null)
+    public function __construct($headings, $desarrollo,$id_user, $correos=null, $nombre=null, $telefono=null, $status=null, $grupo=null, $etiquetas=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null)
     {
         $this->headings = $headings;
         $this->desarrollo = $desarrollo;
@@ -38,17 +38,18 @@ class ProspectosReports implements WithHeadings,FromCollection{
         $this->fechaInicio = $fechaInicio;
         $this->fechaFin = $fechaFin;
         $this->colaboradores = $colaboradores;
+        $this->busqueda = $busqueda;
     }
     
     public function collection()
     {
             
         return $this->getProspectos($this->desarrollo,$this->id_user,$this->correos,$this->nombre,$this->telefono,$this->status,
-                                    $this->grupo,$this->etiquetas,$this->fechaInicio,$this->fechaFin,$this->colaboradores);
+                                    $this->grupo,$this->etiquetas,$this->fechaInicio,$this->fechaFin,$this->colaboradores, $this->busqueda);
 
         
     }
-    public function getProspectos($desarrollo, $id_user, $correos, $nombres, $telefonos=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null){
+    public function getProspectos($desarrollo, $id_user, $correos, $nombres, $telefonos=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null){
         $user = User::find($id_user);
         if($desarrollo == 'all'){
 
@@ -67,6 +68,18 @@ class ProspectosReports implements WithHeadings,FromCollection{
                 ->whereNull('prospectos.deleted_at')
                 ->groupBy('prospectos.id_prospecto')
                 ->orderBy('prospectos.created_at','desc')
+                ->where(function ($query) use ($busqueda) {
+                    $query->orWhere('prospectos.nombre', 'like', '%'.$busqueda.'%')
+                            ->orWhere('prospectos.apellido', 'like', '%'.$busqueda.'%')
+                            ->orWhere('prospectos.correo', 'like', '%'.$busqueda.'%')
+                            ->orWhere('detalle_prospecto.telefono', 'like', '%'.$busqueda.'%')
+                            ->orWhere('users.nombre', 'like', '%'.$busqueda.'%')
+                            ->orWhere('prospectos.created_at', 'like', '%'.$busqueda.'%')
+                            ->orWhere('cat_status_prospecto.status', 'like', '%'.$busqueda.'%')
+                            ->orWhere('cat_fuentes.nombre', 'like', '%'.$busqueda.'%')
+                            ->orWhere('empresas.nombre', 'like', '%'.$busqueda.'%')
+                            ;
+                })
                 ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores) {
                     $query->when($correos,  function ($query) use ($correos) {
                         $query->orWhere(function ($query) use ($correos) {
@@ -141,6 +154,18 @@ class ProspectosReports implements WithHeadings,FromCollection{
                 ->whereNull('prospectos.deleted_at')
                 ->groupBy('prospectos.id_prospecto')
                 ->orderBy('prospectos.created_at','desc')
+                ->where(function ($query) use ($busqueda) {
+                    $query->orWhere('prospectos.nombre', 'like', '%'.$busqueda.'%')
+                            ->orWhere('prospectos.apellido', 'like', '%'.$busqueda.'%')
+                            ->orWhere('prospectos.correo', 'like', '%'.$busqueda.'%')
+                            ->orWhere('detalle_prospecto.telefono', 'like', '%'.$busqueda.'%')
+                            ->orWhere('users.nombre', 'like', '%'.$busqueda.'%')
+                            ->orWhere('prospectos.created_at', 'like', '%'.$busqueda.'%')
+                            ->orWhere('cat_status_prospecto.status', 'like', '%'.$busqueda.'%')
+                            ->orWhere('cat_fuentes.nombre', 'like', '%'.$busqueda.'%')
+                            ->orWhere('empresas.nombre', 'like', '%'.$busqueda.'%')
+                            ;
+                })
                 ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores) {
                     $query->when($correos,  function ($query) use ($correos) {
                         $query->orWhere(function ($query) use ($correos) {
@@ -217,6 +242,18 @@ class ProspectosReports implements WithHeadings,FromCollection{
                 ->groupby('prospectos.id_prospecto')
                 ->orderBy('prospectos.created_at','desc')
                 ->where('users.id', '=', $id_user)
+                ->where(function ($query) use ($busqueda) {
+                    $query->orWhere('prospectos.nombre', 'like', '%'.$busqueda.'%')
+                            ->orWhere('prospectos.apellido', 'like', '%'.$busqueda.'%')
+                            ->orWhere('prospectos.correo', 'like', '%'.$busqueda.'%')
+                            ->orWhere('detalle_prospecto.telefono', 'like', '%'.$busqueda.'%')
+                            ->orWhere('users.nombre', 'like', '%'.$busqueda.'%')
+                            ->orWhere('prospectos.created_at', 'like', '%'.$busqueda.'%')
+                            ->orWhere('cat_status_prospecto.status', 'like', '%'.$busqueda.'%')
+                            ->orWhere('cat_fuentes.nombre', 'like', '%'.$busqueda.'%')
+                            ->orWhere('empresas.nombre', 'like', '%'.$busqueda.'%')
+                            ;
+                })
                 ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
                     $query->when($correos,  function ($query) use ($correos) {
                         $query->orWhere(function ($query) use ($correos) {
