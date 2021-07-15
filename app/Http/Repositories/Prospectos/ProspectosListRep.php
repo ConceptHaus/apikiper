@@ -508,7 +508,6 @@ class ProspectosListRep
                                 ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', 'prospectos.id_prospecto')
                                 ->where('colaborador_prospecto.id_colaborador',$id_colaborador)
                                 ->wherenull('prospectos.deleted_at')
-                                ->wherenull('prospectos.deleted_at')
                                 ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
     }
 
