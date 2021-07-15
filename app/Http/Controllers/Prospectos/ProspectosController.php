@@ -53,9 +53,8 @@ use Carbon\Carbon;
 class ProspectosController extends Controller
 {
     public function registerProspecto(Request $request){
-        //return $request;
+        // return $request->input();
         $auth = $this->guard()->user();
-
         $validator = $this->validadorProspectos($request->all());
         $oportunidades = $request->oportunidades;
         $etiquetas = $request->etiquetas;
@@ -68,7 +67,7 @@ class ProspectosController extends Controller
                 $prospecto = new Prospecto;
                 $prospectoDetalle = new DetalleProspecto;
                 $statusProspecto = new StatusProspecto;
-                $colaborador_prospecto = new ColaboradorProspecto;
+                
                 $statusProspecto->id_cat_status_prospecto = 2;
                 $prospecto->nombre = $request->nombre;
                 $prospecto->apellido = $request->apellido;
@@ -82,8 +81,26 @@ class ProspectosController extends Controller
                 $prospecto->fuente = 3;
                 $prospecto->save();
                 $prospecto->status_prospecto()->save($statusProspecto);
-                $colaborador_prospecto->id_colaborador = $auth->id;
-                $prospecto->colaborador_prospecto()->save($colaborador_prospecto);
+                
+                
+                
+                // $prospecto->colaborador_prospecto()->save($colaborador_prospecto);
+                // $prospecto->save($colaborador_prospecto);
+
+                $colaborador_prospecto = new ColaboradorProspecto;
+                
+                if( isset($request->colaborador['id'])){
+                    $colaborador_prospecto->id_colaborador = $request->colaborador['id'];
+                }else{
+                    $colaborador_prospecto->id_colaborador = $auth->id;
+                }
+                $colaborador_prospecto->id_prospecto = $prospecto->id_prospecto;
+                
+                $colaborador_prospecto->save();
+                
+
+
+                
                 if(!$request->hsh){
                     if( isset($request->empresa))
                     {
