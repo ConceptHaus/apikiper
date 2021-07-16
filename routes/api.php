@@ -320,3 +320,9 @@ Route::prefix('/v1/notifcations')->group(function(){
         
     });
 });
+
+Route::prefix('/v1/estadisticas')->group(function(){
+    // Route::middleware(['auth','cors'])->group(function(){
+        Route::post('/prospectos-vs-oportunidades','Statistics\StatisticsController@ProspectosVsOportunidades');
+    // });
+});
