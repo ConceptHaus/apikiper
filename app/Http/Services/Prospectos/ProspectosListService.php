@@ -106,7 +106,7 @@ class ProspectosListService
     public function getCountAllProspectosNotContactedByColaborador($id_colaborador){
         $object = new ProspectosListRep;
 
-        $response->data["prospectos_nocontactados"] = $object->getProspectosCountByColaborador($id_colaborador);
+        $response->data["prospectos_nocontactados"] = $object->getProspectosNotContactedCountByColaborador($id_colaborador);
 
         return $response;
     }
