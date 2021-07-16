@@ -45,6 +45,9 @@ class StatisticsService
         }
     }
 
-
+    public static function FunnelOportunidades($start_date, $end_date, $user_id)
+    {
+        return StatisticsRep::FunnelOportunidades($start_date, $end_date, $user_id);
+    }
 
 }
