@@ -12,10 +12,16 @@ class StatisticsController extends Controller
 {
 
     public function ProspectosVsOportunidades(Request $request)
-    
     {
         $user_id = (is_null($request->user_id)) ? NULL : $request->user_id;
         
         return StatisticsService::ProspectosVsOportunidades($request->start_date, $request->end_date, $user_id);
+    }
+
+    public function FunnelOportunidades(Request $request)
+    {
+        $user_id = (is_null($request->user_id)) ? NULL : $request->user_id;
+        
+        return StatisticsService::FunnelOportunidades($request->start_date, $request->end_date, $user_id);
     }
 }
