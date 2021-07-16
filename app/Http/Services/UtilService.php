@@ -46,4 +46,13 @@ class UtilService
 
         return floor($datediff / (60 * 60));
     }
+
+    public static function arrayGroupByKey($array, $key) {
+        $return = array();
+        foreach($array as $val) {
+            $return[$val[$key]][] = $val;
+        }
+        return $return;
+    }
+
 }
