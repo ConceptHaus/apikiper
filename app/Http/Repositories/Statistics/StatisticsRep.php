@@ -5,6 +5,7 @@ namespace App\Http\Repositories\Statistics;
 use App\Modelos\Oportunidad\Oportunidad;
 use App\Modelos\Prospecto\Prospecto;
 use App\Modelos\User;
+use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Http\Services\Funnel\FunnelService;
 use App\Http\Services\UtilService;
 use App\Http\Services\Statistics\StatisticsService;
@@ -99,6 +100,42 @@ class StatisticsRep
                     
         
         return $colaboradores = StatisticsService::getValuesForSales($colaboradores);
+                }
         
+    public static function FunnelOportunidades($start_date, $end_date, $user_id=NULL)
+    {
+        
+        $oportunidades = array();
+        $oportunidades['status'] =  CatStatusOportunidad::all();
+        
+        if(!empty($oportunidades['status'])){
+            
+            foreach ($oportunidades['status'] as $key => $status) {
+                $oportunidades['status'][$key]['oportunidades'] = StatisticsRep::oportunidadesByStatus($status['id_cat_status_oportunidad'], $start_date, $end_date, $user_id);
+            }
+        }
+        return $oportunidades;
+    }
+
+    public static function oportunidadesByStatus($status_id, $start_date, $end_date, $user_id=NULL)
+    {
+
+        $oportunidades = Oportunidad::join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                        ->join('users','colaborador_oportunidad.id_colaborador','users.id')
+                        ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                        ->join('detalle_oportunidad','colaborador_oportunidad.id_oportunidad','detalle_oportunidad.id_oportunidad')
+                        ->whereNull('oportunidades.deleted_at')
+                        ->where('oportunidades.created_at',  '>=', $start_date)
+                        ->where('oportunidades.created_at',  '<=', $end_date)
+                        ->where('status_oportunidad.id_cat_status_oportunidad','=',$status_id);
+        
+        if(!is_null($user_id)){
+            $oportunidades = $oportunidades->where('colaborador_oportunidad.id_colaborador', '=', $user_id);
+        }
+
+        $oportunidades = $oportunidades->count();
+
+        return $oportunidades;
+
     }
 }
