@@ -75,4 +75,10 @@ class StatisticsRep
 
         return $response;
     }
+
+    public static function SalesHistoryByColaborador($start_date, $end_date, $user_id=NULL)
+    {
+        $response = array();
+        $colaboradores = ;
+    }
 }

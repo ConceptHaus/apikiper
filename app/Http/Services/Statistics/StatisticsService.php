@@ -45,6 +45,10 @@ class StatisticsService
         }
     }
 
+    public static function SalesHistoryByColaborador($start_date, $end_date, $user_id)
+    {
+        return StatisticsRep::SalesHistoryByColaborador($start_date, $end_date, $user_id);
+    }
 
 
 }
