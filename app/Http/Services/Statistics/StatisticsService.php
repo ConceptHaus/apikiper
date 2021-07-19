@@ -50,5 +50,22 @@ class StatisticsService
         return StatisticsRep::SalesHistoryByColaborador($start_date, $end_date, $user_id);
     }
 
+    public static function getValuesForSales($colaboradores){
+        
+        $arrayColaboradores = array();
+        $arrayVentas = array();
+        $response = array();
+
+        foreach ($colaboradores as $key => $value) {
+            array_push($arrayColaboradores, $value["nombre_colaborador"]);
+            array_push($arrayVentas, $value["ventas"]);
+        }
+        
+        $response["Colaboradores"] = $arrayColaboradores;
+        $response["Ventas"] = $arrayVentas;
+
+        return $response;
+    }
+
 
 }

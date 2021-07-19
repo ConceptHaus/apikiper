@@ -4,6 +4,7 @@ namespace App\Http\Repositories\Statistics;
 
 use App\Modelos\Oportunidad\Oportunidad;
 use App\Modelos\Prospecto\Prospecto;
+use App\Modelos\User;
 use App\Http\Services\Funnel\FunnelService;
 use App\Http\Services\UtilService;
 use App\Http\Services\Statistics\StatisticsService;
@@ -78,7 +79,26 @@ class StatisticsRep
 
     public static function SalesHistoryByColaborador($start_date, $end_date, $user_id=NULL)
     {
-        $response = array();
-        $colaboradores = ;
+        
+        $colaboradores = User::select(DB::raw('concat(users.nombre, " ", users.apellido) as nombre_colaborador'),
+                    DB::raw('detalle_oportunidad.valor * detalle_oportunidad.meses as ventas'))
+                    ->join('colaborador_oportunidad', 'colaborador_oportunidad.id_colaborador', '=', 'users.id')
+                    ->join('oportunidades', 'oportunidades.id_oportunidad', '=', 'colaborador_oportunidad.id_oportunidad')
+                    ->join('status_oportunidad', 'status_oportunidad.id_oportunidad', '=', 'oportunidades.id_oportunidad')
+                    ->join('cat_status_oportunidad', 'cat_status_oportunidad.id_cat_status_oportunidad', '=', 'status_oportunidad.id_cat_status_oportunidad')
+                    ->join('detalle_oportunidad', 'detalle_oportunidad.id_oportunidad', '=', 'oportunidades.id_oportunidad')
+                    ->where('cat_status_oportunidad.id_cat_status_oportunidad', 2)
+                    ->where('status_oportunidad.updated_at', '>=', $start_date . ' 00:00:00')
+                    ->where('status_oportunidad.updated_at', '<=', $end_date . ' 23:59:59')
+                    ->where(function ($query) use ($user_id) {
+                        $query->when($user_id,  function ($query) use ($user_id) {
+                                $query->where('users.id', $user_id);
+                        });
+                    })
+                    ->get();
+                    
+        
+        return $colaboradores = StatisticsService::getValuesForSales($colaboradores);
+        
     }
 }
