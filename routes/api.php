@@ -326,5 +326,6 @@ Route::prefix('/v1/estadisticas')->group(function(){
         Route::post('/prospectos-vs-oportunidades','Statistics\StatisticsController@ProspectosVsOportunidades');
         Route::post('/SalesHistoryByColaborador','Statistics\StatisticsController@SalesHistoryByColaborador');
         Route::post('/funnel-oportunidades','Statistics\StatisticsController@FunnelOportunidades');
+        Route::post('/prospectos-cerrados','Statistics\StatisticsController@ProspectosCerradosByColaborador');
     // });
 });
