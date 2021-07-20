@@ -38,4 +38,18 @@ class StatisticsController extends Controller
 
         return StatisticsService::monthlySalesHistory($request->start_date, $request->end_date, $user_id);
     }
+    
+    public function ProspectosCerradosByColaborador(Request $request)
+    {
+        $user_id = (is_null($request->user_id)) ? NULL : $request->user_id;
+        
+        return StatisticsService::ProspectosCerradosByColaborador($request->start_date, $request->end_date, $user_id);
+    }
+
+    public function getProspectosTotal(Request $request)
+    {
+        $user_id = (is_null($request->user_id)) ? NULL : $request->user_id;
+        
+        return StatisticsService::getProspectosTotal($request->start_date, $request->end_date, $user_id);
+    }
 }
