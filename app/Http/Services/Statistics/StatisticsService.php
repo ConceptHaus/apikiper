@@ -50,4 +50,9 @@ class StatisticsService
         return StatisticsRep::FunnelOportunidades($start_date, $end_date, $user_id);
     }
 
+    public static function ProspectosCerradosByColaborador($start_date, $end_date, $user_id)
+    {
+        return StatisticsRep::ProspectosCerradosByColaborador($start_date, $end_date, $user_id);
+    }
+
 }
