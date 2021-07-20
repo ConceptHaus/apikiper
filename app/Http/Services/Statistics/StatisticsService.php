@@ -50,7 +50,8 @@ class StatisticsService
         return StatisticsRep::SalesHistoryByColaborador($start_date, $end_date, $user_id);
     }
 
-    public static function getValuesForSales($colaboradores){
+    public static function getValuesForSales($colaboradores)
+    {
         
         $arrayColaboradores = array();
         $arrayVentas = array();
@@ -75,6 +76,11 @@ class StatisticsService
     public static function ProspectosCerradosByColaborador($start_date, $end_date, $user_id)
     {
         return StatisticsRep::ProspectosCerradosByColaborador($start_date, $end_date, $user_id);
+    }
+
+    public static function getProspectosTotal($start_date, $end_date, $user_id)
+    {
+        return StatisticsRep::getProspectosTotal($start_date, $end_date, $user_id);
     }
 
 }

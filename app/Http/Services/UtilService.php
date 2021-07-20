@@ -77,7 +77,7 @@ class UtilService
             elseif ($days > 30 AND $days < 62) {
                 return 'weeks';
             }
-            elseif ($days > 60 AND $days < 366) {
+            elseif ($days > 61 AND $days < 366) {
                 return 'months';
             }
             else{
