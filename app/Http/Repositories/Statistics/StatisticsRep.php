@@ -229,4 +229,38 @@ class StatisticsRep
 
         return $oportunidades_by_fuente;
     }
+
+    public static function getProspectosTotal($start_date, $end_date, $user_id)
+    {
+        $prospectos_total = StatisticsRep::getProspectos($start_date, $end_date, $user_id, 'count');
+
+        $prospectos_contactados = StatisticsRep::getProspectosContactados($start_date, $end_date, $user_id, 'count');
+
+        $response = ['prospectos_total'         => $prospectos_total,
+                     'prospectos_contactados'   => $prospectos_contactados];
+
+        return $response;
+    }
+
+    public static function getProspectosContactados($start_date, $end_date, $user_id, $action='get')
+    {
+        $prospectos  =   Prospecto::select(DB::raw('DATE(prospectos.created_at) as date'), DB::raw('count(*) as total'))
+                                    ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                                    ->join('status_prospecto', 'status_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                                    ->where('prospectos.created_at', '>=', $start_date)
+                                    ->where('prospectos.created_at', '<=', $end_date)
+                                    ->where('status_prospecto.id_cat_status_prospecto', 1);
+        
+        if(!is_null($user_id)){
+            $prospectos = $prospectos->where('colaborador_prospecto.id_colaborador', $user_id);
+        }
+
+        if ($action == 'count') {
+            $prospectos = $prospectos->count();
+        }else{
+            $prospectos = $prospectos->groupBy('date')->get();
+        }
+
+        return $prospectos;
+    }
 }
