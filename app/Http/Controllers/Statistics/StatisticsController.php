@@ -18,10 +18,25 @@ class StatisticsController extends Controller
         return StatisticsService::ProspectosVsOportunidades($request->start_date, $request->end_date, $user_id);
     }
 
+    public function SalesHistoryByColaborador(Request $request) {
+        
+        $user_id = (is_null($request->user_id)) ? NULL : $request->user_id;
+        
+        return StatisticsService::SalesHistoryByColaborador($request->start_date, $request->end_date, $user_id);
+    
+    }
+    
     public function FunnelOportunidades(Request $request)
     {
         $user_id = (is_null($request->user_id)) ? NULL : $request->user_id;
         
         return StatisticsService::FunnelOportunidades($request->start_date, $request->end_date, $user_id);
+    }
+
+    public function ProspectosCerradosByColaborador(Request $request)
+    {
+        $user_id = (is_null($request->user_id)) ? NULL : $request->user_id;
+        
+        return StatisticsService::ProspectosCerradosByColaborador($request->start_date, $request->end_date, $user_id);
     }
 }
