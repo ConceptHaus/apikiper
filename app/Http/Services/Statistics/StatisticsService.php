@@ -100,9 +100,9 @@ class StatisticsService
         return StatisticsRep::ProspectosCerradosByColaborador($start_date, $end_date, $user_id);
     }
 
-    public static function getProspectosTotal($start_date, $end_date)
+    public static function getProspectosTotal($start_date, $end_date, $user_id)
     {
-        return StatisticsRep::getProspectosTotal($start_date, $end_date);
+        return StatisticsRep::getProspectosTotal($start_date, $end_date, $user_id);
     }
 
 }

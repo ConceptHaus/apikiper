@@ -48,7 +48,8 @@ class StatisticsController extends Controller
 
     public function getProspectosTotal(Request $request)
     {
+        $user_id = (is_null($request->user_id)) ? NULL : $request->user_id;
         
-        return StatisticsService::getProspectosTotal($request->start_date, $request->end_date);
+        return StatisticsService::getProspectosTotal($request->start_date, $request->end_date, $user_id);
     }
 }
