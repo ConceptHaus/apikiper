@@ -10,6 +10,7 @@ use App\Http\Services\Funnel\FunnelService;
 use App\Http\Services\UtilService;
 use App\Http\Services\Statistics\StatisticsService;
 use DB;
+use Carbon\Carbon;
 
 class StatisticsRep
 {
@@ -100,6 +101,45 @@ class StatisticsRep
 
     }
 
+    public static function monthlySalesHistory($start_date=NULL, $end_date=NULL, $user_id=NULL)
+    {
+        $hoy = Carbon::now()->toDateString();
+        $first_day = date('Y-m-01');
+
+        if ($first_day == $hoy) {
+            $end_date = Carbon::now()->subDays(1)->toDateString();
+        }
+
+        if (is_null($end_date)) {
+            $end_date = Carbon::now()->toDateString();;
+        }
+        
+        $ventas = Oportunidad::select(DB::raw('sum(detalle_oportunidad.valor * detalle_oportunidad.meses) as monto, monthname(oportunidades.created_at) as mes'))
+                    ->join('detalle_oportunidad', 'detalle_oportunidad.id_oportunidad', '=', 'oportunidades.id_oportunidad')
+                    ->join('colaborador_oportunidad', 'colaborador_oportunidad.id_oportunidad', '=', 'oportunidades.id_oportunidad')
+                    ->where('oportunidades.created_at', '>', DB::raw('DATE_SUB(now(), INTERVAL 6 MONTH)'))
+                    ->where(function ($query) use ($user_id) {
+                        $query->when($user_id,  function ($query) use ($user_id) {
+                                $query->where('colaborador_oportunidad.id_colaborador', $user_id);
+                        });
+                    })
+                    ->where(function ($query) use ($start_date, $end_date) {
+                        $query->when($start_date,  function ($query) use ($start_date, $end_date) {
+                                $query->where('oportunidades.created_at', '>=', $start_date . ' 00:00:00');
+                        });
+                    })
+                    ->where(function ($query) use ($end_date) {
+                        $query->when($end_date,  function ($query) use ($end_date) {
+                                $query->where('oportunidades.created_at', '<=', $end_date . ' 23:59:59');
+                        });
+                    })
+                    ->groupby(DB::raw('Month(oportunidades.created_at)'))
+                    ->orderby('oportunidades.created_at')
+                    ->get();
+
+        return $ventas = StatisticsService::getValuesForMonthlySales($ventas);
+    }
+    
     public static function ProspectosCerradosByColaborador($start_date, $end_date, $user_id=NULL)
     {
         $response               = array();
@@ -230,16 +270,28 @@ class StatisticsRep
         return $oportunidades_by_fuente;
     }
 
-    public static function getProspectosTotal($start_date, $end_date, $user_id)
+    public static function getProspectosTotal($start_date, $end_date)
     {
-        $prospectos_total = StatisticsRep::getProspectos($start_date, $end_date, $user_id, 'count');
+        $prospectos_by_colaborador = array();
 
-        $prospectos_contactados = StatisticsRep::getProspectosContactados($start_date, $end_date, $user_id, 'count');
-
-        $response = ['prospectos_total'         => $prospectos_total,
-                     'prospectos_contactados'   => $prospectos_contactados];
-
-        return $response;
+        $colaboradores = User::where('status', 1)->where('role_id', '<=', 3)->get();
+        
+        if(count($colaboradores) > 0){
+            foreach ($colaboradores as $key => $colaborador) {
+                $this_colaborador_prospectos                                = array();
+                $this_colaborador_prospectos['colaborador_id']              = $colaborador->id;
+                $this_colaborador_prospectos['nombre']                      = $colaborador->nombre;
+                $this_colaborador_prospectos['apellido']                    = $colaborador->apellido;
+                $this_colaborador_prospectos['prospectos_total']            = StatisticsRep::getProspectos($start_date, $end_date, $colaborador->id, 'count');
+                $this_colaborador_prospectos['prospectos_contactados']      = StatisticsRep::getProspectosContactados($start_date, $end_date, $colaborador->id, 'count');
+                $this_colaborador_prospectos['prospectos_no_contactados']   = $this_colaborador_prospectos['prospectos_total'] - $this_colaborador_prospectos['prospectos_contactados'];
+                if($this_colaborador_prospectos['prospectos_total'] > 0){
+                    $prospectos_by_colaborador[]                            = $this_colaborador_prospectos;
+                }
+            }
+        }
+        
+        return $prospectos_by_colaborador;
     }
 
     public static function getProspectosContactados($start_date, $end_date, $user_id, $action='get')

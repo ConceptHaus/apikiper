@@ -42,7 +42,30 @@ class OportunidadesController extends Controller
 
 
     public function getAllOportunidades(){
-        $oportunidades_total = DB::table('oportunidades')->whereNull('deleted_at')->count();
+        // $oportunidades_total = DB::table('oportunidades')->whereNull('deleted_at')->count();
+
+        $oportunidades_total =  DB::table('oportunidades')
+                                    ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                                    ->join('oportunidad_prospecto','oportunidad_prospecto.id_oportunidad','oportunidades.id_oportunidad')
+                                    ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                                    ->join('users','colaborador_oportunidad.id_colaborador','users.id')
+                                    ->join('prospectos','oportunidad_prospecto.id_prospecto','prospectos.id_prospecto')
+                                    ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                                    ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                                    ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                                    ->join('servicio_oportunidad','servicio_oportunidad.id_oportunidad','oportunidad_prospecto.id_oportunidad')
+                                    ->join('cat_servicios','cat_servicios.id_servicio_cat','servicio_oportunidad.id_servicio_cat')
+                                    ->whereNull('oportunidades.deleted_at')
+                                    ->whereNUll('detalle_oportunidad.deleted_at')
+                                    ->whereNull('oportunidad_prospecto.deleted_at')
+                                    ->whereNull('colaborador_oportunidad.deleted_at')
+                                    ->whereNull('users.deleted_at')
+                                    ->whereNull('prospectos.deleted_at')
+                                    ->whereNull('status_oportunidad.deleted_at')
+                                    ->whereNull('servicio_oportunidad.deleted_at')
+                                    ->select('oportunidades.id_oportunidad','oportunidades.nombre_oportunidad','detalle_oportunidad.valor','detalle_oportunidad.meses','cat_status_oportunidad.id_cat_status_oportunidad  as status_id','cat_status_oportunidad.status','cat_status_oportunidad.color','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','users.id as id_colaborador','users.nombre as asigando_nombre','users.apellido as asigando_apellido','oportunidades.created_at')
+                                    ->orderBy('oportunidades.created_at', 'desc')
+                                    ->count();
 
         $oportunidades_cotizadas = DB::table('oportunidades')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
