@@ -270,16 +270,28 @@ class StatisticsRep
         return $oportunidades_by_fuente;
     }
 
-    public static function getProspectosTotal($start_date, $end_date, $user_id)
+    public static function getProspectosTotal($start_date, $end_date)
     {
-        $prospectos_total = StatisticsRep::getProspectos($start_date, $end_date, $user_id, 'count');
+        $prospectos_by_colaborador = array();
 
-        $prospectos_contactados = StatisticsRep::getProspectosContactados($start_date, $end_date, $user_id, 'count');
-
-        $response = ['prospectos_total'         => $prospectos_total,
-                     'prospectos_contactados'   => $prospectos_contactados];
-
-        return $response;
+        $colaboradores = User::where('status', 1)->where('role_id', '<=', 3)->get();
+        
+        if(count($colaboradores) > 0){
+            foreach ($colaboradores as $key => $colaborador) {
+                $this_colaborador_prospectos                                = array();
+                $this_colaborador_prospectos['colaborador_id']              = $colaborador->id;
+                $this_colaborador_prospectos['nombre']                      = $colaborador->nombre;
+                $this_colaborador_prospectos['apellido']                    = $colaborador->apellido;
+                $this_colaborador_prospectos['prospectos_total']            = StatisticsRep::getProspectos($start_date, $end_date, $colaborador->id, 'count');
+                $this_colaborador_prospectos['prospectos_contactados']      = StatisticsRep::getProspectosContactados($start_date, $end_date, $colaborador->id, 'count');
+                $this_colaborador_prospectos['prospectos_no_contactados']   = $this_colaborador_prospectos['prospectos_total'] - $this_colaborador_prospectos['prospectos_contactados'];
+                if($this_colaborador_prospectos['prospectos_total'] > 0){
+                    $prospectos_by_colaborador[]                            = $this_colaborador_prospectos;
+                }
+            }
+        }
+        
+        return $prospectos_by_colaborador;
     }
 
     public static function getProspectosContactados($start_date, $end_date, $user_id, $action='get')
