@@ -350,4 +350,32 @@ class StatisticsRep
 
         return $prospectos;
     }
+
+    public static function getProspectosByFuente($start_date, $end_date, $user_id)
+    {
+        $start_date = $start_date ." 00:00:00";
+        $end_date   = $end_date ." 23:59:59";
+
+        if(is_null($user_id)){
+            return DB::table('prospectos')
+                ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                ->wherenull('prospectos.deleted_at')
+                ->wherenull('cat_fuentes.deleted_at')
+                ->where('prospectos.deleted_at',null)
+                ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
+                ->whereBetween('prospectos.updated_at', array($start_date ,$end_date))
+                ->groupBy('cat_fuentes.nombre')->get();   
+        }
+
+        return DB::table('prospectos')
+            ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+            ->join('colaborador_prospecto','colaborador_prospecto.id_prospecto','prospectos.id_prospecto')
+            ->where('colaborador_prospecto.id_colaborador', $user_id)
+            ->wherenull('prospectos.deleted_at')
+            ->wherenull('cat_fuentes.deleted_at')
+            ->where('prospectos.deleted_at',null)
+            ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
+            ->whereBetween('prospectos.updated_at', array($start_date ,$end_date))
+            ->groupBy('cat_fuentes.nombre')->get();
+    }
 }
