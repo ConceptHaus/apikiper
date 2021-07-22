@@ -284,7 +284,8 @@ class StatisticsRep
 
         if(is_null($user_id)){
 
-            $colaboradores = User::where('status', 1)->where('role_id', '<=', 3)->get();
+            // $colaboradores = User::where('status', 1)->where('role_id', '<=', 3)->get();
+            $colaboradores = User::where('status', 1)->get();
             
             if(count($colaboradores) > 0){
                 foreach ($colaboradores as $key => $colaborador) {
