@@ -35,6 +35,7 @@ class StatisticsRep
         $response['prospectos_filter_dates']        = StatisticsService::makeDatesRangeArray($prospectos, $start_date, $end_date);
         $response['oportunidades_filter_dates']     = StatisticsService::makeDatesRangeArray($oportunidades, $start_date, $end_date);
         $response['oportunidades_cerradas']         = $oportunidades_cerradas;
+        $response['prospectos_total']               = $prospectos_total;
         $response['oportunidades_by_fuente']        = $oportunidades_by_fuente;
         $response['porcentaje_exito']               = ($prospectos_total > 0) ? number_format(($oportunidades_cerradas * 100) / $prospectos_total, 2) : 0;
 
@@ -191,8 +192,9 @@ class StatisticsRep
 
     public static function getProspectos($start_date, $end_date, $user_id, $action='get')
     {
-        // $start_date = $start_date ." 00:00:00";
-        // $end_date   = $start_date ." 23:59:59";
+        $start_date = $start_date ." 00:00:00";
+        $end_date   = $end_date ." 23:59:59";
+       
         $prospectos =   Prospecto::select(DB::raw('DATE(prospectos.created_at) as date'), DB::raw('count(*) as total'))
                                 ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', 'prospectos.id_prospecto')
                                 ->where('prospectos.created_at', '>=', $start_date)
@@ -213,6 +215,9 @@ class StatisticsRep
 
     public static function getOportunidades($start_date, $end_date, $user_id, $action='get')
     {
+        $start_date = $start_date ." 00:00:00";
+        $end_date   = $end_date ." 23:59:59";
+
         $oportunidades   =   Oportunidad::select(DB::raw('DATE(oportunidades.created_at) as date'), DB::raw('count(*) as total'))
                                         ->join('colaborador_oportunidad', 'colaborador_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')                            
                                         ->where('oportunidades.created_at', '>=', $start_date)
@@ -284,8 +289,7 @@ class StatisticsRep
 
         if(is_null($user_id)){
 
-            // $colaboradores = User::where('status', 1)->where('role_id', '<=', 3)->get();
-            $colaboradores = User::where('status', 1)->get();
+            $colaboradores = User::where('status', 1)->where('role_id', '<=', 3)->get();
             
             if(count($colaboradores) > 0){
                 foreach ($colaboradores as $key => $colaborador) {
