@@ -322,12 +322,13 @@ Route::prefix('/v1/notifcations')->group(function(){
 });
 
 Route::prefix('/v1/estadisticas')->group(function(){
-    // Route::middleware(['auth','cors'])->group(function(){
+    Route::middleware(['auth','cors'])->group(function(){
         Route::post('/prospectos-vs-oportunidades','Statistics\StatisticsController@ProspectosVsOportunidades');
         Route::post('/SalesHistoryByColaborador','Statistics\StatisticsController@SalesHistoryByColaborador');
         Route::post('/funnel-oportunidades','Statistics\StatisticsController@FunnelOportunidades');
         Route::post('/monthlySalesHistory','Statistics\StatisticsController@monthlySalesHistory');
         Route::post('/prospectos-cerrados','Statistics\StatisticsController@ProspectosCerradosByColaborador');
         Route::post('/prospectos-eficiencia','Statistics\StatisticsController@getProspectosTotal');
-    // });
+        Route::post('/prospectos-origen','Statistics\StatisticsController@getProspectosByFuente');
+    });
 });

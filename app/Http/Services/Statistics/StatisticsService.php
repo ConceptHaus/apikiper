@@ -80,4 +80,9 @@ class StatisticsService
         return StatisticsRep::getProspectosTotal($start_date, $end_date, $user_id);
     }
 
+    public static function getProspectosByFuente($start_date, $end_date, $user_id)
+    {
+        return StatisticsRep::getProspectosByFuente($start_date, $end_date, $user_id);
+    }
+
 }
