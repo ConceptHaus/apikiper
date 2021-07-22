@@ -118,10 +118,9 @@ class StatisticsRep
             $end_date = Carbon::now()->toDateString();;
         }
         
-        $ventas = Oportunidad::select(DB::raw('sum(detalle_oportunidad.valor * detalle_oportunidad.meses) as monto, monthname(oportunidades.created_at) as mes'))
+        return $ventas = Oportunidad::select(DB::raw('sum(detalle_oportunidad.valor * detalle_oportunidad.meses) as amount, DATE_FORMAT(oportunidades.created_at, "%m") as month, year(oportunidades.created_at) as year'))
                     ->join('detalle_oportunidad', 'detalle_oportunidad.id_oportunidad', '=', 'oportunidades.id_oportunidad')
                     ->join('colaborador_oportunidad', 'colaborador_oportunidad.id_oportunidad', '=', 'oportunidades.id_oportunidad')
-                    ->where('oportunidades.created_at', '>', DB::raw('DATE_SUB(now(), INTERVAL 6 MONTH)'))
                     ->where(function ($query) use ($user_id) {
                         $query->when($user_id,  function ($query) use ($user_id) {
                                 $query->where('colaborador_oportunidad.id_colaborador', $user_id);
@@ -140,8 +139,7 @@ class StatisticsRep
                     ->groupby(DB::raw('Month(oportunidades.created_at)'))
                     ->orderby('oportunidades.created_at')
                     ->get();
-
-        return $ventas = StatisticsService::getValuesForMonthlySales($ventas);
+                    
     }
     
     public static function ProspectosCerradosByColaborador($start_date, $end_date, $user_id=NULL)

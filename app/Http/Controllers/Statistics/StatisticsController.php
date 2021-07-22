@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Statistics;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Services\Statistics\StatisticsService;
+use App\Http\Services\Statistics\MonthlySalesHistroyStatisticService;
 use Auth;
 
 
@@ -36,7 +37,7 @@ class StatisticsController extends Controller
     public function monthlySalesHistory(Request $request){
         $user_id = (is_null($request->user_id)) ? NULL : $request->user_id;
 
-        return StatisticsService::monthlySalesHistory($request->start_date, $request->end_date, $user_id);
+        return MonthlySalesHistroyStatisticService::monthlySalesHistory($request->start_date, $request->end_date, $user_id);
     }
     
     public function ProspectosCerradosByColaborador(Request $request)

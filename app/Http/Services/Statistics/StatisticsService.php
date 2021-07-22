@@ -4,6 +4,7 @@ namespace App\Http\Services\Statistics;
 
 use App\Http\Repositories\Statistics\StatisticsRep;
 use App\Http\Services\UtilService;
+use Carbon\Carbon;
 
 class StatisticsService
 {
@@ -67,28 +68,6 @@ class StatisticsService
     public static function FunnelOportunidades($start_date, $end_date, $user_id)
     {
         return StatisticsRep::FunnelOportunidades($start_date, $end_date, $user_id);
-    }
-
-    public static function monthlySalesHistory($start_date, $end_date, $user_id)
-    {
-        return StatisticsRep::monthlySalesHistory($start_date, $end_date, $user_id);
-    }
-
-    public static function getValuesForMonthlySales($ventas){
-        
-        $arrayMonto = array();
-        $arrayMes = array();
-        $response = array();
-
-        foreach ($ventas as $key => $value) {
-            array_push($arrayMonto, $value["monto"]);
-            array_push($arrayMes, $value["mes"]);
-        }
-        
-        $response["Monto"] = $arrayMonto;
-        $response["Mes"] = $arrayMes;
-
-        return $response;
     }
     
     public static function ProspectosCerradosByColaborador($start_date, $end_date, $user_id)
