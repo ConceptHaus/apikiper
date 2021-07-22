@@ -18,26 +18,18 @@ class StatisticsRep
     {
         $response = array();
         
-        //Filter Days Prospectos
-        $prospectos         = StatisticsRep::getProspectos($start_date, $end_date, $user_id, 'get');
-       
-        $prospectos_total   = StatisticsRep::getProspectos($start_date, $end_date, $user_id, 'count');
-
-        //Filter Days Oportunidades
-        $oportunidades = StatisticsRep::getOportunidades($start_date, $end_date, $user_id, 'get');
-       
-        //Oportunidades Cerradas
-        $oportunidades_cerradas = StatisticsRep::getOportunidadesCerradas($start_date, $end_date, $user_id, 'count');
-
-        //Oportunidades Cerradas by Fuente
-        $oportunidades_by_fuente = StatisticsRep::getOportunidadesCerradasByFuente($start_date, $end_date, $user_id);
+        $prospectos                 = StatisticsRep::getProspectos($start_date, $end_date, $user_id, 'get');
+        $prospectos_total           = StatisticsRep::getProspectos($start_date, $end_date, $user_id, 'count');
+        $oportunidades              = StatisticsRep::getOportunidades($start_date, $end_date, $user_id, 'get');
+        $oportunidades_total        = StatisticsRep::getOportunidades($start_date, $end_date, $user_id, 'count');
+        $oportunidades_by_fuente    = StatisticsRep::getOportunidadesByFuente($start_date, $end_date, $user_id);
 
         $response['prospectos_filter_dates']        = StatisticsService::makeDatesRangeArray($prospectos, $start_date, $end_date);
         $response['oportunidades_filter_dates']     = StatisticsService::makeDatesRangeArray($oportunidades, $start_date, $end_date);
-        $response['oportunidades_cerradas']         = $oportunidades_cerradas;
+        $response['oportunidades_total']            = $oportunidades_total;
         $response['prospectos_total']               = $prospectos_total;
         $response['oportunidades_by_fuente']        = $oportunidades_by_fuente;
-        $response['porcentaje_exito']               = ($prospectos_total > 0) ? number_format(($oportunidades_cerradas * 100) / $prospectos_total, 2) : 0;
+        $response['porcentaje_exito']               = ($prospectos_total > 0) ? number_format(($oportunidades_total * 100) / $prospectos_total, 2) : 0;
 
         return $response;
     }
@@ -259,7 +251,7 @@ class StatisticsRep
         return $oportunidades_cerradas;
     }
 
-    public static function getOportunidadesCerradasByFuente($start_date, $end_date, $user_id)
+    public static function getOportunidadesByFuente($start_date, $end_date, $user_id, $status=NULL)
     {
         $start_date = $start_date ." 00:00:00";
         $end_date   = $end_date ." 23:59:59";
@@ -273,10 +265,13 @@ class StatisticsRep
                                                 ->join('oportunidad_prospecto', 'oportunidad_prospecto.id_oportunidad', 'oportunidades.id_oportunidad')
                                                 ->join('prospectos', 'prospectos.id_prospecto', 'oportunidad_prospecto.id_prospecto')
                                                 ->join('cat_fuentes', 'cat_fuentes.id_fuente', 'prospectos.fuente')
-                                                ->where('status_oportunidad.id_cat_status_oportunidad', 2)
                                                 ->where('oportunidades.created_at', '>=', $start_date)
                                                 ->where('oportunidades.created_at', '<=', $end_date);
         
+        if(!is_null($status)){
+            $oportunidades_by_fuente  =  $oportunidades_by_fuente->where('status_oportunidad.id_cat_status_oportunidad', $status);
+        }
+
         if(!is_null($user_id)){
             $oportunidades_by_fuente  =  $oportunidades_by_fuente->where('colaborador_oportunidad.id_colaborador', $user_id);
         }
