@@ -64,7 +64,7 @@ class StatisticsRep
                     
         
         return $colaboradores = StatisticsService::getValuesForSales($colaboradores);
-                }
+    }
         
     public static function FunnelOportunidades($start_date, $end_date, $user_id=NULL)
     {
@@ -83,6 +83,8 @@ class StatisticsRep
 
     public static function oportunidadesByStatus($status_id, $start_date, $end_date, $user_id=NULL)
     {
+        $start_date = $start_date ." 00:00:00";
+        $end_date   = $end_date ." 23:59:59";
 
         $oportunidades = Oportunidad::join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                         ->join('users','colaborador_oportunidad.id_colaborador','users.id')
@@ -238,7 +240,10 @@ class StatisticsRep
 
     public static function getOportunidadesCerradas($start_date, $end_date, $user_id, $action='get')
     {
-       $oportunidades_cerradas =   Oportunidad::join('status_oportunidad', 'status_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
+        $start_date = $start_date ." 00:00:00";
+        $end_date   = $end_date ." 23:59:59";
+
+        $oportunidades_cerradas =   Oportunidad::join('status_oportunidad', 'status_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
                                                 ->join('colaborador_oportunidad', 'colaborador_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')                            
                                                 ->where('status_oportunidad.id_cat_status_oportunidad', 2)
                                                 ->where('oportunidades.created_at', '>=', $start_date)
@@ -258,6 +263,9 @@ class StatisticsRep
 
     public static function getOportunidadesCerradasByFuente($start_date, $end_date, $user_id)
     {
+        $start_date = $start_date ." 00:00:00";
+        $end_date   = $end_date ." 23:59:59";
+
         $oportunidades_by_fuente =   Oportunidad::select('cat_fuentes.id_fuente', 
                                                         DB::raw('count(*) as total_oportunidades'),
                                                         'cat_fuentes.nombre',
@@ -289,7 +297,8 @@ class StatisticsRep
 
         if(is_null($user_id)){
 
-            $colaboradores = User::where('status', 1)->where('role_id', '<=', 3)->get();
+            // $colaboradores = User::where('status', 1)->where('role_id', '<=', 3)->get();
+            $colaboradores = User::where('status', 1)->get();
             
             if(count($colaboradores) > 0){
                 foreach ($colaboradores as $key => $colaborador) {
@@ -326,6 +335,9 @@ class StatisticsRep
 
     public static function getProspectosContactados($start_date, $end_date, $user_id, $action='get')
     {
+        $start_date = $start_date ." 00:00:00";
+        $end_date   = $end_date ." 23:59:59";
+        
         $prospectos  =   Prospecto::select(DB::raw('DATE(prospectos.created_at) as date'), DB::raw('count(*) as total'))
                                     ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', 'prospectos.id_prospecto')
                                     ->join('status_prospecto', 'status_prospecto.id_prospecto', 'prospectos.id_prospecto')
