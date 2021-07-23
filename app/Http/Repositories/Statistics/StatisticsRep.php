@@ -115,8 +115,8 @@ class StatisticsRep
                     ->join('detalle_oportunidad', 'detalle_oportunidad.id_oportunidad', '=', 'oportunidades.id_oportunidad')
                     ->join('colaborador_oportunidad', 'colaborador_oportunidad.id_oportunidad', '=', 'oportunidades.id_oportunidad')
                     ->join('status_oportunidad', 'status_oportunidad.id_oportunidad', '=', 'colaborador_oportunidad.id_oportunidad')
-                    ->join('cat_status_oportunidad', 'cat_status_oportunidad.id_cat_status_oportunidad', '=', 'status_oportunidad.id_cat_status_prospecto')
-                    ->where('status_oportunidad.id_cat_status_prospecto', '=', 2)
+                    ->join('cat_status_oportunidad', 'cat_status_oportunidad.id_cat_status_oportunidad', '=', 'status_oportunidad.id_cat_status_oportunidad')
+                    ->where('status_oportunidad.id_cat_status_oportunidad', '=', 2)
                     ->where(function ($query) use ($user_id) {
                         $query->when($user_id,  function ($query) use ($user_id) {
                                 $query->where('colaborador_oportunidad.id_colaborador', $user_id);
