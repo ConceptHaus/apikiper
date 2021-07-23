@@ -378,4 +378,25 @@ class StatisticsRep
             ->whereBetween('prospectos.updated_at', array($start_date ,$end_date))
             ->groupBy('cat_fuentes.nombre')->get();
     }
+    
+    public static function mostEffectiveProspects($start_date, $end_date)
+    {
+        $start_date = $start_date ." 00:00:00";
+        $end_date   = $end_date ." 23:59:59";
+        
+        $prospectos  =   Prospecto::select('cat_fuentes.nombre', DB::raw('count(cat_fuentes.nombre) as count'))
+                                    ->join('oportunidad_prospecto', 'oportunidad_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                                    ->join('oportunidades', 'oportunidades.id_oportunidad', '=', 'oportunidad_prospecto.id_oportunidad')
+                                    ->join('status_oportunidad', 'status_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
+                                    ->join('cat_status_oportunidad', 'cat_status_oportunidad.id_cat_status_oportunidad', '=', 'status_oportunidad.id_cat_status_oportunidad')
+                                    ->join('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
+                                    ->where('prospectos.created_at', '>=', $start_date)
+                                    ->where('prospectos.created_at', '<=', $end_date)
+                                    ->where('cat_status_oportunidad.id_cat_status_oportunidad', 2)
+                                    ->groupby('cat_fuentes.nombre')
+                                    ->orderby('count', 'des')
+                                    ->get();
+                                    
+        return StatisticsService::getValuesForMostEffectiveProspects($prospectos);
+    }
 }

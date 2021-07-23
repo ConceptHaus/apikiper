@@ -84,5 +84,26 @@ class StatisticsService
     {
         return StatisticsRep::getProspectosByFuente($start_date, $end_date, $user_id);
     }
+    
+    public static function mostEffectiveProspects($start_date, $end_date){
+        return StatisticsRep::mostEffectiveProspects($start_date, $end_date);
+
+    }
+
+    public static function getValuesForMostEffectiveProspects($values){
+        $arrayNombre = array();
+        $arrayValues = array();
+        $response = array();
+
+        foreach ($values as $key => $value) {
+            array_push($arrayNombre, $value['nombre']);
+            array_push($arrayValues, $value['count']);
+        }
+        
+        $response["Fuente"] = $arrayNombre;
+        $response["Count"] = $arrayValues;
+
+        return $response;
+    }
 
 }
