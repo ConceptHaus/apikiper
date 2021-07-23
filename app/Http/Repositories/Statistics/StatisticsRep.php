@@ -113,6 +113,9 @@ class StatisticsRep
         return $ventas = Oportunidad::select(DB::raw('sum(detalle_oportunidad.valor * detalle_oportunidad.meses) as amount, DATE_FORMAT(oportunidades.created_at, "%m") as month, year(oportunidades.created_at) as year'))
                     ->join('detalle_oportunidad', 'detalle_oportunidad.id_oportunidad', '=', 'oportunidades.id_oportunidad')
                     ->join('colaborador_oportunidad', 'colaborador_oportunidad.id_oportunidad', '=', 'oportunidades.id_oportunidad')
+                    ->join('status_oportunidad', 'status_oportunidad.id_oportunidad', '=', 'colaborador_oportunidad.id_oportunidad')
+                    ->join('cat_status_oportunidad', 'cat_status_oportunidad.id_cat_status_oportunidad', '=', 'status_oportunidad.id_cat_status_prospecto')
+                    ->where('status_oportunidad.id_cat_status_prospecto', '=', 2)
                     ->where(function ($query) use ($user_id) {
                         $query->when($user_id,  function ($query) use ($user_id) {
                                 $query->where('colaborador_oportunidad.id_colaborador', $user_id);
