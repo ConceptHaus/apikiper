@@ -23,13 +23,14 @@ class StatisticsRep
         $oportunidades              = StatisticsRep::getOportunidades($start_date, $end_date, $user_id, 'get');
         $oportunidades_total        = StatisticsRep::getOportunidades($start_date, $end_date, $user_id, 'count');
         $oportunidades_by_fuente    = StatisticsRep::getOportunidadesByFuente($start_date, $end_date, $user_id);
+        $oportunidades_cerradas     = StatisticsRep::getOportunidadesCerradas($start_date, $end_date, $user_id, 'count');
 
         $response['prospectos_filter_dates']        = StatisticsService::makeDatesRangeArray($prospectos, $start_date, $end_date);
         $response['oportunidades_filter_dates']     = StatisticsService::makeDatesRangeArray($oportunidades, $start_date, $end_date);
         $response['oportunidades_total']            = $oportunidades_total;
         $response['prospectos_total']               = $prospectos_total;
         $response['oportunidades_by_fuente']        = $oportunidades_by_fuente;
-        $response['porcentaje_exito']               = ($prospectos_total > 0) ? number_format(($oportunidades_total * 100) / $prospectos_total, 2) : 0;
+        $response['porcentaje_exito']               = ($oportunidades_total > 0) ? number_format(($oportunidades_cerradas * 100) / $oportunidades_total, 2) : 0;
 
         return $response;
     }
@@ -113,6 +114,9 @@ class StatisticsRep
         return $ventas = Oportunidad::select(DB::raw('sum(detalle_oportunidad.valor * detalle_oportunidad.meses) as amount, DATE_FORMAT(oportunidades.created_at, "%m") as month, year(oportunidades.created_at) as year'))
                     ->join('detalle_oportunidad', 'detalle_oportunidad.id_oportunidad', '=', 'oportunidades.id_oportunidad')
                     ->join('colaborador_oportunidad', 'colaborador_oportunidad.id_oportunidad', '=', 'oportunidades.id_oportunidad')
+                    ->join('status_oportunidad', 'status_oportunidad.id_oportunidad', '=', 'colaborador_oportunidad.id_oportunidad')
+                    ->join('cat_status_oportunidad', 'cat_status_oportunidad.id_cat_status_oportunidad', '=', 'status_oportunidad.id_cat_status_prospecto')
+                    ->where('status_oportunidad.id_cat_status_prospecto', '=', 2)
                     ->where(function ($query) use ($user_id) {
                         $query->when($user_id,  function ($query) use ($user_id) {
                                 $query->where('colaborador_oportunidad.id_colaborador', $user_id);
@@ -377,5 +381,26 @@ class StatisticsRep
             ->select('cat_fuentes.nombre','cat_fuentes.url',DB::raw('count(*) as total, prospectos.fuente'))
             ->whereBetween('prospectos.updated_at', array($start_date ,$end_date))
             ->groupBy('cat_fuentes.nombre')->get();
+    }
+    
+    public static function mostEffectiveProspects($start_date, $end_date)
+    {
+        $start_date = $start_date ." 00:00:00";
+        $end_date   = $end_date ." 23:59:59";
+        
+        $prospectos  =   Prospecto::select('cat_fuentes.nombre', DB::raw('count(cat_fuentes.nombre) as count'), 'cat_fuentes.url')
+                                    ->join('oportunidad_prospecto', 'oportunidad_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                                    ->join('oportunidades', 'oportunidades.id_oportunidad', '=', 'oportunidad_prospecto.id_oportunidad')
+                                    ->join('status_oportunidad', 'status_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
+                                    ->join('cat_status_oportunidad', 'cat_status_oportunidad.id_cat_status_oportunidad', '=', 'status_oportunidad.id_cat_status_oportunidad')
+                                    ->join('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
+                                    ->where('prospectos.created_at', '>=', $start_date)
+                                    ->where('prospectos.created_at', '<=', $end_date)
+                                    ->where('cat_status_oportunidad.id_cat_status_oportunidad', 2)
+                                    ->groupby('cat_fuentes.nombre')
+                                    ->orderby('count', 'des')
+                                    ->get();
+                                    
+        return StatisticsService::getValuesForMostEffectiveProspects($prospectos);
     }
 }

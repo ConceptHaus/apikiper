@@ -330,5 +330,6 @@ Route::prefix('/v1/estadisticas')->group(function(){
         Route::post('/prospectos-cerrados','Statistics\StatisticsController@ProspectosCerradosByColaborador');
         Route::post('/prospectos-eficiencia','Statistics\StatisticsController@getProspectosTotal');
         Route::post('/prospectos-origen','Statistics\StatisticsController@getProspectosByFuente');
+        Route::post('/mostEffectiveProspects','Statistics\StatisticsController@mostEffectiveProspects');
     });
 });

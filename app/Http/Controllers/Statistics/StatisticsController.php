@@ -60,4 +60,8 @@ class StatisticsController extends Controller
         
         return StatisticsService::getProspectosByFuente($request->start_date, $request->end_date, $user_id);
     }
+    
+    public function mostEffectiveProspects(Request $request){
+        return StatisticsService::mostEffectiveProspects($request->start_date, $request->end_date);
+    }
 }
