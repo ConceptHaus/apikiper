@@ -30,6 +30,7 @@ class RolesTableSeeder extends Seeder
                                     "fe.colaboradores.nuevo",
                                     "fe.oportunidades.read.all",
                                     "fe.sidebar.oportunidades.generales",
+                                    "fe.sidebar.estadisticas",
                                     "fe.sidebar.estadisticas.oportunidades",
                                     "fe.sidebar.estadisticas.prospectos",
                                     "fe.sidebar.estadisticas.colaboradores"
@@ -46,6 +47,7 @@ class RolesTableSeeder extends Seeder
                                     "fe.colaboradores.nuevo",
                                     "fe.oportunidades.read.all",
                                     "fe.sidebar.ajustes.estatus",
+                                    "fe.sidebar.estadisticas",
                                     "fe.sidebar.estadisticas.oportunidades",
                                     "fe.sidebar.estadisticas.prospectos",
                                     "fe.sidebar.estadisticas.colaboradores",
@@ -67,6 +69,7 @@ class RolesTableSeeder extends Seeder
                                     "fe.colaboradores.nuevo",
                                     "fe.oportunidades.read.all",
                                     "fe.sidebar.ajustes.estatus",
+                                    "fe.sidebar.estadisticas",
                                     "fe.sidebar.estadisticas.oportunidades",
                                     "fe.sidebar.estadisticas.prospectos",
                                     "fe.sidebar.estadisticas.colaboradores",
