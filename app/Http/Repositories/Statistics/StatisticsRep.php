@@ -387,7 +387,7 @@ class StatisticsRep
         $start_date = $start_date ." 00:00:00";
         $end_date   = $end_date ." 23:59:59";
         
-        $prospectos  =   Prospecto::select('cat_fuentes.nombre', DB::raw('count(cat_fuentes.nombre) as count'))
+        $prospectos  =   Prospecto::select('cat_fuentes.nombre', DB::raw('count(cat_fuentes.nombre) as count'), 'cat_fuentes.url')
                                     ->join('oportunidad_prospecto', 'oportunidad_prospecto.id_prospecto', 'prospectos.id_prospecto')
                                     ->join('oportunidades', 'oportunidades.id_oportunidad', '=', 'oportunidad_prospecto.id_oportunidad')
                                     ->join('status_oportunidad', 'status_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')

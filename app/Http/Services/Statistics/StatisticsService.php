@@ -93,15 +93,18 @@ class StatisticsService
     public static function getValuesForMostEffectiveProspects($values){
         $arrayNombre = array();
         $arrayValues = array();
+        $arrayUrl = array();
         $response = array();
 
         foreach ($values as $key => $value) {
             array_push($arrayNombre, $value['nombre']);
             array_push($arrayValues, $value['count']);
+            array_push($arrayUrl, $value['url']);
         }
         
         $response["Fuente"] = $arrayNombre;
         $response["Count"] = $arrayValues;
+        $response["Url"] = $arrayUrl;
 
         return $response;
     }
