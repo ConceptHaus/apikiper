@@ -109,4 +109,23 @@ class StatisticsService
         return $response;
     }
 
+    public static function getTotalSalesByColaborador($colaboradores)
+    {
+        $new_colaboradores = array();
+        
+        if(count($colaboradores) > 0){
+            $colaboradores_by_sales = UtilService::arrayGroupByKey($colaboradores, 'nombre_colaborador');
+           
+            foreach ($colaboradores_by_sales as $key => $colaborador) {
+                $total_by_colaborador   = 0;
+                foreach ($colaborador as $i => $value) {
+                    $total_by_colaborador = $total_by_colaborador + $value['ventas'];
+                }   
+                $new_colaboradores[] = ['nombre_colaborador' => $key, 'ventas' => $total_by_colaborador]; 
+            }
+        }
+        
+        return $new_colaboradores;
+    }
+
 }
