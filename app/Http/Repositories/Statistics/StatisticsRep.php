@@ -149,38 +149,38 @@ class StatisticsRep
             case 'days':
                 $oportunidades_cerradas[]   = [ 'start_date'            => $start_date,
                                                 'end_date'              => $end_date,
-                                                'prospectos_cerrados'   => StatisticsRep:: getOportunidadesCerradas($start_date, $end_date, $user_id, 'count'),
-                                                'prospectos_totales'    => StatisticsRep:: getProspectos($start_date, $end_date, $user_id, 'count')];
+                                                'prospectos_cerrados'   => StatisticsRep::getOportunidadesCerradas($start_date, $end_date, $user_id, 'count'),
+                                                'prospectos_totales'    => StatisticsRep::getOportunidades($start_date, $end_date, $user_id, 'count')];
                 break;
             case 'weeks':
                 foreach ($ranges as $key => $range) {
                     $oportunidades_cerradas[]   = [ 'start_date'            => $range['start_date'],
                                                     'end_date'              => $range['end_date'],
-                                                    'prospectos_cerrados'   => StatisticsRep:: getOportunidadesCerradas($range['start_date'], $range['end_date'], $user_id, 'count'),
-                                                    'prospectos_totales'    => StatisticsRep:: getProspectos($range['start_date'], $range['end_date'], $user_id, 'count')];
+                                                    'prospectos_cerrados'   => StatisticsRep::getOportunidadesCerradas($range['start_date'], $range['end_date'], $user_id, 'count'),
+                                                    'prospectos_totales'    => StatisticsRep::getOportunidades($range['start_date'], $range['end_date'], $user_id, 'count')];
                 }
                 break;
             case 'months':
                 foreach ($ranges as $key => $range) {
                     $oportunidades_cerradas[]   = [ 'start_date'            => $range['start_date'],
                                                     'end_date'              => $range['end_date'],
-                                                    'prospectos_cerrados'   => StatisticsRep:: getOportunidadesCerradas($range['start_date'], $range['end_date'], $user_id, 'count'),
-                                                    'prospectos_totales'    => StatisticsRep:: getProspectos($range['start_date'], $range['end_date'], $user_id, 'count')];
+                                                    'prospectos_cerrados'   => StatisticsRep::getOportunidadesCerradas($range['start_date'], $range['end_date'], $user_id, 'count'),
+                                                    'prospectos_totales'    => StatisticsRep::getOportunidades($range['start_date'], $range['end_date'], $user_id, 'count')];
                 }
                 break;
             case 'years':
                 foreach ($ranges as $key => $range) {
                     $oportunidades_cerradas[]   = [ 'start_date'            => $range['start_date'],
                                                     'end_date'              => $range['end_date'],
-                                                    'prospectos_cerrados'   => StatisticsRep:: getOportunidadesCerradas($range['start_date'], $range['end_date'], $user_id, 'count'),
-                                                    'prospectos_totales'    => StatisticsRep:: getProspectos($range['start_date'], $range['end_date'], $user_id, 'count')];
+                                                    'prospectos_cerrados'   => StatisticsRep::getOportunidadesCerradas($range['start_date'], $range['end_date'], $user_id, 'count'),
+                                                    'prospectos_totales'    => StatisticsRep::getOportunidades($range['start_date'], $range['end_date'], $user_id, 'count')];
                 }
                 break;
             default:
                 $oportunidades_cerradas[]   = [ 'start_date'            => $start_date,
                                                 'end_date'              => $end_date,
-                                                'prospectos_cerrados'   => StatisticsRep:: getOportunidadesCerradas($start_date, $end_date, $user_id, 'count'),
-                                                'prospectos_totales'    => StatisticsRep:: getProspectos($start_date, $end_date, $user_id, 'count')];
+                                                'prospectos_cerrados'   => StatisticsRep::getOportunidadesCerradas($start_date, $end_date, $user_id, 'count'),
+                                                'prospectos_totales'    => StatisticsRep::getOportunidades($start_date, $end_date, $user_id, 'count')];
                 break;
         }
         return $oportunidades_cerradas;
