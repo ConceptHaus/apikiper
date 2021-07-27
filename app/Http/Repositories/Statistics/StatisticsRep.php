@@ -39,7 +39,7 @@ class StatisticsRep
     {
         
         $colaboradores = User::select(DB::raw('concat(users.nombre, " ", users.apellido) as nombre_colaborador'),
-                    DB::raw('detalle_oportunidad.valor * detalle_oportunidad.meses as ventas'))
+                    DB::raw('detalle_oportunidad.valor * detalle_oportunidad.meses as ventas'), 'users.id')
                     ->join('colaborador_oportunidad', 'colaborador_oportunidad.id_colaborador', '=', 'users.id')
                     ->join('oportunidades', 'oportunidades.id_oportunidad', '=', 'colaborador_oportunidad.id_oportunidad')
                     ->join('status_oportunidad', 'status_oportunidad.id_oportunidad', '=', 'oportunidades.id_oportunidad')
@@ -55,6 +55,8 @@ class StatisticsRep
                     })
                     ->get();
                     
+        
+        $colaboradores = StatisticsService::getTotalSalesByColaborador($colaboradores);
         
         return $colaboradores = StatisticsService::getValuesForSales($colaboradores);
     }
