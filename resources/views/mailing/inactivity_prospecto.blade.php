@@ -58,7 +58,7 @@
               <tr>
                 <td>
                   <p style="font-size:14px;color:#000">Esta es la notificacion número: {{$msg['attempt']}}. 
-                  El prospecto {{$msg['nombre_prospecto']}} ha estado <b style="font-weight:bold;">inactiv0 por mas de {{$msg['inactivity_period']}} horas</b>.
+                  El prospecto {{$msg['nombre_prospecto']}} ha estado <b style="font-weight:bold;">inactivo por mas de {{$msg['inactivity_period']}} horas</b>.
                   </p>
                 </td>
               </tr>

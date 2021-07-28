@@ -53,4 +53,22 @@ class SettingsRep
         return $setting->value;
     }
 
+    /*
+    | Inactivity Emails for Admins
+    */
+
+    public static function getOportunidadesSendInactivityEmailForAdmins()
+    {
+        $setting = Setting::where('setting', 'oportunidades_receive_inactivity_notifications')->first();
+
+        return $setting->value;
+    }
+
+    public static function getProspectosSendInactivityEmailForAdmins()
+    {
+        $setting = Setting::where('setting', 'prospectos_receive_inactivity_notifications')->first();
+
+        return $setting->value;
+    }
+
 }
