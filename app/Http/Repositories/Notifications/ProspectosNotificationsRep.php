@@ -344,7 +344,7 @@ class ProspectosNotificationsRep
 
     public static function updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto_id, $new_inactivity_period, $attempts=NULL)
     {
-        $oportunidad =  Notification::where('source_id', $prospecto_id)
+        $prospecto  =  Notification::where('source_id', $prospecto_id)
                                     ->where('notification_type', 'prospecto')
                                     ->where(function($q) {
                                         $q->where('status', '!=', 'resuelto')

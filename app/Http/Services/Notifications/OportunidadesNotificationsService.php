@@ -42,7 +42,7 @@ class OportunidadesNotificationsService
         $notifications       = OportunidadesNotificationsRep::getExisitingOportunidadesNotifications();
         $oportunidades       = OportunidadesNotificationsService::getOportunidadesToSendNotifications();
         $max_time_inactivity = SettingsService::getOportunidadesMaxTimeInactivity();
-        
+        // print_r($oportunidades); die();
 
         if (count($oportunidades) > 0) {
             //Delete no longer inactive oportunidades from array
@@ -76,21 +76,42 @@ class OportunidadesNotificationsService
                     $inactivity_period                  = UtilService::getHoursDifferenceForTimeStamps($existing_notification->updated_at, date('Y-m-d H:i:s'));
                     $new_inactivity_period              = $existing_notification->inactivity_period + $inactivity_period;
                     $oportunidad['inactivity_period']   = $new_inactivity_period;
-                    if ($inactivity_period > $max_time_inactivity) {
+                    if ($new_inactivity_period > ($max_time_inactivity * ($existing_notification->attempts + 1))) {
                         $oportunidad['attempts']        = $existing_notification->attempts + 1;
                         OportunidadesNotificationsRep::updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad['id_oportunidad'], $oportunidad['inactivity_period'], true);
+                    }else{
+                        $oportunidad['attempts'] = 1;    
                     }
+                    $existing_notification_attempts = $existing_notification->attempts;
                 }else{
                     $oportunidad['attempts']            = 1;
                     $oportunidad['inactivity_period']   = $max_time_inactivity; 
+                    $existing_notification_attempts     = 0;
                     OportunidadesNotificationsRep::createOportunidadNotification($oportunidad);
                 }
                 // print_r($oportunidad);
+                
                 //Get User's settings to check if they want to receive an email notification
                 $user_settings = SettingsUserNotificationsService::getSettingNotificationColaborador($oportunidad['colaborador_id']);
-                if (isset($user_settings->configuraciones->disable_email_notification_oportunidades) AND $user_settings->configuraciones->disable_email_notification_oportunidades == 0) {
-                    if ($inactivity_period > 0 AND $inactivity_period > ($max_time_inactivity * $oportunidad['attempts'])) {
-                        OportunidadesNotificationsService::sendOportunidadNotificationEmail($oportunidad);
+                if (empty($user_settings) OR  (isset($user_settings->configuraciones->disable_email_notification_oportunidades) AND $user_settings->configuraciones->disable_email_notification_oportunidades == 0)) {
+                    if ($oportunidad['inactivity_period'] > 0 AND $oportunidad['inactivity_period'] >= ($max_time_inactivity * $oportunidad['attempts']) AND ($existing_notification_attempts != $oportunidad['attempts'])) {
+                       OportunidadesNotificationsService::sendOportunidadNotificationEmail($oportunidad);
+                    }
+                }
+
+                //Get System settings to check if admins want to receive an email notification
+                $send_emails = SettingsService::getOportunidadesSendInactivityEmailForAdmins();
+                if ($send_emails == "all") {
+                    $admins = OportunidadesNotificationsService::getAdminsToSendOportunidadNotificationEscalation(3);
+                    //  print_r($admins);
+                    if (count($admins) > 0) {
+                        $oportunidad_for_admin = $oportunidad;
+                        foreach ($admins as $key_2 => $admin) {
+                            $oportunidad_for_admin['email'] = $admin['email'];
+                            if ($oportunidad_for_admin['inactivity_period'] > 0 AND $oportunidad_for_admin['inactivity_period'] >= ($max_time_inactivity * $oportunidad_for_admin['attempts']) AND ($existing_notification_attempts != $oportunidad_for_admin['attempts'])) {
+                                OportunidadesNotificationsService::sendOportunidadNotificationEmail($oportunidad_for_admin);
+                            }
+                        }
                     }
                 }
             }
@@ -131,7 +152,7 @@ class OportunidadesNotificationsService
         // print_r($notifications);
         
         if (count($notifications) > 0) {
-            $admins = OportunidadesNotificationsService::getAdminsToSendoportunidadNotificationEscalation(3);
+            $admins = OportunidadesNotificationsService::getAdminsToSendOportunidadNotificationEscalation(3);
             //  print_r($admins);
             if (count($admins) > 0) {
                 foreach ($notifications as $key => $notification) {
@@ -163,7 +184,7 @@ class OportunidadesNotificationsService
         }  
     }
 
-    public static function getAdminsToSendoportunidadNotificationEscalation($role_id)
+    public static function getAdminsToSendOportunidadNotificationEscalation($role_id)
     {
         return UsersRep::getUsersByRoleId($role_id);    
     }
@@ -207,7 +228,7 @@ class OportunidadesNotificationsService
                             if (isset($user_settings->configuraciones->disable_email_notification_oportunidades) AND !$user_settings->configuraciones->disable_email_notification_oportunidades) {
                                 // print_r($oportunidad);
                                 $attempts = ($oportunidad['attempts'] > 0) ? $oportunidad['attempts'] : 1;
-                                if ($inactivity_period > 0 AND $inactivity_period > ($user_settings->configuraciones->oportunidades_max_time_inactivity * $attempts)) {
+                                if ($inactivity_period > 0 AND $inactivity_period > ($hours * $attempts)) {
                                     OportunidadesNotificationsService::sendOportunidadNotificationColaboradorEmail($oportunidad);
                                 }
                                 //First notification

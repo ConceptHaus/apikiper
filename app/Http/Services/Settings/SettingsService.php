@@ -43,5 +43,19 @@ class SettingsService
     {
         return SettingsRep::getMaxEstatusOportunidadMaxCount();
     }
+
+    /*
+    | Inactivity Emails for Admins
+    */
+
+    public static function getOportunidadesSendInactivityEmailForAdmins()
+    {
+        return SettingsRep::getOportunidadesSendInactivityEmailForAdmins();
+    }
+
+    public static function getProspectosSendInactivityEmailForAdmins()
+    {
+        return SettingsRep::getProspectosSendInactivityEmailForAdmins();
+    }
     
 }
