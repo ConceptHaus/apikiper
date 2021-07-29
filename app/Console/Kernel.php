@@ -33,7 +33,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('reminders:send')->everyMinute()
         // ->appendOutputTo(storage_path('logs/examplecommands.log'));
 
-        $schedule->command('inactivity_notifications:send')->hourly()
+        $schedule->command('inactivity_notifications:send')->everyMinute()
         ->appendOutputTo(storage_path('logs/inactivity_notifications.log'));
     }
 
