@@ -187,7 +187,7 @@ class ProspectosNotificationsRep
                             DATEDIFF(now(),n.created_at)as days,
                             CONCAT(p.nombre, ' ', p.apellido) as prospecto
                                 from notifications n
-                                left join oportunidades o on o.id_prospecto = n.source_id
+                                left join oportunidades o on o.id_oportunidad = n.source_id
                                 left join users u on u.id = n.colaborador_id
                                 left join oportunidad_prospecto op on op.id_oportunidad = o.id_oportunidad
                                 left join prospectos p on p.id_prospecto = op.id_prospecto
@@ -203,7 +203,6 @@ class ProspectosNotificationsRep
                                 and (n.status is null
                                     or n.status != 'resuelto')
                                 and  n.colaborador_id = '".$id_user."'
-                                group by n.source_id
                                 order by n.status = 'escalado' desc, n.view = 'no-leido' desc, n.created_at desc, n.view asc
                                 limit ".$limit."");
     }
