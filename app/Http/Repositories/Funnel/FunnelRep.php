@@ -249,7 +249,7 @@ class FunnelRep
             foreach($oportunidades as $key => $oportunidad){
                 $oportunidades[$key]->effectAllowed = "move";
                 $oportunidades[$key]->disable = false;
-                $oportunidades[$key]->value = "$ ".number_format($oportunidades[$key]->valor, 2);
+                $oportunidades[$key]->value = "$ ".number_format($oportunidades[$key]->valor * $oportunidades[$key]->meses, 2);
                 $oportunidades[$key]->valor = $oportunidades[$key]->valor;
             }
         }
@@ -272,7 +272,7 @@ class FunnelRep
             foreach($oportunidades as $key => $oportunidad){
                 $oportunidades[$key]->effectAllowed = "move";
                 $oportunidades[$key]->disable = false;
-                $oportunidades[$key]->value = "$ ".number_format($oportunidades[$key]->valor, 2);
+                $oportunidades[$key]->value = "$ ".number_format($oportunidades[$key]->valor * $oportunidades[$key]->meses, 2);
                 $oportunidades[$key]->valor = $oportunidades[$key]->valor;
             }
         }
@@ -358,7 +358,7 @@ class FunnelRep
         $total = 0;
         if(!empty($oportunidades)){
             foreach ($oportunidades as $key => $oportunidad) {
-               $total = $total + $oportunidad->valor;
+               $total = $total + ($oportunidad->valor * $oportunidad->meses);
             }    
         }
         if($total > 0){
