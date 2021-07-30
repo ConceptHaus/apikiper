@@ -333,3 +333,10 @@ Route::prefix('/v1/estadisticas')->group(function(){
         Route::post('/mostEffectiveProspects','Statistics\StatisticsController@mostEffectiveProspects');
     });
 });
+
+Route::prefix('/v1/one-signal')->group(function(){
+    // Route::middleware(['auth','cors'])->group(function(){
+        Route::post('/sign-up','OneSignal\OneSignalController@signUp');
+        Route::post('/sign-off','OneSignal\OneSignalController@signOff');
+    // });
+});
