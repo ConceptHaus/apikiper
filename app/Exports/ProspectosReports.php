@@ -82,42 +82,42 @@ class ProspectosReports implements WithHeadings,FromCollection{
                 })
                 ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores) {
                     $query->when($correos,  function ($query) use ($correos) {
-                        $query->orWhere(function ($query) use ($correos) {
+                        $query->where(function ($query) use ($correos) {
                             $query->whereIn('prospectos.correo', $correos);
                         });     
                     });
                     $query->when($nombres,  function ($query) use ($nombres) {
-                        $query->orWhere(function ($query) use ($nombres) {
+                        $query->where(function ($query) use ($nombres) {
                             $query->whereIn('prospectos.id_prospecto', $nombres);
                         });
                     });
                     $query->when($telefonos,  function ($query) use ($telefonos) {
-                        $query->orWhere(function ($query) use ($telefonos) {
+                        $query->where(function ($query) use ($telefonos) {
                             $query->whereIn('detalle_prospecto.id_prospecto', $telefonos);
                         });
                     });
                     $query->when($estatus,  function ($query) use ($estatus) {
-                        $query->orWhere(function ($query) use ($estatus) {
+                        $query->where(function ($query) use ($estatus) {
                             $query->whereIn('cat_status_prospecto.id_cat_status_prospecto', $estatus);
                         });
                     });
                     $query->when($fuente,  function ($query) use ($fuente) {
-                        $query->orWhere(function ($query) use ($fuente) {
+                        $query->where(function ($query) use ($fuente) {
                             $query->whereIn('cat_fuentes.nombre', $fuente);
                         });
                     });
                     $query->when($etiqueta,  function ($query) use ($etiqueta) {
-                        $query->orWhere(function ($query) use ($etiqueta) {
+                        $query->where(function ($query) use ($etiqueta) {
                             $query->whereIn('etiquetas.id_etiqueta', $etiqueta);
                         });
                     });
                     $query->when($colaboradores,  function ($query) use ($colaboradores) {
-                        $query->orWhere(function ($query) use ($colaboradores) {
+                        $query->where(function ($query) use ($colaboradores) {
                             $query->whereIn('colaborador_prospecto.id_colaborador', $colaboradores);
                         });
                     });
                     $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
-                        $query->orWhere(function ($query) use ($fechaInicio, $fechaFin) {
+                        $query->where(function ($query) use ($fechaInicio, $fechaFin) {
                             $query->whereBetween('prospectos.created_at', [$fechaInicio." 00:00:00", $fechaFin." 23:59:59"]);
                         });
                     });
@@ -168,42 +168,42 @@ class ProspectosReports implements WithHeadings,FromCollection{
                 })
                 ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores) {
                     $query->when($correos,  function ($query) use ($correos) {
-                        $query->orWhere(function ($query) use ($correos) {
+                        $query->where(function ($query) use ($correos) {
                             $query->whereIn('prospectos.correo', $correos);
                         });     
                     });
                     $query->when($nombres,  function ($query) use ($nombres) {
-                        $query->orWhere(function ($query) use ($nombres) {
+                        $query->where(function ($query) use ($nombres) {
                             $query->whereIn('prospectos.id_prospecto', $nombres);
                         });
                     });
                     $query->when($telefonos,  function ($query) use ($telefonos) {
-                        $query->orWhere(function ($query) use ($telefonos) {
+                        $query->where(function ($query) use ($telefonos) {
                             $query->whereIn('detalle_prospecto.id_prospecto', $telefonos);
                         });
                     });
                     $query->when($estatus,  function ($query) use ($estatus) {
-                        $query->orWhere(function ($query) use ($estatus) {
+                        $query->where(function ($query) use ($estatus) {
                             $query->whereIn('cat_status_prospecto.id_cat_status_prospecto', $estatus);
                         });
                     });
                     $query->when($fuente,  function ($query) use ($fuente) {
-                        $query->orWhere(function ($query) use ($fuente) {
+                        $query->where(function ($query) use ($fuente) {
                             $query->whereIn('cat_fuentes.nombre', $fuente);
                         });
                     });
                     $query->when($etiqueta,  function ($query) use ($etiqueta) {
-                        $query->orWhere(function ($query) use ($etiqueta) {
+                        $query->where(function ($query) use ($etiqueta) {
                             $query->whereIn('etiquetas.id_etiqueta', $etiqueta);
                         });
                     });
                     $query->when($colaboradores,  function ($query) use ($colaboradores) {
-                        $query->orWhere(function ($query) use ($colaboradores) {
+                        $query->where(function ($query) use ($colaboradores) {
                             $query->whereIn('colaborador_prospecto.id_colaborador', $colaboradores);
                         });
                     });
                     $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
-                        $query->orWhere(function ($query) use ($fechaInicio, $fechaFin) {
+                        $query->where(function ($query) use ($fechaInicio, $fechaFin) {
                             $query->whereBetween('prospectos.created_at', [$fechaInicio." 00:00:00", $fechaFin." 23:59:59"]);
                         });
                     });
@@ -256,37 +256,37 @@ class ProspectosReports implements WithHeadings,FromCollection{
                 })
                 ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
                     $query->when($correos,  function ($query) use ($correos) {
-                        $query->orWhere(function ($query) use ($correos) {
+                        $query->where(function ($query) use ($correos) {
                             $query->whereIn('prospectos.correo', $correos);
                         });     
                     });
                     $query->when($nombres,  function ($query) use ($nombres) {
-                        $query->orWhere(function ($query) use ($nombres) {
+                        $query->where(function ($query) use ($nombres) {
                             $query->whereIn('prospectos.id_prospecto', $nombres);
                         });
                     });
                     $query->when($telefonos,  function ($query) use ($telefonos) {
-                        $query->orWhere(function ($query) use ($telefonos) {
+                        $query->where(function ($query) use ($telefonos) {
                             $query->whereIn('detalle_prospecto.id_prospecto', $telefonos);
                         });
                     });
                     $query->when($estatus,  function ($query) use ($estatus) {
-                        $query->orWhere(function ($query) use ($estatus) {
+                        $query->where(function ($query) use ($estatus) {
                             $query->whereIn('cat_status_prospecto.id_cat_status_prospecto', $estatus);
                         });
                     });
                     $query->when($fuente,  function ($query) use ($fuente) {
-                        $query->orWhere(function ($query) use ($fuente) {
+                        $query->where(function ($query) use ($fuente) {
                             $query->whereIn('cat_fuentes.nombre', $fuente);
                         });
                     });
                     $query->when($etiqueta,  function ($query) use ($etiqueta) {
-                        $query->orWhere(function ($query) use ($etiqueta) {
+                        $query->where(function ($query) use ($etiqueta) {
                             $query->whereIn('etiquetas.id_etiqueta', $etiqueta);
                         });
                     });
                     $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
-                        $query->orWhere(function ($query) use ($fechaInicio, $fechaFin) {
+                        $query->where(function ($query) use ($fechaInicio, $fechaFin) {
                             $query->whereBetween('prospectos.created_at', [$fechaInicio." 00:00:00", $fechaFin." 23:59:59"]);
                         });
                     });
