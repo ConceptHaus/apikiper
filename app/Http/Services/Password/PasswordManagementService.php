@@ -8,6 +8,8 @@ use App\Http\Services\Users\UserService;
 use App\Http\Services\Password\PasswordRecoveryService;
 use App\Http\Exceptions\Auth\UserNotFoundException;
 use App\Http\Exceptions\Auth\VerificationTokenNotFoundException;
+use App\Http\Services\Password\PasswordVerificationTokenService;
+use App\Http\Services\Password\PasswordRecoverySender;
 
 class PasswordManagementService
 {
@@ -28,17 +30,17 @@ class PasswordManagementService
         $this->passwordRecoverySender = $passwordRecoverySender;
     }
 
-    public generatePasswordRecoveryToken(String email) throws AccountNotFoundException {
-        $user = $this->userService->findByEmail(email);
+    public function generatePasswordRecoveryToken(String $email) {
+        $user = $this->userService->findByEmail($email);
         if($user == null) 
             throw new UserNotFoundException("forgotPassword.error.user.notFound");
 
-        $passwordRecovery = $this->passwordVerificationTokenService.createPasswordRecovery($user);
-        $this->passwordRecoverySender->sendPasswordRecovery($user->email, $passwordRecovery->veritifationToken);
+        $passwordRecovery = $this->passwordVerificationTokenService->createPasswordRecovery($user);
+        $this->passwordRecoverySender->sendPasswordRecovery($user->email, $passwordRecovery->verificationToken);
     }
 
-    public changePasswordByToken($verificationToken, $password){
-        $passwordRecovery = $this->passwordRecoveryService->findByToken(verificationToken);
+    public function changePasswordByToken($verificationToken, $password){
+        $passwordRecovery = $this->passwordRecoveryService->findByToken($verificationToken);
         if($passwordRecovery == null) 
             throw new VerificationTokenNotFoundException("forgotPassword.error.token.notFound");
         

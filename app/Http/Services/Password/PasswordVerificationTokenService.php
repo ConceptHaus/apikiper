@@ -14,13 +14,13 @@ class PasswordVerificationTokenService
         $this->passwordRecoveryService = $passwordRecoveryService;
     }
 
-    public createPasswordRecovery($user) {
-        $passwordRecovery = $this->passwordRecoveryService.findByUser($user);
+    public function createPasswordRecovery($user) {
+        $passwordRecovery = $this->passwordRecoveryService->findByUser($user);
         if ($passwordRecovery == null) {
             $passwordRecovery = new PasswordRecovery();
-            $passwordRecovery->user_id($user->id);
+            $passwordRecovery->user_id = $user->id;
         }
-        $passwordRecovery.setVerificationToken(str_random(16));
+        $passwordRecovery->verificationToken = str_random(16);
         return $this->passwordRecoveryService->save($passwordRecovery);
     }
 

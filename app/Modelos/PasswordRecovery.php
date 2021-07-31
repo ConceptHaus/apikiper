@@ -3,16 +3,14 @@
 namespace App\Modelos;
 
 use Illuminate\Database\Eloquent\Model;
-use Alsofronie\Uuid\UuidModelTrait;
 
-class PasswordRecovery extends Model{
-    use UuidModelTrait;
-
-    protected $table = 'password_recovery';
+class PasswordRecovery extends Model
+{
+    protected $table = 'password_recoveries';
     protected $primaryKey = 'id';
 
     protected $fillable = [
         'user_id',
-        'veritifationToken'
+        'verificationToken'
     ];
 }

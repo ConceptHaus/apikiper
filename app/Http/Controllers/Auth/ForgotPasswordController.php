@@ -18,7 +18,7 @@ class ForgotPasswordController extends Controller
         $this->passwordManagementService = $passwordManagementService;
     }
 
-    public generatePasswordRecoveryToken(Request $request) {
+    public function generatePasswordRecoveryToken(Request $request) {
         try {
 
             $validator = Validator::make($request->all(),['email' => 'required|email']);
@@ -36,7 +36,7 @@ class ForgotPasswordController extends Controller
 
     }
 
-    public changePasswordByToken(Request $request) {
+    public function changePasswordByToken(Request $request) {
         try {
 
             $validator = Validator::make($request->all(),['email' => 'required|email', 'token' => 'required|string']);
