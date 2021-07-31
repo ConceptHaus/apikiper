@@ -33,9 +33,10 @@ Route::prefix('/v1/users')->group(function(){
         Route::middleware(['api','cors'])->group(function(){
             Route::post('/login', 'Auth\LoginController@login');
             Route::get('/activate/{token}','Auth\UserController@activateUser');
-            Route::post('/password','Auth\ResetPasswordController@resetPassword');
             Route::get('/onboarding','Auth\UserController@onBoarding');
             Route::post('/create','Auth\UserController@createUser');
+            Route::post('/password/forget', 'Auth\ForgotPasswordController@generatePasswordRecoveryToken');
+            Route::post('/password/recover', 'Auth\ForgotPasswordController@changePasswordByToken');
         });
 
         Route::middleware(['auth','cors'])->group(function(){

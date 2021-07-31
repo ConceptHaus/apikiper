@@ -14,16 +14,20 @@ class UserService
         $this->userRep = $rep;
     }
 
-    public function getUsersByRoleId($role_id){
-        return $this->userRep->getUsersByRoleId($role_id);
+    public function save($user){
+        $this->userRep->save($user);
     }
 
     public function findById($user_id){
         return $this->userRep->findById($user_id);
     }
 
-    public function save($user){
-        $this->userRep->save($user);
+    public function getUsersByRoleId($role_id){
+        return $this->userRep->getUsersByRoleId($role_id);
+    }
+
+    public function findByEmail($email){
+        return $this->userRep->findByEmail($email);
     }
 
 }
