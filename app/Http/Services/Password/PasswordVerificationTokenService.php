@@ -20,7 +20,7 @@ class PasswordVerificationTokenService
             $passwordRecovery = new PasswordRecovery();
             $passwordRecovery->user_id($user->id);
         }
-        $passwordRecovery.setVerificationToken(str_random(8));
+        $passwordRecovery.setVerificationToken(str_random(16));
         return $this->passwordRecoveryService->save($passwordRecovery);
     }
 

@@ -9,6 +9,7 @@ class PasswordRecoverySender{
 
     public sendPasswordRecovery(email, token){
         /*
+        TODO - Integrar envio de correo
         emailService.sendMessage(
             ixMessages.at(request, "account.password.recovery.subject." + platformId),
             this.buildHtmlContent(activationLink, platformId, request),
