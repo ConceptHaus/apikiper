@@ -78,6 +78,7 @@ class OportunidadesNotificationsService
                     $oportunidad['inactivity_period']   = $new_inactivity_period;
                     if ($new_inactivity_period > ($max_time_inactivity * ($existing_notification->attempts + 1))) {
                         $oportunidad['attempts']        = $existing_notification->attempts + 1;
+                        //Send One Signal Notification
                         OportunidadesNotificationsRep::updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad['id_oportunidad'], $oportunidad['inactivity_period'], true);
                     }else{
                         $oportunidad['attempts'] = 1;    
@@ -87,6 +88,7 @@ class OportunidadesNotificationsService
                     $oportunidad['attempts']            = 1;
                     $oportunidad['inactivity_period']   = $max_time_inactivity; 
                     $existing_notification_attempts     = 0;
+                    //Send One Signal Notification
                     OportunidadesNotificationsRep::createOportunidadNotification($oportunidad);
                 }
                 // print_r($oportunidad);
@@ -218,10 +220,12 @@ class OportunidadesNotificationsService
                                 $new_inactivity_period              = $existing_notification->inactivity_period + $inactivity_period;
                                 $oportunidad['inactivity_period']   = $new_inactivity_period;
                                 $oportunidad['attempts']            = $existing_notification->attempts;
+                                //Send One Signal Notification
                                 OportunidadesNotificationsRep::updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad['id_oportunidad'], $new_inactivity_period);
                             }else{
                                 $oportunidad['attempts']            = 0;
                                 $oportunidad['inactivity_period']   = $hours; 
+                                //Send One Signal Notification
                                 OportunidadesNotificationsRep::createOportunidadNotification($oportunidad);
                             }
                             //Email notification

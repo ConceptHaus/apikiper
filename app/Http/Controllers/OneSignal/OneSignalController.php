@@ -18,4 +18,9 @@ class OneSignalController extends Controller
     {
         return OneSignalService::signOff($request->user_id, $request->player_id);
     }
+
+    public function sendNotification(Request $request){
+        return OneSignalService::sendNotification($request->user_id, $request->message);
+    }
+
 }
