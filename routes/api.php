@@ -33,7 +33,7 @@ Route::prefix('/v1/users')->group(function(){
         Route::middleware(['api','cors'])->group(function(){
             Route::post('/login', 'Auth\LoginController@login');
             Route::get('/activate/{token}','Auth\UserController@activateUser');
-            Route::post('/password','Auth\UserController@setPassword');
+            Route::post('/password','Auth\ResetPasswordController@resetPassword');
             Route::get('/onboarding','Auth\UserController@onBoarding');
             Route::post('/create','Auth\UserController@createUser');
         });
@@ -330,13 +330,14 @@ Route::prefix('/v1/estadisticas')->group(function(){
         Route::post('/prospectos-cerrados','Statistics\StatisticsController@ProspectosCerradosByColaborador');
         Route::post('/prospectos-eficiencia','Statistics\StatisticsController@getProspectosTotal');
         Route::post('/prospectos-origen','Statistics\StatisticsController@getProspectosByFuente');
-        Route::post('/mostEffectiveProspects','Statistics\StatisticsController@mostEffectiveProspects');
+        Route::post('/mostEffectiveProspects','Statistics\StatisticsController@mostEffectiveProspects');   
     });
 });
 
 Route::prefix('/v1/one-signal')->group(function(){
-    // Route::middleware(['auth','cors'])->group(function(){
+    Route::middleware(['auth','cors'])->group(function(){
         Route::post('/sign-up','OneSignal\OneSignalController@signUp');
         Route::post('/sign-off','OneSignal\OneSignalController@signOff');
-    // });
+        Route::post('/send-notification','OneSignal\OneSignalController@sendNotification');
+    });
 });
