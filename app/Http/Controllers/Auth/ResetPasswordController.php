@@ -10,8 +10,7 @@ use App\Http\Services\Auth\AuthService;
 use App\Http\Services\Users\UserService;
 use Illuminate\Support\Facades\Validator;
 
-class ResetPasswordController extends Controller
-{
+class ResetPasswordController extends Controller{
     
     public $userService;
     public $authService;
@@ -27,7 +26,6 @@ class ResetPasswordController extends Controller
     public function resetPassword(Request $request){
 
         $validator = Validator::make($request->all(),$this->rules());
-
         if ($validator->fails()) {
             return response()->json([
                 'message'=>$validator->errors()->toArray(),
