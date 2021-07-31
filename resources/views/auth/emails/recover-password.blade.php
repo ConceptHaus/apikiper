@@ -46,9 +46,9 @@
               </tr>
               <tr>
                 <td>
-                  <a href="" style="font-size:14px;font-weight:bold;color:#FFF;padding:10px 30px; display:inline-block;background:#000;text-decoration:none;border-radius:4px;">
+                  <span style="font-size:14px;font-weight:bold;color:#FFF;padding:10px 30px; display:inline-block;background:#000;text-decoration:none;border-radius:4px;">
                   {{$msg['token']}}
-                  </a>
+                  </span>
                 </td>
               </tr>
               <tr>

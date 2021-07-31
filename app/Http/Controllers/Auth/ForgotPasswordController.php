@@ -39,7 +39,7 @@ class ForgotPasswordController extends Controller
     public function changePasswordByToken(Request $request) {
         try {
 
-            $validator = Validator::make($request->all(),['email' => 'required|email', 'token' => 'required|string']);
+            $validator = Validator::make($request->all(),['password' => 'required|string|min:8|max:20', 'token' => 'required|string']);
             if ($validator->fails()) 
                 return response()->json(['message'=>$validator->errors()->toArray()],400);
             $this->passwordManagementService->changePasswordByToken($request->token, $request->password);

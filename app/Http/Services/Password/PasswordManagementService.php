@@ -32,7 +32,6 @@ class PasswordManagementService
 
     public function generatePasswordRecoveryToken(String $email) {
         $user = $this->userService->findByEmail($email);
-        $passwordRecovery = new PasswordRecovery;
         if($user == null) 
             throw new UserNotFoundException("forgotPassword.error.user.notFound");
 
