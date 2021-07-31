@@ -28,12 +28,13 @@ class PasswordManagementService
         $this->userService = $userService;
         $this->passwordVerificationTokenService = $passwordVerificationTokenService;
         $this->passwordRecoverySender = $passwordRecoverySender;
+        $this->passwordRecoveryService = $passwordRecoveryService;
     }
 
     public function generatePasswordRecoveryToken(String $email) {
         $user = $this->userService->findByEmail($email);
         if($user == null) 
-            throw new UserNotFoundException("forgotPassword.error.user.notFound");
+            throw new UserNotFoundException();
 
         $passwordRecovery = $this->passwordVerificationTokenService->createPasswordRecovery($user);
         
@@ -43,13 +44,13 @@ class PasswordManagementService
     public function changePasswordByToken($verificationToken, $password){
         $passwordRecovery = $this->passwordRecoveryService->findByToken($verificationToken);
         if($passwordRecovery == null) 
-            throw new VerificationTokenNotFoundException("forgotPassword.error.token.notFound");
+            throw new VerificationTokenNotFoundException();
         
-        $user = $userService->findById($passwordRecovery->user_id);
+        $user = $this->userService->findById($passwordRecovery->user_id);
         $user->password = bcrypt($password);
-        $userService->save($user);
+        $this->userService->save($user);
 
-        $passwordRecoveryService->delete($passwordRecovery);
+        $this->passwordRecoveryService->delete($passwordRecovery);
     }
 
 }

@@ -19,7 +19,7 @@ class PasswordRecoveryRep{
         return PasswordRecovery::where('user_id', '=', $user->id)->first();
     }
 
-    public function findByUserToken($token){
+    public function findByToken($token){
         return PasswordRecovery::where('verificationToken', '=', $token)->first();
     }
 

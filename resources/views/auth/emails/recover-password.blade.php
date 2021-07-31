@@ -37,7 +37,7 @@
               <tr>
                 <td>
                   <p style="font-size:14px;color:#000">
-                    La clave para recuperar tu contraseña es </b>.
+                    La clave para recuperar tu contraseña es: </b>.
                   </p>
                 </td>
               </tr>

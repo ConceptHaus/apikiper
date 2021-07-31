@@ -28,7 +28,7 @@ class ForgotPasswordController extends Controller
             return response()->json([],200);
 
         } catch (UserNotFoundException $ex) {
-            return response()->json(['message'=>$ex->message],400);
+            return response()->json(['message'=>"forgotPassword.error.user.notFound"],400);
 
         } catch (Exception $ex) {
             return response()->json([],500);
@@ -46,7 +46,7 @@ class ForgotPasswordController extends Controller
             return response()->json([],200);
 
         } catch (VerificationTokenNotFoundException $ex) {
-            return response()->json(['message'=>$ex->message],400);
+            return response()->json(['message'=>"forgotPassword.error.token.notFound"],400);
 
         } catch (Exception $ex) {
             return response()->json([],500);
