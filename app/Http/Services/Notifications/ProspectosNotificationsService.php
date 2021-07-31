@@ -5,6 +5,7 @@ use App\Http\Repositories\Users\UsersRep;
 use App\Http\Services\Settings\SettingsService;
 use App\Http\Services\UtilService;
 use App\Http\Services\SettingsUserNotifications\SettingsUserNotificationsService;
+use App\Http\Services\OneSignal\OneSignalService;
 use Mailgun;
 
 use App\Http\DTOs\Settings\SettingsDTO;
@@ -83,7 +84,7 @@ class ProspectosNotificationsService
                     $prospecto['inactivity_period'] = $new_inactivity_period;
                     if ($new_inactivity_period > ($max_time_inactivity  * ($existing_notification->attempts + 1))) {
                         $prospecto['attempts']      = $existing_notification->attempts + 1;
-                        //Send One Signal Notification
+                        OneSignalService::sendNotification($prospecto['colaborador_id'], 'Prospecto '.$prospecto['nombre_prospecto'].' sin actividad');
                         ProspectosNotificationsRep::updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto['id_prospecto'], $prospecto['inactivity_period'], true);
                     }else{
                         $prospecto['attempts'] = 1;    
@@ -93,7 +94,7 @@ class ProspectosNotificationsService
                     $prospecto['attempts']            = 1;
                     $prospecto['inactivity_period']   = $max_time_inactivity;
                     $existing_notification_attempts   = 0;
-                    //Send One Signal Notification
+                    OneSignalService::sendNotification($prospecto['colaborador_id'], 'Prospecto '.$prospecto['nombre_prospecto'].' sin actividad');
                     ProspectosNotificationsRep::createProspectoNotification($prospecto);
                 }
 
@@ -333,12 +334,12 @@ class ProspectosNotificationsService
                                 $prospecto['inactivity_period'] = $new_inactivity_period;
                                 $prospecto['attempts']          = $existing_notification->attempts;
                                 // print_r($prospecto); die();
-                                //Send One Signal Notification
+                                OneSignalService::sendNotification($prospecto['colaborador_id'], 'Prospecto '.$prospecto['nombre_prospecto'].' sin actividad');
                                 ProspectosNotificationsRep::updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto['id_prospecto'], $new_inactivity_period);
                             }else{
                                 $prospecto['attempts']            = 0;
                                 $prospecto['inactivity_period']   = $hours; 
-                                //Send One Signal Notification
+                                OneSignalService::sendNotification($prospecto['colaborador_id'], 'Prospecto '.$prospecto['nombre_prospecto'].' sin actividad');
                                 ProspectosNotificationsRep::createProspectoNotification($prospecto);
                             }
                             //Email notification

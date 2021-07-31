@@ -5,6 +5,7 @@ use App\Http\Repositories\Users\UsersRep;
 use App\Http\Services\Settings\SettingsService;
 use App\Http\Services\UtilService;
 use App\Http\Services\SettingsUserNotifications\SettingsUserNotificationsService;
+use App\Http\Services\OneSignal\OneSignalService;
 use Mailgun;
 
 class OportunidadesNotificationsService
@@ -78,7 +79,7 @@ class OportunidadesNotificationsService
                     $oportunidad['inactivity_period']   = $new_inactivity_period;
                     if ($new_inactivity_period > ($max_time_inactivity * ($existing_notification->attempts + 1))) {
                         $oportunidad['attempts']        = $existing_notification->attempts + 1;
-                        //Send One Signal Notification
+                        OneSignalService::sendNotification($oportunidad['colaborador_id'], 'Oportunidad '.$oportunidad['nombre_oportunidad'].' sin actividad');
                         OportunidadesNotificationsRep::updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad['id_oportunidad'], $oportunidad['inactivity_period'], true);
                     }else{
                         $oportunidad['attempts'] = 1;    
@@ -88,7 +89,7 @@ class OportunidadesNotificationsService
                     $oportunidad['attempts']            = 1;
                     $oportunidad['inactivity_period']   = $max_time_inactivity; 
                     $existing_notification_attempts     = 0;
-                    //Send One Signal Notification
+                    OneSignalService::sendNotification($oportunidad['colaborador_id'], 'Oportunidad '.$oportunidad['nombre_oportunidad'].' sin actividad');
                     OportunidadesNotificationsRep::createOportunidadNotification($oportunidad);
                 }
                 // print_r($oportunidad);
@@ -220,14 +221,15 @@ class OportunidadesNotificationsService
                                 $new_inactivity_period              = $existing_notification->inactivity_period + $inactivity_period;
                                 $oportunidad['inactivity_period']   = $new_inactivity_period;
                                 $oportunidad['attempts']            = $existing_notification->attempts;
-                                //Send One Signal Notification
+                                OneSignalService::sendNotification($oportunidad['colaborador_id'], 'Oportunidad '.$oportunidad['nombre_oportunidad'].' sin actividad');
                                 OportunidadesNotificationsRep::updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad['id_oportunidad'], $new_inactivity_period);
                             }else{
                                 $oportunidad['attempts']            = 0;
                                 $oportunidad['inactivity_period']   = $hours; 
-                                //Send One Signal Notification
+                                OneSignalService::sendNotification($oportunidad['colaborador_id'], 'Oportunidad '.$oportunidad['nombre_oportunidad'].' sin actividad');
                                 OportunidadesNotificationsRep::createOportunidadNotification($oportunidad);
                             }
+                            
                             //Email notification
                             if (isset($user_settings->configuraciones->disable_email_notification_oportunidades) AND !$user_settings->configuraciones->disable_email_notification_oportunidades) {
                                 // print_r($oportunidad);
