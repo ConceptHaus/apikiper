@@ -9,8 +9,8 @@ Instalación
 5. Ejecutar migraciones -> php artisan migrate
 6. Si se trabajará con una base de datos nueva y sin registros, entonces ejecutar seeders -> php artisan db:seed
 7. Si se trabajará con una base de datos antigua, entonces ejecutar seeders -> php artisan db:seed --class RolesTableSeeder.php
-7. Si se trabajará con una base de datos antigua, entonces ejecutar seeders -> php artisan db:seed --class SettingsTableSeeder.php
-8. Ajustar dominios en servidor local para que la API pueda responder
+8. Si se trabajará con una base de datos antigua, entonces ejecutar seguidamente al paso 7 -> php artisan db:seed --class SettingsTableSeeder
+9. Ajustar dominios en servidor local para que la API pueda responder
 
 Crontab
 
