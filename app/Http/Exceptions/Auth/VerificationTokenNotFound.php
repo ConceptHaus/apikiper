@@ -2,7 +2,7 @@
 
 namespace App\Http\Exceptions\Auth;
 
-class UserNotFoundException extends Exception{
+class VerificationTokenNotFoundException extends Exception{
 
     public function __construct($message) {
         parent::__construct($message, 0);

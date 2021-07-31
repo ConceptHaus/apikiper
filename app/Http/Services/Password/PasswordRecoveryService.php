@@ -15,15 +15,19 @@ class PasswordRecoveryService
     }
 
     public function save($model){
-        $this->rep->save($model);
+        return $this->rep->save($model);
     }
 
     public function delete($model){
         $this->rep->delete($model);
     }
 
-    public function findByUserId($user_id){
-        return $this->rep->findByUserId($user_id);
+    public function findByUser($user_id){
+        return $this->rep->findByUser($user_id);
+    }
+
+    public function findByToken($token){
+        return $this->rep->findByToken($token);
     }
 
 }
