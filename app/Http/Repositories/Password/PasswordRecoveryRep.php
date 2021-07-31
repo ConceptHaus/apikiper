@@ -8,18 +8,19 @@ class PasswordRecoveryRep{
 
     public function save($model){
         $model->save();
+        return $model;
     }
 
     public function delete($model){
         $model->delete();
     }
 
-    public function findByUser($user_id){
-        return PasswordRecovery::where('user_id', '=', $user_id)->get()->first();
+    public function findByUser($user){
+        return PasswordRecovery::where('user_id', '=', $user->id)->first();
     }
 
     public function findByUserToken($token){
-        return PasswordRecovery::where('verificationToken', '=', $token)->get()->first();
+        return PasswordRecovery::where('verificationToken', '=', $token)->first();
     }
 
 }

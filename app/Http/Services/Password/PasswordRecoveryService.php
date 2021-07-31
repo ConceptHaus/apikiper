@@ -22,8 +22,8 @@ class PasswordRecoveryService
         $this->rep->delete($model);
     }
 
-    public function findByUser($user_id){
-        return $this->rep->findByUser($user_id);
+    public function findByUser($user){
+        return $this->rep->findByUser($user);
     }
 
     public function findByToken($token){
