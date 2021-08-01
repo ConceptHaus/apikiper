@@ -59,11 +59,10 @@ class OneSignalService
         }
     }
 
-    public static function sendNotification($user_id, $message)
+    public static function sendNotification($user_id, $title, $message, $notification_type, $data)
     {
         $one_signal_user = UserOneSignal::where('user_id', $user_id)->get();
         
-
         if (count($one_signal_user) > 0) {
             
             $player_ids  = array();
@@ -77,13 +76,14 @@ class OneSignalService
                 "es" => $message,
                 );
             
+                //TODO msepulveda - poner datos en enviroment
             $fields = array(
                 'app_id' => "7eaa665b-101e-40b1-9594-2fc40887c776",
                 // 'app_id' => env("ONE_SIGNAL_APP_ID"),
-                // 'include_player_ids' => array("bf1030ae-7363-4a2b-ba6b-bff4dbaa9099", "ff5b2f52-8775-4ae3-97ef-9fefec0482a9", "3841b471-33f8-4aa0-bd5a-dce69a2b5f54", "0bb38922-d83f-4cfd-80f9-56751e91c579", "76970a3f-ff99-449f-b88c-68e1b6822e47"),
                 'include_player_ids' => $player_ids,
-                'data' => array("foo" => "bar"),
-                'contents' => $content
+                'headings' => $title,
+                'contents' => $content,
+                'data' => array("type" => $notification_type, "data" => $data)             
             );
             
             $fields = json_encode($fields);
