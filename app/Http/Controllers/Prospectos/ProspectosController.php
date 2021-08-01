@@ -45,6 +45,10 @@ use App\Imports\ProspectosImport;
 use App\Exports\ProspectosReports;
 use Excel;
 
+use App\Http\Enums\OldRole;
+use App\Http\Services\Users\UserService;
+use App\Http\Services\Roles\RolesService;
+use App\Modelos\Role;
 
 use DB;
 use Mail;
@@ -52,6 +56,18 @@ use Mailgun;
 use Carbon\Carbon;
 class ProspectosController extends Controller
 {
+
+    private $userServ;
+    private $roleServ;
+
+    public function __construct(
+            UserService $userService,
+            RolesService $roleService
+        ){
+        $this->userServ = $userService;
+        $this->roleServ = $roleService;
+    }
+
     public function registerProspecto(Request $request){
         // return $request->input();
         $auth = $this->guard()->user();
@@ -976,6 +992,12 @@ class ProspectosController extends Controller
         $fechaFin = json_decode($fechaFin);
         $colaboradores = json_decode($colaboradores);
         $busqueda = json_decode($busqueda);
+
+        $usuario = $this->userServ->findById($id_user);
+        $roles = $this->roleServ->findById($usuario->role_id);
+
+        $permisos = json_decode($roles->acciones);
+      
         
         $date = Carbon::now();
         $headings = [
@@ -992,18 +1014,22 @@ class ProspectosController extends Controller
             'Empresa'
         ];
 
-        if($rol == 1){
+        if($rol == OldRole::POLANCO){
             $desarrollo='polanco';
 
-        }else if($rol == 2){
+        }else if($rol == OldRole::NAPOLES){
             $desarrollo='napoles';
 
-        }else if($role_id >= 3){
+        }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
             $desarrollo = 'all';
 
-        }else {
+        }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
             $desarrollo = 'user';
             
+        } else {
+            return response()->json([
+                'message'=>'No tienes permiso',
+                'error'=>true],401);
         }
         return (new ProspectosReports($headings,$desarrollo,$id_user, $correos, $nombre, $telefono, $status, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $busqueda))->download("{$date}_{$desarrollo}_reporte.xlsx");
     }
