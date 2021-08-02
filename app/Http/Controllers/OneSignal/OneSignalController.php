@@ -19,6 +19,7 @@ class OneSignalController extends Controller
    
     public function signUp(Request $request)
     {
+        // return $this->authService->getUserAuthInfo();
         return OneSignalService::signUp($this->authService->getCurrentUserId(), $request->player_id);
     }
 

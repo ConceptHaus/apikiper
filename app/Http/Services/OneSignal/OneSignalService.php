@@ -75,13 +75,18 @@ class OneSignalService
                 "en" => $message,
                 "es" => $message,
                 );
+
+            $heading = array(
+                "en" => $title,
+                "es" => $title,
+                );
             
                 //TODO msepulveda - poner datos en enviroment
             $fields = array(
                 'app_id' => "7eaa665b-101e-40b1-9594-2fc40887c776",
                 // 'app_id' => env("ONE_SIGNAL_APP_ID"),
                 'include_player_ids' => $player_ids,
-                'headings' => $title,
+                'headings' => $heading,
                 'contents' => $content,
                 'data' => array("type" => $notification_type, "data" => $data)             
             );
