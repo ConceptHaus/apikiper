@@ -2542,7 +2542,7 @@ class DataViewsController extends Controller
 
     public function oportunidades_por_periodo_por_status($inicio, $fin, $status, $auth)
     {
-        if($auth->role_id >= 3){
+        if($auth->role_id >= 2){
             return DB::table('oportunidades')
             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
             ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
@@ -2573,7 +2573,7 @@ class DataViewsController extends Controller
 
     public function ingresos_por_periodo_por_status($inicio, $fin, $status,$auth)
     {   
-        if($auth->role_id >= 3){
+        if($auth->role_id >= 2){
             $ingresos = DB::table('oportunidades')
                 ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
                 ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
@@ -2611,7 +2611,7 @@ class DataViewsController extends Controller
 
     public function origen_por_periodo($inicio, $fin,$auth)
     {
-        if($auth->role_id >= 3){
+        if($auth->role_id >= 2){
             return DB::table('prospectos')
                 ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                 ->wherenull('prospectos.deleted_at')
@@ -2744,7 +2744,7 @@ class DataViewsController extends Controller
             ->get();
     }
     public function prospectos_sin_contactar($auth){
-        if($auth->role_id >= 3){
+        if($auth->role_id >= 2){
             return DB::table('prospectos')
             ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
             ->wherenull('prospectos.deleted_at')
