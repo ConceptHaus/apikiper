@@ -13,8 +13,8 @@ class SendNotificationService
             $oportunity['colaborador_id'],
             'Oportunidad ' . $oportunity['nombre_oportunidad'],
             'Oportunidad ' . $oportunity['nombre_oportunidad'] . ' sin actividad',
-            'INACTIVE_OPORTUNITY',
-            $oportunity
+            'inactive_oportunity',
+            $oportunity['id_oportunidad']
         );
     }
 
@@ -24,8 +24,8 @@ class SendNotificationService
             $prospect['colaborador_id'],
             'Prospecto ' . $prospect['nombre_oportunidad'],
             'Prospecto '.$prospect['nombre_prospecto'].' sin actividad',
-            'INACTIVE_PROSPECT',
-            $prospect
+            'inactive_prospect',
+            $prospect['id_prospecto']
         );
     }
 }

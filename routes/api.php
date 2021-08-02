@@ -342,3 +342,8 @@ Route::prefix('/v1/one-signal')->group(function(){
         Route::post('/send-notification','OneSignal\OneSignalController@sendNotification');
     });
 });
+
+// TODO msepulveda - Hay que borrar esta API cuando se termine de revisar lo de las notificaciones
+Route::prefix('/v1/one-signal-test')->group(function(){
+        Route::post('/send-notification','OneSignal\OneSignalController@sendNotification');
+});
