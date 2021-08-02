@@ -397,24 +397,32 @@ class ProspectosController extends Controller
                     $prospecto_empresa->save();
                     */
                     $empresa = Empresa::where('nombre', '=', $request->empresa)->wherenull('deleted_at')->first();
+                    
                     if($empresa){
                         $empresa_prospecto = EmpresaProspecto::where('id_prospecto', '=', $prospecto->id_prospecto)
-                                            ->where('id_empresa', '=', $empresa->id_empresa)
                                             ->wherenull('deleted_at')
                                             ->first();
-                        if(!$empresa_prospecto){
-                            $prospecto_empresa = new EmpresaProspecto;
+                        if($empresa_prospecto){
+                            $prospecto_empresa = EmpresaProspecto::find($empresa_prospecto->id_prospecto_empresa);
                             $prospecto_empresa->id_empresa = $empresa->id_empresa;
-                            $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
                             $prospecto_empresa->save();
+                        } else {
+                            
+                            return response()->json([
+                                'error'=>true,
+                                'messages'=> "El prospecto no existe"
+                            ],500);
                         }
                     }else{
+                        
                         $empresa = new Empresa;
                         $empresa->nombre = $request->empresa;
                         $empresa->save();
-                        $prospecto_empresa = new EmpresaProspecto;
+
+                        $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $prospecto->id_prospecto)
+                                            ->wherenull('deleted_at')
+                                            ->first();
                         $prospecto_empresa->id_empresa = $empresa->id_empresa;
-                        $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
                         $prospecto_empresa->save();
                     }
                 }
