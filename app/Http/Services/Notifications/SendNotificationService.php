@@ -22,7 +22,7 @@ class SendNotificationService
     {
         OneSignalService::sendNotification(
             $prospect['colaborador_id'],
-            'Prospecto ' . $prospect['nombre_oportunidad'],
+            'Prospecto ' . $prospect['nombre_prospecto'],
             'Prospecto '.$prospect['nombre_prospecto'].' sin actividad',
             'inactive_prospect',
             $prospect['id_prospecto']
