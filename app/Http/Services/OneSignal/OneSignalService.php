@@ -92,8 +92,8 @@ class OneSignalService
             );
             
             $fields = json_encode($fields);
-            print("\nJSON sent:\n");
-            print($fields);
+            // print("\nJSON sent:\n");
+            // print($fields);
             
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
