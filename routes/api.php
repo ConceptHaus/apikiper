@@ -343,7 +343,12 @@ Route::prefix('/v1/one-signal')->group(function(){
     });
 });
 
-// TODO msepulveda - Hay que borrar esta API cuando se termine de revisar lo de las notificaciones
-Route::prefix('/v1/one-signal-test')->group(function(){
-        Route::post('/send-notification','OneSignal\OneSignalController@sendNotification');
+
+Route::prefix('/v1/recordatorios')->group(function(){
+    Route::middleware(['auth','cors'])->group(function(){
+        //Routes to test or trigger the alerts console command
+        Route::get('/oportunidades','Recordatorios\RecordatoriosController@getRecordatoriosOportunidades');
+        Route::get('/prospectos','Recordatorios\RecordatoriosController@getRecordatoriosProspectos');
+        Route::get('/usuarios','Recordatorios\RecordatoriosController@getRecordatoriosUsuarios');
+    });
 });
