@@ -30,11 +30,10 @@ class Kernel extends ConsoleKernel
         
         $schedule->command('inspire')->everyMinute();
 
-        // $schedule->command('reminders:send')->everyMinute()
-        // ->appendOutputTo(storage_path('logs/examplecommands.log'));
-
         $schedule->command('inactivity_notifications:send')->everyMinute()
         ->appendOutputTo(storage_path('logs/inactivity_notifications.log'));
+
+        $schedule->command('alerts_notifications:send')->everyTenMinutes();
     }
 
     /**
