@@ -10,17 +10,13 @@ class RecordatoriosRep
 {
     public static function getRecordatoriosOportunidades()
     {
-        $now                    = date('Y-m-d H:i:s');
-        $now_plus_ten_minutes   = strtotime ('+10 minute' , strtotime ($now));
-        $now_plus_ten_minutes   = date ( 'Y-m-d H:i:s' , $now_plus_ten_minutes );
-        
-        $recordatorios = RecordatoriosOportunidades::join('detalle_recordatorio_op', 'detalle_recordatorio_op.id_recordatorio_oportunidad', 'recordatorios_oportunidad.id_recordatorio_oportunidad')
+        $now            = date('Y-m-d H:i:s');
+        $recordatorios  = RecordatoriosOportunidades::join('detalle_recordatorio_op', 'detalle_recordatorio_op.id_recordatorio_oportunidad', 'recordatorios_oportunidad.id_recordatorio_oportunidad')
                                                     ->join('oportunidades', 'oportunidades.id_oportunidad', 'recordatorios_oportunidad.id_oportunidad')
                                                     ->join('users', 'users.id', 'recordatorios_oportunidad.id_colaborador')
                                                     ->join('users_one_signal', 'users_one_signal.user_id', 'users.id')  
                                                     ->where('recordatorios_oportunidad.status', 0)
-                                                    ->where('fecha_recordatorio', '>=', $now)
-                                                    ->where('fecha_recordatorio', '<=', $now_plus_ten_minutes)
+                                                    ->where('fecha_recordatorio', '<=', $now)
                                                     ->groupBy('recordatorios_oportunidad.id_recordatorio_oportunidad')
                                                     ->get(); 
         
@@ -29,17 +25,13 @@ class RecordatoriosRep
 
     public static function getRecordatoriosProspectos()
     {
-        $now                    = date('Y-m-d H:i:s');
-        $now_plus_ten_minutes   = strtotime ('+10 minute' , strtotime ($now));
-        $now_plus_ten_minutes   = date ( 'Y-m-d H:i:s' , $now_plus_ten_minutes );
-        
+        $now           = date('Y-m-d H:i:s');
         $recordatorios = RecordatoriosProspectos::join('detalle_recordatorio_prospecto', 'detalle_recordatorio_prospecto.id_recordatorio_prospecto', 'recordatorios_prospecto.id_recordatorio_prospecto')
                                                 ->join('users', 'users.id', 'recordatorios_prospecto.id_colaborador')
                                                 ->join('prospectos', 'prospectos.id_prospecto', 'recordatorios_prospecto.id_prospecto')
                                                 ->join('users_one_signal', 'users_one_signal.user_id', 'users.id')                                       
                                                 ->where('recordatorios_prospecto.status', 0)
-                                                ->where('fecha_recordatorio', '>=', $now)
-                                                ->where('fecha_recordatorio', '<=', $now_plus_ten_minutes)
+                                                ->where('fecha_recordatorio', '<=', $now)
                                                 ->groupBy('recordatorios_prospecto.id_recordatorio_prospecto')
                                                 ->get();
         return $recordatorios;
@@ -47,15 +39,11 @@ class RecordatoriosRep
 
     public static function getRecordatoriosUsuarios()
     {
-        $now                    = date('Y-m-d H:i:s');
-        $now_plus_ten_minutes   = strtotime ('+10 minute' , strtotime ($now));
-        $now_plus_ten_minutes   = date ( 'Y-m-d H:i:s' , $now_plus_ten_minutes );
-
-        $recordatorios = RecordatoriosUsuarios::join('users', 'users.id', 'recordatorio_colaborador.id_colaborador')
+        $now            = date('Y-m-d H:i:s');
+        $recordatorios  = RecordatoriosUsuarios::join('users', 'users.id', 'recordatorio_colaborador.id_colaborador')
                                                 ->join('users_one_signal', 'users_one_signal.user_id', 'users.id')                                       
                                                 ->where('recordatorio_colaborador.status', 0)
-                                                ->where('fecha', '>=', $now)
-                                                ->where('fecha', '<=', $now_plus_ten_minutes)
+                                                ->where('fecha', '<=', $now)
                                                 ->groupBy('recordatorio_colaborador.id_recordatorio_colaborador')
                                                 ->get();
         return $recordatorios;
