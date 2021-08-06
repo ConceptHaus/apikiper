@@ -32,8 +32,13 @@ class FunnelRep
             $new_position_in_funnel = NULL;
 
             if($new_cat_status_oportunidad['funnel_visible'] == 1){
-                $last_item_order = CatStatusOportunidad::where("funnel_visible", 1)->where("deletable", 1)->orderBy("funnel_order", "DESC")->first();  
+                $last_item_order = CatStatusOportunidad::where("funnel_visible", 1)->where("deletable", 1)->orderBy("funnel_order", "DESC")->first();
+                $last_non_deletable_item = CatStatusOportunidad::where("funnel_visible", 1)->where("deletable", 0)->orderBy("funnel_order", "DESC")->first();  
                 if(isset($last_item_order->funnel_order)){
+                    if(($last_item_order->funnel_order + 1) == $last_non_deletable_item->funnel_order){
+                        $last_non_deletable_item->funnel_order = $last_item_order->funnel_order + 2;
+                        $last_non_deletable_item->save();
+                    }
                     $new_position_in_funnel = $last_item_order->funnel_order + 1;
                 }else{
                     $new_position_in_funnel = 1;    
@@ -51,7 +56,7 @@ class FunnelRep
             
             $response   = array('message'   => 'Registro Correcto',
                                 'error'     => false,
-                                'data'      =>'');
+                                'data'      => ['last_item_order->funnel_order' => $last_item_order->funnel_order, 'last_non_deletable_item' => $last_non_deletable_item]);
 
         }catch(Excpetion $e){
             DB::rollBack();
