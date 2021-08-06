@@ -300,7 +300,7 @@ class ProspectosController extends Controller
     public function getAllProspectos(){
 
         $permisos = User::getAuthenticatedUserPermissions();
-
+        $auth = $this->guard()->user();
         if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
             $prospectos = Prospecto::GetAllProspectos();
             $prospectos_total = Prospecto::count();
