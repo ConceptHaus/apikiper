@@ -116,12 +116,25 @@ class UserController extends Controller
                                     ->get();
         
         $catalogo_status = CatStatusOportunidad::all();
+        
+        $recordatorios = array();
 
-        $recordatorios = DB::table('recordatorios_prospecto')
-                        ->join('detalle_recordatorio_prospecto','detalle_recordatorio_prospecto.id_recordatorio_prospecto','recordatorios_prospecto.id_recordatorio_prospecto')
-                        ->where('recordatorios_prospecto.id_colaborador',$id_user)
-                        ->orderBy('detalle_recordatorio_prospecto.fecha_recordatorio', 'desc')
-                        ->get();
+        $recordatorios_prospecto = DB::table('recordatorios_prospecto')
+                                    ->join('detalle_recordatorio_prospecto','detalle_recordatorio_prospecto.id_recordatorio_prospecto','recordatorios_prospecto.id_recordatorio_prospecto')
+                                    ->where('recordatorios_prospecto.id_colaborador',$id_user)
+                                    ->orderBy('detalle_recordatorio_prospecto.fecha_recordatorio', 'desc')
+                                    ->get()->toArray();
+        $recordatorios_oportunidad = DB::table('recordatorios_oportunidad')
+                                    ->join('detalle_recordatorio_op','detalle_recordatorio_op.id_detalle_recordatorio','recordatorios_oportunidad.id_recordatorio_oportunidad')
+                                    ->where('recordatorios_oportunidad.id_colaborador',$id_user)
+                                    ->orderBy('detalle_recordatorio_op.fecha_recordatorio', 'desc')
+                                    ->get()->toArray();
+        $recordatorios_colaborador = DB::table('recordatorio_colaborador')
+                                    ->where('recordatorio_colaborador.id_colaborador',$id_user)
+                                    ->orderBy('recordatorio_colaborador.fecha', 'desc')
+                                    ->get()->toArray();
+        $recordatorios              = array_merge($recordatorios_prospecto, $recordatorios_oportunidad, $recordatorios_colaborador);
+
         $detalle = DetalleColaborador::where('id_colaborador',$this->guard()->user()->id)
                         ->first();
         $img = FotoColaborador::where('id_colaborador', $this->guard()->user()->id)
