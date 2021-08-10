@@ -164,35 +164,45 @@ class ColaboradoresController extends Controller
         
         $catalogo_status = CatStatusOportunidad::all();
 
-        $recordatorios = DB::table('recordatorios_prospecto')
-                      ->join('detalle_recordatorio_prospecto','detalle_recordatorio_prospecto.id_recordatorio_prospecto','recordatorios_prospecto.id_recordatorio_prospecto')
-                      ->where('recordatorios_prospecto.id_colaborador',$id_user)
-                      ->whereNull('recordatorios_prospecto.deleted_at')
-                      ->whereNull('detalle_recordatorio_prospecto.deleted_at')
-                      ->orderBy('detalle_recordatorio_prospecto.fecha_recordatorio', 'desc')
-                      ->get();
+        $recordatorios = array();
 
-      $detalle = DetalleColaborador::where('id_colaborador',$id_user)
-                      ->first();
-                      
-      $img = FotoColaborador::where('id_colaborador', $id_user)
-                      ->select('url_foto')
-                      ->first();
+        $recordatorios_prospecto = DB::table('recordatorios_prospecto')
+                                    ->join('detalle_recordatorio_prospecto','detalle_recordatorio_prospecto.id_recordatorio_prospecto','recordatorios_prospecto.id_recordatorio_prospecto')
+                                    ->where('recordatorios_prospecto.id_colaborador',$id_user)
+                                    ->orderBy('detalle_recordatorio_prospecto.fecha_recordatorio', 'desc')
+                                    ->get()->toArray();
+        $recordatorios_oportunidad = DB::table('recordatorios_oportunidad')
+                                    ->join('detalle_recordatorio_op','detalle_recordatorio_op.id_detalle_recordatorio','recordatorios_oportunidad.id_recordatorio_oportunidad')
+                                    ->where('recordatorios_oportunidad.id_colaborador',$id_user)
+                                    ->orderBy('detalle_recordatorio_op.fecha_recordatorio', 'desc')
+                                    ->get()->toArray();
+        $recordatorios_colaborador = DB::table('recordatorio_colaborador')
+                                    ->where('recordatorio_colaborador.id_colaborador',$id_user)
+                                    ->orderBy('recordatorio_colaborador.fecha', 'desc')
+                                    ->get()->toArray();
+        $recordatorios              = array_merge($recordatorios_prospecto, $recordatorios_oportunidad, $recordatorios_colaborador);
+
+        $detalle = DetalleColaborador::where('id_colaborador',$id_user)
+                        ->first();
+                        
+        $img = FotoColaborador::where('id_colaborador', $id_user)
+                        ->select('url_foto')
+                        ->first();
 
 
-      return response()->json([
-          'user'=>$user,
-          'detalle'=>$detalle,
-          'img_perfil'=>$img,
-          'status'=>$this->StatusChecker($catalogo_status,$status_genericos),
-          'oportunidades'=>[
-              'status_1'=>$this->statusEmpty($status_1,1),
-              'status_2'=>$this->statusEmpty($status_2,2),
-              'status_3'=>$this->statusEmpty($status_3,3)
-          ],
-          'recordatorios'=>$recordatorios,
-          'activity'=>$user->actions
-      ],200);
+        return response()->json([
+            'user'=>$user,
+            'detalle'=>$detalle,
+            'img_perfil'=>$img,
+            'status'=>$this->StatusChecker($catalogo_status,$status_genericos),
+            'oportunidades'=>[
+                'status_1'=>$this->statusEmpty($status_1,1),
+                'status_2'=>$this->statusEmpty($status_2,2),
+                'status_3'=>$this->statusEmpty($status_3,3)
+            ],
+            'recordatorios'=>$recordatorios,
+            'activity'=>$user->actions
+        ],200);
     }
 
     public function statusEmpty($status,$id){
