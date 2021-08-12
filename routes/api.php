@@ -87,6 +87,7 @@ Route::prefix('/v1/prospectos')->group(function(){
 
             Route::get('/{id}/recordatorios','Prospectos\ProspectosController@getRecordatorios');
             Route::post('/{id}/recordatorios','Prospectos\ProspectosController@addRecordatorios');
+            Route::get('/{id}/recordatorios-as-html','Prospectos\ProspectosController@getRecordatoriosAsHTML');
 
             Route::get('/{id}/eventos','Prospectos\ProspectosController@getEventos');
             Route::post('/{id}/eventos','Prospectos\ProspectosController@addEventos');
