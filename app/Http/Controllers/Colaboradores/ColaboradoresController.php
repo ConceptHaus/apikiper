@@ -180,7 +180,12 @@ class ColaboradoresController extends Controller
                                     ->where('recordatorio_colaborador.id_colaborador',$id_user)
                                     ->orderBy('recordatorio_colaborador.fecha', 'desc')
                                     ->get()->toArray();
-        $recordatorios              = array_merge($recordatorios_prospecto, $recordatorios_oportunidad, $recordatorios_colaborador);
+        if(count( $recordatorios_colaborador) > 0){
+            foreach ($recordatorios_colaborador as $key => $recordatorio_colaborador) {
+                $recordatorios_colaborador[$key]->nota_recordatorio =  $recordatorios_colaborador[$key]->nota;
+            }
+        }
+        $recordatorios = array_merge($recordatorios_prospecto, $recordatorios_oportunidad, $recordatorios_colaborador);
 
         $detalle = DetalleColaborador::where('id_colaborador',$id_user)
                         ->first();
