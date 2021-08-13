@@ -117,7 +117,7 @@ class OportunidadesNotificationsRep
         }
     }
 
-    public static function updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad_id, $new_inactivity_period, $attempts=NULL)
+    public static function updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad_id, $new_inactivity_period, $attempts=NULL, $view=NULL)
     {
         $oportunidad =  Notification::where('source_id', $oportunidad_id)
                                     ->where('notification_type', 'oportunidad')
@@ -131,6 +131,9 @@ class OportunidadesNotificationsRep
             $oportunidad->inactivity_period = $new_inactivity_period;
             if(!is_null($attempts)){
                 $oportunidad->attempts = $oportunidad->attempts + 1;
+            }
+            if(!is_null($view)){
+                $oportunidad->view = $view;
             }
             $oportunidad->save();
 
