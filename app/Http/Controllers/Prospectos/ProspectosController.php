@@ -678,6 +678,33 @@ class ProspectosController extends Controller
         ],200);
     }
 
+    public function getRecordatoriosAsHTML($id){
+        setlocale(LC_TIME, 'es_ES.UTF-8');
+        
+        $prospecto_recordatorios = Prospecto::GetProspectoRecordatorios($id);
+        $recordatorios = "";
+
+        if(isset($prospecto_recordatorios['recordatorios']) AND count($prospecto_recordatorios['recordatorios']) > 0){
+            $recordatorios = $recordatorios . '<div class="scroller" data-height="280px">';
+
+            foreach ($prospecto_recordatorios['recordatorios'] as $key => $prospecto_recordatorio) {
+                $recordatorios = $recordatorios . '<div class="time-line-notas"><div class="d-flex justify-content-between">';
+                $recordatorios = $recordatorios . '<span>'.strftime("%d de %B de %Y", strtotime($prospecto_recordatorio->detalle['fecha_recordatorio'])).'</span>';
+                $recordatorios = $recordatorios . '<span>'.date( 'H:i', strtotime($prospecto_recordatorio->detalle['fecha_recordatorio'])).'</span></div>';
+                $recordatorios = $recordatorios . '<div class="notas-textos"><p>'.$prospecto_recordatorio->detalle['nota_recordatorio'].'</p></div>';
+            }
+
+            $recordatorios = $recordatorios . '</div>';
+        }else{
+            $recordatorios = '<p class="list-group-item font-400 text-muted text-center">No hay recordatorios</p>';
+        }
+        return response()->json([
+            'message'   =>  mb_convert_encoding($recordatorios, 'UTF-8', 'UTF-8'),
+            'error'     => false,
+            'data'      => $prospecto_recordatorios
+        ],200);
+    }
+
     public function addRecordatorios(Request $request, $id){
         $validator = $this->validadorRecordatorio($request->all());
         $prospecto = Prospecto::where('id_prospecto',$id)->first();
