@@ -153,4 +153,12 @@ class User extends Authenticatable implements JWTSubject
                      ->orderBy('created_at','desc')
                      ->get();
     }
+
+    public function  scopeGetUsersWithVisibleRoleExceptUserToBeDeleted($query, $colaborador_id){
+        return $query->with('detalle','foto')
+                     ->where('role_id', '<', 4)
+                     ->where('id', '!=', $colaborador_id)
+                     ->orderBy('created_at','desc')
+                     ->get();
+    }
 }
