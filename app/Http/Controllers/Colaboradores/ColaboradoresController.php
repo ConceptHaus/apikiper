@@ -101,6 +101,24 @@ class ColaboradoresController extends Controller
         ],200);
     }
 
+    public function getAllColaboradoresExceptUserToBeDeleted(Request $request){
+        
+        $colaborador_id = $request->id;
+        $colaboradores = User::GetUsersWithVisibleRoleExceptUserToBeDeleted($colaborador_id);
+
+        if ($colaboradores) {
+          return response()->json([
+              'message'=>'Colaboradores obtenidos correctamente.',
+              'error'=>false,
+              'data'=>$colaboradores
+          ],200);
+        }
+        return response()->json([
+            'message'=>'No se encontraron colaboradores.',
+            'error'=>false
+        ],200);
+    }
+
     public function getOneColaborador($id){
       $id_user = $id;
 

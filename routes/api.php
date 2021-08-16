@@ -55,6 +55,7 @@ Route::prefix('/v1/colaboradores')->group(function(){
         Route::middleware(['auth','cors'])->group(function(){
             Route::post('/', 'Colaboradores\ColaboradoresController@registerColaborador');
             Route::get('/', 'Colaboradores\ColaboradoresController@getAllColaboradores');
+            Route::post('/excpet-user-to-be-deleted', 'Colaboradores\ColaboradoresController@getAllColaboradoresExceptUserToBeDeleted');
             Route::get('/{id}','Colaboradores\ColaboradoresController@getOneColaborador');
             Route::get('/etiquetas/{id_etiqueta}','Forms\FormsController@assigment_colaborador');
             Route::put('/{id}','Colaboradores\ColaboradoresController@updateColaborador');
