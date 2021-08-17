@@ -348,6 +348,7 @@ class ProspectosNotificationsService
                             } else {
                                 $prospecto['attempts']            = 0;
                                 $prospecto['inactivity_period']   = $hours;
+                                $inactivity_period                = $hours;
                                 SendNotificationService::sendInactiveProspectNotification($prospecto);
                                 ProspectosNotificationsRep::createProspectoNotification($prospecto);
                             }
@@ -360,7 +361,7 @@ class ProspectosNotificationsService
                                     ProspectosNotificationsService::sendProspectoNotificationColaboradorEmail($prospecto);
                                 }
                                 //First notification
-                                if ($prospecto['attempts'] == 0) {
+                                if ($prospecto['attempts'] == 0 AND $inactivity_period >= ($hours * $attempts)) {
                                     ProspectosNotificationsService::sendProspectoNotificationColaboradorEmail($prospecto);
                                 }
                             }
