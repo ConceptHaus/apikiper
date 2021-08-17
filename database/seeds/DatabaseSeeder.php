@@ -17,11 +17,17 @@ class DatabaseSeeder extends Seeder
         Model::unguard();
 
         $this->call(CatalogoSeeder::class);
-        $this->call(CatIndustriaSeeder::class);
+        
         $this->call(CatStatusProspectoTableSeeder::class);
         $this->call(CatStatusOportunidadTableSeeder::class);
         $this->call(RolesTableSeeder::class);
         $this->call(SettingsTableSeeder::class);
+
+
+        // Descomentar el siguiente bloque para registros de prueba
+
+        /*
+        $this->call(CatIndustriaSeeder::class);
 
         $etiquetas = factory(App\Modelos\Extras\Etiqueta::class,150)->create();
         $servicios = factory(App\Modelos\Oportunidad\CatServicios::class,150)->create();
@@ -75,6 +81,7 @@ class DatabaseSeeder extends Seeder
 
         
         $this->call(EmpresaSeeder::class);
+        */
 
         Model::reguard();
 
