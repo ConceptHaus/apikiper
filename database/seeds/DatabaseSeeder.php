@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         $this->call(SettingsTableSeeder::class);
 
 
-        // Descomentar el siguiente bloque para registros de prueba
+        //# Descomentar el siguiente bloque para registros de prueba
 
         /*
         $this->call(CatIndustriaSeeder::class);
