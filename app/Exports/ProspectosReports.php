@@ -123,7 +123,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                     });
                 })
                 ->select(
-                        DB::raw('IFNULL(CONCAT(users.nombre," ",users.apellido), "Sin Asignar") as asesor'),
+                        DB::raw('IFNULL(, "Sin Asignar") as asesor'),
                         'prospectos.created_at as fecha',
                         'cat_status_prospecto.status as estado',
                         'cat_fuentes.nombre as como se enteró',
@@ -209,7 +209,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                     });
                 })
                 ->select(
-                        DB::raw('CONCAT(users.nombre," ",users.apellido) as asesor'),
+                        DB::raw('users.nombre as asesor'),
                         'prospectos.created_at as fecha',
                         'cat_status_prospecto.status as estado',
                         'cat_fuentes.nombre as como se enteró',
@@ -292,7 +292,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                     });
                 })
                 ->select(
-                        DB::raw('CONCAT(users.nombre," ",users.apellido) as asesor'),
+                        DB::raw('users.nombre as asesor'),
                         'prospectos.created_at as fecha',
                         'cat_status_prospecto.status as estado',
                         'cat_fuentes.nombre as como se enteró',

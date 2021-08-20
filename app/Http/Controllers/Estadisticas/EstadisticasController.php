@@ -191,7 +191,7 @@ class EstadisticasController extends Controller
 
         $selects = array(
             'users.id as id_colaborador',
-            'CONCAT(users.nombre," ",users.apellido) as colaborador',
+            'users.nombre as colaborador',
             'COUNT(colaborador_oportunidad.id_colaborador_oportunidad) AS asignados'  
         );
 
