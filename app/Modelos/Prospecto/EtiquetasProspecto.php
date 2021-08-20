@@ -25,6 +25,6 @@ class EtiquetasProspecto extends Model
     }
 
     public function etiqueta(){
-        return $this->belongsTo('App\Modelos\Extras\Etiqueta','id_etiqueta','id_etiqueta')->whereNull('deleted_at');
+        return $this->belongsTo('App\Modelos\Extras\Etiqueta','id_etiqueta','id_etiqueta');
     }
 }
