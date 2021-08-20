@@ -21,7 +21,7 @@ class ProspectosListNotContactedRep
     }
 
     public function getEtiquetas(){
-        $etiquetas = DB::table('etiquetas')->select('*')->get();
+        $etiquetas = DB::table('etiquetas')->wherenull('etiquetas.deleted_at')->select('*')->get();
         return $etiquetas;
     }
         
