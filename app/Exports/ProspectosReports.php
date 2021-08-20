@@ -49,7 +49,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
 
         
     }
-    public function getProspectos($desarrollo, $id_user, $correos, $nombres, $telefonos=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null){
+    public function getProspectos($desarrollo, $id_user, $correos, $nombres, $ciudades, $telefonos=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null){
         $user = User::find($id_user);
         if($desarrollo == 'all'){
 
@@ -80,7 +80,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                             ->orWhere('empresas.nombre', 'like', '%'.$busqueda.'%')
                             ;
                 })
-                ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores) {
+                ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores,$ciudades) {
                     $query->when($correos,  function ($query) use ($correos) {
                         $query->where(function ($query) use ($correos) {
                             $query->whereIn('prospectos.correo', $correos);
@@ -91,6 +91,12 @@ class ProspectosReports implements WithHeadings,FromCollection{
                             $query->whereIn('prospectos.id_prospecto', $nombres);
                         });
                     });
+                    $query->when($nombres,  function ($query) use ($ciudades) {
+                        $query->where(function ($query) use ($ciudades) {
+                            $query->whereIn('prospectos.id_prospecto', $ciudades);
+                        });
+                    });
+
                     $query->when($telefonos,  function ($query) use ($telefonos) {
                         $query->where(function ($query) use ($telefonos) {
                             $query->whereIn('detalle_prospecto.id_prospecto', $telefonos);
@@ -254,7 +260,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                             ->orWhere('empresas.nombre', 'like', '%'.$busqueda.'%')
                             ;
                 })
-                ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+                ->where(function ($query) use ($correos, $nombres, $ciudades $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
                     $query->when($correos,  function ($query) use ($correos) {
                         $query->where(function ($query) use ($correos) {
                             $query->whereIn('prospectos.correo', $correos);
@@ -265,6 +271,13 @@ class ProspectosReports implements WithHeadings,FromCollection{
                             $query->whereIn('prospectos.id_prospecto', $nombres);
                         });
                     });
+
+                    $query->when($nombres,  function ($query) use ($ciudades) {
+                        $query->where(function ($query) use ($ciudades) {
+                            $query->whereIn('prospectos.id_prospecto', $ciudades);
+                        });
+                    });
+                    
                     $query->when($telefonos,  function ($query) use ($telefonos) {
                         $query->where(function ($query) use ($telefonos) {
                             $query->whereIn('detalle_prospecto.id_prospecto', $telefonos);

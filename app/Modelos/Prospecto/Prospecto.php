@@ -60,7 +60,7 @@ class Prospecto extends Model
     }
 
     public function etiquetas_prospecto(){
-        return $this->hasMany('App\Modelos\Prospecto\EtiquetasProspecto','id_prospecto','id_prospecto');
+        return $this->hasMany('App\Modelos\Prospecto\EtiquetasProspecto','id_prospecto','id_prospecto')->whereNull('deleted_at');
     }
 
     public function medio_contacto(){
@@ -132,7 +132,7 @@ class Prospecto extends Model
         return $query->with('eventos.detalle')->where('id_prospecto',$id)->get();
     }
     public function scopeGetProspectoEtiquetas($query,$id){
-        return $query->with('etiquetas_prospecto.etiqueta.prospecto')->where('id_prospecto',$id)->first();
+        return $query->with('etiquetas_prospecto.etiqueta.prospecto')->where('id_prospecto',$id)->whereNull('deleted_at')->first();
     }
     public function scopeGetProspectoArchivos($query,$id){
         return $query->with('archivos_prospecto_colaborador')->where('id_prospecto',$id)->first();
