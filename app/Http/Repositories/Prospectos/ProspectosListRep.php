@@ -77,7 +77,7 @@ class ProspectosListRep
             })
             ->select(
                 'prospectos.id_prospecto', 
-                DB::raw('CONCAT(prospectos.nombre AS nombre_prospecto'), 
+                DB::raw('prospectos.nombre AS nombre_prospecto'), 
                 'prospectos.correo', 
                 'prospectos.apellido AS ciudad',
                 'detalle_prospecto.telefono', 
@@ -377,7 +377,7 @@ class ProspectosListRep
             })
             ->select(
                 'prospectos.id_prospecto', 
-                DB::raw('CONCAT(prospectos.nombre, " ", prospectos.apellido) AS nombre_prospecto'), 
+                DB::raw('prospectos.nombre AS nombre_prospecto'), 
                 'prospectos.correo', 
                 'detalle_prospecto.telefono', 
                 'users.nombre AS colaborador', 
