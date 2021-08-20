@@ -77,8 +77,9 @@ class ProspectosListRep
             })
             ->select(
                 'prospectos.id_prospecto', 
-                DB::raw('CONCAT(prospectos.nombre, " ", prospectos.apellido) AS nombre_prospecto'), 
+                DB::raw('CONCAT(prospectos.nombre AS nombre_prospecto'), 
                 'prospectos.correo', 
+                'prospectos.apellido AS ciudad',
                 'detalle_prospecto.telefono', 
                 'users.nombre AS colaborador', 
                 DB::raw('date_format(prospectos.created_at, "%d/%m/%Y") AS created_at'),
@@ -156,8 +157,9 @@ class ProspectosListRep
             })
             ->select(
                 'prospectos.id_prospecto', 
-                DB::raw('CONCAT(prospectos.nombre, " ", prospectos.apellido) AS nombre_prospecto'), 
+                DB::raw('prospectos.nombre AS nombre_prospecto'), 
                 'prospectos.correo', 
+                'prospectos.apellido AS ciudad',
                 'detalle_prospecto.telefono', 
                 'users.nombre AS colaborador', 
                 DB::raw('date_format(prospectos.created_at, "%d/%m/%Y") AS created_at'), 
@@ -193,8 +195,9 @@ class ProspectosListRep
             ->where('users.id', '=', $id_colaborador)
             ->select(
                 'prospectos.id_prospecto', 
-                DB::raw('CONCAT(prospectos.nombre, " ", prospectos.apellido) AS nombre_prospecto'), 
+                DB::raw('prospectos.nombre AS nombre_prospecto'), 
                 'prospectos.correo', 
+                'prospectos.apellido AS ciudad',
                 'detalle_prospecto.telefono', 
                 'users.nombre AS colaborador', 
                 'prospectos.created_at', 
@@ -220,7 +223,7 @@ class ProspectosListRep
             ->where('users.id', '=', $id_colaborador)
             ->select(
                 'prospectos.id_prospecto', 
-                DB::raw('CONCAT(prospectos.nombre) AS nombre_prospecto'), 
+                DB::raw('prospectos.nombre AS nombre_prospecto'), 
                 'prospectos.correo', 
                 'prospectos.apellido AS ciudad',
                 'detalle_prospecto.telefono', 
