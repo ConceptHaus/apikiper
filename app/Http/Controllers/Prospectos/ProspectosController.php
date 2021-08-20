@@ -74,7 +74,7 @@ class ProspectosController extends Controller
         $validator = $this->validadorProspectos($request->all());
         $oportunidades = $request->oportunidades;
         $etiquetas = $request->etiquetas;
-
+        
         if($validator->passes()){
 
             try{
@@ -151,13 +151,13 @@ class ProspectosController extends Controller
                 if($etiquetas != null){
                     //Crear etiquetas
 
-                    foreach($etiquetas as $etiqueta){
+                    // foreach($etiquetas as $etiqueta){
                        $etiqueta_prospecto = new EtiquetasProspecto;
-                       $etiqueta_prospecto->id_etiqueta = $etiqueta['id_etiqueta'];
+                       $etiqueta_prospecto->id_etiqueta = $etiquetas;
                        $etiqueta_prospecto->id_prospecto = $prospecto->id_prospecto;
                        $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
 
-                    }
+                    // }
                 }
                 if($oportunidades != null){
 
@@ -216,12 +216,12 @@ class ProspectosController extends Controller
 
                         if(isset($oportunidad['etiquetas'])){
                             //Etiquetas de oportunidad
-                            foreach($oportunidad['etiquetas'] as $etiqueta){
+                            // foreach($oportunidad['etiquetas'] as $etiqueta){
                                 $etiqueta_oportunidad = new EtiquetasOportunidad;
                                 $etiqueta_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
-                                $etiqueta_oportunidad->id_etiqueta = $etiqueta['id_etiqueta'];
+                                $etiqueta_oportunidad->id_etiqueta = $oportunidad['etiquetas']['id_etiqueta'];
                                 $nueva_oportunidad->etiquetas_oportunidad()->save($etiqueta_oportunidad);
-                            }
+                            // }
 
                         }
 
@@ -544,6 +544,10 @@ class ProspectosController extends Controller
         $validator = $this->validadorOportunidad($request->all());
         $prospecto = Prospecto::where('id_prospecto',$id)->first();
         $status_prospecto = StatusProspecto::where('id_prospecto',$id)->first();
+        // return response()->json([
+        //     'error'=>false,
+        //     'data'=>$request->etiquetas
+        //   ],200);
 
         if (!$prospecto) {
           return response()->json([
@@ -615,12 +619,12 @@ class ProspectosController extends Controller
 
                 if($request->etiquetas){
                     //Etiquetas de oportunidad
-                    foreach($request->etiquetas as $etiqueta){
+                    // foreach($request->etiquetas as $etiqueta){
                         $etiqueta_oportunidad = new EtiquetasOportunidad;
                         $etiqueta_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
-                        $etiqueta_oportunidad->id_etiqueta = $etiqueta['id_etiqueta'];
+                        $etiqueta_oportunidad->id_etiqueta = $request->etiquetas['id_etiqueta'];
                         $nueva_oportunidad->etiquetas_oportunidad()->save($etiqueta_oportunidad);
-                    }
+                    // }
 
                 }
                 DB::commit();
@@ -810,7 +814,7 @@ class ProspectosController extends Controller
 
         if ($prospecto_etiquetas) {
           return response()->json([
-              'message'=>'Etiquetas obtenidas correctamente.',
+              'message'=>'Etiquetas obtenidas correctamente.2',
               'error'=>false,
               'data'=>$prospecto_etiquetas
           ],200);
@@ -827,23 +831,23 @@ class ProspectosController extends Controller
         $colaborador = $this->guard()->user();
 
           try {
-            foreach($request->etiquetas as $etiqueta){
+           
 
-              $etiquetas = EtiquetasProspecto::where('id_prospecto',$prospecto->id_prospecto)->where('id_etiqueta',$etiqueta['id_etiqueta'])->get();
-              if ($etiquetas->isEmpty()) {
-                DB::beginTransaction();
-                  $etiqueta_prospecto = new EtiquetasProspecto;
-                  $etiqueta_prospecto->id_prospecto = $prospecto->id_prospecto;
-                  $etiqueta_prospecto->id_etiqueta = $etiqueta['id_etiqueta'];
-                  $etiqueta_prospecto->save();
-                DB::commit();
-              }
+            $etiquetas = EtiquetasProspecto::where('id_prospecto',$prospecto->id_prospecto)->where('id_etiqueta',$request->etiquetas)->get();
+            if ($etiquetas->isEmpty()) {
+            DB::beginTransaction();
+                $etiqueta_prospecto = new EtiquetasProspecto;
+                $etiqueta_prospecto->id_prospecto = $prospecto->id_prospecto;
+                $etiqueta_prospecto->id_etiqueta = $request->etiquetas;
+                $etiqueta_prospecto->save();
+            DB::commit();
             }
+            
 
             return response()->json([
                         'error'=>false,
                         'message'=>'Registro Correcto',
-                        'data'=>$request
+                        'data'=>$request->etiquetas
                     ],200);
 
           } catch (Exception $e) {
