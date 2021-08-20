@@ -132,7 +132,7 @@ class Prospecto extends Model
         return $query->with('eventos.detalle')->where('id_prospecto',$id)->get();
     }
     public function scopeGetProspectoEtiquetas($query,$id){
-        return $query->with('etiquetas_prospecto.etiqueta.prospecto')->where('id_prospecto',$id)->wherenull('etiquetas.deleted_at');->first();
+        return $query->with('etiquetas_prospecto.etiqueta.prospecto')->where('id_prospecto',$id)->wherenull('etiquetas.deleted_at')->first();
     }
     public function scopeGetProspectoArchivos($query,$id){
         return $query->with('archivos_prospecto_colaborador')->where('id_prospecto',$id)->first();
