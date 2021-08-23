@@ -41,6 +41,9 @@ class ProspectosListController extends Controller
         $fechaInicio = json_decode($request->fechaInicio);
         $fechaFin = json_decode($request->fechaFin);
         $colaboradores = json_decode($request->colaborador);
+        $ciudades = json_decode($request->ciudad);
+        $campanas = json_decode($request->nombre_campana);
+        $puestos = json_decode($request->puesto);
         
         $permisos = User::getAuthenticatedUserPermissions();
         
