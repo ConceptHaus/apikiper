@@ -176,11 +176,14 @@ class ProspectosController extends Controller
 
                         //Detalle de oportunidades
                         $detalle_oportunidad = new DetalleOportunidad;
-                        if(isset($oportunidad['valor']))
-                            $detalle_oportunidad->valor = $oportunidad['valor'];
-                        else
+                        if(isset($oportunidad['valor'])){
+                            $valor = str_replace('$ ', '',$oportunidad['valor']);
+                            $valor = str_replace(',', '', $valor);
+                            $detalle_oportunidad->valor = $valor;
+                        }
+                        else{
                             $detalle_oportunidad->valor = 0;
-
+                        }
                         if(isset($oportunidad['meses']))
                             $detalle_oportunidad->meses = $oportunidad['meses'];
                         $nueva_oportunidad->detalle_oportunidad()->save($detalle_oportunidad);
@@ -600,7 +603,9 @@ class ProspectosController extends Controller
                 //Guarda detalle oportunidad
                 $detalle_oportunidad = new DetalleOportunidad;
                 $detalle_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
-                $detalle_oportunidad->valor = $request->valor;
+                $valor = str_replace('$ ', '', $request->valor);
+                $valor = str_replace(',', '', $valor);
+                $detalle_oportunidad->valor = $valor;
                 $detalle_oportunidad->meses = $request->meses;
                 $detalle_oportunidad->save();
 
