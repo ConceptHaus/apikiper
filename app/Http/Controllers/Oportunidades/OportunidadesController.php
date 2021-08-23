@@ -653,8 +653,7 @@ class OportunidadesController extends Controller
     }
 
     public function addValor(Request $request,$id){
-
-
+        
         $detalle = DetalleOportunidad::where('id_oportunidad',$id)->first();
         $auth = $this->guard()->user();
         $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
@@ -665,7 +664,8 @@ class OportunidadesController extends Controller
               $detalle = new DetalleOportunidad;
               $detalle->id_oportunidad = $id;
             }
-            $valor = intval($request->valor);
+            $valor = str_replace('$ ', '', $request->valor);
+            $valor = str_replace(',', '', $valor);
             $meses = intval($request->meses);
             $detalle->valor = $valor;
             $detalle->meses = $meses;
