@@ -27,7 +27,7 @@ class ProspectosListService
         return $response;
     }
 
-    public function getProspectosPageForAdmin($paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores){
+    public function getProspectosPageForAdmin($paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $ciudades, $campanas, $puestos){
         $response = new DatatableResponseDTO();
         $object = new ProspectosListRep;
 
@@ -36,7 +36,7 @@ class ProspectosListService
         $response->message = "Correcto";
         $response->error = false;
 
-        $datos =  $object->createPageForProspectosForAdmin($paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores);
+        $datos =  $object->createPageForProspectosForAdmin($paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $ciudades, $campanas, $puestos);
         $response->data = $datos->items("data");
 
         $response->recordsTotal = $datos->total();
@@ -46,7 +46,7 @@ class ProspectosListService
         return $response;
     }
 
-    public function getAllProspectosPageByColaborador($id_colaborador, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin){
+    public function getAllProspectosPageByColaborador($id_colaborador, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $ciudades, $campanas, $puestos){
         $response = new DatatableResponseDTO;
         $object = new ProspectosListRep;
 
@@ -55,7 +55,7 @@ class ProspectosListService
         $response->message = "Correcto";
         $response->error = false;
 
-        $datos = $object->createPageForProspectosByColaborador($id_colaborador, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin);
+        $datos = $object->createPageForProspectosByColaborador($id_colaborador, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin,, $ciudades, $campanas, $puestos);
         $response->data = $datos->items("data");
         
         $response->recordsTotal = $datos->total();

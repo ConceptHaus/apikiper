@@ -260,7 +260,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                             ->orWhere('empresas.nombre', 'like', '%'.$busqueda.'%')
                             ;
                 })
-                ->where(function ($query) use ($correos, $nombres, $ciudades $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+                ->where(function ($query) use ($correos, $nombres, $ciudades, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
                     $query->when($correos,  function ($query) use ($correos) {
                         $query->where(function ($query) use ($correos) {
                             $query->whereIn('prospectos.correo', $correos);

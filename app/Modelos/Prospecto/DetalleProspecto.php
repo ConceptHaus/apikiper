@@ -22,7 +22,9 @@ class DetalleProspecto extends Model
         'celular',
         'whatsapp',
         'nota',
-        'extension'
+        'extension', 
+        'desarrollo',
+        'ciudad'
     ];
 
     public function prospecto(){
