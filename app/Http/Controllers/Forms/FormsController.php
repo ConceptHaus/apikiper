@@ -352,21 +352,22 @@ class FormsController extends Controller
           $prospecto->nombre = $data['nombre'];
           $prospecto->apellido = (isset($data['apellido']) ? $data['apellido'] : '');
           $prospecto->correo = $data['correo'];
-          $prospecto->fuente = (isset($data['fuente']) ? $data['fuente'] : 2) ;
+          $prospecto->fuente = (isset($data['fuente']) ? $data['fuente'] : 2);
           $prospecto->save();
 
           
           $detalleProspecto = new DetalleProspecto();
-          $detalleProspecto->empresa = (isset($data['empresa']) ? $data['empresa'] : ' ');
-          $detalleProspecto->nombre_campana = (isset($data['nombre_campana']) ? $data['nombre_campana'] : ' ');
+          $detalleProspecto->empresa = (isset($data['empresa']) ? $data['empresa'] : '');
+          $detalleProspecto->nombre_campana = (isset($data['nombre_campana']) ? $data['nombre_campana'] : '');
           $detalleProspecto->desarrollo = (isset($data['desarrollo']) ? $data['desarrollo'] : ' ');
-          $detalleProspecto->ciudad = (isset($data['ciudad']) ? $data['ciudad'] : ' ');
-          $detalleProspecto->puesto = (isset($data['puesto']) ? $data['puesto'] : ' ');
-          $detalleProspecto->numero = (isset($data['numero']) ? $data['numero'] : ' ');
+          $detalleProspecto->ciudad = (isset($data['ciudad']) ? $data['ciudad'] : '');
+          $detalleProspecto->puesto = (isset($data['puesto']) ? $data['puesto'] : '');
+          $detalleProspecto->numero = (isset($data['numero']) ? $data['numero'] : '');
+          $detalleProspecto->extension = (isset($data['extension']) ? $data['extension'] : '');
           $detalleProspecto->telefono = (isset($data['telefono']) ? preg_replace('/[^0-9]+/','',$data['telefono']) : '');
           $detalleProspecto->celular = (isset($data['celular']) ? preg_replace('/[^0-9]+/','',$data['celular']) : '');
           $detalleProspecto->whatsapp = (isset($data['whatsapp']) ? preg_replace('/[^0-9]+/','',$data['whatsapp']) : '');
-          $detalleProspecto->nota = (isset($data['mensaje']) ? $data['mensaje'] : ' ');
+          $detalleProspecto->nota = (isset($data['mensaje']) ? $data['mensaje'] : '');
           $prospecto->detalle_prospecto()->save($detalleProspecto);
           
           $status->id_cat_status_prospecto = 2;
@@ -389,6 +390,7 @@ class FormsController extends Controller
                 $etiqueta_campaign->status = 1;
                 $etiqueta_campaign->save();
             }
+
             if(!$etiqueta_term){
                 $etiqueta_term = new Etiqueta;
                 $etiqueta_term->nombre = $campaign->utm_term;
