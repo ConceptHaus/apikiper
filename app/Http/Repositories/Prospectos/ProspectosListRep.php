@@ -82,14 +82,14 @@ class ProspectosListRep
                 'prospectos.apellido AS ciudad',
                 'detalle_prospecto.telefono', 
                 'users.nombre AS colaborador',
-                'detalle_prospecto.ciudad',
-                'detalle_prospecto.nombre_campana', 
                 DB::raw('date_format(prospectos.created_at, "%d/%m/%Y") AS created_at'),
                 'cat_status_prospecto.status', 
                 'cat_fuentes.nombre as fuente', 
                 'cat_fuentes.url', 
                 'detalle_prospecto.whatsapp',
-                'empresas.nombre AS nombre_empresa'
+                'empresas.nombre AS nombre_empresa',
+                'detalle_prospecto.ciudad',
+                'detalle_prospecto.nombre_campana', 
             )
             ->groupby('prospectos.id_prospecto')
             ->orderBy($orderBy, $paginacion->order)
@@ -163,15 +163,15 @@ class ProspectosListRep
                 'prospectos.correo', 
                 'prospectos.apellido AS ciudad',
                 'detalle_prospecto.telefono', 
-                'users.nombre AS colaborador',
-                'detalle_prospecto.ciudad',
-                'detalle_prospecto.nombre_campana', 
+                'users.nombre AS colaborador',                
                 DB::raw('date_format(prospectos.created_at, "%d/%m/%Y") AS created_at'), 
                 'cat_status_prospecto.status', 
                 'cat_fuentes.nombre as fuente', 
                 'cat_fuentes.url', 
                 'detalle_prospecto.whatsapp',
-                'empresas.nombre AS nombre_empresa'
+                'empresas.nombre AS nombre_empresa',
+                'detalle_prospecto.ciudad',
+                'detalle_prospecto.nombre_campana'
             )
             ->groupby('prospectos.id_prospecto')
             ->orderBy($orderBy, $paginacion->order)
@@ -392,6 +392,8 @@ class ProspectosListRep
                 'detalle_prospecto.whatsapp'
                 ,'etiquetas.nombre',
                 'empresas.nombre AS nombre_empresa',
+                'detalle_prospecto.ciudad',
+                'detalle_prospecto.nombre_campana', 
 
             )
             ->orderBy($orderBy, $paginacion->order)
