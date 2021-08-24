@@ -26,7 +26,8 @@ class DetalleProspecto extends Model
         'desarrollo',
         'ciudad',
         'nombre_campana',
-        'desarrollo'
+        'desarrollo',
+        'numero'
     ];
 
     public function prospecto(){
