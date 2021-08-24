@@ -69,7 +69,7 @@ class ProspectosController extends Controller
     }
 
     public function registerProspecto(Request $request){
-        // return $request->input();
+        
         $auth = $this->guard()->user();
         $validator = $this->validadorProspectos($request->all());
         $oportunidades = $request->oportunidades;
@@ -200,12 +200,20 @@ class ProspectosController extends Controller
 
                         //Asignación a colaborador
 
-                            foreach($oportunidad['id_colaborador'] as $col_op){
+                            if(count($oportunidad['id_colaborador']) > 0){
+                                foreach($oportunidad['id_colaborador'] as $col_op){
+                                    $colaborador_oportunidad = new ColaboradorOportunidad;
+                                    $colaborador_oportunidad->id_colaborador = $col_op;
+                                    $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
+                                    $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
+                                }
+                            }else{
                                 $colaborador_oportunidad = new ColaboradorOportunidad;
-                                $colaborador_oportunidad->id_colaborador = $col_op;
+                                $colaborador_oportunidad->id_colaborador = $auth->id;
                                 $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
-                                $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
+                                $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);    
                             }
+                            
                             
 
 
@@ -550,6 +558,7 @@ class ProspectosController extends Controller
     }
 
     public function addOportunidades(Request $request, $id){
+        
         $auth = $this->guard()->user();
         $validator = $this->validadorOportunidad($request->all());
         $prospecto = Prospecto::where('id_prospecto',$id)->first();
@@ -577,13 +586,13 @@ class ProspectosController extends Controller
                 $nueva_oportunidad->servicio_oportunidad()->save($servicio_oportunidad);
 
                 //Asignación a colaborador
-                $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto',$id)->first();
-                
-                //$colaboradores = $request->id_colaborador;
-                $colaborador = $colaborador_prospecto->id_colaborador ?? $auth->id;
+                // $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto',$id)->first();
+                // $colaborador = $colaborador_prospecto->id_colaborador ?? $auth->id;
+               
+                $colaborador_prospecto_id = (!is_null($request->id_colaborador)) ? $request->id_colaborador : $auth->id;
                 
                 $colaborador_oportunidad = new ColaboradorOportunidad;
-                $colaborador_oportunidad->id_colaborador = $colaborador;
+                $colaborador_oportunidad->id_colaborador = $colaborador_prospecto_id;
                 $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                 $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
 
