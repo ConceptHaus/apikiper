@@ -361,7 +361,7 @@ class FormsController extends Controller
           $detalleProspecto->nombre_campana = (isset($data['nombre_campana']) ? $data['nombre_campana'] : ' ');
           $detalleProspecto->desarrollo = (isset($data['desarrollo']) ? $data['desarrollo'] : ' ');
           $detalleProspecto->ciudad = (isset($data['ciudad']) ? $data['ciudad'] : ' ');
-          $detalleProspecto->puesto = (isset($data['puesto']) ? $data['puesto'] : ' ');
+          #$detalleProspecto->puesto = (isset($data['puesto']) ? $data['puesto'] : ' ');
           $detalleProspecto->telefono = (isset($data['telefono']) ? preg_replace('/[^0-9]+/','',$data['telefono']) : '');
           $detalleProspecto->celular = (isset($data['telefono']) ? preg_replace('/[^0-9]+/','',$data['telefono']) : '');
           $detalleProspecto->whatsapp = (isset($data['telefono']) ? preg_replace('/[^0-9]+/','',$data['telefono']) : '');
