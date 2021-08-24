@@ -357,14 +357,14 @@ class FormsController extends Controller
 
           
           $detalleProspecto = new DetalleProspecto();
-          $detalleProspecto->empresa = (isset($data['empresa']) ? $data['empresa'] : '');
-          $detalleProspecto->nombre_camapana = (isset($data['nombre_campana']) ? $data['nombre_campana'] : '');
-          $detalleProspecto->desarrollo = (isset($data['desarrollo']) ? $data['desarrollo'] : '');
-          $detalleProspecto->ciudad = (isset($data['ciudad']) ? $data['ciudad'] : '');
+          $detalleProspecto->empresa = (isset($data['empresa']) ? $data['empresa'] : ' ');
+          $detalleProspecto->nombre_campana = (isset($data['nombre_campana']) ? $data['nombre_campana'] : ' ');
+          $detalleProspecto->desarrollo = (isset($data['desarrollo']) ? $data['desarrollo'] : ' ');
+          $detalleProspecto->ciudad = (isset($data['ciudad']) ? $data['ciudad'] : ' ');
           $detalleProspecto->telefono = (isset($data['telefono']) ? preg_replace('/[^0-9]+/','',$data['telefono']) : '');
           $detalleProspecto->celular = (isset($data['telefono']) ? preg_replace('/[^0-9]+/','',$data['telefono']) : '');
           $detalleProspecto->whatsapp = (isset($data['telefono']) ? preg_replace('/[^0-9]+/','',$data['telefono']) : '');
-          $detalleProspecto->nota = (isset($data['mensaje']) ? $data['mensaje'] : '');
+          $detalleProspecto->nota = (isset($data['mensaje']) ? $data['mensaje'] : ' ');
           $prospecto->detalle_prospecto()->save($detalleProspecto);
           
           $status->id_cat_status_prospecto = 2;
