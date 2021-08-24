@@ -409,7 +409,7 @@ class FormsController extends Controller
             $data_event['prospecto'] = $prospecto;
             $data_event['desarrollo'] = $data['assigment'];
             event(new NewAssigment($data_event));
-          }else{jmn                                                           
+          }else{                                                         
             
             event(new NewLead($prospecto));
           
