@@ -10,11 +10,11 @@ class ColaboradoresService
     public static function validator(array $data)
     {
         return Validator::make($data, [
-            'nombre'    => 'required|regex:/^[a-zA-ZÑñ ]+$/u|max:30',
-            'apellido'  => 'required|regex:/^[a-zA-ZÑñ ]+$/u|max:30',
-            'email'     => 'required|email|max:30|unique:users,email',
+            'nombre'    => 'required|string|max:30',
+            'apellido'  => 'required|string|max:30',
+            'email'     => 'required|email|max:50|unique:users,email',
             'role_id'   => 'required|numeric|min:0|not_in:0',
-            'puesto'    => 'required|regex:/^[a-zA-ZÑñ ]+$/u|max:35',
+            'puesto'    => 'required|string|max:35',
             'telefono'  => 'required|max:9999999999',
             'celular'   => 'max:9999999999'
         ]);
@@ -23,8 +23,8 @@ class ColaboradoresService
     public static function validatorUpdate(array $data)
     {
         return Validator::make($data, [
-            'nombre'    => 'required|regex:/^[a-zA-ZÑñ ]+$/u|max:30',
-            'apellido'  => 'required|regex:/^[a-zA-ZÑñ ]+$/u|max:30',
+            'nombre'    => 'required|string|max:30',
+            'apellido'  => 'required|string|max:30',
             'role_id'   => 'required|integer',
             'puesto'    => 'required|string|max:35',
             'telefono'  => 'required|string|max:255',
