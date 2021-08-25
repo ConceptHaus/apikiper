@@ -692,7 +692,8 @@ class ProspectosController extends Controller
     }
 
     public function getRecordatoriosAsHTML($id){
-        setlocale(LC_TIME, 'es_ES.UTF-8');
+        // setlocale(LC_TIME, 'es_ES.UTF-8');
+        setlocale(LC_TIME, 'en_EN.UTF-8');
         
         $prospecto_recordatorios = Prospecto::GetProspectoRecordatorios($id);
         $recordatorios = "";
@@ -708,6 +709,19 @@ class ProspectosController extends Controller
             }
 
             $recordatorios = $recordatorios . '</div>';
+
+            $recordatorios = str_replace('January de', 'Enero de', $recordatorios);
+            $recordatorios = str_replace('February de', 'Febrero de', $recordatorios);
+            $recordatorios = str_replace('March de', 'Marzo de', $recordatorios);
+            $recordatorios = str_replace('April de', 'Abril de', $recordatorios);
+            $recordatorios = str_replace('May de', 'Mayo de', $recordatorios);
+            $recordatorios = str_replace('June de', 'Junio de', $recordatorios);
+            $recordatorios = str_replace('July de', 'Julio de', $recordatorios);
+            $recordatorios = str_replace('August de ', 'Agosto de', $recordatorios);
+            $recordatorios = str_replace('September de', 'Septiembre de', $recordatorios);
+            $recordatorios = str_replace('October de', 'Octubre de', $recordatorios);
+            $recordatorios = str_replace('November de', 'Noviembre de', $recordatorios);
+            $recordatorios = str_replace('December de', 'Diciembre de', $recordatorios);
         }else{
             $recordatorios = '<p class="list-group-item font-400 text-muted text-center">No hay recordatorios</p>';
         }
