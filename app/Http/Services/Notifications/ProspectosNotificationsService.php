@@ -343,8 +343,10 @@ class ProspectosNotificationsService
                                 $prospecto['inactivity_period'] = $new_inactivity_period;
                                 $prospecto['attempts']          = $existing_notification->attempts;
                                 // print_r($prospecto); die();
-                                SendNotificationService::sendInactiveProspectNotification($prospecto);
-                                ProspectosNotificationsRep::updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto['id_prospecto'], $new_inactivity_period);
+                                if( $new_inactivity_period > $existing_notification->inactivity_period ){
+                                    SendNotificationService::sendInactiveProspectNotification($prospecto);
+                                    ProspectosNotificationsRep::updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto['id_prospecto'], $new_inactivity_period);
+                                }
                             } else {
                                 $prospecto['attempts']            = 0;
                                 $prospecto['inactivity_period']   = $hours;

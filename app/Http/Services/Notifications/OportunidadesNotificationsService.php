@@ -222,13 +222,17 @@ class OportunidadesNotificationsService
                                 $new_inactivity_period              = $existing_notification->inactivity_period + $inactivity_period;
                                 $oportunidad['inactivity_period']   = $new_inactivity_period;
                                 $oportunidad['attempts']            = $existing_notification->attempts;
-                                SendNotificationService::sendInactiveOportunityNotification($oportunidad);
-                                OportunidadesNotificationsRep::updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad['id_oportunidad'], $new_inactivity_period, NULL, 'no-leido');
+                                if( $new_inactivity_period > $existing_notification->inactivity_period ){
+                                    SendNotificationService::sendInactiveOportunityNotification($oportunidad);
+                                    // echo " Sending notificacion to ". $oportunidad['nombre'] . " if@sendNotificationsUsingUserSettings " ;
+                                    OportunidadesNotificationsRep::updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad['id_oportunidad'], $new_inactivity_period, NULL, 'no-leido');
+                                }
                             } else {
                                 $oportunidad['attempts']            = 0;
                                 $oportunidad['inactivity_period']   = $hours;
                                 $inactivity_period                  = $hours;
                                 SendNotificationService::sendInactiveOportunityNotification($oportunidad);
+                                // echo " Sending notificacion to ". $oportunidad['nombre'] . " else@sendNotificationsUsingUserSettings " ;
                                 OportunidadesNotificationsRep::createOportunidadNotification($oportunidad);
                             }
 
@@ -238,10 +242,12 @@ class OportunidadesNotificationsService
                                 $attempts = ($oportunidad['attempts'] > 0) ? $oportunidad['attempts'] : 1;
                                 if ($inactivity_period > 0 AND $inactivity_period > ($hours * $attempts)) {
                                     OportunidadesNotificationsService::sendOportunidadNotificationColaboradorEmail($oportunidad);
+                                    // echo " Sending email to ". $oportunidad['email'] . " @ if inactivity " ;
                                 }
                                 //First notification
                                 if ($oportunidad['attempts'] == 0 AND $inactivity_period >= ($hours * $attempts)) {
                                     OportunidadesNotificationsService::sendOportunidadNotificationColaboradorEmail($oportunidad);
+                                    // echo " Sending email to ". $oportunidad['email'] . "  @ if 1st notification " ;
                                 }
                             }
                         }
