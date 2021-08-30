@@ -387,14 +387,16 @@ class OportunidadesController extends Controller
 
 
           try {
-            $etiquetas = EtiquetasOportunidad::where('id_oportunidad',$oportunidad->id_oportunidad)->where('id_etiqueta',$request->etiquetas)->select('id_etiqueta')->get();
-            if ($etiquetas->isEmpty()) {
-                DB::beginTransaction();
-                $etiqueta_oportunidad = new EtiquetasOportunidad;
-                $etiqueta_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
-                $etiqueta_oportunidad->id_etiqueta =$request->etiquetas;
-                $etiqueta_oportunidad->save();
-                DB::commit();
+            foreach($request->etiquetas as $etiqueta){
+                $etiquetas = EtiquetasOportunidad::where('id_oportunidad',$oportunidad->id_oportunidad)->where('id_etiqueta',$etiqueta['id_etiqueta'])->select('id_etiqueta')->get();
+                if ($etiquetas->isEmpty()) {
+                  DB::beginTransaction();
+                    $etiqueta_oportunidad = new EtiquetasOportunidad;
+                    $etiqueta_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
+                    $etiqueta_oportunidad->id_etiqueta = $etiqueta['id_etiqueta'];
+                    $etiqueta_oportunidad->save();
+                  DB::commit();
+                }
             }
 
             return response()->json([
@@ -653,8 +655,7 @@ class OportunidadesController extends Controller
     }
 
     public function addValor(Request $request,$id){
-
-
+        
         $detalle = DetalleOportunidad::where('id_oportunidad',$id)->first();
         $auth = $this->guard()->user();
         $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
@@ -665,7 +666,8 @@ class OportunidadesController extends Controller
               $detalle = new DetalleOportunidad;
               $detalle->id_oportunidad = $id;
             }
-            $valor = intval($request->valor);
+            $valor = str_replace('$ ', '', $request->valor);
+            $valor = str_replace(',', '', $valor);
             $meses = intval($request->meses);
             $detalle->valor = $valor;
             $detalle->meses = $meses;

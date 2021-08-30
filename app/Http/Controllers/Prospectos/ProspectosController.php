@@ -69,12 +69,12 @@ class ProspectosController extends Controller
     }
 
     public function registerProspecto(Request $request){
-        // return $request->input();
+        
         $auth = $this->guard()->user();
         $validator = $this->validadorProspectos($request->all());
         $oportunidades = $request->oportunidades;
         $etiquetas = $request->etiquetas;
-
+        
         if($validator->passes()){
 
             try{
@@ -156,7 +156,6 @@ class ProspectosController extends Controller
                        $etiqueta_prospecto->id_etiqueta = $etiqueta['id_etiqueta'];
                        $etiqueta_prospecto->id_prospecto = $prospecto->id_prospecto;
                        $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
-
                     }
                 }
                 if($oportunidades != null){
@@ -177,11 +176,14 @@ class ProspectosController extends Controller
 
                         //Detalle de oportunidades
                         $detalle_oportunidad = new DetalleOportunidad;
-                        if(isset($oportunidad['valor']))
-                            $detalle_oportunidad->valor = $oportunidad['valor'];
-                        else
+                        if(isset($oportunidad['valor'])){
+                            $valor = str_replace('$ ', '',$oportunidad['valor']);
+                            $valor = str_replace(',', '', $valor);
+                            $detalle_oportunidad->valor = $valor;
+                        }
+                        else{
                             $detalle_oportunidad->valor = 0;
-
+                        }
                         if(isset($oportunidad['meses']))
                             $detalle_oportunidad->meses = $oportunidad['meses'];
                         $nueva_oportunidad->detalle_oportunidad()->save($detalle_oportunidad);
@@ -198,12 +200,20 @@ class ProspectosController extends Controller
 
                         //Asignación a colaborador
 
-                            foreach($oportunidad['id_colaborador'] as $col_op){
+                            if(count($oportunidad['id_colaborador']) > 0){
+                                foreach($oportunidad['id_colaborador'] as $col_op){
+                                    $colaborador_oportunidad = new ColaboradorOportunidad;
+                                    $colaborador_oportunidad->id_colaborador = $col_op;
+                                    $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
+                                    $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
+                                }
+                            }else{
                                 $colaborador_oportunidad = new ColaboradorOportunidad;
-                                $colaborador_oportunidad->id_colaborador = $col_op;
+                                $colaborador_oportunidad->id_colaborador = $auth->id;
                                 $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
-                                $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
+                                $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);    
                             }
+                            
                             
 
 
@@ -548,11 +558,12 @@ class ProspectosController extends Controller
     }
 
     public function addOportunidades(Request $request, $id){
+        
         $auth = $this->guard()->user();
         $validator = $this->validadorOportunidad($request->all());
         $prospecto = Prospecto::where('id_prospecto',$id)->first();
         $status_prospecto = StatusProspecto::where('id_prospecto',$id)->first();
-
+        
         if (!$prospecto) {
           return response()->json([
             'error'=>false,
@@ -575,13 +586,13 @@ class ProspectosController extends Controller
                 $nueva_oportunidad->servicio_oportunidad()->save($servicio_oportunidad);
 
                 //Asignación a colaborador
-                $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto',$id)->first();
-                
-                //$colaboradores = $request->id_colaborador;
-                $colaborador = $colaborador_prospecto->id_colaborador ?? $auth->id;
+                // $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto',$id)->first();
+                // $colaborador = $colaborador_prospecto->id_colaborador ?? $auth->id;
+               
+                $colaborador_prospecto_id = (!is_null($request->id_colaborador)) ? $request->id_colaborador : $auth->id;
                 
                 $colaborador_oportunidad = new ColaboradorOportunidad;
-                $colaborador_oportunidad->id_colaborador = $colaborador;
+                $colaborador_oportunidad->id_colaborador = $colaborador_prospecto_id;
                 $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                 $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
 
@@ -601,7 +612,9 @@ class ProspectosController extends Controller
                 //Guarda detalle oportunidad
                 $detalle_oportunidad = new DetalleOportunidad;
                 $detalle_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
-                $detalle_oportunidad->valor = $request->valor;
+                $valor = str_replace('$ ', '', $request->valor);
+                $valor = str_replace(',', '', $valor);
+                $detalle_oportunidad->valor = $valor;
                 $detalle_oportunidad->meses = $request->meses;
                 $detalle_oportunidad->save();
 
@@ -679,7 +692,8 @@ class ProspectosController extends Controller
     }
 
     public function getRecordatoriosAsHTML($id){
-        setlocale(LC_TIME, 'es_ES.UTF-8');
+        // setlocale(LC_TIME, 'es_ES.UTF-8');
+        setlocale(LC_TIME, 'en_EN.UTF-8');
         
         $prospecto_recordatorios = Prospecto::GetProspectoRecordatorios($id);
         $recordatorios = "";
@@ -695,6 +709,19 @@ class ProspectosController extends Controller
             }
 
             $recordatorios = $recordatorios . '</div>';
+
+            $recordatorios = str_replace('January de', 'Enero de', $recordatorios);
+            $recordatorios = str_replace('February de', 'Febrero de', $recordatorios);
+            $recordatorios = str_replace('March de', 'Marzo de', $recordatorios);
+            $recordatorios = str_replace('April de', 'Abril de', $recordatorios);
+            $recordatorios = str_replace('May de', 'Mayo de', $recordatorios);
+            $recordatorios = str_replace('June de', 'Junio de', $recordatorios);
+            $recordatorios = str_replace('July de', 'Julio de', $recordatorios);
+            $recordatorios = str_replace('August de ', 'Agosto de', $recordatorios);
+            $recordatorios = str_replace('September de', 'Septiembre de', $recordatorios);
+            $recordatorios = str_replace('October de', 'Octubre de', $recordatorios);
+            $recordatorios = str_replace('November de', 'Noviembre de', $recordatorios);
+            $recordatorios = str_replace('December de', 'Diciembre de', $recordatorios);
         }else{
             $recordatorios = '<p class="list-group-item font-400 text-muted text-center">No hay recordatorios</p>';
         }
@@ -836,17 +863,17 @@ class ProspectosController extends Controller
 
           try {
             foreach($request->etiquetas as $etiqueta){
-
-              $etiquetas = EtiquetasProspecto::where('id_prospecto',$prospecto->id_prospecto)->where('id_etiqueta',$etiqueta['id_etiqueta'])->get();
-              if ($etiquetas->isEmpty()) {
-                DB::beginTransaction();
-                  $etiqueta_prospecto = new EtiquetasProspecto;
-                  $etiqueta_prospecto->id_prospecto = $prospecto->id_prospecto;
-                  $etiqueta_prospecto->id_etiqueta = $etiqueta['id_etiqueta'];
-                  $etiqueta_prospecto->save();
-                DB::commit();
+                $etiquetas = EtiquetasProspecto::where('id_prospecto',$prospecto->id_prospecto)->where('id_etiqueta',$etiqueta['id_etiqueta'])->get();
+                if ($etiquetas->isEmpty()) {
+                  DB::beginTransaction();
+                    $etiqueta_prospecto = new EtiquetasProspecto;
+                    $etiqueta_prospecto->id_prospecto = $prospecto->id_prospecto;
+                    $etiqueta_prospecto->id_etiqueta = $etiqueta['id_etiqueta'];
+                    $etiqueta_prospecto->save();
+                  DB::commit();
+                }
               }
-            }
+            
 
             return response()->json([
                         'error'=>false,

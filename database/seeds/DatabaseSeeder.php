@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CatStatusOportunidadTableSeeder::class);
         $this->call(RolesTableSeeder::class);
         $this->call(SettingsTableSeeder::class);
+        $this->call(UsersTableSeeder::class);
 
 
         //# Descomentar el siguiente bloque para registros de prueba
