@@ -86,23 +86,33 @@ class OportunidadesNotificationsRep
 
     public static function changeStatusforExisitingOportunidadNotification($oportunidad_id, $new_status)
     {
-        $oportunidad = Notification::where('source_id', $oportunidad_id)->first();
+        $oportunidades = Notification::where('source_id', $oportunidad_id)->get();
 
-        if (!empty($oportunidad)) {
-            $oportunidad->status = $new_status;
-            $oportunidad->save();
+        // if (!empty($oportunidad)) {
+        //     $oportunidad->status = $new_status;
+        //     $oportunidad->save();
+        // }
+
+        if(count($oportunidades) > 0){
+            foreach ($oportunidades as $key => $oportunidad) {
+                $oportunidad->status = $new_status;
+                $oportunidad->save();
+            }
         }
     }
 
-    public static function createOportunidadNotification($oportunidad)
+    public static function createOportunidadNotification($oportunidad, $for_admin=false)
     {
         $notificaton                    = new Notification;
         $notificaton->colaborador_id    = $oportunidad['colaborador_id'];
         $notificaton->source_id         = $oportunidad['id_oportunidad'];
         $notificaton->notification_type = 'oportunidad';
         $notificaton->inactivity_period = $oportunidad['inactivity_period'];
-        $notificaton->view            = 'no-leido';
+        $notificaton->view              = 'no-leido';
         $notificaton->attempts          = $oportunidad['attempts'];
+        if($for_admin){
+            $notificaton->type          = 2;    
+        }
         $notificaton->save();
     }
 
@@ -119,25 +129,39 @@ class OportunidadesNotificationsRep
 
     public static function updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad_id, $new_inactivity_period, $attempts=NULL, $view=NULL)
     {
-        $oportunidad =  Notification::where('source_id', $oportunidad_id)
+        $oportunidades =  Notification::where('source_id', $oportunidad_id)
                                     ->where('notification_type', 'oportunidad')
                                     ->where(function($q) {
                                         $q->where('status', '!=', 'resuelto')
                                           ->orWhereNull('status');
                                     })
-                                    ->first();
+                                    ->get();
 
-        if (!empty($oportunidad)) {
-            $oportunidad->inactivity_period = $new_inactivity_period;
-            if(!is_null($attempts)){
-                $oportunidad->attempts = $oportunidad->attempts + 1;
-            }
-            if(!is_null($view)){
-                $oportunidad->view = $view;
-            }
-            $oportunidad->save();
+        // if (!empty($oportunidad)) {
+        //     $oportunidad->inactivity_period = $new_inactivity_period;
+        //     if(!is_null($attempts)){
+        //         $oportunidad->attempts = $oportunidad->attempts + 1;
+        //     }
+        //     if(!is_null($view)){
+        //         $oportunidad->view = $view;
+        //     }
+        //     $oportunidad->save();
 
-            return $oportunidad;
+        //     return $oportunidad;
+        // }
+
+        if (count($oportunidades) > 0) {
+            foreach ($oportunidades as $key => $oportunidad) {
+            
+                $oportunidad->inactivity_period = $new_inactivity_period;
+                if(!is_null($attempts)){
+                    $oportunidad->attempts = $oportunidad->attempts + 1;
+                }
+                if(!is_null($view)){
+                    $oportunidad->view = $view;
+                }
+                $oportunidad->save();
+            }
         }
     }
 
@@ -148,6 +172,7 @@ class OportunidadesNotificationsRep
                                 $q->where('status', '!=', 'resuelto')
                                   ->orWhereNull('status');
                             })
+                            ->where('type', '!=', 2)
                             ->get()
                             ->toArray();   
     }

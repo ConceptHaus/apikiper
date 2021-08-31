@@ -45,24 +45,26 @@ class OportunidadesNotificationsService
         $oportunidades       = OportunidadesNotificationsService::getOportunidadesToSendNotifications();
         $max_time_inactivity = SettingsService::getOportunidadesMaxTimeInactivity();
         // print_r($oportunidades); die();
-
+        
+        UtilService::createCustomLog("sendNotifications_log", "<!-- sendNotifications -->");
+        
         if (count($oportunidades) > 0) {
             //Delete no longer inactive oportunidades from array
             if (count($notifications) > 0) {
+                // print_r($notifications);
                 foreach ($notifications as $key => $notification) {
                     // print_r($notification);
                     foreach ($oportunidades as $index => $oportunidad) {
                         //Get last update for status oportunidad
-                        $inactivity_period = OportunidadesNotificationsRep::verifyActivityforOportunidad($notification['source_id'], $notification['updated_at']);
-                        // print_r($inactivity_period);
-                        if (!in_array($notification['source_id'], $oportunidad)) {
-                            if ($inactivity_period <= 0) {
-                                OportunidadesNotificationsService::changeStatusforExisitingOportunidadNotification($notification['source_id'], 'resuelto');
-                            }
-                        } else {
+                        // print_r($oportunidad); die();
+                        if($oportunidad['id_oportunidad'] == $notification['source_id']){
+                            // echo " @ if foreach oportunidades -> oportunidad = notification -> ". $notification['source_id'] . "     |     ";
+                            $inactivity_period = OportunidadesNotificationsRep::verifyActivityforOportunidad($notification['source_id'], $notification['updated_at']);
+                            // print_r($inactivity_period); die();
                             if ($inactivity_period <= 0) {
                                 unset($oportunidades[$index]);
                                 OportunidadesNotificationsService::changeStatusforExisitingOportunidadNotification($notification['source_id'], 'resuelto');
+                                UtilService::createCustomLog("sendNotifications_log", "| line 67 | changeStatusforExisitingOportunidadNotification for notification -> " . $notification['source_id'] . " resuelto");
                             }
                         }
                     }
@@ -70,6 +72,15 @@ class OportunidadesNotificationsService
             }
 
             $max_time_inactivity =  SettingsService::getOportunidadesMaxTimeInactivity();
+            //Get System settings to check if admins want to receive an email notification
+            $send_emails = SettingsService::getOportunidadesSendInactivityEmailForAdmins();
+            
+            if ($send_emails == "all") {
+                $admins = OportunidadesNotificationsService::getAdminsToSendOportunidadNotificationEscalation(3);
+                //  print_r($admins);
+            }else{
+                $admins = [];
+            }
 
             foreach ($oportunidades as $key => $oportunidad) {
                 $existing_notification  = OportunidadesNotificationsRep::checkOportunidadNotification($oportunidad['id_oportunidad']);
@@ -79,9 +90,23 @@ class OportunidadesNotificationsService
                     $new_inactivity_period              = $existing_notification->inactivity_period + $inactivity_period;
                     $oportunidad['inactivity_period']   = $new_inactivity_period;
                     if ($new_inactivity_period > ($max_time_inactivity * ($existing_notification->attempts + 1))) {
-                        $oportunidad['attempts']        = $existing_notification->attempts + 1;
-                        SendNotificationService::sendInactiveOportunityNotification($oportunidad);
+                        $oportunidad['attempts'] = $existing_notification->attempts + 1;
+                        
                         OportunidadesNotificationsRep::updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad['id_oportunidad'], $oportunidad['inactivity_period'], true);
+                        UtilService::createCustomLog("sendNotifications_log", "| line 96 | updateAttemptsAndInactivityforExisitingOportunidadNotification for oportunidad -> " . $oportunidad['id_oportunidad'] . " -> " . $oportunidad['inactivity_period']);
+                        SendNotificationService::sendInactiveOportunityNotification($oportunidad);
+                        UtilService::createCustomLog("sendNotifications_log", "| line 98 | sendInactiveOportunityNotification for oportunidad colaborador -> " . $oportunidad['id_oportunidad'] . " -> " . $oportunidad['colaborador_id']);
+                        if ($send_emails == "all") {
+                            if (count($admins) > 0) {
+                                $oportunidad_for_admin = $oportunidad;
+                                foreach ($admins as $key_2 => $admin) {
+                                    $oportunidad_for_admin['email']             = $admin['email'];
+                                    $oportunidad_for_admin['colaborador_id']    = $admin['id'];
+                                    SendNotificationService::sendInactiveOportunityNotification($oportunidad_for_admin);
+                                    UtilService::createCustomLog("sendNotifications_log", "| line 106 | sendInactiveOportunityNotification for oportunidad admin -> " . $oportunidad_for_admin['id_oportunidad'] . " -> " . $oportunidad_for_admin['colaborador_id']);
+                                }
+                            }
+                        }
                     } else {
                         $oportunidad['attempts'] = 1;
                     }
@@ -91,7 +116,23 @@ class OportunidadesNotificationsService
                     $oportunidad['inactivity_period']   = $max_time_inactivity;
                     $existing_notification_attempts     = 0;
                     SendNotificationService::sendInactiveOportunityNotification($oportunidad);
+                    UtilService::createCustomLog("sendNotifications_log", "| line 119 | sendInactiveOportunityNotification for oportunidad user -> " . $oportunidad['id_oportunidad'] . " -> " . $oportunidad['colaborador_id']);
                     OportunidadesNotificationsRep::createOportunidadNotification($oportunidad);
+                    UtilService::createCustomLog("sendNotifications_log", "| line 121 | createOportunidadNotification for oportunidad user -> " . $oportunidad['id_oportunidad'] . " -> " . $oportunidad['colaborador_id']);
+                    
+                    if ($send_emails == "all") {
+                        if (count($admins) > 0) {
+                            $oportunidad_for_admin = $oportunidad;
+                            foreach ($admins as $key_2 => $admin) {
+                                $oportunidad_for_admin['email']             = $admin['email'];
+                                $oportunidad_for_admin['colaborador_id']    = $admin['id'];
+                                SendNotificationService::sendInactiveOportunityNotification($oportunidad_for_admin);
+                                UtilService::createCustomLog("sendNotifications_log", "| line 130 | sendInactiveOportunityNotification for oportunidad admin -> " . $oportunidad_for_admin['id_oportunidad'] . " -> " . $oportunidad_for_admin['colaborador_id']);
+                                OportunidadesNotificationsRep::createOportunidadNotification($oportunidad_for_admin, true);
+                                UtilService::createCustomLog("sendNotifications_log", "| line 132 | createOportunidadNotification for oportunidad admin -> " . $oportunidad_for_admin['id_oportunidad_for_admin'] . " -> " . $oportunidad['colaborador_id']);
+                            }
+                        }
+                    }
                 }
                 // print_r($oportunidad);
 
@@ -100,20 +141,19 @@ class OportunidadesNotificationsService
                 if (empty($user_settings) or  (isset($user_settings->configuraciones->disable_email_notification_oportunidades) and $user_settings->configuraciones->disable_email_notification_oportunidades == 0)) {
                     if ($oportunidad['inactivity_period'] > 0 and $oportunidad['inactivity_period'] >= ($max_time_inactivity * $oportunidad['attempts']) and ($existing_notification_attempts != $oportunidad['attempts'])) {
                         OportunidadesNotificationsService::sendOportunidadNotificationEmail($oportunidad);
+                        UtilService::createCustomLog("sendNotifications_log", "| line 144 | sendOportunidadNotificationEmail for oportunidad user -> " . $oportunidad['id_oportunidad'] . " -> " . $oportunidad['colaborador_id']);
                     }
                 }
 
-                //Get System settings to check if admins want to receive an email notification
-                $send_emails = SettingsService::getOportunidadesSendInactivityEmailForAdmins();
+               
                 if ($send_emails == "all") {
-                    $admins = OportunidadesNotificationsService::getAdminsToSendOportunidadNotificationEscalation(3);
-                    //  print_r($admins);
                     if (count($admins) > 0) {
                         $oportunidad_for_admin = $oportunidad;
                         foreach ($admins as $key_2 => $admin) {
                             $oportunidad_for_admin['email'] = $admin['email'];
                             if ($oportunidad_for_admin['inactivity_period'] > 0 and $oportunidad_for_admin['inactivity_period'] >= ($max_time_inactivity * $oportunidad_for_admin['attempts']) and ($existing_notification_attempts != $oportunidad_for_admin['attempts'])) {
                                 OportunidadesNotificationsService::sendOportunidadNotificationEmail($oportunidad_for_admin);
+                                UtilService::createCustomLog("sendNotifications_log", "| line 156 | sendOportunidadNotificationEmail for oportunidad admin -> " . $oportunidad_for_admin['id_oportunidad'] . " -> " . $oportunidad_for_admin['colaborador_id']);
                             }
                         }
                     }
@@ -126,10 +166,12 @@ class OportunidadesNotificationsService
                     $inactivity_period = OportunidadesNotificationsRep::verifyActivityforOportunidad($notification['source_id'], $notification['updated_at']);
                     if ($inactivity_period <= 0) {
                         OportunidadesNotificationsService::changeStatusforExisitingOportunidadNotification($notification['source_id'], 'resuelto');
+                        UtilService::createCustomLog("sendNotifications_log", "| line 169 | changeStatusforExisitingOportunidadNotification for oportunidad  -> " . $notification['source_id'] . " -> resuelto");
                     }
                 }
             }
         }
+        UtilService::createCustomLog("sendNotifications_log", "<!-- sendNotifications -->");
     }
 
     public static function sendOportunidadNotificationEmail($oportunidad)
@@ -159,10 +201,16 @@ class OportunidadesNotificationsService
             $admins = OportunidadesNotificationsService::getAdminsToSendOportunidadNotificationEscalation(3);
             //  print_r($admins);
             if (count($admins) > 0) {
+                UtilService::createCustomLog("sendNotifications_log", "<!-- escalateNotifications -->");
                 foreach ($notifications as $key => $notification) {
                     OportunidadesNotificationsRep::changeStatusforExisitingOportunidadNotification($notification['source_id'], 'escalado');
+                    UtilService::createCustomLog("sendNotifications_log", "| line 207 | changeStatusforExisitingOportunidadNotification for notification -> " . $notification['source_id'] . " escalado");
                     OportunidadesNotificationsService::sendOportunidadEscalationEmail($notification, $admins);
+                    UtilService::createCustomLog("sendNotifications_log", "| line 209 | sendOportunidadEscalationEmail for oportunidad admins -> " . $notification['source_id']);
+                    // GET OPORTUNIDAD
+                    OportunidadesNotificationsService::sendInactiveOportunityNotificationToAdmins($oportunidad);
                 }
+                UtilService::createCustomLog("sendNotifications_log", "<!-- escalateNotifications -->");
             }
         }
     }
@@ -188,6 +236,14 @@ class OportunidadesNotificationsService
         }
     }
 
+    public static function sendInactiveOportunityNotificationToAdmins($oportunidad)
+    {
+        foreach ($admins as $key => $admin) {
+            SendNotificationService::sendInactiveOportunityNotification($oportunidad_for_admin);
+            UtilService::createCustomLog("sendNotifications_log", "| line 106 | sendInactiveOportunityNotification for oportunidad admin -> " . $oportunidad_for_admin['id_oportunidad'] . " -> " . $oportunidad_for_admin['colaborador_id']);
+        }
+    }
+
     public static function getAdminsToSendOportunidadNotificationEscalation($role_id)
     {
         return UsersRep::getUsersByRoleId($role_id);
@@ -202,6 +258,7 @@ class OportunidadesNotificationsService
         $users_with_settings = SettingsUserNotificationsService::getUsersWithSettings();
         // print_r($users_with_settings);
         if (count($users_with_settings) > 0) {
+            UtilService::createCustomLog("sendNotifications_log", "<!-- sendNotificationsUsingUserSettings -->");
             foreach ($users_with_settings as $key => $user_with_settings) {
                 $user_settings = SettingsUserNotificationsService::getSettingNotificationColaborador($user_with_settings->id_user);
                 if (isset($user_settings->configuraciones->oportunidades_max_time_inactivity) and $user_settings->configuraciones->oportunidades_max_time_inactivity > 0) {
@@ -224,16 +281,18 @@ class OportunidadesNotificationsService
                                 $oportunidad['attempts']            = $existing_notification->attempts;
                                 if( $new_inactivity_period > $existing_notification->inactivity_period ){
                                     SendNotificationService::sendInactiveOportunityNotification($oportunidad);
-                                    // echo " Sending notificacion to ". $oportunidad['nombre'] . " if@sendNotificationsUsingUserSettings " ;
+                                    UtilService::createCustomLog("sendNotifications_log", "| line 270 | sendInactiveOportunityNotification for oportunidad user -> " . $oportunidad['id_oportunidad'] . " -> " . $oportunidad['colaborador_id']);
                                     OportunidadesNotificationsRep::updateAttemptsAndInactivityforExisitingOportunidadNotification($oportunidad['id_oportunidad'], $new_inactivity_period, NULL, 'no-leido');
+                                    UtilService::createCustomLog("sendNotifications_log", "| line 272 | updateAttemptsAndInactivityforExisitingOportunidadNotification for oportunidad user -> " . $oportunidad['id_oportunidad'] . " -> " . $oportunidad['colaborador_id']);
                                 }
                             } else {
                                 $oportunidad['attempts']            = 0;
                                 $oportunidad['inactivity_period']   = $hours;
                                 $inactivity_period                  = $hours;
                                 SendNotificationService::sendInactiveOportunityNotification($oportunidad);
-                                // echo " Sending notificacion to ". $oportunidad['nombre'] . " else@sendNotificationsUsingUserSettings " ;
+                                UtilService::createCustomLog("sendNotifications_log", "| line 279 | sendInactiveOportunityNotification for oportunidad user -> " . $oportunidad['id_oportunidad'] . " -> " . $oportunidad['colaborador_id']);
                                 OportunidadesNotificationsRep::createOportunidadNotification($oportunidad);
+                                UtilService::createCustomLog("sendNotifications_log", "| line 281 | createOportunidadNotification for oportunidad user -> " . $oportunidad['id_oportunidad'] . " -> " . $oportunidad['colaborador_id']);
                             }
 
                             //Email notification
@@ -242,18 +301,19 @@ class OportunidadesNotificationsService
                                 $attempts = ($oportunidad['attempts'] > 0) ? $oportunidad['attempts'] : 1;
                                 if ($inactivity_period > 0 AND $inactivity_period > ($hours * $attempts)) {
                                     OportunidadesNotificationsService::sendOportunidadNotificationColaboradorEmail($oportunidad);
-                                    // echo " Sending email to ". $oportunidad['email'] . " @ if inactivity " ;
+                                    UtilService::createCustomLog("sendNotifications_log", "| line 290 | sendOportunidadNotificationColaboradorEmail for oportunidad user -> " . $oportunidad['id_oportunidad'] . " -> " . $oportunidad['colaborador_id']);
                                 }
                                 //First notification
                                 if ($oportunidad['attempts'] == 0 AND $inactivity_period >= ($hours * $attempts)) {
                                     OportunidadesNotificationsService::sendOportunidadNotificationColaboradorEmail($oportunidad);
-                                    // echo " Sending email to ". $oportunidad['email'] . "  @ if 1st notification " ;
+                                    UtilService::createCustomLog("sendNotifications_log", "| line 295 | sendOportunidadNotificationColaboradorEmail for oportunidad user -> " . $oportunidad['id_oportunidad'] . " -> " . $oportunidad['colaborador_id']);
                                 }
                             }
                         }
                     }
                 }
             }
+            UtilService::createCustomLog("sendNotifications_log", "<!-- sendNotificationsUsingUserSettings -->");
         }
     }
 
