@@ -25,4 +25,5 @@ class CatalogoSeeder extends Seeder
         DB::table('mediocontacto_catalogo')->insert(['nombre'=>'Reunión','color'=>'#f9ab3f','created_at'=> now()]);
 
     }
+    
 }
