@@ -36,7 +36,7 @@
     <tbody>
       <tr>
         <td width="135">
-          <img src="https://qakiper-master.netlify.app/assets/img/logokiper.svg">
+          <img src="https://kiper-bucket.s3.us-east-2.amazonaws.com/generales/logoEmail.jpg">
         </td>
       </tr>
         <td>
@@ -82,7 +82,7 @@
               </tr>
               <tr>
                 <td height="50" style="text-align:right">
-                  <img src="logoFooter.jpg">
+                  <img src="https://kiper-bucket.s3.us-east-2.amazonaws.com/generales/email1.jpg">
                 </td>
               </tr>
             </tbody>

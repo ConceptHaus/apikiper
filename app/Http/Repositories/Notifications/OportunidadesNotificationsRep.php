@@ -61,7 +61,10 @@ class OportunidadesNotificationsRep
                                         ->join('oportunidades','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
                                         ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
                                         ->where('notifications.attempts', '>=', $max_notification_attempts)
-                                        ->where('notifications.status', '!=', 'resuelto')
+                                        ->where(function($q) {
+                                            $q->where('notifications.status', '=', 'escalado')
+                                                ->orWhereNull('notifications.status');
+                                        })
                                         ->get()
                                         ->toArray();
         
@@ -218,6 +221,33 @@ class OportunidadesNotificationsRep
         }
 
         return $inactivity_period;
+    }
+
+    public static function getOportunidadWithDetails($oportunidad_id)
+    {
+        $oportunidad =    Oportunidad::select('oportunidades.id_oportunidad',
+                                                'oportunidades.nombre_oportunidad',
+                                                'status_oportunidad.updated_at',
+                                                'detalle_oportunidad.valor',
+                                                'cat_status_oportunidad.status',
+                                                'users.id as colaborador_id',
+                                                'users.nombre',
+                                                'users.apellido',
+                                                'users.email',
+                                                'users.id as colaborador_id')
+                                        ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                                        ->join('users','colaborador_oportunidad.id_colaborador','users.id')
+                                        ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                                        ->join('detalle_oportunidad','colaborador_oportunidad.id_oportunidad','detalle_oportunidad.id_oportunidad')
+                                        ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
+                                        ->where('oportunidades.id_oportunidad', $oportunidad_id)
+                                        ->where('status_oportunidad.id_cat_status_oportunidad', '!=', 2)
+                                        ->where('status_oportunidad.id_cat_status_oportunidad', '!=', 3)
+                                        ->groupBy('oportunidades.id_oportunidad')
+                                        ->first()
+                                        ->toArray();
+        
+        return $oportunidad;
     }
 
 }
