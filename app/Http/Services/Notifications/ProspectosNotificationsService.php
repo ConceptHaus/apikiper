@@ -52,28 +52,42 @@ class ProspectosNotificationsService
             if (count($notifications) > 0) {
                 foreach ($notifications as $key => $notification) {
                     foreach ($prospectos as $index => $prospecto) {
-                        // if (!in_array($notification['source_id'], $prospecto)) {
-                        //    unset($prospectos[$index]);
-                        //    ProspectosNotificationsService::changeStatusforExisitingProspectoNotification($notification['source_id'], 'resuelto');
-                        // }
-
                         //Get last update for status prospecto
-                        $inactivity_period = ProspectosNotificationsRep::verifyActivityforProspecto($notification['source_id'], $notification['updated_at']);
-                        // print_r($inactivity_period);
-                        if (!in_array($notification['source_id'], $prospecto)) {
-                            if ($inactivity_period <= 0) {
-                                ProspectosNotificationsService::changeStatusforExisitingProspectoNotification($notification['source_id'], 'resuelto');
-                            }
-                        } else {
+                        // print_r($prospecto); die();
+                        if($prospecto['id_prospecto'] == $notification['source_id']){
+                           // echo " @ if foreach prospectos -> prospecto = notification -> ". $notification['source_id'] . "     |     ";
+                            $inactivity_period = ProspectosNotificationsRep::verifyActivityforProspecto($notification['source_id'], $notification['updated_at']);
+                            // print_r($inactivity_period);
                             if ($inactivity_period <= 0) {
                                 unset($prospectos[$index]);
                                 ProspectosNotificationsService::changeStatusforExisitingProspectoNotification($notification['source_id'], 'resuelto');
                             }
+                            /*if (!in_array($notification['source_id'], $prospecto)) {
+                                if ($inactivity_period <= 0) {
+                                    ProspectosNotificationsService::changeStatusforExisitingProspectoNotification($notification['source_id'], 'resuelto');
+                                }
+                            } else {
+                                if ($inactivity_period <= 0) {
+                                    unset($prospectos[$index]);
+                                    ProspectosNotificationsService::changeStatusforExisitingProspectoNotification($notification['source_id'], 'resuelto');
+                                }
+                            }*/
                         }
                     }
                 }
             }
             $max_time_inactivity =  SettingsService::getProspectosMaxTimeInactivity();
+
+            //Get System settings to check if admins want to receive an email notification
+            $send_emails = SettingsService::getProspectosSendInactivityEmailForAdmins();
+            //Get Admins
+            if ($send_emails == "all") {
+                $admins = ProspectosNotificationsService::getAdminsToSendProspectosNotificationEscalation(3);
+                //  print_r($admins);
+            }else{
+                $admins = [];
+            }
+           
 
             foreach ($prospectos as $key => $prospecto) {
                 $existing_notification  = ProspectosNotificationsRep::checkProspectoNotification($prospecto['id_prospecto']);
@@ -96,6 +110,18 @@ class ProspectosNotificationsService
                     $existing_notification_attempts   = 0;
                     SendNotificationService::sendInactiveProspectNotification($prospecto);
                     ProspectosNotificationsRep::createProspectoNotification($prospecto);
+
+                    if ($send_emails == "all") {
+                        if (count($admins) > 0) {
+                            $prospecto_for_admin = $oportunidad;
+                            foreach ($admins as $key_2 => $admin) {
+                                $prospecto_for_admin['email']             = $admin['email'];
+                                $prospecto_for_admin['colaborador_id']    = $admin['id'];
+                                SendNotificationService::sendInactiveProspectNotification($prospecto_for_admin);
+                                ProspectosNotificationsRep::createProspectoNotification($prospecto_for_admin, true);
+                            }
+                        }
+                    }
                 }
 
                 //Get User's settings to check if they want to receive an email notification
@@ -106,11 +132,7 @@ class ProspectosNotificationsService
                     }
                 }
 
-                //Get System settings to check if admins want to receive an email notification
-                $send_emails = SettingsService::getProspectosSendInactivityEmailForAdmins();
                 if ($send_emails == "all") {
-                    $admins = ProspectosNotificationsService::getAdminsToSendProspectosNotificationEscalation(3);
-                    //  print_r($admins);
                     if (count($admins) > 0) {
                         $prospecto_for_admin = $prospecto;
                         foreach ($admins as $key_2 => $admin) {
