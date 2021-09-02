@@ -92,7 +92,7 @@ class ProspectosNotificationsRep
         }
     }
 
-    public static function createProspectoNotification($prospecto)
+    public static function createProspectoNotification($prospecto, $for_admin=false)
     {
         $notificaton                    = new Notification;
         $notificaton->colaborador_id    = $prospecto['colaborador_id'];
@@ -101,6 +101,9 @@ class ProspectosNotificationsRep
         $notificaton->inactivity_period = $prospecto['inactivity_period'];
         $notificaton->view              = 'no-leido';
         $notificaton->attempts          = $prospecto['attempts'];
+        if($for_admin){
+            $notificaton->type          = 2;    
+        }
         $notificaton->save();
     }
 
@@ -134,6 +137,7 @@ class ProspectosNotificationsRep
                                 $q->where('status', '!=', 'resuelto')
                                 ->orWhereNull('status');
                             })
+                            ->where('type', '!=', 2)
                             ->get()
                             ->toArray();   
     }

@@ -206,4 +206,11 @@ class UtilService
         return $periods;
     }
 
+    public static function createCustomLog($file, $message){
+        $myfile = fopen(storage_path() . "/logs/" . $file . ".log", "a+");
+        $txt    = date('Y-M-d H:i:s') . " " . $message . "\n";
+        fwrite($myfile, $txt);
+        fclose($myfile);
+    }
+
 }
