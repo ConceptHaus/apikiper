@@ -128,7 +128,7 @@ class OportunidadesNotificationsService
                                 SendNotificationService::sendInactiveOportunityNotification($oportunidad_for_admin);
                                 UtilService::createCustomLog("sendNotifications_log", "| line 129 | sendInactiveOportunityNotification for oportunidad admin -> " . $oportunidad_for_admin['id_oportunidad'] . " -> " . $oportunidad_for_admin['colaborador_id']);
                                 OportunidadesNotificationsRep::createOportunidadNotification($oportunidad_for_admin, true);
-                                UtilService::createCustomLog("sendNotifications_log", "| line 131 | createOportunidadNotification for oportunidad admin -> " . $oportunidad_for_admin['id_oportunidad_for_admin'] . " -> " . $oportunidad['colaborador_id']);
+                                UtilService::createCustomLog("sendNotifications_log", "| line 131 | createOportunidadNotification for oportunidad admin -> " . $oportunidad_for_admin['id_oportunidad'] . " -> " . $oportunidad['colaborador_id']);
                             }
                         }
                     }
