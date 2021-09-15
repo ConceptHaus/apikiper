@@ -28,15 +28,9 @@ class OportunidadesNotificationsRep
                                         ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
                                         ->join('detalle_oportunidad','colaborador_oportunidad.id_oportunidad','detalle_oportunidad.id_oportunidad')
                                         ->join('cat_status_oportunidad','cat_status_oportunidad.id_cat_status_oportunidad','status_oportunidad.id_cat_status_oportunidad')
-                                        ->join('notifications','notifications.source_id','oportunidades.id_oportunidad')
                                         ->where('status_oportunidad.updated_at', '<=', $start_date)
                                         ->where('status_oportunidad.id_cat_status_oportunidad', '!=', 2)
                                         ->where('status_oportunidad.id_cat_status_oportunidad', '!=', 3)
-                                        ->where('notifications.notification_type', 'oportunidad')
-                                        ->where(function($q) {
-                                            $q->where('notifications.status', '=', 'escalado')
-                                                ->orWhereNull('notifications.status');
-                                            })
                                         ->groupBy('oportunidades.id_oportunidad')
                                         ->get()
                                         ->toArray();
@@ -97,11 +91,6 @@ class OportunidadesNotificationsRep
     {
         $oportunidades = Notification::where('source_id', $oportunidad_id)->get();
 
-        // if (!empty($oportunidad)) {
-        //     $oportunidad->status = $new_status;
-        //     $oportunidad->save();
-        // }
-
         if(count($oportunidades) > 0){
             foreach ($oportunidades as $key => $oportunidad) {
                 $oportunidad->status = $new_status;
@@ -127,7 +116,13 @@ class OportunidadesNotificationsRep
 
     public static function checkOportunidadNotification($oportunidad_id)
     {
-        $exisiting_notification = Notification::where('source_id', $oportunidad_id)->first();
+        $exisiting_notification =   Notification::where('source_id', $oportunidad_id)
+                                                ->where(function($q) {
+                                                    $q->where('status', '!=', 'resuelto')
+                                                    ->orWhereNull('status');
+                                                })
+                                                ->where('type', 1)
+                                                ->first();
        
         if (!empty($exisiting_notification)) {
             return $exisiting_notification;

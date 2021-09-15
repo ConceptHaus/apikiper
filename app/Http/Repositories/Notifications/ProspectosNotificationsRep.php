@@ -84,11 +84,13 @@ class ProspectosNotificationsRep
 
     public static function changeStatusforExisitingProspectoNotification($prospecto_id, $new_status)
     {
-        $prospecto = Notification::where('source_id', $prospecto_id)->first();
+        $prospectos = Notification::where('source_id', $prospecto_id)->first();
         
-        if (!empty($prospecto)) {
-            $prospecto->status = $new_status;
-            $prospecto->save();
+        if(count($prospectos) > 0){
+            foreach ($prospectos as $key => $prospecto) {
+                $prospecto->status = $new_status;
+                $prospecto->save();
+            }
         }
     }
 
@@ -109,9 +111,19 @@ class ProspectosNotificationsRep
 
     public static function checkProspectoNotification($prospecto_id)
     {
-        $exisiting_notification = Notification::where('source_id', $prospecto_id)->first();
-       
-        return !empty($exisiting_notification)? $exisiting_notification: [];
+        $exisiting_notification =   Notification::where('source_id', $prospecto_id)
+                                                ->where(function($q) {
+                                                    $q->where('status', '!=', 'resuelto')
+                                                    ->orWhereNull('status');
+                                                })
+                                                ->where('type', 1)
+                                                ->first();
+                                                
+        if (!empty($exisiting_notification)) {
+            return $exisiting_notification;
+        }else{
+            return [];
+        }
     }
 
     // public static function updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto_id)
@@ -345,16 +357,29 @@ class ProspectosNotificationsRep
         return $inactivity_period;
     }
 
-    public static function updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto_id, $new_inactivity_period, $attempts=NULL)
+    public static function updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto_id, $new_inactivity_period, $attempts=NULL, $view=NULL)
     {
-        $prospecto  =  Notification::where('source_id', $prospecto_id)
+        $prospectos  =  Notification::where('source_id', $prospecto_id)
                                     ->where('notification_type', 'prospecto')
                                     ->where(function($q) {
                                         $q->where('status', '!=', 'resuelto')
                                           ->orWhereNull('status');
                                     })
-                                    ->first();
+                                    ->get();
 
+        if (count($prospectos) > 0) {
+            foreach ($prospectos as $key => $prospecto) {
+            
+                $prospecto->inactivity_period = $new_inactivity_period;
+                if(!is_null($attempts)){
+                    $prospecto->attempts = $prospecto->attempts + 1;
+                }
+                if(!is_null($view)){
+                    $prospecto->view = $view;
+                }
+                $prospecto->save();
+            }
+        }
         if (!empty($prospecto)) {
             $prospecto->inactivity_period = $new_inactivity_period;
             if(!is_null($attempts)){

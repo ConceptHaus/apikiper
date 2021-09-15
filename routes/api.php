@@ -354,3 +354,10 @@ Route::prefix('/v1/recordatorios')->group(function(){
         Route::get('/usuarios','Recordatorios\RecordatoriosController@getRecordatoriosUsuarios');
     });
 });
+
+Route::prefix('/v1/imap-email')->group(function(){
+    // Route::middleware(['auth','cors'])->group(function(){
+        Route::get('/','Mailing\MailingInboxController@getAccount');
+        Route::get('/test-db','Mailing\MailingInboxController@testDB');
+    // });
+});
