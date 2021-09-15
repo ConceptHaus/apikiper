@@ -144,7 +144,6 @@ class OportunidadesNotificationsService
                     }
                 }
 
-               
                 if ($send_emails == "all") {
                     if (count($admins) > 0) {
                         $oportunidad_for_admin = $oportunidad;
