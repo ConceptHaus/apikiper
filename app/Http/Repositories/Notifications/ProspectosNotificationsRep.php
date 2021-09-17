@@ -380,15 +380,6 @@ class ProspectosNotificationsRep
                 $prospecto->save();
             }
         }
-        if (!empty($prospecto)) {
-            $prospecto->inactivity_period = $new_inactivity_period;
-            if(!is_null($attempts)){
-                $prospecto->attempts = $prospecto->attempts + 1;
-            }
-            $prospecto->save();
-
-            return $prospecto;
-        }
     }
 
 }
