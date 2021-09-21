@@ -47,6 +47,8 @@ class ProspectosNotificationsService
         $max_time_inactivity = SettingsService::getProspectosMaxTimeInactivity();
         // print_r($prospectos); die();
 
+        UtilService::createCustomLog("sendNotifications_log", "<!-- sendNotifications -->");
+
         if (count($prospectos) > 0) {
             //Delete no longer inactive prospectos from array
             if (count($notifications) > 0) {
@@ -60,6 +62,7 @@ class ProspectosNotificationsService
                             if ($inactivity_period <= 0) {
                                 unset($prospectos[$index]);
                                 ProspectosNotificationsService::changeStatusforExisitingProspectoNotification($notification['source_id'], 'resuelto');
+                                UtilService::createCustomLog("sendNotifications_log", "| line 65 | changeStatusforExisitingProspectoNotification for notification -> " . $notification['source_id'] . " resuelto");
                             }
                         }
                     }
@@ -89,7 +92,9 @@ class ProspectosNotificationsService
                     if ($new_inactivity_period >= ($max_time_inactivity  * ($existing_notification->attempts + 1))) {
                         $prospecto['attempts']      = $existing_notification->attempts + 1;
                         ProspectosNotificationsRep::updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto['id_prospecto'], $prospecto['inactivity_period'], true);
+                        UtilService::createCustomLog("sendNotifications_log", "| line 95 | updateAttemptsAndInactivityforExisitingProspectoNotification for prospecto -> " . $prospecto['id_prospecto'] . " -> " . $prospecto['inactivity_period']);
                         SendNotificationService::sendInactiveProspectNotification($prospecto);
+                        UtilService::createCustomLog("sendNotifications_log", "| line 97 | sendInactiveProspectNotification for prospecto colaborador -> " . $prospecto['id_prospecto'] . " -> " . $prospecto['colaborador_id']);
                         if ($send_emails == "all") {
                             if (count($admins) > 0) {
                                 $prospecto_for_admin = $prospecto;
@@ -97,6 +102,7 @@ class ProspectosNotificationsService
                                     $prospecto_for_admin['email']             = $admin['email'];
                                     $prospecto_for_admin['colaborador_id']    = $admin['id'];
                                     SendNotificationService::sendInactiveProspectNotification($prospecto_for_admin);
+                                    UtilService::createCustomLog("sendNotifications_log", "| line 105 | sendInactiveProspectNotification for prospecto admin -> " . $prospecto_for_admin['id_prospecto'] . " -> " . $prospecto_for_admin['colaborador_id']);
                                 }
                             }
                         }
@@ -109,7 +115,9 @@ class ProspectosNotificationsService
                     $prospecto['inactivity_period']   = $max_time_inactivity;
                     $existing_notification_attempts   = 0;
                     SendNotificationService::sendInactiveProspectNotification($prospecto);
+                    UtilService::createCustomLog("sendNotifications_log", "| line 118 | sendInactiveProspectNotification for prospecto user -> " . $prospecto['id_prospecto'] . " -> " . $prospecto['colaborador_id']);
                     ProspectosNotificationsRep::createProspectoNotification($prospecto);
+                    UtilService::createCustomLog("sendNotifications_log", "| line 120 | createProspectoNotification for prospecto user -> " . $prospecto['id_prospecto'] . " -> " . $prospecto['colaborador_id']);
 
                     if ($send_emails == "all") {
                         if (count($admins) > 0) {
@@ -118,7 +126,9 @@ class ProspectosNotificationsService
                                 $prospecto_for_admin['email']             = $admin['email'];
                                 $prospecto_for_admin['colaborador_id']    = $admin['id'];
                                 SendNotificationService::sendInactiveProspectNotification($prospecto_for_admin);
+                                UtilService::createCustomLog("sendNotifications_log", "| line 129 | sendInactiveProspectNotification for prospecto admin -> " . $prospecto_for_admin['id_prospecto'] . " -> " . $prospecto_for_admin['colaborador_id']);
                                 ProspectosNotificationsRep::createProspectoNotification($prospecto_for_admin, true);
+                                UtilService::createCustomLog("sendNotifications_log", "| line 131 | createProspectoNotification for prospecto admin -> " . $prospecto_for_admin['id_prospecto'] . " -> " . $prospecto['colaborador_id']);
                             }
                         }
                     }
@@ -129,6 +139,7 @@ class ProspectosNotificationsService
                 if (empty($user_settings) or  (isset($user_settings->configuraciones->disable_email_notification_prospectos) and $user_settings->configuraciones->disable_email_notification_prospectos == 0)) {
                     if ($prospecto['inactivity_period'] > 0 and $prospecto['inactivity_period'] >= ($max_time_inactivity * $prospecto['attempts']) and ($existing_notification_attempts != $prospecto['attempts'])) {
                         ProspectosNotificationsService::sendProspectoNotificationEmail($prospecto);
+                        UtilService::createCustomLog("sendNotifications_log", "| line 142 | sendProspectoNotificationEmail for prospecto user -> " . $prospecto['id_prospecto'] . " -> " . $prospecto['colaborador_id']);
                     }
                 }
 
@@ -139,6 +150,7 @@ class ProspectosNotificationsService
                             $prospecto_for_admin['email'] = $admin['email'];
                             if ($prospecto_for_admin['inactivity_period'] > 0 and $prospecto_for_admin['inactivity_period'] >= ($max_time_inactivity * $prospecto_for_admin['attempts']) and ($existing_notification_attempts != $prospecto['attempts'])) {
                                 ProspectosNotificationsService::sendProspectoNotificationEmail($prospecto_for_admin);
+                                UtilService::createCustomLog("sendNotifications_log", "| line 153 | sendProspectoNotificationEmail for prospecto admin -> " . $prospecto_for_admin['id_prospecto'] . " -> " . $prospecto_for_admin['colaborador_id']);
                             }
                         }
                     }
@@ -151,10 +163,13 @@ class ProspectosNotificationsService
                     $inactivity_period = ProspectosNotificationsRep::verifyActivityforProspecto($notification['source_id'], $notification['updated_at']);
                     if ($inactivity_period <= 0) {
                         ProspectosNotificationsService::changeStatusforExisitingProspectoNotification($notification['source_id'], 'resuelto');
+                        UtilService::createCustomLog("sendNotifications_log", "| line 166 | changeStatusforExisitingProspectoNotification for prospecto  -> " . $notification['source_id'] . " -> resuelto");
                     }
                 }
             }
         }
+        UtilService::createCustomLog("sendNotifications_log", "<!-- sendNotifications -->");
+        UtilService::createCustomLog("sendNotifications_log", " ");
     }
 
     public static function sendProspectoNotificationEmail($prospecto)
@@ -344,6 +359,7 @@ class ProspectosNotificationsService
         $users_with_settings = SettingsUserNotificationsService::getUsersWithSettings();
         // print_r($users_with_settings);
         if (count($users_with_settings) > 0) {
+            UtilService::createCustomLog("sendNotifications_log", "<!-- sendNotificationsUsingUserSettings -->");
             foreach ($users_with_settings as $key => $user_with_settings) {
                 $user_settings = SettingsUserNotificationsService::getSettingNotificationColaborador($user_with_settings->id_user);
                 if (isset($user_settings->configuraciones->prospectos_max_time_inactivity) and $user_settings->configuraciones->prospectos_max_time_inactivity > 0) {
@@ -354,7 +370,7 @@ class ProspectosNotificationsService
                     $prospectos = ProspectosNotificationsRep::getProspectosByColaboradorToSendNotifications($user_settings->id_user, $start_date);
 
                     if (count($prospectos) > 0) {
-                        // print_r($prospectos); exit;
+                        // print_r($prospectos); die();
                         foreach ($prospectos as $key => $prospecto) {
                             //Notification
                             $existing_notification  = ProspectosNotificationsRep::checkProspectoNotification($prospecto['id_prospecto']);
@@ -367,14 +383,18 @@ class ProspectosNotificationsService
                                 // print_r($prospecto); die();
                                 if( $new_inactivity_period > $existing_notification->inactivity_period ){
                                     SendNotificationService::sendInactiveProspectNotification($prospecto);
+                                    UtilService::createCustomLog("sendNotifications_log", "| line 386 | sendInactiveProspectNotification for prospecto user -> " . $prospecto['id_prospecto'] . " -> " . $prospecto['colaborador_id']);
                                     ProspectosNotificationsRep::updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto['id_prospecto'], $new_inactivity_period, NULL, 'no-leido');
+                                    UtilService::createCustomLog("sendNotifications_log", "| line 388 | updateAttemptsAndInactivityforExisitingProspectoNotification for prospecto user -> " . $prospecto['id_prospecto'] . " -> " . $prospecto['colaborador_id']);
                                 }
                             } else {
                                 $prospecto['attempts']            = 0;
                                 $prospecto['inactivity_period']   = $hours;
                                 $inactivity_period                = $hours;
                                 SendNotificationService::sendInactiveProspectNotification($prospecto);
+                                UtilService::createCustomLog("sendNotifications_log", "| line 395 | sendInactiveProspectNotification for prospecto user -> " . $prospecto['id_prospecto'] . " -> " . $prospecto['colaborador_id']);
                                 ProspectosNotificationsRep::createProspectoNotification($prospecto);
+                                UtilService::createCustomLog("sendNotifications_log", "| line 397 | createProspectoNotification for prospecto user -> " . $prospecto['id_prospecto'] . " -> " . $prospecto['colaborador_id']);
                             }
                             //Email notification
                             // print_r($prospecto);
@@ -383,10 +403,12 @@ class ProspectosNotificationsService
                                 //Do not send too much emails 
                                 if ($inactivity_period > 0 and $inactivity_period >= ($hours * $attempts)) {
                                     ProspectosNotificationsService::sendProspectoNotificationColaboradorEmail($prospecto);
+                                    UtilService::createCustomLog("sendNotifications_log", "| line 406 | sendProspectoNotificationColaboradorEmail for prospecto user -> " . $prospecto['id_prospecto'] . " -> " . $prospecto['colaborador_id']);
                                 }
                                 //First notification
                                 if ($prospecto['attempts'] == 0 AND $inactivity_period >= ($hours * $attempts)) {
                                     ProspectosNotificationsService::sendProspectoNotificationColaboradorEmail($prospecto);
+                                    UtilService::createCustomLog("sendNotifications_log", "| line 411 | sendProspectoNotificationColaboradorEmail for prospecto user -> " . $prospecto['id_prospecto'] . " -> " . $prospecto['colaborador_id']);
                                 }
                             }
                         }

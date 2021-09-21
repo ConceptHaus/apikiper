@@ -84,7 +84,7 @@ class ProspectosNotificationsRep
 
     public static function changeStatusforExisitingProspectoNotification($prospecto_id, $new_status)
     {
-        $prospectos = Notification::where('source_id', $prospecto_id)->first();
+        $prospectos = Notification::where('source_id', $prospecto_id)->get();
         
         if(count($prospectos) > 0){
             foreach ($prospectos as $key => $prospecto) {
