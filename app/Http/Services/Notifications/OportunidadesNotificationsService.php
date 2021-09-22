@@ -303,7 +303,7 @@ class OportunidadesNotificationsService
                             if (isset($user_settings->configuraciones->disable_email_notification_oportunidades) and !$user_settings->configuraciones->disable_email_notification_oportunidades) {
                                 // print_r($oportunidad);
                                 $attempts = ($oportunidad['attempts'] > 0) ? $oportunidad['attempts'] : 1;
-                                if ($inactivity_period > 0 AND $inactivity_period >= ($hours * $attempts)) {
+                                if ($inactivity_period > $hours AND $inactivity_period >= ($hours * $attempts)) {
                                     OportunidadesNotificationsService::sendOportunidadNotificationColaboradorEmail($oportunidad);
                                     UtilService::createCustomLog("sendNotifications_log", "| line 309 | sendOportunidadNotificationColaboradorEmail for oportunidad user -> " . $oportunidad['id_oportunidad'] . " -> " . $oportunidad['colaborador_id']);
                                 }
