@@ -401,7 +401,7 @@ class ProspectosNotificationsService
                             if (isset($user_settings->configuraciones->disable_email_notification_prospectos) and !$user_settings->configuraciones->disable_email_notification_prospectos) {
                                 $attempts = ($prospecto['attempts'] > 0) ? $prospecto['attempts'] : 1;
                                 //Do not send too much emails 
-                                if ($inactivity_period > 0 and $inactivity_period >= ($hours * $attempts)) {
+                                if ($inactivity_period > $hours AND $inactivity_period >= ($hours * $attempts)) {
                                     ProspectosNotificationsService::sendProspectoNotificationColaboradorEmail($prospecto);
                                     UtilService::createCustomLog("sendNotifications_log", "| line 406 | sendProspectoNotificationColaboradorEmail for prospecto user -> " . $prospecto['id_prospecto'] . " -> " . $prospecto['colaborador_id']);
                                 }
