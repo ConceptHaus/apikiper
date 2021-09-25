@@ -26,6 +26,9 @@ class CreateDetalleProspecto extends Migration
             $table->string('celular')->nullable();
             $table->string('whatsapp')->nullable();
             $table->string('nota')->nullable();
+            $table->string('nombre_campana')->nullable();
+            $table->string('desarrollo')->nullable();
+            $table->string('ciudad')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
