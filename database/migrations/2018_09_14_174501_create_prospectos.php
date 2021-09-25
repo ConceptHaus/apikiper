@@ -19,7 +19,7 @@ class CreateProspectos extends Migration
             $table->primary('id_prospecto');
             $table->string('nombre');
             $table->string('apellido');
-            $table->string('correo');
+            $table->string('correo')->nullable();
             //$table->string('fuente');
             $table->integer('fuente')->unsigned();
             $table->foreign('fuente')->references('id_fuente')->on('cat_fuentes');
