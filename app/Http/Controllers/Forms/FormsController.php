@@ -435,7 +435,7 @@ class FormsController extends Controller
 
     public function validadorProspecto(array $data){
         return Validator::make($data,[
-         // 'correo'=>'email|max:255|unique:prospectos,correo',
+          'correo'=>'nullable|email|max:255|unique:prospectos,correo',
           'telefono'=>'required|unique:detalle_prospecto,telefono|'
         ]);
     }
