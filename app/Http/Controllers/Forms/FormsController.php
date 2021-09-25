@@ -351,7 +351,7 @@ class FormsController extends Controller
 
           $prospecto->nombre = $data['nombre'];
           $prospecto->apellido = (isset($data['apellido']) ? $data['apellido'] : '');
-          $prospecto->correo = $data['correo'];
+          $prospecto->correo =  (isset($data['correo']) ? $data['correo'] : '');
           $prospecto->fuente = (isset($data['fuente']) ? $data['fuente'] : 2) ;
           $prospecto->save();
 
@@ -435,7 +435,7 @@ class FormsController extends Controller
 
     public function validadorProspecto(array $data){
         return Validator::make($data,[
-          'correo'=>'email|max:255|unique:prospectos,correo',
+         // 'correo'=>'email|max:255|unique:prospectos,correo',
           'telefono'=>'required|unique:detalle_prospecto,telefono|'
         ]);
     }
