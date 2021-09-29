@@ -46,7 +46,7 @@ class RolesTableSeeder extends Seeder
                                     "fe.sidebar.oportunidades.generales",
                                     "fe.sidebar.newsletter",
                                     "fe.sidebar.ajustes.colaboradores",
-                                    "f"fe.sidebar.ajustes.integraciones",
+                                    "fe.sidebar.ajustes.integraciones",
                                     "fe.sidebar.ajustes.colaboradores",
                                     "fe.sidebar.ajustes.servicios",
                                     "fe.sidebar.ajustes.etiquetas",
