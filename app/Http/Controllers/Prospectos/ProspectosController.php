@@ -312,7 +312,7 @@ class ProspectosController extends Controller
         $permisos = User::getAuthenticatedUserPermissions();
         $auth = $this->guard()->user();
         if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
-            $prospectos = Prospecto::join('campaign_infos','prospectos.id_prospecto', 'campaign_infos.prospecto');
+            $prospectos = Prospecto::GetAllProspectos();
             $prospectos_total = Prospecto::count();
             $prospectos_sin_contactar = Prospecto::join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
                                     ->where('status_prospecto.id_cat_status_prospecto','=',1)->count(); 
