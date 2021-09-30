@@ -28,7 +28,7 @@ class ProspectosListRep
             ->wherenull('prospectos.deleted_at')
             ->where('etiquetas.nombre','like','%polanco%')
             ->where('users.id', '=', $id_colaborador)
-            ->where(function ($query) use ($search) {,
+            ->where(function ($query) use ($search) {
                 $query->orWhere('prospectos.nombre', 'like', '%'.$search.'%')
                         ->orWhere('prospectos.apellido', 'like', '%'.$search.'%')
                         ->orWhere('prospectos.correo', 'like', '%'.$search.'%')
@@ -318,8 +318,8 @@ class ProspectosListRep
             ->leftjoin('etiquetas', 'etiquetas.id_etiqueta', 'etiquetas_prospectos.id_etiqueta')
             ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'prospectos.id_prospecto')
             ->leftjoin('empresas', 'empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
-            ->leftjoin('campaign_infos', 'campaign_infos.id_prospecto', '=', 'prospectos.id_prospecto')
-            ->leftjoin('cat_integraciones', 'cat_integraciones.id', '=', 'campaign_infos.id_forms')
+//            ->leftjoin('campaign_infos', 'campaign_infos.id_prospecto', '=', 'prospectos.id_prospecto')
+ //           ->leftjoin('cat_integraciones', 'cat_integraciones.id', '=', 'campaign_infos.id_forms')
             ->wherenull('prospectos.deleted_at')
             ->where(function ($query) use ($search) {
                 $query->orWhere('prospectos.nombre', 'like', '%'.$search.'%')
