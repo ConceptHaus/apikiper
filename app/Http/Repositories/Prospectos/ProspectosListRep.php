@@ -28,7 +28,7 @@ class ProspectosListRep
             ->wherenull('prospectos.deleted_at')
             ->where('etiquetas.nombre','like','%polanco%')
             ->where('users.id', '=', $id_colaborador)
-            ->where(function ($query) use ($search) {
+            ->where(function ($query) use ($search) {,
                 $query->orWhere('prospectos.nombre', 'like', '%'.$search.'%')
                         ->orWhere('prospectos.apellido', 'like', '%'.$search.'%')
                         ->orWhere('prospectos.correo', 'like', '%'.$search.'%')
