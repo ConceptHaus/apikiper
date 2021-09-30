@@ -278,7 +278,7 @@ class FormsController extends Controller
 
     }
 
-    public function addProspecto(array $data, $verify){
+     public function addProspecto(array $data, $verify){
         
         DB::beginTransaction();
 
@@ -307,18 +307,9 @@ class FormsController extends Controller
           $prospecto->calls()->save($llamadaProspecto);
 
           $detalleProspecto = new DetalleProspecto();
-
-          $detalleProspecto->empresa = (isset($data['empresa']) ? $data['empresa'] : '');
-          $detalleProspecto->nombre_campana = (isset($data['nombre_campana']) ? $data['nombre_campana'] : '');
-          $detalleProspecto->desarrollo = (isset($data['desarrollo']) ? $data['desarrollo'] : ' ');
-          $detalleProspecto->ciudad = (isset($data['ciudad']) ? $data['ciudad'] : '');
-          $detalleProspecto->puesto = (isset($data['puesto']) ? $data['puesto'] : '');
-          $detalleProspecto->numero = (isset($data['numero']) ? $data['numero'] : '');
-          $detalleProspecto->extension = (isset($data['extension']) ? $data['extension'] : '');
-          $detalleProspecto->telefono = (isset($data['telefono']) ? preg_replace('/[^0-9]+/','',$data['telefono']) : '');
-          $detalleProspecto->celular = (isset($data['celular']) ? preg_replace('/[^0-9]+/','',$data['celular']) : '');
-          $detalleProspecto->whatsapp = (isset($data['whatsapp']) ? preg_replace('/[^0-9]+/','',$data['whatsapp']) : '');
-          $detalleProspecto->nota = (isset($data['mensaje']) ? $data['mensaje'] : '');
+          $detalleProspecto->telefono = preg_replace('/[^0-9]+/','',$data['caller_number']);
+          $detalleProspecto->celular = preg_replace('/[^0-9]+/','',$data['caller_number']);
+          $detalleProspecto->whatsapp = preg_replace('/[^0-9]+/','',$data['caller_number']);
           $prospecto->detalle_prospecto()->save($detalleProspecto);
 
           $status->id_cat_status_prospecto = 1;
@@ -360,22 +351,16 @@ class FormsController extends Controller
 
           $prospecto->nombre = $data['nombre'];
           $prospecto->apellido = (isset($data['apellido']) ? $data['apellido'] : '');
-          $prospecto->correo =  (isset($data['correo']) ? $data['correo'] : '');
+          $prospecto->correo = $data['correo'];
           $prospecto->fuente = (isset($data['fuente']) ? $data['fuente'] : 2) ;
           $prospecto->save();
 
           
           $detalleProspecto = new DetalleProspecto();
           $detalleProspecto->empresa = (isset($data['empresa']) ? $data['empresa'] : '');
-          $detalleProspecto->nombre_campana = (isset($data['nombre_campana']) ? $data['nombre_campana'] : '');
-          $detalleProspecto->desarrollo = (isset($data['desarrollo']) ? $data['desarrollo'] : ' ');
-          $detalleProspecto->ciudad = (isset($data['ciudad']) ? $data['ciudad'] : '');
-          $detalleProspecto->puesto = (isset($data['puesto']) ? $data['puesto'] : '');
-          $detalleProspecto->numero = (isset($data['numero']) ? $data['numero'] : '');
-          $detalleProspecto->extension = (isset($data['extension']) ? $data['extension'] : '');
           $detalleProspecto->telefono = (isset($data['telefono']) ? preg_replace('/[^0-9]+/','',$data['telefono']) : '');
-          $detalleProspecto->celular = (isset($data['celular']) ? preg_replace('/[^0-9]+/','',$data['celular']) : '');
-          $detalleProspecto->whatsapp = (isset($data['whatsapp']) ? preg_replace('/[^0-9]+/','',$data['whatsapp']) : '');
+          $detalleProspecto->celular = (isset($data['telefono']) ? preg_replace('/[^0-9]+/','',$data['telefono']) : '');
+          $detalleProspecto->whatsapp = (isset($data['telefono']) ? preg_replace('/[^0-9]+/','',$data['telefono']) : '');
           $detalleProspecto->nota = (isset($data['mensaje']) ? $data['mensaje'] : '');
           $prospecto->detalle_prospecto()->save($detalleProspecto);
           
