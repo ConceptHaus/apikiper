@@ -358,6 +358,10 @@ Route::prefix('/v1/recordatorios')->group(function(){
 Route::prefix('/v1/imap-email')->group(function(){
     // Route::middleware(['auth','cors'])->group(function(){
         Route::get('/','Mailing\MailingInboxController@getAccount');
+        Route::get('/get-credentials','Mailing\MailingInboxController@getCredentials');
+        Route::post('/set-credentials','Mailing\MailingInboxController@setCredentials');
+        Route::get('/unset-credentials','Mailing\MailingInboxController@unsetCredentials');
         // Route::get('/test-db','Mailing\MailingInboxController@testDB');
+        Route::get('/fonts','Mailing\MailingInboxController@getFonts');
     // });
 });
