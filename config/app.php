@@ -243,6 +243,7 @@ return [
         'Keygen' => Keygen\Keygen::class,
 
         'Client' => Webklex\IMAP\Facades\Client::class,
+        'Carbon' => 'Carbon\Carbon',
 
 
     ],

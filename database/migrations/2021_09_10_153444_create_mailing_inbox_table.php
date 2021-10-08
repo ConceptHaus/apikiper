@@ -15,13 +15,15 @@ class CreateMailingInboxTable extends Migration
     {
         Schema::create('mailing_inbox', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('username');
+            $table->string('user_id');
             $table->string('password');
             $table->string('host');
             $table->string('port');
-            $table->string('encryption');
-            $table->softDeletes();
+            $table->string('encryption')->default('ssl');
+            $table->string('alt_email')->nullable();
             $table->timestamps();
+            //Relations
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
