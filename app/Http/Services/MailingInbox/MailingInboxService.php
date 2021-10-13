@@ -24,4 +24,14 @@ class MailingInboxService
     {
         return MailingInboxRep::unsetCredentials($colaborador_id);
     }
+
+    public static function getAccount($colaborador_id)
+    {
+        return MailingInboxRep::getAccount($colaborador_id);
+    }
+
+    public static function getResponse($user_id, $email_id)
+    {
+        return MailingInboxRep::getResponse($user_id, $email_id);
+    }
 }

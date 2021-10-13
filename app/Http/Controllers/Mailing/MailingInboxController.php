@@ -106,51 +106,95 @@ class MailingInboxController extends Controller
         } 
     }
 
-    public function getAccount()
+    public function getAccount(Request $request)
     {
+        // $colaborador_id = Auth::user()->id;
+        $colaborador_id = '0e940a0c-c474-3463-bceb-0db0ad1fd42b';
+
+        $colaborador = User::find($colaborador_id);
+        if(isset($colaborador->id)){
+
+            $account =  MailingInboxService::getAccount($colaborador_id);
+            
+            if(isset($account->password)){
+                
+                $account->username = $colaborador->email;
+
+                $account->password = Crypt::decryptString($account->password);
+
+                // return $account;
+                
+                $client = \Webklex\IMAP\Facades\Client::make([
+                    'host'          => $account->host,
+                    'port'          => $account->port,
+                    'encryption'    => $account->encryption,
+                    'validate_cert' => true,
+                    'username'      => $account->username,
+                    'password'      => $account->password,
+                    'protocol'      => 'imap'
+                ]);
+    
+                /* Alternative by using the Facade
+                // $client = \Webklex\IMAP\Facades\Client::account('cuenta_1');
+                */
+    
+                //Connect to the IMAP Server
+                $client->connect();
+    
+                // $folders = $client->getFolders();
+                // return $folders;
+    
+                // $oFolder = $client->getFolder('INBOX');
+                // $aMessage = $oFolder->query()->unseen()->limit(10)->get();
+                // return $aMessage;
+    
+    
+    
+    
+    
+                /** @var \Webklex\IMAP\Folder $oFolder */
+                /** @var \Illuminate\Pagination\LengthAwarePaginator $paginator */
+
+                $page_number = (!is_null($request->page_number)) ? $request->page_number : NULL;
+                $oFolder     = $client->getFolder('INBOX');
+                $paginator   =  $oFolder->search()
+                                        ->since(\Carbon::now()->subDays(14))->get()
+                                        ->paginate($perPage = 5, $page = $page_number, $pageName = 'imap_blade_example');
+    
+                // return $paginator;
+
+
+                //In case of no error
+                $paginated_messages = array();
+                if($paginator->count() > 0){
+                
+                    $messages = array();
+                    foreach($paginator as $oMessage){
+                        $message['UID']         = $oMessage->getUid();
+                        // $message['subject']  = $oMessage->getSubject();
+                        $message['subject']     = utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)));
+                        $message['from']        = $oMessage->getFrom()[0]->mail;
+                        $message['attachments'] = $oMessage->getAttachments()->count() > 0 ? true : false;
+                        $flags                  = $oMessage->getFlags();
+                        $message['seen']        = (isset($flags['seen']) AND $flags['seen'] == "Seen") ? true : false ;
+                        $message['date']        = mb_decode_mimeheader($oMessage->date);
+                        $message['from_name']   = utf8_decode(mb_decode_mimeheader($oMessage->fromaddress ));
+                        $message['response']    = MailingInboxService::getResponse($colaborador_id, $oMessage->getUid());
+                        $message['reply']       = (is_null($message['response'])) ? false : true;
+                        $messages[]             = $message;
+                    }
+
+                    $paginated_messages['messages'] = $messages;
+                    $paginated_messages['next']     = (!is_null($request->page_number)) ? $request->page_number + 1 : 2;
+                }
+
+                return response()->json([
+                    'error'     => false,
+                    'paginator' => $paginated_messages,
+                ],200);
         
-        $id = 1;
-
-        $account = Inbox::find($id);
-
-        if(isset($account->id)){
-            $client = \Webklex\IMAP\Facades\Client::make([
-                'host'          => $account->host,
-                'port'          => $account->port,
-                'encryption'    => $account->encryption,
-                'validate_cert' => true,
-                'username'      => $account->username,
-                'password'      => $account->password,
-                'protocol'      => 'imap'
-            ]);
-
-            /* Alternative by using the Facade
-            // $client = \Webklex\IMAP\Facades\Client::account('cuenta_1');
-            */
-
-            //Connect to the IMAP Server
-            $client->connect();
-
-            // $folders = $client->getFolders();
-            // return $folders;
-
-            // $oFolder = $client->getFolder('INBOX');
-            // $aMessage = $oFolder->query()->unseen()->limit(10)->get();
-            // return $aMessage;
-
-
-
-
-
-            /** @var \Webklex\IMAP\Folder $oFolder */
-            /** @var \Illuminate\Pagination\LengthAwarePaginator $paginator */
-            $oFolder = $client->getFolder('INBOX');
-            $paginator = $oFolder->search()
-            ->since(\Carbon::now()->subDays(14))->get()
-            ->paginate($perPage = 5, $page = null, $pageName = 'imap_blade_example');
-
-            return $paginator;
-
+                
+            }
         }
     }
 
@@ -169,41 +213,5 @@ class MailingInboxController extends Controller
 
     }
 
-    public function getFonts()
-    {
-        // AIzaSyDI_uOOjfOFe8o_Vb9xxJ-WtPEKF-39fL0
-        $a = Crypt::encryptString("111moises");
-        // return $a;
-        // return $this->decrypt($a);
-        return Crypt::decryptString($a);
-
-        return response()->json([
-            'error' => false,
-            'data'  => $this->decrypt($a),
-        ],200);
-
-        $colaborador_id = "0e940a0c-c474-3463-bceb-0db0ad1fd42b";
-
-        $colaborador = User::find($colaborador_id);
-        if(isset($colaborador->id)){
-            $credentials = MailingInboxService::getCredentials($colaborador->id);
-            if(isset($credentials[0]->password)){
-                
-                $decrypted_pasword =  Crypt::decryptString($credentials[0]->password);
-                // return $decrypted_pasword;
-                $credentials[0]->password_length = strlen($decrypted_pasword);
-                $credentials[0]->decrypted_pasword = $this->getDummyPassword($credentials[0]->password_length);
-                $credentials[0]->email = $colaborador->email;
-                
-                // return $credentials[0];
-
-                return response()->json([
-                    'error' => false,
-                    'data'  => ["credentials" => $credentials[0]],
-                ],200);
-
-            }
-        }
-    }
 
 }
