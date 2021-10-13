@@ -32,7 +32,7 @@ class ProspectosListController extends Controller
 
         $paginacion = $this->findPaginacion($request);
 
-        $correo = json_decode($request->correo);
+        $correo = $request->correo;
         $correos = json_decode($request->correos);
         $nombres = json_decode($request->nombres);
         $telefonos = json_decode($request->telefonos);
