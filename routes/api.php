@@ -363,7 +363,7 @@ Route::prefix('/v1/imap-email')->group(function(){
         Route::post('/set-credentials','Mailing\MailingInboxController@setCredentials');
         Route::get('/unset-credentials','Mailing\MailingInboxController@unsetCredentials');
         //Inbox
-        Route::get('/get-inbox','Mailing\MailingInboxController@getAccount');
+        Route::get('/get-inbox/{page}','Mailing\MailingInboxController@getAccount');
         // Route::get('/test-db','Mailing\MailingInboxController@testDB');
         Route::get('/fonts','Mailing\MailingInboxController@getFonts');
     // });
