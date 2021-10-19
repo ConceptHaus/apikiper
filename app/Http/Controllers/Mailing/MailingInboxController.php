@@ -199,21 +199,21 @@ class MailingInboxController extends Controller
                         $message['seen']            = (isset($flags['seen']) AND $flags['seen'] == "Seen") ? true : false ;
                         $message['date']            = mb_decode_mimeheader($oMessage->date);
                         $message['from_name']       = mb_decode_mimeheader($oMessage->fromaddress );
-                        $message['response']        = MailingInboxService::getResponse($colaborador_id, $oMessage->getUid());
-                        $message['reply']           = (is_null($message['response'])) ? false : true;
+                        $message['response']        = MailingInboxService::getResponse($colaborador_id, $message['date']."|".$message['from']);
+                        $message['reply']           = (count($message['response']) > 0) ? true : false;
                         $message['owner']           = $colaborador->nombre. " ". $colaborador->apellido;
                         $message['html']            = ($oMessage->hasHTMLBody()) ? $oMessage->getHTMLBody() : $oMessage->getTextBody();$message['has_attachments'] = $oMessage->getAttachments()->count() > 0 ? true : false;
                         $message['subject']         = utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)));
                         $attachments                = ($message['has_attachments']) ? $oMessage->getAttachments() : [];
                         $mail_attachments           = array();
-                        foreach ($attachments  as $key_2 => $attachment) {
-                            $new_attactchent                = array();
-                            $new_attactchent['extension']   =  $attachment->getExtension();
-                            $new_attactchent['name']        =  $attachment->name;
-                            $new_attactchent['mime']        =  $attachment->getMimeType();
-                            $new_attactchent['path']        = $attachment->save($path = public_path()."/mail_attatchments/", $filename = null);
-                            $mail_attachments[]             = $new_attactchent;
-                        }
+                        // foreach ($attachments  as $key_2 => $attachment) {
+                        //     $new_attactchent                = array();
+                        //     $new_attactchent['extension']   =  $attachment->getExtension();
+                        //     $new_attactchent['name']        =  $attachment->name;
+                        //     $new_attactchent['mime']        =  $attachment->getMimeType();
+                        //     $new_attactchent['path']        = $attachment->save($path = public_path()."/mail_attatchments/", $filename = null);
+                        //     $mail_attachments[]             = $new_attactchent;
+                        // }
                         $message['attachments'] = $mail_attachments;
                         $messages[]             = $message;
                     }

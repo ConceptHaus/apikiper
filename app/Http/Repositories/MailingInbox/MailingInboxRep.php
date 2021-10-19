@@ -46,7 +46,7 @@ class MailingInboxRep
 
     public static function getResponse($user_id, $email_id)
     {
-        return InboxMessages::where('user_id', $user_id)->where('email_id', $email_id)->first();
+        return InboxMessages::where('user_id', $user_id)->where('email_id', $email_id)->get()->toArray();
     }
 
 
