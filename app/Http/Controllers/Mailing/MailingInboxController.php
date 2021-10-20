@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mailing;
 use App\Http\Controllers\Controller;
 use App\Http\Services\Auth\AuthService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 use App\Modelos\Mailing\Inbox;
 use App\Modelos\Role;
@@ -13,6 +14,7 @@ use App\Http\Services\MailingInbox\MailingInboxService;
 
 use Auth;
 use Crypt;
+use Mailgun;
 
 class MailingInboxController extends Controller
 {
@@ -174,9 +176,9 @@ class MailingInboxController extends Controller
 
                 
                 $paginator   =  $oFolder->search()
-                                        ->since(\Carbon::now()->subDays(14))->get()
-                                        // ->since(\Carbon::now())->get()
-                                        ->paginate($perPage = 10, $page = $page_number, $pageName = 'imap_inbox_table');
+                                        // ->since(\Carbon::now()->subDays(14))->get()
+                                        ->since(\Carbon::now())->get()
+                                        ->paginate($perPage = 5, $page = $page_number, $pageName = 'imap_inbox_table');
     
                 // return $paginator;
 
@@ -206,14 +208,22 @@ class MailingInboxController extends Controller
                         $message['subject']         = utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)));
                         $attachments                = ($message['has_attachments']) ? $oMessage->getAttachments() : [];
                         $mail_attachments           = array();
-                        // foreach ($attachments  as $key_2 => $attachment) {
-                        //     $new_attactchent                = array();
-                        //     $new_attactchent['extension']   =  $attachment->getExtension();
-                        //     $new_attactchent['name']        =  $attachment->name;
-                        //     $new_attactchent['mime']        =  $attachment->getMimeType();
-                        //     $new_attactchent['path']        = $attachment->save($path = public_path()."/mail_attatchments/", $filename = null);
-                        //     $mail_attachments[]             = $new_attactchent;
+                        $dir                        =  public_path()."/mail_attatchments";
+                        if ( !file_exists($dir) && !is_dir($dir)) {
+                            mkdir ($dir, 0744);
+                        }
+                        // if (!file_exists($target_dir) && !is_dir($target_dir)) {
+                        //     //Make Dir  with permissions
+                        //     mkdir($target_dir, 0777, true);         
                         // }
+                        foreach ($attachments  as $key_2 => $attachment) {
+                            $new_attactchent                = array();
+                            $new_attactchent['extension']   =  $attachment->getExtension();
+                            $new_attactchent['name']        =  $attachment->name;
+                            $new_attactchent['mime']        =  $attachment->getMimeType();
+                            $new_attactchent['path']        = $attachment->save($path = public_path()."/mail_attatchments/", $filename = null);
+                            $mail_attachments[]             = $new_attactchent;
+                        }
                         $message['attachments'] = $mail_attachments;
                         $messages[]             = $message;
                     }
@@ -263,11 +273,70 @@ class MailingInboxController extends Controller
         return $password;
     }
 
-    public function testDB()
-    {
-        // return Role::all();
 
-    }
+    public function sendMail (Request $request){
+        // return $request->all();
+        
+        $data = $request->all();
+        $validator = $this->validatorMail($data);
+  
+        if ($validator->passes()) {
+ 
+            if(isset($request->Files))
+            {
+            
+                Mailgun::send('mailing.mail', $data, function ($message) use ($data,$request){
+                    $message->from($data['email_de'],$data['nombre_de']);
+                    $message->subject($data['asunto']);
+                    $message->bcc($data['email_de']);
+                    $message->to($data['email_para']);
+                    
+                    for($x = 0; $x < count($request->Files); $x++)
+                    {
+                        $message->attach($request->Files[$x]->getRealPath(), $request->Files[$x]->getClientOriginalName());
+                    }   
+                });
+                
+            }
+            else
+            {
+            
+                Mailgun::send('mailing.mail', $data, function ($message) use ($data){
+                    $message->from($data['email_de'],$data['nombre_de']);
+                    $message->bcc($data['email_de']);
+                    $message->subject($data['asunto']);
+                    $message->to($data['email_para']);
+                });
+            }
+            
+            
+            //Create record of the email sent
+            MailingInboxService::createResponse($data);
+                    
+            return response()->json([
+            'error'=>false,
+            'message'=>'Mail enviado correctamente',
+            ],200);
+        }else{
+            $errores = $validator->errors()->toArray();
+            return response()->json([
+                'error'=>true,
+                'message'=>$errores
+            ],400);
+        }
+        
+  
+      }
+
+      public function validatorMail(array $data){
+        return Validator::make($data,[
+            'email_de'=>'required|email',
+            'nombre_de'=>'string|max:255',
+            'nombre_para'=>'string|max:255',
+            'asunto'=>'required|string|max:255',
+            'contenido'=>'required',
+        ]);
+      }
 
 
 }

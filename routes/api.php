@@ -366,5 +366,6 @@ Route::prefix('/v1/imap-email')->group(function(){
         Route::get('/get-inbox/{page}','Mailing\MailingInboxController@getAccount');
         // Route::get('/test-db','Mailing\MailingInboxController@testDB');
         Route::get('/fonts','Mailing\MailingInboxController@getFonts');
+        Route::post('/send-mail','Mailing\MailingInboxController@sendMail');
     // });
 });

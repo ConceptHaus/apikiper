@@ -48,6 +48,14 @@ class MailingInboxRep
     {
         return InboxMessages::where('user_id', $user_id)->where('email_id', $email_id)->get()->toArray();
     }
-
+    
+    public static function createResponse($response)
+    {
+        $message                = new InboxMessages;
+        $message->user_id       = $response['user_id'];
+        $message->email_id      = $response['sent']."|".$response['email_para'];
+        $message->body_message  = $response['contenido'];
+        $message->save();
+    }
 
 }

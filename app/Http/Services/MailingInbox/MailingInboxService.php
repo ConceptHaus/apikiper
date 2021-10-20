@@ -34,4 +34,9 @@ class MailingInboxService
     {
         return MailingInboxRep::getResponse($user_id, $email_id);
     }
+
+    public static function createResponse($response)
+    {
+        return MailingInboxRep::createResponse($response);
+    }
 }
