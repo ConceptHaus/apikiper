@@ -176,9 +176,9 @@ class MailingInboxController extends Controller
 
                 
                 $paginator   =  $oFolder->search()
-                                        // ->since(\Carbon::now()->subDays(14))->get()
-                                        ->since(\Carbon::now())->get()
-                                        ->paginate($perPage = 5, $page = $page_number, $pageName = 'imap_inbox_table');
+                                        ->since(\Carbon::now()->subDays(30))->get()
+                                        // ->since(\Carbon::now())->get()
+                                        ->paginate($perPage = 10, $page = $page_number, $pageName = 'imap_inbox_table');
     
                 // return $paginator;
 
