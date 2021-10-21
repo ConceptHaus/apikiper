@@ -26,11 +26,13 @@ class MailingInboxRep
 
     public static function setCredentials($user_id, $password, $host, $port)
     {
-        $credentials            = new Inbox;
-        $credentials->user_id   = $user_id;
-        $credentials->password  = Crypt::encryptString($password);
-        $credentials->host      = $host;
-        $credentials->port      = $port;
+        $credentials                = new Inbox;
+        $credentials->user_id       = $user_id;
+        if($password != ""){
+            $credentials->password  = Crypt::encryptString($password);
+        }
+        $credentials->host          = $host;
+        $credentials->port          = $port;
         $credentials->save();
     }
 

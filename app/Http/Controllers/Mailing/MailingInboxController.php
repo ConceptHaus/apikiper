@@ -70,7 +70,7 @@ class MailingInboxController extends Controller
             
             //Exisiting Crdentials
             if(isset($credentials->password)){
-                MailingInboxService::updateCredentials($colaborador->id, $request->password, $request->host, $request->port);
+                MailingInboxService::updateCredentials($colaborador->id, $request->new_password, $request->host, $request->port);
                 return response()->json([
                     'error' => false,
                     'message'  => "Credenciales actualizadas con éxito",
@@ -78,7 +78,7 @@ class MailingInboxController extends Controller
             }
             //New Credentials
             else{
-                MailingInboxService::setCredentials($colaborador->id, $request->password, $request->host, $request->port);
+                MailingInboxService::setCredentials($colaborador->id, $request->new_password, $request->host, $request->port);
                 return response()->json([
                     'error' => false,
                     'message'  => "Credenciales registradas con éxito",
@@ -110,8 +110,8 @@ class MailingInboxController extends Controller
 
     public function getAccount($page_number)
     {
-        // $colaborador_id = Auth::user()->id;
-        $colaborador_id = '0e940a0c-c474-3463-bceb-0db0ad1fd42b';
+        $colaborador_id = Auth::user()->id;
+        // $colaborador_id = '0e940a0c-c474-3463-bceb-0db0ad1fd42b';
         
         $colaborador = User::find($colaborador_id);
         if(isset($colaborador->id)){
@@ -131,6 +131,7 @@ class MailingInboxController extends Controller
                 // }catch (\Webklex\IMAP\Exceptions\ConnectionFailedException $e){
                 //     dd("Whoops: ".$e->getMessage());
                 // }
+
                 $client = \Webklex\IMAP\Facades\Client::make([
                     'host'          => $account->host,
                     'port'          => $account->port,
@@ -174,12 +175,12 @@ class MailingInboxController extends Controller
                 // $page_number =  (!is_null($request->page_number)) ? $request->page_number : NULL;
                 $oFolder     =  $client->getFolder('INBOX');
 
-                
                 $paginator   =  $oFolder->search()
                                         ->since(\Carbon::now()->subDays(30))->get()
                                         // ->since(\Carbon::now())->get()
                                         ->paginate($perPage = 10, $page = $page_number, $pageName = 'imap_inbox_table');
-    
+
+                
                 // return $paginator;
 
 
