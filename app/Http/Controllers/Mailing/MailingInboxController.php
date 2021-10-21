@@ -110,6 +110,8 @@ class MailingInboxController extends Controller
 
     public function getAccount($page_number)
     {
+        ini_set('memory_limit', '-1');
+        
         $colaborador_id = Auth::user()->id;
         // $colaborador_id = '0e940a0c-c474-3463-bceb-0db0ad1fd42b';
         
