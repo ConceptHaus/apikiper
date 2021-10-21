@@ -122,7 +122,9 @@ class MailingInboxController extends Controller
             
             if(isset($account->password)){
                 
-                $account->username = $colaborador->email;
+                // return $account;
+                
+                $username = (!is_null($account->alt_email)) ? $account->alt_email : $colaborador->email;
 
                 $account->password = Crypt::decryptString($account->password);
 
@@ -139,7 +141,7 @@ class MailingInboxController extends Controller
                     'port'          => $account->port,
                     'encryption'    => $account->encryption,
                     'validate_cert' => true,
-                    'username'      => $account->username,
+                    'username'      => $username,
                     'password'      => $account->password,
                     'protocol'      => 'imap'
                 ]);
@@ -177,11 +179,12 @@ class MailingInboxController extends Controller
                 // $page_number =  (!is_null($request->page_number)) ? $request->page_number : NULL;
                 $oFolder     =  $client->getFolder('INBOX');
 
-                $paginator   =  $oFolder->search()
-                                        ->since(\Carbon::now()->subDays(30))->get()
-                                        // ->since(\Carbon::now())->get()
-                                        ->paginate($perPage = 10, $page = $page_number, $pageName = 'imap_inbox_table');
+                // $paginator   =  $oFolder->search()
+                //                         ->since(\Carbon::now()->subDays(30))->get()
+                //                         // ->since(\Carbon::now())->get()
+                //                         ->paginate($perPage = 10, $page = $page_number, $pageName = 'imap_inbox_table');
 
+                $paginator = $oFolder->query()->all()->setFetchOrder("desc")->limit($limit = 10, $page = $page_number)->get();
                 
                 // return $paginator;
 
@@ -195,8 +198,9 @@ class MailingInboxController extends Controller
                     foreach($paginator as $oMessage){
                         
                         $message['UID']             = $oMessage->getUid ();
-                        // $message['subject']      = $oMessage->getSubject();
-                        $message['subject']         = utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)));
+                        $message['subject']         = $this->utf8convert(utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject))));
+                        // $message['subject']         = utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)));
+                        // $message['subject']         = mb_convert_encoding(mb_decode_mimeheader($oMessage->subject), 'UTF-8', 'UTF-8');
                         $message['from']            = $oMessage->getFrom()[0]->mail;
                         $message['has_attachments'] = $oMessage->getAttachments()->count() > 0 ? true : false;
                         $message['attachments']     = ($message['has_attachments']) ? $oMessage->getAttachments() : [];
@@ -208,7 +212,8 @@ class MailingInboxController extends Controller
                         $message['reply']           = (count($message['response']) > 0) ? true : false;
                         $message['owner']           = $colaborador->nombre. " ". $colaborador->apellido;
                         $message['html']            = ($oMessage->hasHTMLBody()) ? $oMessage->getHTMLBody() : $oMessage->getTextBody();$message['has_attachments'] = $oMessage->getAttachments()->count() > 0 ? true : false;
-                        $message['subject']         = utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)));
+                        // $message['subject']         = utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)));
+                       
                         $attachments                = ($message['has_attachments']) ? $oMessage->getAttachments() : [];
                         $mail_attachments           = array();
                         $dir                        =  public_path()."/mail_attatchments";
@@ -339,6 +344,19 @@ class MailingInboxController extends Controller
             'asunto'=>'required|string|max:255',
             'contenido'=>'required',
         ]);
+      }
+
+      function utf8convert($mixed, $key = null)
+      {
+          if (is_array($mixed)) {
+              foreach ($mixed as $key => $value) {
+                  $mixed[$key] = $this->utf8convert($value, $key); //recursive
+              }
+          } elseif (is_string($mixed)) {
+              $fixed = mb_convert_encoding($mixed, "UTF-8", "UTF-8");
+              return $fixed;
+          }
+          return $mixed;
       }
 
 
