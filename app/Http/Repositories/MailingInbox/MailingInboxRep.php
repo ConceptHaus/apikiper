@@ -17,10 +17,12 @@ class MailingInboxRep
 
     public static function updateCredentials($user_id, $password, $host, $port)
     {
-        $credentials            = MailingInboxRep::getCredentials($user_id);
-        $credentials->password  = Crypt::encryptString($password);
-        $credentials->host      = $host;
-        $credentials->port      = $port;
+        $credentials = MailingInboxRep::getCredentials($user_id);
+        if($password != ""){
+            $credentials->password  = Crypt::encryptString($password);
+        }
+        $credentials->host          = $host;
+        $credentials->port          = $port;
         $credentials->save();
     }
 

@@ -68,8 +68,8 @@ class MailingInboxController extends Controller
             
             $credentials = MailingInboxService::getCredentials($colaborador->id);
             
-            //Exisiting Crdentials
-            if(isset($credentials->password)){
+            //Exisiting Credentials
+            if(isset($credentials->user_id)){
                 MailingInboxService::updateCredentials($colaborador->id, $request->new_password, $request->host, $request->port);
                 return response()->json([
                     'error' => false,
