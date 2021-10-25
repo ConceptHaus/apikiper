@@ -28,6 +28,7 @@ class MailingController extends Controller
     // }
 
     public function addNew(Request $request){
+      return $request->all(); 
       if($request->opcionEtiqueta == 'undefined')
         $opcion_etiqueta = 0;
       else
@@ -122,6 +123,27 @@ class MailingController extends Controller
         }
         else
           $mailing->color_lineas = $request->color_lineas;
+
+        if(!is_null($request->fuente_descripcion)){
+          $mailing->color_subtitulo = $request->fuente_descripcion;
+        }
+        if(!is_null($request->fuente_size_descripcion)){
+          $mailing->color_subtitulo = $request->fuente_size_descripcion;
+        }
+
+        if(!is_null($request->fuente_titulo)){
+          $mailing->color_subtitulo = $request->fuente_titulo;
+        }
+        if(!is_null($request->fuente_size_titulo)){
+          $mailing->color_subtitulo = $request->fuente_size_titulo;
+        }
+
+        if(!is_null($request->fuente_subtitulo)){
+          $mailing->color_subtitulo = $request->fuente_subtitulo;
+        }
+        if(!is_null($request->fuente_size_subtitulo)){
+          $mailing->color_subtitulo = $request->fuente_size_subtitulo;
+        }
 
 
         //Query para obtener lista de remitentes
@@ -260,13 +282,13 @@ class MailingController extends Controller
             $campana->imagenes()->save($image1);
             $datosMail['image1'] = $image1->url;
           }
-          if($request->file('image2')->isValid())
-          {
-            $image2 = new ImagesMailings();
-            $image2->url = $this->uploadFilesS3($request->image2,$campana->id_mailing,2);
-            $campana->imagenes()->save($image2);
-            $datosMail['image2'] = $image2->url;
-          }
+          // if($request->file('image2')->isValid())
+          // {
+          //   $image2 = new ImagesMailings();
+          //   $image2->url = $this->uploadFilesS3($request->image2,$campana->id_mailing,2);
+          //   $campana->imagenes()->save($image2);
+          //   $datosMail['image2'] = $image2->url;
+          // }
           
           DB::commit();
           
@@ -288,7 +310,15 @@ class MailingController extends Controller
           $datosMail['fondo_general'] = $mailing->fondo_general;
           $datosMail['fondo_cta'] = $mailing->fondo_cta;
           $datosMail['color_titulo'] = $mailing->color_titulo;
-          $datosMail['color_subtitulo'] = $mailing->color_subtitulo;        
+          $datosMail['color_subtitulo'] = $mailing->color_subtitulo;       
+          
+          $datosMail['fuente_descripcion']      = $mailing->fuente_descripcion;
+          $datosMail['fuente_size_descripcion'] = $mailing->fuente_size_descripcion;
+          $datosMail['fuente_titulo']           = $mailing->fuente_titulo;
+          $datosMail['fuente_size_titulo']      = $mailing->fuente_size_titulo;
+          $datosMail['fuente_subtitulo']        = $mailing->fuente_subtitulo;
+          $datosMail['fuente_size_subtitulo']   = $mailing->fuente_size_subtitulo;
+
           Mailgun::send('mailing.template_one', $datosMail, function($message) use ($datosMail){
                     foreach($datosMail['email'] as $to_){
                       $message->to($to_);

@@ -431,9 +431,9 @@
             <table class="mcnCaptionRightTextContentContainer" align="right" border="0" cellpadding="0" cellspacing="0" width="264">
                 <tbody><tr>
                     <td valign="top" class="mcnTextContent">
-                        <h1 class="null" style="margin-top: 15px; text-align: left;"><span style="color:{{$color_titulo}}!important"><span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif">{{ $asunto }}</span></span></h1>
+                        <h1 class="null" style="margin-top: 15px; text-align: left;"><span style="font-size:{{$fuente_size_titulo}}; color:{{$color_titulo}}!important"><span style="font-family:{{$fuente_titulo}}helvetica neue,helvetica,arial,verdana,sans-serif">{{ $asunto }}</span></span></h1>
 
-<div style="text-align: left;"><span style="font-size:19px"><span style="font-family:times new roman,times,baskerville,georgia,serif; color:{{$color_subtitulo}}!important">&nbsp; &nbsp; &nbsp; {{$subtitulo}}</span></span></div>
+<div style="text-align: left;"><span style="font-size:{{$fuente_size_subtitulo}}"><span style="font-family:{{$fuente_subtitulo}},times new roman,times,baskerville,georgia,serif; color:{{$color_subtitulo}}!important">&nbsp; &nbsp; &nbsp; {{$subtitulo}}</span></span></div>
 
                     </td>
                 </tr>
@@ -518,7 +518,7 @@
                 <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%; min-width:100%;" width="100%" class="mcnTextContentContainer">
                     <tbody><tr>
 
-                        <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px; color:{{$color_fuente}}!important;">
+                        <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px; color:{{$color_fuente}}!important; font-size:{{$fuente_size_titulo}}; font-family:{{$fuente_subtitulo}},times new roman,times,baskerville,georgia,serif;">
                           {!! $contenido !!}
                         </td>
                     </tr>
