@@ -45,7 +45,9 @@ class MailingController extends Controller
           $opcion_estatus = $request->opcionEstatus;
       
       //PlainTextEmail
-      if ($request->send_plaintext_email) {
+      if ($request->send_plaintext_email == 'true') {
+        
+        // return $request->all(); 
 
         try {
           DB::beginTransaction();
@@ -55,11 +57,12 @@ class MailingController extends Controller
           $mailing = new DetalleMailings;
           $mailing->subject                 = $request->titulo;
           $mailing->subtitle                = $request->subtitulo;
+          $mailing->text_body               = $request->descripcion;
           $mailing->preview_text            = "";
-          $mailing->text_body               = null;
+          $mailing->simple_email            = 1;
           $mailing->cta_nombre              = null;
           $mailing->cta_url                 = null;
-          $mailing->cta_url                 = null
+          $mailing->cta_url                 = null;
           $mailing->color_fuente            = null;
           $mailing->color_cta               = null;
           $mailing->fondo_general           = null;
@@ -214,14 +217,16 @@ class MailingController extends Controller
             
 
             //guarda la imagen, debemos corregir error en angular para enviar los datos
-            
-            if($request->file('image1')->isValid())
-            {
-              $image1 = new ImagesMailings();
-              $image1->url = $this->uploadFilesS3($request->image1,$campana->id_mailing,1);
-              $campana->imagenes()->save($image1);
-              $datosMail['image1'] = $image1->url;
+            if($request->image1){
+              if($request->file('image1')->isValid())
+              {
+                $image1 = new ImagesMailings();
+                $image1->url = $this->uploadFilesS3($request->image1,$campana->id_mailing,1);
+                $campana->imagenes()->save($image1);
+                $datosMail['image1'] = $image1->url;
+              }
             }
+
             // if($request->file('image2')->isValid())
             // {
             //   $image2 = new ImagesMailings();
@@ -234,40 +239,25 @@ class MailingController extends Controller
             
             $send_contacts = array();
             foreach ($remitentes as $remitente) {
+              // return $this->post_validate($remitente->correo);
               array_push($send_contacts, [$remitente->correo => ['name'=>$remitente->nombre]]);
             }
-
+            return $send_contacts;
             $datosMail['contenido'] = $request->descripcion;
             $datosMail['asunto'] = $request->titulo;
             $datosMail['email'] = $send_contacts;
-            $datosMail['color'] = $request->color_lineas;
-            $datosMail['color_fuente'] = $mailing->color_fuente;
-            $datosMail['subtitulo'] = $mailing->subtitle;
-            $datosMail['cta_nombre'] = $mailing->cta_nombre;
-            $datosMail['color_cta'] = $mailing->color_cta;
-            $datosMail['cta_link'] = $mailing->cta_url;
             $datosMail['titulo_campana'] = $campana->titulo_campana;
-            $datosMail['fondo_general'] = $mailing->fondo_general;
-            $datosMail['fondo_cta'] = $mailing->fondo_cta;
-            $datosMail['color_titulo'] = $mailing->color_titulo;
-            $datosMail['color_subtitulo'] = $mailing->color_subtitulo;       
-            
-            $datosMail['fuente_descripcion']      = $mailing->fuente_descripcion;
-            $datosMail['fuente_size_descripcion'] = $mailing->fuente_size_descripcion;
-            $datosMail['fuente_titulo']           = $mailing->fuente_titulo;
-            $datosMail['fuente_size_titulo']      = $mailing->fuente_size_titulo;
-            $datosMail['fuente_subtitulo']        = $mailing->fuente_subtitulo;
-            $datosMail['fuente_size_subtitulo']   = $mailing->fuente_size_subtitulo;
 
-            Mailgun::send('mailing.template_one', $datosMail, function($message) use ($datosMail){
+            Mailgun::send('mailing.template_simple', $datosMail, function($message) use ($datosMail){
                       foreach($datosMail['email'] as $to_){
                         $message->to($to_);
                       }
+                      $message->from('notificaciones@kiper.com.mx', 'Kiper');
                       $message->subject($datosMail['asunto']);
                       $message->trackClicks(true);
                       $message->trackOpens(true);
                       $message->tag($datosMail['titulo_campana']);
-              });
+            });
 
             return response()->json([
               'message'=>'Newsletter enviado correctamente.',
@@ -289,7 +279,7 @@ class MailingController extends Controller
         }
         
       }else{
-
+        return 456; 
         try {
           DB::beginTransaction();
           $campana = new Mailings;
@@ -779,5 +769,25 @@ class MailingController extends Controller
       $path = $file->store('mailing/imagenes/'.$mailing.$numero,'s3');
       Storage::setVisibility($path,'public');
       return $disk->url($path);
-  }
+    }
+
+    function post_validate($email_address) {
+      $params = array(
+          "address" => $email_address
+      );
+      $ch = curl_init();
+    
+      curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+      curl_setopt($ch, CURLOPT_USERPWD, 'api:'.env('MAILGUN_PRIVATE'));
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    
+      curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+      curl_setopt($ch, CURLOPT_URL, 'https://api.mailgun.net/v4/address/validate');
+      $result = curl_exec($ch);
+      curl_close($ch);
+    
+      return $result;
+    }
+
 }

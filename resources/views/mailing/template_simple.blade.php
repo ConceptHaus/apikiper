@@ -131,7 +131,7 @@
 			text-align:center;
 		}
 		#templateHeader{
-			background-color:{{$color}};
+			background-color:#999999;
 			background-image:none;
 			background-repeat:no-repeat;
 			background-position:center;
@@ -165,7 +165,7 @@
 			text-decoration:underline;
 		}
 		#templateBody{
-			background-color:{{$fondo_general}};
+			background-color:white;
 			background-image:none;
 			background-repeat:no-repeat;
 			background-position:center;
@@ -187,7 +187,7 @@
 			padding-bottom:0;
 		}
 		.bodyContainer .mcnTextContent,.bodyContainer .mcnTextContent p{
-			color:{{$color_fuente}};
+			color:black;
 			font-family:Helvetica;
 			font-size:16px;
 			line-height:150%;
@@ -199,7 +199,7 @@
 			text-decoration:underline;
 		}
 		#templateFooter{
-			background-color:{{$color}};
+			background-color:white;
 			background-image:none;
 			background-repeat:no-repeat;
 			background-position:center;
@@ -431,9 +431,7 @@
             <table class="mcnCaptionRightTextContentContainer" align="right" border="0" cellpadding="0" cellspacing="0" width="264">
                 <tbody><tr>
                     <td valign="top" class="mcnTextContent">
-                        <h1 class="null" style="margin-top: 15px; text-align: left;"><span style="font-size:{{$fuente_size_titulo}}; color:{{$color_titulo}}!important"><span style="font-family:{{$fuente_titulo}},helvetica neue,helvetica,arial,verdana,sans-serif">{{ $asunto }}</span></span></h1>
-
-<div style="text-align: left;"><span style="font-size:{{$fuente_size_subtitulo}}"><span style="font-family:{{$fuente_subtitulo}},times new roman,times,baskerville,georgia,serif; color:{{$color_subtitulo}}!important">&nbsp; &nbsp; &nbsp; {{$subtitulo}}</span></span></div>
+                        <h1 class="null" style="margin-top: 15px; text-align: left;"><span style="font-size:14px; color:black !important"><span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif">{{ $asunto }}</span></span></h1>
 
                     </td>
                 </tr>
@@ -518,7 +516,7 @@
                 <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%; min-width:100%;" width="100%" class="mcnTextContentContainer">
                     <tbody><tr>
 
-                        <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px; color:{{$color_fuente}}!important; font-size:{{$fuente_size_titulo}}; font-family:{{$fuente_subtitulo}},times new roman,times,baskerville,georgia,serif;">
+                        <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px; color:black !important; font-size:14px; font-family:times new roman,times,baskerville,georgia,serif;">
                           {!! $contenido !!}
                         </td>
                     </tr>
@@ -540,23 +538,9 @@
             </td>
         </tr>
     </tbody>
-</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnButtonBlock" style="min-width:100%;">
-    <tbody class="mcnButtonBlockOuter">
-        <tr>
-            <td style="padding-top:0; padding-right:18px; padding-bottom:18px; padding-left:18px;" valign="top" align="center" class="mcnButtonBlockInner">
-                <table border="0" cellpadding="0" cellspacing="0" class="mcnButtonContentContainer" style="border-collapse: separate !important;border-radius: 3px;background-color: {{$fondo_cta}}!important;">
-                    <tbody>
-                        <tr>
-                            <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Helvetica; font-size: 18px; padding: 18px; color: {{$color_cta}}!important;">
-							<a class="mcnButton " href="{{$cta_link}}" title="{{$cta_nombre}}"  target="_blank" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none; ">{{$cta_nombre}}</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </td>
-        </tr>
-    </tbody>
-</table></td>
+</table>
+
+</td>
                                         </tr>
                                     </table>
                                 </td>
