@@ -227,13 +227,15 @@ class MailingController extends Controller
               }
             }
 
-            // if($request->file('image2')->isValid())
-            // {
-            //   $image2 = new ImagesMailings();
-            //   $image2->url = $this->uploadFilesS3($request->image2,$campana->id_mailing,2);
-            //   $campana->imagenes()->save($image2);
-            //   $datosMail['image2'] = $image2->url;
-            // }
+            if($request->image2){
+              if($request->file('image2')->isValid())
+              {
+                $image2 = new ImagesMailings();
+                $image2->url = $this->uploadFilesS3($request->image2,$campana->id_mailing,2);
+                $campana->imagenes()->save($image2);
+                $datosMail['image2'] = $image2->url;
+              }
+            }
             
             DB::commit();
             
@@ -242,7 +244,7 @@ class MailingController extends Controller
               // return $this->post_validate($remitente->correo);
               array_push($send_contacts, [$remitente->correo => ['name'=>$remitente->nombre]]);
             }
-            return $send_contacts;
+            // return $send_contacts;
             $datosMail['contenido'] = $request->descripcion;
             $datosMail['asunto'] = $request->titulo;
             $datosMail['email'] = $send_contacts;
@@ -279,7 +281,6 @@ class MailingController extends Controller
         }
         
       }else{
-        return 456; 
         try {
           DB::beginTransaction();
           $campana = new Mailings;
@@ -513,21 +514,25 @@ class MailingController extends Controller
             
 
             //guarda la imagen, debemos corregir error en angular para enviar los datos
-            
-            if($request->file('image1')->isValid())
-            {
-              $image1 = new ImagesMailings();
-              $image1->url = $this->uploadFilesS3($request->image1,$campana->id_mailing,1);
-              $campana->imagenes()->save($image1);
-              $datosMail['image1'] = $image1->url;
+            if($request->image1){
+              if($request->file('image1')->isValid())
+              {
+                $image1 = new ImagesMailings();
+                $image1->url = $this->uploadFilesS3($request->image1,$campana->id_mailing,1);
+                $campana->imagenes()->save($image1);
+                $datosMail['image1'] = $image1->url;
+              }
             }
-            // if($request->file('image2')->isValid())
-            // {
-            //   $image2 = new ImagesMailings();
-            //   $image2->url = $this->uploadFilesS3($request->image2,$campana->id_mailing,2);
-            //   $campana->imagenes()->save($image2);
-            //   $datosMail['image2'] = $image2->url;
-            // }
+
+            if($request->image2){
+              if($request->file('image2')->isValid())
+              {
+                $image2 = new ImagesMailings();
+                $image2->url = $this->uploadFilesS3($request->image2,$campana->id_mailing,2);
+                $campana->imagenes()->save($image2);
+                $datosMail['image2'] = $image2->url;
+              }
+            }
             
             DB::commit();
             
@@ -562,6 +567,7 @@ class MailingController extends Controller
                       foreach($datosMail['email'] as $to_){
                         $message->to($to_);
                       }
+                      $message->from('notificaciones@kiper.com.mx', 'Kiper');
                       $message->subject($datosMail['asunto']);
                       $message->trackClicks(true);
                       $message->trackOpens(true);

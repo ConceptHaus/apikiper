@@ -518,7 +518,7 @@
                 <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%; min-width:100%;" width="100%" class="mcnTextContentContainer">
                     <tbody><tr>
 
-                        <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px; color:{{$color_fuente}}!important; font-size:{{$fuente_size_titulo}}; font-family:{{$fuente_subtitulo}},times new roman,times,baskerville,georgia,serif;">
+                        <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px; color:{{$color_fuente}}!important; font-size:{{$fuente_size_descripcion}}; font-family:{{$fuente_subtitulo}},times new roman,times,baskerville,georgia,serif;">
                           {!! $contenido !!}
                         </td>
                     </tr>
