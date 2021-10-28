@@ -350,18 +350,27 @@ class MailingController extends Controller
             $mailing->color_titulo = $request->color_titulo; 
 
           
-          if($request->color_subtitulo){
-            $mailing->color_subtitulo = null;
-          }
-          else
-            $mailing->color_subtitulo = $request->color_subtitulo;
+          // if($request->color_subtitulo){
+          //   $mailing->color_subtitulo = null;
+          // }
+          // else
+          //   $mailing->color_subtitulo = $request->color_subtitulo;
 
           
-          if($request->color_lineas){
-            $mailing->color_lineas = null;
+          // if($request->color_lineas){
+          //   $mailing->color_lineas = $request->color_lineas;
+            
+          // }
+          // else
+          // $mailing->color_lineas = null;
+
+          if(!is_null($request->color_subtitulo)){
+            $mailing->color_subtitulo = $request->color_subtitulo;
           }
-          else
+
+          if(!is_null($request->color_lineas)){
             $mailing->color_lineas = $request->color_lineas;
+          }
 
           if(!is_null($request->fuente_descripcion)){
             $mailing->fuente_descripcion = $request->fuente_descripcion;
@@ -519,6 +528,7 @@ class MailingController extends Controller
               {
                 $image1 = new ImagesMailings();
                 $image1->url = $this->uploadFilesS3($request->image1,$campana->id_mailing,1);
+                $image1->is_logo = 1;
                 $campana->imagenes()->save($image1);
                 $datosMail['image1'] = $image1->url;
               }
