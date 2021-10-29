@@ -311,10 +311,10 @@ class MailingController extends Controller
           else
             $mailing->color_fuente = $request->color_fuente;
           
-          if ($request->color_cta == 'undefined')
+          if ($request->color_boton == 'undefined')
             $mailing->color_cta = null;
           else
-            $mailing->color_cta = $request->color_cta;
+            $mailing->color_cta = $request->color_boton;
           
           if($opcion_estatus)
           {
@@ -363,6 +363,8 @@ class MailingController extends Controller
           // }
           // else
           // $mailing->color_lineas = null;
+          
+          
 
           if(!is_null($request->color_subtitulo)){
             $mailing->color_subtitulo = $request->color_subtitulo;
@@ -551,19 +553,19 @@ class MailingController extends Controller
               array_push($send_contacts, [$remitente->correo => ['name'=>$remitente->nombre]]);
             }
 
-            $datosMail['contenido'] = $request->descripcion;
-            $datosMail['asunto'] = $request->titulo;
-            $datosMail['email'] = $send_contacts;
-            $datosMail['color'] = $request->color_lineas;
-            $datosMail['color_fuente'] = $mailing->color_fuente;
-            $datosMail['subtitulo'] = $mailing->subtitle;
-            $datosMail['cta_nombre'] = $mailing->cta_nombre;
-            $datosMail['color_cta'] = $mailing->color_cta;
-            $datosMail['cta_link'] = $mailing->cta_url;
-            $datosMail['titulo_campana'] = $campana->titulo_campana;
-            $datosMail['fondo_general'] = $mailing->fondo_general;
-            $datosMail['fondo_cta'] = $mailing->fondo_cta;
-            $datosMail['color_titulo'] = $mailing->color_titulo;
+            $datosMail['contenido']       = $request->descripcion;
+            $datosMail['asunto']          = $request->titulo;
+            $datosMail['email']           = $send_contacts;
+            $datosMail['color']           = $request->color_lineas;
+            $datosMail['color_fuente']    = $mailing->color_fuente;
+            $datosMail['subtitulo']       = $mailing->subtitle;
+            $datosMail['cta_nombre']      = $mailing->cta_nombre;
+            $datosMail['color_cta']       = $mailing->color_cta;
+            $datosMail['cta_link']        = $mailing->cta_url;
+            $datosMail['titulo_campana']  = $campana->titulo_campana;
+            $datosMail['fondo_general']   = $mailing->fondo_general;
+            $datosMail['fondo_cta']       = $mailing->fondo_cta;
+            $datosMail['color_titulo']    = $mailing->color_titulo;
             $datosMail['color_subtitulo'] = $mailing->color_subtitulo;       
             
             $datosMail['fuente_descripcion']      = $mailing->fuente_descripcion;

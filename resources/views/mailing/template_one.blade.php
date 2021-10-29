@@ -4,8 +4,20 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{{$asunto}}</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,600,700" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap" rel="stylesheet">
 
     <style type="text/css">
+		
 		p{
 			margin:10px 0;
 			padding:0;
@@ -372,7 +384,7 @@
     <body>
 		<span class="mcnPreviewText" style="display:none; font-size:0px; line-height:0px; max-height:0px; max-width:0px; opacity:0; overflow:hidden; visibility:hidden; mso-hide:all;"></span>
         <center>
-            <table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable">
+            <table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable" style="background-color: {{$fondo_general}}!important;">
                 <tr>
                     <td align="center" valign="top" id="bodyCell">
                         <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -414,7 +426,7 @@
 <table border="0" cellpadding="0" cellspacing="0" class="mcnCaptionRightContentOuter" width="100%">
     <tbody><tr>
         <td valign="top" class="mcnCaptionRightContentInner" style="padding:0 9px ;">
-            <table align="left" border="0" cellpadding="0" cellspacing="0" class="mcnCaptionRightImageContentContainer" width="264">
+            <table align="left" border="0" cellpadding="0" cellspacing="0" class="mcnCaptionRightImageContentContainer" width="50">
                 <tbody><tr>
                     <td class="mcnCaptionRightImageContent" align="center" valign="top">
 
@@ -428,12 +440,21 @@
                     </td>
                 </tr>
             </tbody></table>
-            <table class="mcnCaptionRightTextContentContainer" align="right" border="0" cellpadding="0" cellspacing="0" width="264">
+            <table class="mcnCaptionRightTextContentContainer" align="right" border="0" cellpadding="0" cellspacing="0" width="364">
                 <tbody><tr>
                     <td valign="top" class="mcnTextContent">
-                        <h1 class="null" style="margin-top: 15px; text-align: left;"><span style="font-size:{{$fuente_size_titulo}}; color:{{$color_titulo}}!important"><span style="font-family:{{$fuente_titulo}},helvetica neue,helvetica,arial,verdana,sans-serif">{{ $asunto }}</span></span></h1>
-
-<div style="text-align: left;"><span style="font-size:{{$fuente_size_subtitulo}}"><span style="font-family:{{$fuente_subtitulo}},times new roman,times,baskerville,georgia,serif; color:{{$color_subtitulo}}!important">&nbsp; &nbsp; &nbsp; {{$subtitulo}}</span></span></div>
+						
+                        <h1 class="null" style="margin-top: 15px; text-align: left;"><span style="font-size:{{$fuente_size_titulo}}; color:{{$color_titulo}}!important"><span style="font-family:{{$fuente_titulo}}">{{ $asunto }}</span></span></h1>
+						
+						<h1 class="null" style="margin-top: -15px; text-align: left;"><span style="font-size:{{$fuente_size_subtitulo}}; color:{{$color_subtitulo}}!important"><span style="font-family:{{$fuente_subtitulo}}">{{ $subtitulo }}</span></span></h1>
+						
+						<!-- <div>
+							<span style="font-size:{{$fuente_size_subtitulo}};">
+								
+								<span style="font-family:{{$fuente_subtitulo}},times new roman,times,baskerville,georgia,serif; color:{{$color_subtitulo}}!important">{{$subtitulo}}</span>
+								
+							</span>
+						</div> -->
 
                     </td>
                 </tr>
@@ -462,28 +483,9 @@
             </td>
         </tr>
     </tbody>
-</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageBlock" style="min-width:100%;">
-    <tbody class="mcnImageBlockOuter">
-            <tr>
-                <td valign="top" style="padding:0px" class="mcnImageBlockInner">
-                    <table align="left" width="100%" border="0" cellpadding="0" cellspacing="0" class="mcnImageContentContainer" style="min-width:100%;">
-                        <tbody><tr>
-                            <td class="mcnImageContent" valign="top" style="padding-right: 0px; padding-left: 0px; padding-top: 0; padding-bottom: 0; text-align:center;">
+</table>
 
-										<!--
-                                        <img align="center" alt="" src="https://gallery.mailchimp.com/766ee0c962d543c02140cdccb/images/239b660a-ed08-4381-94eb-c785a2519f8e.png" width="600" style="max-width:800px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage">
-										-->
-										@if(isset($image2))
-                                        <img align="center" alt="" src="{{$image2}}" width="600" style="max-width:800px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage">
-										@endif
-
-                            </td>
-                        </tr>
-                    </tbody></table>
-                </td>
-            </tr>
-    </tbody>
-</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnDividerBlock" style="min-width:100%;">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnDividerBlock" style="min-width:100%;">
     <tbody class="mcnDividerBlockOuter">
         <tr>
             <td class="mcnDividerBlockInner" style="min-width: 100%; padding: 9px 18px 0px;">
@@ -526,7 +528,30 @@
             </td>
         </tr>
     </tbody>
-</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnDividerBlock" style="min-width:100%;">
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageBlock" style="min-width:100%;">
+    <tbody class="mcnImageBlockOuter">
+            <tr>
+                <td valign="top" style="padding:0px" class="mcnImageBlockInner">
+                    <table align="left" width="100%" border="0" cellpadding="0" cellspacing="0" class="mcnImageContentContainer" style="min-width:100%;">
+                        <tbody><tr>
+                            <td class="mcnImageContent" valign="top" style="padding-right: 0px; padding-left: 0px; padding-top: 0; padding-bottom: 0; text-align:center;">
+
+										<!--
+                                        <img align="center" alt="" src="https://gallery.mailchimp.com/766ee0c962d543c02140cdccb/images/239b660a-ed08-4381-94eb-c785a2519f8e.png" width="600" style="max-width:800px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage">
+										-->
+										@if(isset($image2))
+                                        <img align="center" alt="" src="{{$image2}}" width="600" style="max-width:800px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage">
+										@endif
+
+                            </td>
+                        </tr>
+                    </tbody></table>
+                </td>
+            </tr>
+    </tbody>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnDividerBlock" style="min-width:100%;">
     <tbody class="mcnDividerBlockOuter">
         <tr>
             <td class="mcnDividerBlockInner" style="min-width: 100%; padding: 50px 18px 0px;">
@@ -548,7 +573,7 @@
                     <tbody>
                         <tr>
                             <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Helvetica; font-size: 18px; padding: 18px; color: {{$color_cta}}!important;">
-							<a class="mcnButton " href="{{$cta_link}}" title="{{$cta_nombre}}"  target="_blank" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none; ">{{$cta_nombre}}</a>
+							<a class="mcnButton " href="{{$cta_link}}" title="{{$cta_nombre}}"  target="_blank" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;  color: {{$color_cta}}!important;">{{$cta_nombre}}</a>
                             </td>
                         </tr>
                     </tbody>
