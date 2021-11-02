@@ -193,7 +193,8 @@ class MailingInboxController extends Controller
                 $paginated_messages = array();
 
                 if($paginator->count() > 0){
-                
+                    
+                   
                     $messages = array();
                     foreach($paginator as $oMessage){
                         
@@ -236,7 +237,7 @@ class MailingInboxController extends Controller
                         $messages[]             = $message;
                     }
 
-                    $paginated_messages['messages'] = $messages;
+                    $paginated_messages['messages'] = array_reverse($messages);
                     $paginated_messages['next']     = (!is_null($page_number)) ? $page_number + 1 : 2;
                     $paginated_messages['prev']     = (!is_null($page_number) AND $page_number > 1) ? $page_number - 1 : 0;
                     
@@ -280,7 +281,6 @@ class MailingInboxController extends Controller
         }
         return $password;
     }
-
 
     public function sendMail (Request $request){
         // return $request->all();
@@ -332,11 +332,9 @@ class MailingInboxController extends Controller
                 'message'=>$errores
             ],400);
         }
-        
-  
-      }
+    }
 
-      public function validatorMail(array $data){
+    public function validatorMail(array $data){
         return Validator::make($data,[
             'email_de'=>'required|email',
             'nombre_de'=>'string|max:255',
@@ -344,9 +342,62 @@ class MailingInboxController extends Controller
             'asunto'=>'required|string|max:255',
             'contenido'=>'required',
         ]);
-      }
+    }
 
-      function utf8convert($mixed, $key = null)
+    public function flagEmail(Request $request){
+        // return $request->all();
+
+        
+        ini_set('memory_limit', '-1');
+        
+        $colaborador_id = Auth::user()->id;
+        // $colaborador_id = '0e940a0c-c474-3463-bceb-0db0ad1fd42b';
+        
+        $colaborador = User::find($colaborador_id);
+        
+        if(isset($colaborador->id)){
+
+            $account =  MailingInboxService::getAccount($colaborador_id);
+            
+            if(isset($account->password)){
+                
+                // return $account;
+                
+                $username = (!is_null($account->alt_email)) ? $account->alt_email : $colaborador->email;
+
+                $account->password = Crypt::decryptString($account->password);
+
+
+                $client = \Webklex\IMAP\Facades\Client::make([
+                    'host'          => $account->host,
+                    'port'          => $account->port,
+                    'encryption'    => $account->encryption,
+                    'validate_cert' => true,
+                    'username'      => $username,
+                    'password'      => $account->password,
+                    'protocol'      => 'imap'
+                ]);
+
+                $client->connect();
+
+                $oFolder     =  $client->getFolder('INBOX');
+                $message = $oFolder->query()->getMessageByUid($request->UID);
+                if($request->seen_flag == 1){
+                    $message->unsetFlag('SEEN');
+                    $client->expunge();
+                }else{
+                    $message->setFlag('Seen');    
+                }
+                
+                return response()->json([
+                    'error'     => false,
+                    'paginator' => $message,
+                ],200);
+            }
+        }
+    }
+
+    function utf8convert($mixed, $key = null)
       {
           if (is_array($mixed)) {
               foreach ($mixed as $key => $value) {
@@ -357,7 +408,7 @@ class MailingInboxController extends Controller
               return $fixed;
           }
           return $mixed;
-      }
+    }
 
 
 }
