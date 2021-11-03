@@ -210,6 +210,7 @@ class MailingInboxController extends Controller
                         $message['date']            = mb_decode_mimeheader($oMessage->date);
                         $message['from_name']       = mb_decode_mimeheader($oMessage->fromaddress );
                         $message['response']        = MailingInboxService::getResponse($colaborador_id, $message['date']."|".$message['from']);
+                        $message['responses']       = count($message['response']) + 1;
                         $message['reply']           = (count($message['response']) > 0) ? true : false;
                         $message['owner']           = $colaborador->nombre. " ". $colaborador->apellido;
                         $message['html']            = ($oMessage->hasHTMLBody()) ? $oMessage->getHTMLBody() : $oMessage->getTextBody();$message['has_attachments'] = $oMessage->getAttachments()->count() > 0 ? true : false;
@@ -296,7 +297,7 @@ class MailingInboxController extends Controller
                 Mailgun::send('mailing.mail', $data, function ($message) use ($data,$request){
                     $message->from($data['email_de'],$data['nombre_de']);
                     $message->subject($data['asunto']);
-                    $message->bcc($data['email_de']);
+                    // $message->bcc($data['email_de']);
                     $message->to($data['email_para']);
                     
                     for($x = 0; $x < count($request->Files); $x++)
@@ -311,7 +312,7 @@ class MailingInboxController extends Controller
             
                 Mailgun::send('mailing.mail', $data, function ($message) use ($data){
                     $message->from($data['email_de'],$data['nombre_de']);
-                    $message->bcc($data['email_de']);
+                    // $message->bcc($data['email_de']);
                     $message->subject($data['asunto']);
                     $message->to($data['email_para']);
                 });
@@ -327,20 +328,32 @@ class MailingInboxController extends Controller
             ],200);
         }else{
             $errores = $validator->errors()->toArray();
+        
+            $errores_msg = array();
+    
+            if (!empty($errores)) {
+                foreach ($errores as $key => $error_m) {
+                    $errores_msg[] = $error_m[0];
+                    break;
+                }
+            }
+    
             return response()->json([
                 'error'=>true,
-                'message'=>$errores
+                'message'=> $errores_msg
             ],400);
         }
     }
 
     public function validatorMail(array $data){
         return Validator::make($data,[
-            'email_de'=>'required|email',
-            'nombre_de'=>'string|max:255',
-            'nombre_para'=>'string|max:255',
-            'asunto'=>'required|string|max:255',
-            'contenido'=>'required',
+            'email_de'      => 'required|email',
+            'nombre_de'     => 'string|max:255',
+            'nombre_para'   => 'string|max:255',
+            'asunto'        => 'required|string|max:255',
+            'contenido'     => 'required',
+            'Files'         => 'array',
+            'Files.*'       => 'file|max:20480',
         ]);
     }
 
