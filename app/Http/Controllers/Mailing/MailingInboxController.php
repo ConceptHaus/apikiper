@@ -199,7 +199,8 @@ class MailingInboxController extends Controller
                     foreach($paginator as $oMessage){
                         
                         $message['UID']             = $oMessage->getUid ();
-                        $input = str_replace("_", " ", mb_decode_mimeheader($oMessage->subject));
+                        $subject =  mb_decode_mimeheader($oMessage->subject)." ";
+                        $input = str_replace("_", " ", $subject);
                         if (iconv('UTF-8', 'UTF-8', $input) != $input) {
                             $message['subject']         =   "kkkkkk";
                             
