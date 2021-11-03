@@ -199,7 +199,7 @@ class MailingInboxController extends Controller
                     foreach($paginator as $oMessage){
                         
                         $message['UID']             = $oMessage->getUid ();
-                        $message['subject']         = str_replace("_", " ", mb_decode_mimeheader($oMessage->subject));
+                        $message['subject']         = utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)));
                         // $message['subject']         = mb_convert_encoding(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)), 'UTF-8', 'auto');
                         // $message['subject']         = $this->utf8convert(utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject))));
                         // $message['subject']         = utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)));
@@ -215,7 +215,8 @@ class MailingInboxController extends Controller
                         $message['responses']       = count($message['response']) + 1;
                         $message['reply']           = (count($message['response']) > 0) ? true : false;
                         $message['owner']           = $colaborador->nombre. " ". $colaborador->apellido;
-                        $message['html']            = ($oMessage->hasHTMLBody()) ? $oMessage->getHTMLBody() : $oMessage->getTextBody();$message['has_attachments'] = $oMessage->getAttachments()->count() > 0 ? true : false;
+                        $message['html']            = ($oMessage->hasHTMLBody()) ? utf8_decode($oMessage->getHTMLBody()) : utf8_decode($oMessage->getTextBody());
+                        $message['has_attachments'] = $oMessage->getAttachments()->count() > 0 ? true : false;
                         // $message['subject']         = utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)));
                        
                         $attachments                = ($message['has_attachments']) ? $oMessage->getAttachments() : [];
