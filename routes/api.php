@@ -370,3 +370,10 @@ Route::prefix('/v1/imap-email')->group(function(){
         Route::post('/flag-email','Mailing\MailingInboxController@flagEmail');
     // });
 });
+
+Route::prefix('/mail_attatchments/get-attactchments')->group(function(){
+    // Route::middleware(['auth','cors'])->group(function(){
+        //Inbox Settings
+        Route::get('/{name}','Mailing\MailingInboxController@getFile');
+    // });
+});

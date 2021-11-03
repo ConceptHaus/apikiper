@@ -199,14 +199,7 @@ class MailingInboxController extends Controller
                     foreach($paginator as $oMessage){
                         
                         $message['UID']             = $oMessage->getUid ();
-                        $subject =  mb_decode_mimeheader($oMessage->subject)." ";
-                        $input = str_replace("_", " ", $subject);
-                        if (iconv('UTF-8', 'UTF-8', $input) != $input) {
-                            $message['subject']         =   "kkkkkk";
-                            
-                        }else{
-                            $message['subject']         = utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)));    
-                        }
+                        $message['subject']         = str_replace("_", " ", mb_decode_mimeheader($oMessage->subject));
                         // $message['subject']         = mb_convert_encoding(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)), 'UTF-8', 'auto');
                         // $message['subject']         = $this->utf8convert(utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject))));
                         // $message['subject']         = utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)));
@@ -241,6 +234,7 @@ class MailingInboxController extends Controller
                             $new_attactchent['name']        =  $attachment->name;
                             $new_attactchent['mime']        =  $attachment->getMimeType();
                             $new_attactchent['path']        = $attachment->save($path = public_path()."/mail_attatchments/", $filename = null);
+                            $new_attactchent['file_path']   = "public/mail_attatchments/".$attachment->name;
                             $mail_attachments[]             = $new_attactchent;
                         }
                         $message['attachments'] = $mail_attachments;
@@ -431,6 +425,16 @@ class MailingInboxController extends Controller
           }
           return $mixed;
     }
+
+    public function getFile($file_name)
+    {
+        $parts = explode(".", $file_name);
+        $parts = array_reverse($parts);
+        $path  =  public_path()."/mail_attatchments/".$file_name;
+        $file   = file_get_contents($path);
+        
+        return response($file)->header('Content-type','image/'.$parts[0]);
+    } 
 
 
 }
