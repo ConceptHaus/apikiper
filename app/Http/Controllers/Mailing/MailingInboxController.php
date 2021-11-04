@@ -238,7 +238,14 @@ class MailingInboxController extends Controller
                         $encoding_list = array_intersect($my_encoding_list, mb_list_encodings());
 
                         //detect 'finally' the encoding
-                        $message['html'] = mb_detect_encoding($html,$encoding_list,true);
+                        $encoding = mb_detect_encoding($html,$encoding_list,true);
+                        
+                        // $message['html']
+                        if ($encoding!="" && $encoding!="UTF8") {
+                            $html = iconv($encoding, "UTF-8", $html);
+                        } 
+
+                        $message['html'] = $html;
                        
                        
                         $message['has_attachments'] = $oMessage->getAttachments()->count() > 0 ? true : false;
