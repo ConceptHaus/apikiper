@@ -194,7 +194,22 @@ class MailingInboxController extends Controller
 
                 if($paginator->count() > 0){
                     
-                   
+                    $my_encoding_list = [
+                        "UTF-8",
+                        "UTF-7",
+                        "UTF-16",
+                        "UTF-32",
+                        "ISO-8859-16",
+                        "ISO-8859-15",
+                        "ISO-8859-10",
+                        "ISO-8859-1",
+                        "Windows-1254",
+                        "Windows-1252",
+                        "Windows-1251",
+                        "ASCII",
+                        //add yours preferred
+                    ];
+
                     $messages = array();
                     foreach($paginator as $oMessage){
                         
@@ -217,7 +232,15 @@ class MailingInboxController extends Controller
                         $message['reply']           = (count($message['response']) > 0) ? true : false;
                         $message['owner']           = $colaborador->nombre. " ". $colaborador->apellido;
                         // $message['html']            = ($oMessage->hasHTMLBody()) ? $oMessage->getHTMLBody() : $oMessage->getTextBody();
-                        $message['html']            = "abc 123";
+                        $html                       = ($oMessage->hasHTMLBody()) ? $oMessage->getHTMLBody() : $oMessage->getTextBody();
+                        
+                        //remove unsupported encodings
+                        $encoding_list = array_intersect($my_encoding_list, mb_list_encodings());
+
+                        //detect 'finally' the encoding
+                        $message['html'] = mb_detect_encoding($html,$encoding_list,true);
+                       
+                       
                         $message['has_attachments'] = $oMessage->getAttachments()->count() > 0 ? true : false;
                         // $message['subject']         = utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)));
                        
