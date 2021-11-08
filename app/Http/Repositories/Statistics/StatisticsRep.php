@@ -410,7 +410,9 @@ class StatisticsRep
 
     public static function campaignGenerateMoreProspects($start_date=null, $end_date=null, $id_campaign=null){
         
-        return $campaignProspects = IntegracionForm::select('integracion_forms.nombre as nombre_campana', DB::raw('count(detalle_prospecto.id_prospecto) as count_prospectos'))
+        return $campaignProspects = IntegracionForm::select('integracion_forms.nombre as nombre_campana', 
+                                                    DB::raw('count(detalle_prospecto.id_prospecto) as count_prospectos'),
+                                                    'integracion_forms.id_integracion_forms as id_integracion')
                                     ->leftjoin('detalle_prospecto', 'detalle_prospecto.id_campana', 'integracion_forms.id_integracion_forms')
                                     ->where(function ($query) use ($start_date, $end_date) {
                                         $query->when($start_date,  function ($query) use ($start_date) {
@@ -436,7 +438,9 @@ class StatisticsRep
 
     public static function campaignGenerateMoreOpportunities($start_date=null, $end_date=null, $id_campaign=null, $id_origin=null){
 
-        return $campaignOpportunities = IntegracionForm::select('integracion_forms.nombre as nombre_campana', DB::raw('count(oportunidad_prospecto.id_oportunidad) as count_oportunidad'))
+        return $campaignOpportunities = IntegracionForm::select('integracion_forms.nombre as nombre_campana', 
+                                                                DB::raw('count(oportunidad_prospecto.id_oportunidad) as count_oportunidad'),
+                                                                'integracion_forms.id_integracion_forms as id_integracion')
                                 ->leftjoin('detalle_prospecto', 'detalle_prospecto.id_campana', 'integracion_forms.id_integracion_forms')
                                 ->leftjoin('prospectos', 'prospectos.id_prospecto', 'detalle_prospecto.id_prospecto')
                                 ->leftjoin('oportunidad_prospecto', 'oportunidad_prospecto.id_prospecto', 'prospectos.id_prospecto')
