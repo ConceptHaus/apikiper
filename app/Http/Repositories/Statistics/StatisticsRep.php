@@ -9,6 +9,7 @@ use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Http\Services\Funnel\FunnelService;
 use App\Http\Services\UtilService;
 use App\Http\Services\Statistics\StatisticsService;
+use App\Modelos\Prospecto\DetalleProspecto;
 use DB;
 use Carbon\Carbon;
 
@@ -404,5 +405,19 @@ class StatisticsRep
                                     ->get();
                                     
         return StatisticsService::getValuesForMostEffectiveProspects($prospectos);
+    }
+
+    public static function campaignGenerateMoreProspects($start_date=null, $end_date=null, $campaign=null){
+        $start_date = $start_date ." 00:00:00";
+        $end_date   = $end_date ." 23:59:59";
+
+        $campaignProspects = DetalleProspecto::select();
+    }
+
+    public static function campaignGenerateMoreOpportunities($start_date=null, $end_date=null, $campaign=null, $origin=null){
+        $start_date = $start_date ." 00:00:00";
+        $end_date   = $end_date ." 23:59:59";
+
+        $campaignOpportunities = DetalleProspecto::select();
     }
 }
