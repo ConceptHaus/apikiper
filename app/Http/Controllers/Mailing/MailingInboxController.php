@@ -266,11 +266,20 @@ class MailingInboxController extends Controller
                             $new_attactchent['extension']   =  $attachment->getExtension();
                             $new_attactchent['name']        =  $attachment->name;
                             $new_attactchent['mime']        =  $attachment->getMimeType();
-                            $new_attactchent['path']        = $attachment->save($path = public_path()."/mail_attatchments/", $filename = null);
+                            try {
+                                $new_attactchent['path']        = $attachment->save($path = public_path()."/mail_attatchments/", $filename = null);
+                            } catch (\Throwable $th) {
+                                $new_attactchent['path']        = null;
+                            }
+                            // $new_attactchent['path']        = $attachment->save($path = public_path()."/mail_attatchments/", $filename = null);
                             $new_attactchent['file_path']   = "public/mail_attatchments/".$attachment->name;
-                            $mail_attachments[]             = $new_attactchent;
+                            if (!is_null($new_attactchent['path'])) {
+                                $mail_attachments[]             = $new_attactchent;
+                            }
+                            
                         }
                         $message['attachments'] = $mail_attachments;
+
                         $messages[]             = $message;
                     }
 
