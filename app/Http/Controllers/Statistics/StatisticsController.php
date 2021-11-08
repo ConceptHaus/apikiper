@@ -66,10 +66,10 @@ class StatisticsController extends Controller
     }
 
     public function campaignGenerateMoreProspects(Request $request){
-        return StatisticsService::campaignGenerateMoreProspects($request->start_date, $request->end_date, $request->campaign);
+        return StatisticsService::campaignGenerateMoreProspects($request->start_date, $request->end_date, $request->id_campaign);
     }
 
     public function campaignGenerateMoreOpportunities(Request $request){
-        return StatisticsService::campaignGenerateMoreOpportunities($request->start_date, $request->end_date, $request->campaign, $request->origin);
+        return StatisticsService::campaignGenerateMoreOpportunities($request->start_date, $request->end_date, $request->id_campaign, $request->id_origin);
     }
 }
