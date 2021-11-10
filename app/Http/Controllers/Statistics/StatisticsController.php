@@ -72,4 +72,16 @@ class StatisticsController extends Controller
     public function campaignGenerateMoreOpportunities(Request $request){
         return StatisticsService::campaignGenerateMoreOpportunities($request->start_date, $request->end_date, $request->id_campaign, $request->id_origin);
     }
+
+    public function campaignGeneratesMore(Request $request){
+        return StatisticsService::campaignGeneratesMore($request->start_date, $request->end_date, $request->id_campaign, $request->id_origin);
+    }
+
+    public function statusPossibleMoney(Request $request){
+        return StatisticsService::statusPossibleMoney($request->start_date, $request->end_date, $request->id_colaborador, $request->id_origin);
+    }
+
+    public function getOneStatus($idStatus){
+        return StatisticsService::getOneStatus($idStatus);
+    }
 }

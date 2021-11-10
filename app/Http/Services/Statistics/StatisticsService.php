@@ -100,6 +100,21 @@ class StatisticsService
 
     }
 
+    public static function campaignGeneratesMore($start_date, $end_date, $id_campaign, $id_origin){
+        return StatisticsRep::campaignGeneratesMore($start_date, $end_date, $id_campaign, $id_origin);
+
+    }
+
+    public static function statusPossibleMoney($start_date, $end_date, $id_colaborador, $id_origin){
+        return StatisticsRep::statusPossibleMoney($start_date, $end_date, $id_colaborador, $id_origin);
+
+    }
+
+    public static function getOneStatus($idStatus){
+        return StatisticsRep::getOneStatus($idStatus);
+
+    }
+
     public static function getValuesForMostEffectiveProspects($values){
         $arrayNombre = array();
         $arrayValues = array();
