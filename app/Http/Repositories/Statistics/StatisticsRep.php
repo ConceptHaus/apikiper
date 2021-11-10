@@ -509,6 +509,7 @@ class StatisticsRep
         
         return $campaignOpportunitiesMoreMoney = CatStatusOportunidad::select('cat_status_oportunidad.id_cat_status_oportunidad',
                                                     'cat_status_oportunidad.status',
+                                                    'cat_status_oportunidad.color',
                                                     DB::raw('IFNULL(sum(detalle_oportunidad.valor * detalle_oportunidad.meses), 0 ) as valor'))
                                 ->leftjoin('status_oportunidad', 'status_oportunidad.id_cat_status_oportunidad', 'cat_status_oportunidad.id_cat_status_oportunidad')
                                 ->leftjoin('detalle_oportunidad', 'detalle_oportunidad.id_oportunidad', 'status_oportunidad.id_oportunidad')
