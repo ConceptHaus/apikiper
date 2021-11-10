@@ -194,32 +194,13 @@ class MailingInboxController extends Controller
 
                 if($paginator->count() > 0){
                     
-                    $my_encoding_list = [
-                        "UTF-8",
-                        "UTF-7",
-                        "UTF-16",
-                        "UTF-32",
-                        "ISO-8859-16",
-                        "ISO-8859-15",
-                        "ISO-8859-10",
-                        "ISO-8859-1",
-                        "Windows-1254",
-                        "Windows-1252",
-                        "Windows-1251",
-                        "ASCII",
-                        //add yours preferred
-                    ];
+                   
 
                     $messages = array();
                     foreach($paginator as $oMessage){
                         
                         $message['UID']             = $oMessage->getUid ();
-                        $message['subject']         = utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)));
-                        // $message['subject']         = utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)));
-                        // $message['subject']         = mb_convert_encoding(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)), 'UTF-8', 'auto');
-                        // $message['subject']         = $this->utf8convert(utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject))));
-                        // $message['subject']         = utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)));
-                        // $message['subject']         = mb_convert_encoding(mb_decode_mimeheader($oMessage->subject), 'UTF-8', 'UTF-8');
+                        $message['subject']         = $this->utf8convert(utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject))));
                         $message['from']            = $oMessage->getFrom()[0]->mail;
                         $message['has_attachments'] = $oMessage->getAttachments()->count() > 0 ? true : false;
                         $message['attachments']     = ($message['has_attachments']) ? $oMessage->getAttachments() : [];
@@ -231,26 +212,9 @@ class MailingInboxController extends Controller
                         $message['responses']       = count($message['response']) + 1;
                         $message['reply']           = (count($message['response']) > 0) ? true : false;
                         $message['owner']           = $colaborador->nombre. " ". $colaborador->apellido;
-                        // $message['html']            = ($oMessage->hasHTMLBody()) ? $oMessage->getHTMLBody() : $oMessage->getTextBody();
                         $html                       = ($oMessage->hasHTMLBody()) ? $oMessage->getHTMLBody() : $oMessage->getTextBody();
-                        
-                        //remove unsupported encodings
-                        $encoding_list = array_intersect($my_encoding_list, mb_list_encodings());
-
-                        //detect 'finally' the encoding
-                        $encoding = mb_detect_encoding($html,$encoding_list,true);
-                        
-                        // $message['html']
-                        if ($encoding!="" && $encoding!="UTF8") {
-                            $html = iconv($encoding, "UTF-8", $html);
-                        } 
-
-                        $message['html'] = $html;
-                       
-                       
+                        $message['html']            = $this->utf8convert($html);
                         $message['has_attachments'] = $oMessage->getAttachments()->count() > 0 ? true : false;
-                        // $message['subject']         = utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)));
-                       
                         $attachments                = ($message['has_attachments']) ? $oMessage->getAttachments() : [];
                         $mail_attachments           = array();
                         $dir                        =  public_path()."/mail_attatchments";
