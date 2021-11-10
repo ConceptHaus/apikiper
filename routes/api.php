@@ -338,7 +338,7 @@ Route::prefix('/v1/estadisticas')->group(function(){
         Route::post('/campaignGenerateMoreOpportunities','Statistics\StatisticsController@campaignGenerateMoreOpportunities');
         Route::post('/campaignGeneratesMore','Statistics\StatisticsController@campaignGeneratesMore');
         Route::post('/statusPossibleMoney','Statistics\StatisticsController@statusPossibleMoney');
-        Route::get('/{idStatus}','Statistics\StatisticsController@getOneStatus');
+        Route::get('/statusPossibleMoney/{idStatus}','Statistics\StatisticsController@getOneStatus');
     });
 });
 
