@@ -90,6 +90,16 @@ class StatisticsService
 
     }
 
+    public static function campaignGenerateMoreProspects($start_date, $end_date, $id_campaign){
+        return StatisticsRep::campaignGenerateMoreProspects($start_date, $end_date, $id_campaign);
+
+    }
+
+    public static function campaignGenerateMoreOpportunities($start_date, $end_date, $id_campaign, $id_origin){
+        return StatisticsRep::campaignGenerateMoreOpportunities($start_date, $end_date, $id_campaign, $id_origin);
+
+    }
+
     public static function getValuesForMostEffectiveProspects($values){
         $arrayNombre = array();
         $arrayValues = array();

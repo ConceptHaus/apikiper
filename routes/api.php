@@ -324,7 +324,7 @@ Route::prefix('/v1/notifcations')->group(function(){
     });
 });
 
-Route::prefix('/v1/estadisticas')->group(function(){
+Route::prefix('/v1/estadisticas')->group(function(){  
     Route::middleware(['auth','cors'])->group(function(){
         Route::post('/prospectos-vs-oportunidades','Statistics\StatisticsController@ProspectosVsOportunidades');
         Route::post('/SalesHistoryByColaborador','Statistics\StatisticsController@SalesHistoryByColaborador');
@@ -333,7 +333,9 @@ Route::prefix('/v1/estadisticas')->group(function(){
         Route::post('/prospectos-cerrados','Statistics\StatisticsController@ProspectosCerradosByColaborador');
         Route::post('/prospectos-eficiencia','Statistics\StatisticsController@getProspectosTotal');
         Route::post('/prospectos-origen','Statistics\StatisticsController@getProspectosByFuente');
-        Route::post('/mostEffectiveProspects','Statistics\StatisticsController@mostEffectiveProspects');   
+        Route::post('/mostEffectiveProspects','Statistics\StatisticsController@mostEffectiveProspects');
+        Route::post('/campaignGenerateMoreProspects','Statistics\StatisticsController@campaignGenerateMoreProspects');
+        Route::post('/campaignGenerateMorepportunities','Statistics\StatisticsController@campaignGenerateMoreOpportunities');
     });
 });
 

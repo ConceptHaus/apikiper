@@ -9,6 +9,8 @@ use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Http\Services\Funnel\FunnelService;
 use App\Http\Services\UtilService;
 use App\Http\Services\Statistics\StatisticsService;
+use App\Modelos\Prospecto\DetalleProspecto;
+use App\Modelos\Extras\IntegracionForm;
 use DB;
 use Carbon\Carbon;
 
@@ -404,5 +406,66 @@ class StatisticsRep
                                     ->get();
                                     
         return StatisticsService::getValuesForMostEffectiveProspects($prospectos);
+    }
+
+    public static function campaignGenerateMoreProspects($start_date=null, $end_date=null, $id_campaign=null){
+        
+        return $campaignProspects = IntegracionForm::select('integracion_forms.nombre as nombre_campana', 
+                                                    DB::raw('count(detalle_prospecto.id_prospecto) as count_prospectos'),
+                                                    'integracion_forms.id_integracion_forms as id_integracion')
+                                    ->leftjoin('detalle_prospecto', 'detalle_prospecto.id_campana', 'integracion_forms.id_integracion_forms')
+                                    ->where(function ($query) use ($start_date, $end_date) {
+                                        $query->when($start_date,  function ($query) use ($start_date) {
+                                                $query->where('detalle_prospecto.created_at', '>=', $start_date . ' 00:00:00');
+                                        });
+                                    })
+                                    ->where(function ($query) use ($end_date) {
+                                        $query->when($end_date,  function ($query) use ($end_date) {
+                                                $query->where('detalle_prospecto.created_at', '<=', $end_date . ' 23:59:59');
+                                        });
+                                    })
+                                    ->where(function ($query) use ($id_campaign) {
+                                        $query->when($id_campaign,  function ($query) use ($id_campaign) {
+                                                $query->where('integracion_forms.id_integracion_forms', $id_campaign);
+                                        });
+                                    })
+                                    ->groupby('integracion_forms.nombre')
+                                    ->orderby('count_prospectos', 'DESC')
+                                    ->get();
+        
+        ;
+    }
+
+    public static function campaignGenerateMoreOpportunities($start_date=null, $end_date=null, $id_campaign=null, $id_origin=null){
+
+        return $campaignOpportunities = IntegracionForm::select('integracion_forms.nombre as nombre_campana', 
+                                                                DB::raw('count(oportunidad_prospecto.id_oportunidad) as count_oportunidad'),
+                                                                'integracion_forms.id_integracion_forms as id_integracion')
+                                ->leftjoin('detalle_prospecto', 'detalle_prospecto.id_campana', 'integracion_forms.id_integracion_forms')
+                                ->leftjoin('prospectos', 'prospectos.id_prospecto', 'detalle_prospecto.id_prospecto')
+                                ->leftjoin('oportunidad_prospecto', 'oportunidad_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                                ->where(function ($query) use ($start_date) {
+                                    $query->when($start_date,  function ($query) use ($start_date) {
+                                            $query->where('oportunidad_prospecto.created_at', '>=', $start_date . ' 00:00:00');
+                                    });
+                                })
+                                ->where(function ($query) use ($end_date) {
+                                    $query->when($end_date,  function ($query) use ($end_date) {
+                                            $query->where('oportunidad_prospecto.created_at', '<=', $end_date . ' 23:59:59');
+                                    });
+                                })
+                                ->where(function ($query) use ($id_campaign) {
+                                    $query->when($id_campaign,  function ($query) use ($id_campaign) {
+                                            $query->where('integracion_forms.id_integracion_forms', $id_campaign);
+                                    });
+                                })
+                                ->where(function ($query) use ($id_origin) {
+                                    $query->when($id_origin,  function ($query) use ($id_origin) {
+                                            $query->where('prospectos.fuente', $id_origin);
+                                    });
+                                })
+                                ->groupby('integracion_forms.id_integracion_forms')
+                                ->orderby('count_oportunidad', 'DESC')
+                                ->get();
     }
 }
