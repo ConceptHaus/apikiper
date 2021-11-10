@@ -128,6 +128,7 @@ class MailingInboxController extends Controller
 
                 $account->password = Crypt::decryptString($account->password);
 
+
                 // return $account;
                 
                 // try {
@@ -181,10 +182,16 @@ class MailingInboxController extends Controller
 
                 // $paginator   =  $oFolder->search()
                 //                         ->since(\Carbon::now()->subDays(30))->get()
-                //                         // ->since(\Carbon::now())->get()
+                //                         ->since(\Carbon::now())->get()
                 //                         ->paginate($perPage = 10, $page = $page_number, $pageName = 'imap_inbox_table');
 
-                $paginator = $oFolder->query()->all()->setFetchOrder("desc")->limit($limit = 10, $page = $page_number)->get();
+                $per_page       = 10;
+
+                $paginator      = $oFolder->query()->all()->setFetchOrder("desc")->limit($limit = $per_page, $page = $page_number)->get();
+                
+                $total_messages = $oFolder->query()->all()->count();
+                
+                $current_count  = (($page_number * $per_page) -  ($per_page - 1)) ." - ". ($page_number * $per_page) ." de ". $total_messages;
                 
                 // return $paginator;
 
@@ -248,6 +255,7 @@ class MailingInboxController extends Controller
                     }
 
                     $paginated_messages['messages'] = array_reverse($messages);
+                    $paginated_messages['current']  = $current_count;
                     $paginated_messages['next']     = (!is_null($page_number)) ? $page_number + 1 : 2;
                     $paginated_messages['prev']     = (!is_null($page_number) AND $page_number > 1) ? $page_number - 1 : 0;
                     
