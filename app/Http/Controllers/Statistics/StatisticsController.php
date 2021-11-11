@@ -84,4 +84,8 @@ class StatisticsController extends Controller
     public function getOneStatus($idStatus){
         return StatisticsService::getOneStatus($idStatus);
     }
+
+    public function contactSpeed(Request $request){
+        return StatisticsService::contactSpeed($request->start_date, $request->end_date);
+    }
 }

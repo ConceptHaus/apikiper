@@ -11,6 +11,7 @@ use App\Http\Services\UtilService;
 use App\Http\Services\Statistics\StatisticsService;
 use App\Modelos\Prospecto\DetalleProspecto;
 use App\Modelos\Extras\IntegracionForm;
+use App\Modelos\Prospecto\ColaboradorProspecto;
 use DB;
 use Carbon\Carbon;
 
@@ -547,5 +548,29 @@ class StatisticsRep
                                 ->groupby('users.id')
                                 ->orderby('users.created_at', 'DESC')
                                 ->get();
+    }
+
+    public static function contactSpeed($start_date, $end_date){
+        return $contactSpeed = ColaboradorProspecto::select(DB::raw('sec_to_time(sum(TIMESTAMPDIFF(MINUTE, colaborador_prospecto.created_at,  status_prospecto.updated_at)) / count(users.id)) AS tiempo_espera'),
+                                        'users.id as id_asesor',
+                                        DB::raw('CONCAT(users.nombre," ",users.apellido) as asesor'))
+                            ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', 'colaborador_prospecto.id_prospecto')
+                            ->leftjoin('prospectos', 'prospectos.id_prospecto', 'colaborador_prospecto.id_prospecto')
+                            ->leftjoin('users', 'users.id', 'colaborador_prospecto.id_colaborador')
+                            ->where('status_prospecto.id_cat_status_prospecto', 1)
+                            ->where(function ($query) use ($start_date) {
+                                $query->when($start_date,  function ($query) use ($start_date) {
+                                        $query->where('colaborador_prospecto.created_at', '>=', $start_date . ' 00:00:00');
+                                });
+                            })
+                            ->where(function ($query) use ($end_date) {
+                                $query->when($end_date,  function ($query) use ($end_date) {
+                                        $query->where('colaborador_prospecto.created_at', '<=', $end_date . ' 23:59:59');
+                                });
+                            })
+                            ->groupby('users.id')
+                            ->orderby('tiempo_espera', 'DESC')
+                            ->get()
+        ;
     }
 }

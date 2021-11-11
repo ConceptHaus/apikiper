@@ -115,6 +115,11 @@ class StatisticsService
 
     }
 
+    public static function contactSpeed($start_date, $end_date){
+        return StatisticsRep::contactSpeed($start_date, $end_date);
+
+    }
+
     public static function getValuesForMostEffectiveProspects($values){
         $arrayNombre = array();
         $arrayValues = array();
