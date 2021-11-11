@@ -325,6 +325,7 @@ Route::prefix('/v1/notifcations')->group(function(){
 });
 
 Route::prefix('/v1/estadisticas')->group(function(){
+    Route::post('/contactSpeed','Statistics\StatisticsController@contactSpeed');
     Route::middleware(['auth','cors'])->group(function(){
         Route::post('/prospectos-vs-oportunidades','Statistics\StatisticsController@ProspectosVsOportunidades');
         Route::post('/SalesHistoryByColaborador','Statistics\StatisticsController@SalesHistoryByColaborador');
@@ -339,7 +340,7 @@ Route::prefix('/v1/estadisticas')->group(function(){
         Route::post('/campaignGeneratesMore','Statistics\StatisticsController@campaignGeneratesMore');
         Route::post('/statusPossibleMoney','Statistics\StatisticsController@statusPossibleMoney');
         Route::get('/statusPossibleMoney/{idStatus}','Statistics\StatisticsController@getOneStatus');
-        Route::post('/contactSpeed','Statistics\StatisticsController@contactSpeed');
+        
     });
 });
 

@@ -551,7 +551,7 @@ class StatisticsRep
     }
 
     public static function contactSpeed($start_date, $end_date){
-        return $contactSpeed = ColaboradorProspecto::select(DB::raw('sec_to_time(sum(TIMESTAMPDIFF(MINUTE, colaborador_prospecto.created_at,  status_prospecto.updated_at)) / count(users.id)) AS tiempo_espera'),
+        return $contactSpeed = ColaboradorProspecto::select(DB::raw('sec_to_time(sum(TIMESTAMPDIFF(SECOND, colaborador_prospecto.created_at,  status_prospecto.updated_at)) / count(users.id)) AS tiempo_espera'),
                                         'users.id as id_asesor',
                                         DB::raw('CONCAT(users.nombre," ",users.apellido) as asesor'))
                             ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', 'colaborador_prospecto.id_prospecto')
@@ -569,7 +569,7 @@ class StatisticsRep
                                 });
                             })
                             ->groupby('users.id')
-                            ->orderby('tiempo_espera', 'DESC')
+                            ->orderby('tiempo_espera', 'ASC')
                             ->get()
         ;
     }
