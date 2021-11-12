@@ -166,10 +166,29 @@ class StatisticsService
                 $valor_total = 0;
                 foreach ($value as $op_key => $oportunidad) {
                     $valor_total =  $valor_total + $oportunidad['valor'];
-                    $oportunidad['valor'] = number_format($oportunidad['valor'], 2);
+                    $oportunidad['valor_formateado'] = number_format($oportunidad['valor'], 2);
                 }
                 $incomePerOrigin[$key]['total_ingresos']                =  number_format($valor_total, 2);
                 $incomePerOrigin[$key]['total_oportunidades_cerradas']  = count($value);
+                $incomePerOrigin[$key]['detalle_campanas']              = UtilService::arrayGroupByKey($value, 'integracion');
+                foreach ($value as $op_key => $oportunidad) {
+                    // $oportunidad['valor2'] = 6666666;
+                    unset($incomePerOrigin[$key][$op_key]);
+                }
+
+
+                
+                
+                foreach ($incomePerOrigin[$key]['detalle_campanas'] as $op_key => $campana) {
+                    $incomePerOrigin[$key]['detalle_campanas'][$op_key]['total_oportunidades_cerradas'] = count($campana);
+                    $valor_total_por_campana = 0;
+                    foreach ($campana as $op_key_2 => $op) {
+                        $valor_total_por_campana = $valor_total_por_campana + $op['valor'];
+                    }
+                    $incomePerOrigin[$key]['detalle_campanas'][$op_key]['total_ingresos'] = $valor_total_por_campana;
+                }
+
+                
             }
             return $incomePerOrigin;
         }
