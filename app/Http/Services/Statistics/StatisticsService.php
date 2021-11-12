@@ -185,7 +185,7 @@ class StatisticsService
                     foreach ($campana as $op_key_2 => $op) {
                         $valor_total_por_campana = $valor_total_por_campana + $op['valor'];
                     }
-                    $incomePerOrigin[$key]['detalle_campanas'][$op_key]['total_ingresos'] = $valor_total_por_campana;
+                    $incomePerOrigin[$key]['detalle_campanas'][$op_key]['total_ingresos'] = number_format($valor_total_por_campana,2);
                 }
 
                 
