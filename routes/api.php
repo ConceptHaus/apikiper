@@ -340,6 +340,7 @@ Route::prefix('/v1/estadisticas')->group(function(){
         Route::post('/statusPossibleMoney','Statistics\StatisticsController@statusPossibleMoney');
         Route::get('/statusPossibleMoney/{idStatus}','Statistics\StatisticsController@getOneStatus');
         Route::post('/contactSpeed','Statistics\StatisticsController@contactSpeed');
+        Route::post('/get-income-per-origin','Statistics\StatisticsController@getIncomePerOrigin');
     });
 });
 

@@ -158,4 +158,23 @@ class StatisticsService
         return $new_colaboradores;
     }
 
+    public static function getIncomePerOrigin($start_date, $end_date, $id_colaborador){
+        $incomePerOrigin = StatisticsRep::getIncomePerOrigin($start_date, $end_date, $id_colaborador);
+
+        if(!empty($incomePerOrigin)){
+            foreach ($incomePerOrigin as $key => $value) {
+                $valor_total = 0;
+                foreach ($value as $op_key => $oportunidad) {
+                    $valor_total =  $valor_total + $oportunidad['valor'];
+                    $oportunidad['valor'] = number_format($oportunidad['valor'], 2);
+                }
+                $incomePerOrigin[$key]['total_ingresos']                =  number_format($valor_total, 2);
+                $incomePerOrigin[$key]['total_oportunidades_cerradas']  = count($value);
+            }
+            return $incomePerOrigin;
+        }
+
+        return $incomePerOrigin;
+    }
+
 }

@@ -88,4 +88,8 @@ class StatisticsController extends Controller
     public function contactSpeed(Request $request){
         return StatisticsService::contactSpeed($request->start_date, $request->end_date);
     }
+
+    public function getIncomePerOrigin(Request $request){
+        return StatisticsService::getIncomePerOrigin($request->start_date, $request->end_date, $request->id_colaborador);
+    }
 }

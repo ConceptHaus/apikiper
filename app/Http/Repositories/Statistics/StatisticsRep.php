@@ -573,4 +573,38 @@ class StatisticsRep
                             ->get()
         ;
     }
+
+    public static function getIncomePerOrigin($start_date, $end_date, $id_colaborador){
+        
+        $incomePerOrigin =  Oportunidad::select('oportunidades.id_oportunidad',
+                                                'prospectos.id_prospecto',
+                                                'cat_fuentes.nombre as fuente',
+                                                'oportunidades.nombre_oportunidad',
+                                                'integracion_forms.nombre as integracion',
+                                                DB::raw('CONCAT(users.nombre," ",users.apellido) as asesor'),
+                                                DB::raw('CONCAT(prospectos.nombre," ",prospectos.apellido) as prospecto'),
+                                                DB::raw('(detalle_oportunidad.valor * detalle_oportunidad.meses) as valor'))
+                            ->join('oportunidad_prospecto', 'oportunidad_prospecto.id_oportunidad', 'oportunidades.id_oportunidad')
+                            ->join('prospectos', 'prospectos.id_prospecto', 'oportunidad_prospecto.id_prospecto')
+                            ->join('detalle_prospecto', 'detalle_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                            ->join('integracion_forms', 'integracion_forms.id_integracion_forms', 'detalle_prospecto.id_campana')
+                            ->join('cat_fuentes', 'cat_fuentes.id_fuente', 'prospectos.fuente')
+                            ->join('status_oportunidad', 'status_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
+                            ->join('cat_status_oportunidad', 'cat_status_oportunidad.id_cat_status_oportunidad', 'status_oportunidad.id_cat_status_oportunidad')
+                            ->join('detalle_oportunidad', 'detalle_oportunidad.id_oportunidad', 'status_oportunidad.id_oportunidad')
+                            ->join('colaborador_oportunidad', 'colaborador_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
+                            ->join('users', 'users.id', 'colaborador_oportunidad.id_colaborador')
+                            ->where('status_oportunidad.id_cat_status_oportunidad', 2)
+                            ->where('status_oportunidad.updated_at', '>=', $start_date)
+                            ->where('status_oportunidad.updated_at', '<=', $end_date);
+                            if(!is_null($id_colaborador)){
+                                $incomePerOrigin = $incomePerOrigin->where('colaborador_oportunidad.id_colaborador', $id_colaborador);
+                            }
+                            $incomePerOrigin =  $incomePerOrigin->orderby('cat_fuentes.id_fuente', 'DESC')
+                                                                ->get();
+                            
+        $incomePerOriginArray = (!empty( $incomePerOrigin))  ? UtilService::arrayGroupByKey($incomePerOrigin, 'fuente') : $incomePerOrigin;
+        
+        return $incomePerOriginArray;
+    }
 }
