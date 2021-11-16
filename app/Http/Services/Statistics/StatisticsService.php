@@ -168,16 +168,12 @@ class StatisticsService
                     $valor_total =  $valor_total + $oportunidad['valor'];
                     $oportunidad['valor_formateado'] = number_format($oportunidad['valor'], 2);
                 }
-                $incomePerOrigin[$key]['total_ingresos']                =  number_format($valor_total, 2);
+                $incomePerOrigin[$key]['total_ingresos']                = number_format($valor_total, 2);
                 $incomePerOrigin[$key]['total_oportunidades_cerradas']  = count($value);
                 $incomePerOrigin[$key]['detalle_campanas']              = UtilService::arrayGroupByKey($value, 'integracion');
                 foreach ($value as $op_key => $oportunidad) {
-                    // $oportunidad['valor2'] = 6666666;
                     unset($incomePerOrigin[$key][$op_key]);
                 }
-
-
-                
                 
                 foreach ($incomePerOrigin[$key]['detalle_campanas'] as $op_key => $campana) {
                     $incomePerOrigin[$key]['detalle_campanas'][$op_key]['total_oportunidades_cerradas'] = count($campana);
@@ -187,10 +183,28 @@ class StatisticsService
                     }
                     $incomePerOrigin[$key]['detalle_campanas'][$op_key]['total_ingresos'] = number_format($valor_total_por_campana,2);
                 }
+            }
 
+            $newIncomePerOrigin = array();
+
+            foreach ($incomePerOrigin as $key => $fuente) {
+                $incomePerOrigin[$key]['origen']    = $key;
+                $newIncomePerOrigin[]               = $incomePerOrigin[$key];
+
+            }
+
+            foreach ($newIncomePerOrigin as $key => $fuente) {
+                $campanas = array();
+                foreach ($fuente['detalle_campanas'] as $key_2 => $integracion) {
+                    $newIntegracion = array();
+                    $integracion['campana'] = $key_2;
+                    $campanas[] = $integracion;
+                }
+                $newIncomePerOrigin[$key]['detalle_campanas'] = $campanas;
                 
             }
-            return $incomePerOrigin;
+
+            return $newIncomePerOrigin;
         }
 
         return $incomePerOrigin;
