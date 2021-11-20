@@ -8,7 +8,7 @@ use App\Http\DTOs\Datatable\DatatableResponseDTO;
 class ProspectosListService
 {    
     /*----------------------- LISTA DE PROSPECTOS --------------------------*/
-    public function getProspectosPageByRol($id_colaborador, $rol, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $correo) {
+    public function getProspectosPageByRol($id_colaborador, $rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
         $response = new DatatableResponseDTO();
         $object = new ProspectosListRep;
 
@@ -17,7 +17,7 @@ class ProspectosListService
         $response->message = "Correcto";
         $response->error = false;
 
-        $datos = $object->createPageForProspectosForRol($id_colaborador, $rol, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $correo);
+        $datos = $object->createPageForProspectosForRol($id_colaborador, $rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin);
         $response->data =  $datos->items("data");
 
         $response->recordsTotal = $datos->total();
@@ -27,7 +27,7 @@ class ProspectosListService
         return $response;
     }
 
-    public function getProspectosPageForAdmin($paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $correo){
+    public function getProspectosPageForAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin){
         $response = new DatatableResponseDTO();
         $object = new ProspectosListRep;
 
@@ -36,7 +36,7 @@ class ProspectosListService
         $response->message = "Correcto";
         $response->error = false;
 
-        $datos =  $object->createPageForProspectosForAdmin($paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $correo);
+        $datos =  $object->createPageForProspectosForAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin);
         $response->data = $datos->items("data");
 
         $response->recordsTotal = $datos->total();
@@ -46,7 +46,7 @@ class ProspectosListService
         return $response;
     }
 
-    public function getAllProspectosPageByColaborador($id_colaborador, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $correo){
+    public function getAllProspectosPageByColaborador($id_colaborador, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin){
         $response = new DatatableResponseDTO;
         $object = new ProspectosListRep;
 
@@ -55,7 +55,7 @@ class ProspectosListService
         $response->message = "Correcto";
         $response->error = false;
 
-        $datos = $object->createPageForProspectosByColaborador($id_colaborador, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $correo);
+        $datos = $object->createPageForProspectosByColaborador($id_colaborador, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin);
         $response->data = $datos->items("data");
         
         $response->recordsTotal = $datos->total();
@@ -67,10 +67,10 @@ class ProspectosListService
 
 
     /*-------------------- TOTAL DE PROSPECTOS ---------------------*/
-    public function getCountProspectosForAdmin(){
+    public function getCountProspectosForAdmin($busqueda = null){
         $object = new ProspectosListRep;
 
-        $response->data["prospectos_total"] = $object->getProspectosCountByAdmin();
+        $response->data["prospectos_total"] = $object->getProspectosCountByAdmin($busqueda)->total();
 
         return $response;
     }

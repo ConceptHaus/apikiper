@@ -55,6 +55,7 @@ Route::prefix('/v1/colaboradores')->group(function(){
         Route::middleware(['auth','cors'])->group(function(){
             Route::post('/', 'Colaboradores\ColaboradoresController@registerColaborador');
             Route::get('/', 'Colaboradores\ColaboradoresController@getAllColaboradores');
+            Route::get('/estadisticas', 'Colaboradores\ColaboradoresController@getAllColaboradoresEstadisticas');
             Route::post('/excpet-user-to-be-deleted', 'Colaboradores\ColaboradoresController@getAllColaboradoresExceptUserToBeDeleted');
             Route::get('/{id}','Colaboradores\ColaboradoresController@getOneColaborador');
             Route::get('/etiquetas/{id_etiqueta}','Forms\FormsController@assigment_colaborador');
@@ -173,9 +174,9 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/correos', 'Prospectos\ProspectosListController@findProspectosCorreos');
         Route::get('/prospectosNombres', 'Prospectos\ProspectosListController@findProspectosNombres');
         Route::get('/prospectosTelefono', 'Prospectos\ProspectosListController@findProspectosTelefono');
-        Route::get('/count', 'Prospectos\ProspectosListController@findCountProspectos');
-        Route::get('/countNT', 'Prospectos\ProspectosListController@findCountProspectosNotContacted');
-        Route::get('/prospectosFuente', 'Prospectos\ProspectosListController@findProspectosFuentes');
+        Route::post('/count', 'Prospectos\ProspectosListController@findCountProspectos');
+        Route::post('/countNT', 'Prospectos\ProspectosListController@findCountProspectosNotContacted');
+        Route::post('/prospectosFuente', 'Prospectos\ProspectosListController@findProspectosFuentes');
         Route::get('/prospectosStatus', 'Prospectos\ProspectosListController@findProspectosStatus');
         Route::get('/prospectosColaborador', 'Prospectos\ProspectosListController@findProspectosColaborador');
         Route::get('/prospectosEtiquetas', 'Prospectos\ProspectosListController@findProspectosEtiquetas');
