@@ -32,7 +32,15 @@ class MailingInboxService
 
     public static function getResponse($user_id, $email_id)
     {
-        return MailingInboxRep::getResponse($user_id, $email_id);
+        $responses = MailingInboxRep::getResponse($user_id, $email_id);
+
+        if(count( $responses) > 0){
+            foreach ($responses as $key => $response) {
+                $responses[$key]['created_at'] = date('d M Y H:i', strtotime($response['created_at']));
+            }
+        }
+
+        return $responses;
     }
 
     public static function createResponse($response)

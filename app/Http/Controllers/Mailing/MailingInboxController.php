@@ -111,7 +111,8 @@ class MailingInboxController extends Controller
     public function getAccount($page_number)
     {
         ini_set('memory_limit', '-1');
-        
+        setlocale(LC_ALL,"es_ES");
+
         $colaborador_id = Auth::user()->id;
         // $colaborador_id = '0e940a0c-c474-3463-bceb-0db0ad1fd42b';
         
@@ -213,7 +214,7 @@ class MailingInboxController extends Controller
                         $message['attachments']     = ($message['has_attachments']) ? $oMessage->getAttachments() : [];
                         $flags                      = $oMessage->getFlags();
                         $message['seen']            = (isset($flags['seen']) AND $flags['seen'] == "Seen") ? true : false ;
-                        $message['date']            = mb_decode_mimeheader($oMessage->date);
+                        $message['date']            = date('d M Y H:i', strtotime(mb_decode_mimeheader($oMessage->date)));
                         $message['from_name']       = mb_decode_mimeheader($oMessage->fromaddress );
                         $message['response']        = MailingInboxService::getResponse($colaborador_id, $message['date']."|".$message['from']);
                         $message['responses']       = count($message['response']) + 1;
