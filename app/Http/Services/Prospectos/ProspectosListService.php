@@ -19,6 +19,8 @@ class ProspectosListService
 
         $datos = $object->createPageForProspectosForRol($id_colaborador, $rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin);
         $response->data =  $datos->items("data");
+        $response->noContacted = $object->createCountForProspectosForRolNotContacted($id_colaborador, $rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin)->count();
+        $response->prospectOrigin = ProspectosListService::getProspectosFuentesdByRol($id_colaborador, $rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin);
 
         $response->recordsTotal = $datos->total();
         $response->draw = 0;
@@ -39,6 +41,8 @@ class ProspectosListService
         $datos =  $object->createPageForProspectosForAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin);
         $response->data = $datos->items("data");
 
+        $response->noContacted = $object->createCountForProspectosForAdminNotContacted($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin)->count();
+        $response->prospectOrigin = ProspectosListService::getProspectosFuentesByAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin);
         $response->recordsTotal = $datos->total();
         $response->draw = 0;
         $response->recordsFiltered = $response->recordsTotal;
@@ -57,6 +61,10 @@ class ProspectosListService
 
         $datos = $object->createPageForProspectosByColaborador($id_colaborador, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin);
         $response->data = $datos->items("data");
+
+        $response->noContacted = $object->createCountForProspectosForColaboradorNotContacted($id_colaborador, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin)->count();
+        $response->prospectOrigin = ProspectosListService::getProspectosFuentesByColaborador($id_colaborador, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin);
+
         
         $response->recordsTotal = $datos->total();
         $response->draw = 0;
@@ -120,33 +128,33 @@ class ProspectosListService
     }
 
     /*--------------- PROSPECTOS FUENTE ----------------*/
-    public function getProspectosFuentesByAdmin(){
+    public function getProspectosFuentesByAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin){
         $object = new ProspectosListRep;
 
         $catalogo_fuentes = $object->getCatalogosFuentes();
-        $origen = $object->getOrigenByAdmin();
+        $origen = $object->getOrigenByAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin);
 
         $response->data["prospectos_fuente"] = $object->fuentesChecker($catalogo_fuentes,$origen);
 
         return $response;
     }
 
-    public function getProspectosFuentesByColaborador($id_colaborador){
+    public function getProspectosFuentesByColaborador($id_colaborador, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin){
         $object = new ProspectosListRep;
 
         $catalogo_fuentes = $object->getCatalogosFuentes();
-        $origen = $object->getOrigenByColaborador($id_colaborador);
+        $origen = $object->getOrigenByColaborador($id_colaborador, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin);
 
         $response->data["prospectos_fuente"] = $object->fuentesChecker($catalogo_fuentes,$origen);
 
         return $response;
     }
 
-    public function getProspectosFuentesdByRol($id_colaborador, $rol){
+    public function getProspectosFuentesdByRol($id_colaborador, $rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin){
         $object = new ProspectosListRep;
 
         $catalogo_fuentes = $object->getCatalogosFuentes();
-        $origen = $object->getOrigenByRol($id_colaborador, $rol);
+        $origen = $object->getOrigenByRol($id_colaborador, $rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin);
 
         $response->data["prospectos_fuente"] = $object->fuentesChecker($catalogo_fuentes,$origen);
 

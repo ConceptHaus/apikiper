@@ -146,6 +146,117 @@ class ProspectosListRep
         
     }
 
+    public function createCountForProspectosForRolNotContacted($id_colaborador, $rol, $paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null){
+        $search = $paginacion->search;
+        $orderBy = ProspectosListRep::getOrderBy($paginacion->nColumn);
+
+        if ($rol == 1) {
+            return DB::table('prospectos')
+            ->leftjoin('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
+            ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
+            ->leftjoin('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
+            ->leftjoin('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'prospectos.id_prospecto')
+            ->leftjoin('etiquetas', 'etiquetas.id_etiqueta', 'etiquetas_prospectos.id_etiqueta')
+            ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('empresas', 'empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
+            ->wherenull('prospectos.deleted_at')
+            ->where('etiquetas.nombre','like','%polanco%')
+            ->where('users.id', '=', $id_colaborador)
+            ->where(function ($query) use ($search) {
+                $query->orWhere('prospectos.nombre', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.apellido', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.correo', 'like', '%'.$search.'%')
+                        ->orWhere('detalle_prospecto.telefono', 'like', '%'.$search.'%')
+                        ->orWhere('users.nombre', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.created_at', 'like', '%'.$search.'%')
+                        ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
+                        ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%');
+            })
+            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+                $query->when($telefonos,  function ($query) use ($telefonos) {
+                    $query->where(function ($query) use ($telefonos) {
+                        $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
+                    });
+                });
+                $query->when($fuente,  function ($query) use ($fuente) {
+                    $query->where(function ($query) use ($fuente) {
+                        $query->whereIn('cat_fuentes.nombre', $fuente);
+                    });
+                });
+                $query->when($etiqueta,  function ($query) use ($etiqueta) {
+                    $query->where(function ($query) use ($etiqueta) {
+                        $query->where('etiquetas.nombre', 'LIKE', "%$etiqueta%");
+                    });
+                });
+                $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
+                    $query->where(function ($query) use ($fechaInicio, $fechaFin) {
+                        $query->whereBetween('prospectos.created_at', [$fechaInicio." 00:00:00", $fechaFin." 23:59:59"]);
+                    });
+                });
+            })
+            ->where('status_prospecto.id_cat_status_prospecto','=',2)
+            ->groupby('prospectos.id_prospecto')
+            ->get();
+
+        } else if($rol == 2){
+            return DB::table('prospectos')
+            ->leftjoin('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
+            ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
+            ->leftjoin('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
+            ->leftjoin('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'prospectos.id_prospecto')
+            ->leftjoin('etiquetas', 'etiquetas.id_etiqueta', 'etiquetas_prospectos.id_etiqueta')
+            ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('empresas', 'empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
+            ->wherenull('prospectos.deleted_at')
+            ->where('etiquetas.nombre','like','%napoles%')
+            ->where('users.id', '=', $id_colaborador)
+            ->where(function ($query) use ($search) {
+                $query->orWhere('prospectos.nombre', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.apellido', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.correo', 'like', '%'.$search.'%')
+                        ->orWhere('detalle_prospecto.telefono', 'like', '%'.$search.'%')
+                        ->orWhere('users.nombre', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.created_at', 'like', '%'.$search.'%')
+                        ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
+                        ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%');
+            })
+            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+                $query->when($telefonos,  function ($query) use ($telefonos) {
+                    $query->where(function ($query) use ($telefonos) {
+                        $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
+                    });
+                });
+                $query->when($fuente,  function ($query) use ($fuente) {
+                    $query->where(function ($query) use ($fuente) {
+                        $query->whereIn('cat_fuentes.nombre', $fuente);
+                    });
+                });
+                $query->when($etiqueta,  function ($query) use ($etiqueta) {
+                    $query->where(function ($query) use ($etiqueta) {
+                        $query->where('etiquetas.nombre', 'LIKE', "%$etiqueta%");
+                    });
+                });
+                $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
+                    $query->where(function ($query) use ($fechaInicio, $fechaFin) {
+                        $query->whereBetween('prospectos.created_at', [$fechaInicio." 00:00:00", $fechaFin." 23:59:59"]);
+                    });
+                });
+            })
+            ->where('status_prospecto.id_cat_status_prospecto','=',2)
+            ->groupby('prospectos.id_prospecto')
+            ->get();
+        } else {
+            return "";
+        }
+        
+    }
+
     public function countProspectosForRol($id_colaborador, $rol){
 
         if ($rol == 1) {
@@ -239,43 +350,178 @@ class ProspectosListRep
         }
     }
 
-    public function getOrigenByRol($id_colaborador, $rol){
-        if($rol == 1){
+    public function getOrigenByRol($id_colaborador, $rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin){
+        $search = $paginacion->search;
+        
+        if ($rol == 1) {
             return DB::table('prospectos')
-                ->distinct()
-                ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
-                ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
-                ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
-                ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
-                ->wherenull('prospectos.deleted_at')
+            ->leftjoin('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
+            ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
+            ->leftjoin('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
+            ->leftjoin('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'prospectos.id_prospecto')
+            ->leftjoin('etiquetas', 'etiquetas.id_etiqueta', 'etiquetas_prospectos.id_etiqueta')
+            ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('empresas', 'empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
+            ->wherenull('prospectos.deleted_at')
+            ->where('etiquetas.nombre','like','%polanco%')
+            ->where('users.id', '=', $id_colaborador)
+            ->where(function ($query) use ($search) {
+                $query->orWhere('prospectos.nombre', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.apellido', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.correo', 'like', '%'.$search.'%')
+                        ->orWhere('detalle_prospecto.telefono', 'like', '%'.$search.'%')
+                        ->orWhere('users.nombre', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.created_at', 'like', '%'.$search.'%')
+                        ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
+                        ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%');
+            })
+            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+                $query->when($telefonos,  function ($query) use ($telefonos) {
+                    $query->where(function ($query) use ($telefonos) {
+                        $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
+                    });
+                });
+                $query->when($fuente,  function ($query) use ($fuente) {
+                    $query->where(function ($query) use ($fuente) {
+                        $query->whereIn('cat_fuentes.nombre', $fuente);
+                    });
+                });
+                $query->when($etiqueta,  function ($query) use ($etiqueta) {
+                    $query->where(function ($query) use ($etiqueta) {
+                        $query->where('etiquetas.nombre', 'LIKE', "%$etiqueta%");
+                    });
+                });
+                $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
+                    $query->where(function ($query) use ($fechaInicio, $fechaFin) {
+                        $query->whereBetween('prospectos.created_at', [$fechaInicio." 00:00:00", $fechaFin." 23:59:59"]);
+                    });
+                });
+            })
+            ->distinct()
                 ->where('colaborador_prospecto.id_colaborador','=', $id_colaborador)
                 ->where('etiquetas.nombre','like','%polanco%')
                 ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status', DB::raw('count(DISTINCT(prospectos.id_prospecto)) as total, cat_fuentes.nombre'))
                 ->groupBy('cat_fuentes.nombre')
                 ->get();
+
         } else if($rol == 2){
             return DB::table('prospectos')
-                ->distinct()
-                ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
-                ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
-                ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
-                ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
-                ->wherenull('prospectos.deleted_at')
-                ->where('colaborador_prospecto.id_colaborador','=', $id_colaborador)
-                ->where('etiquetas.nombre','like','%napoles%')
-                ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status', DB::raw('count(DISTINCT(prospectos.id_prospecto)) as total, cat_fuentes.nombre'))
-                ->groupBy('cat_fuentes.nombre')
-                ->get();
-        } else {
-            return "";
+            ->leftjoin('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
+            ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
+            ->leftjoin('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
+            ->leftjoin('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'prospectos.id_prospecto')
+            ->leftjoin('etiquetas', 'etiquetas.id_etiqueta', 'etiquetas_prospectos.id_etiqueta')
+            ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('empresas', 'empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
+            ->wherenull('prospectos.deleted_at')
+            ->where('etiquetas.nombre','like','%napoles%')
+            ->where('users.id', '=', $id_colaborador)
+            ->where(function ($query) use ($search) {
+                $query->orWhere('prospectos.nombre', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.apellido', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.correo', 'like', '%'.$search.'%')
+                        ->orWhere('detalle_prospecto.telefono', 'like', '%'.$search.'%')
+                        ->orWhere('users.nombre', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.created_at', 'like', '%'.$search.'%')
+                        ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
+                        ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%');
+            })
+            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+                $query->when($telefonos,  function ($query) use ($telefonos) {
+                    $query->where(function ($query) use ($telefonos) {
+                        $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
+                    });
+                });
+                $query->when($fuente,  function ($query) use ($fuente) {
+                    $query->where(function ($query) use ($fuente) {
+                        $query->whereIn('cat_fuentes.nombre', $fuente);
+                    });
+                });
+                $query->when($etiqueta,  function ($query) use ($etiqueta) {
+                    $query->where(function ($query) use ($etiqueta) {
+                        $query->where('etiquetas.nombre', 'LIKE', "%$etiqueta%");
+                    });
+                });
+                $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
+                    $query->where(function ($query) use ($fechaInicio, $fechaFin) {
+                        $query->whereBetween('prospectos.created_at', [$fechaInicio." 00:00:00", $fechaFin." 23:59:59"]);
+                    });
+                });
+            })
+            ->distinct()
+            ->where('colaborador_prospecto.id_colaborador','=', $id_colaborador)
+            ->where('etiquetas.nombre','like','%napoles%')
+            ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status', DB::raw('count(DISTINCT(prospectos.id_prospecto)) as total, cat_fuentes.nombre'))
+            ->groupBy('cat_fuentes.nombre')
+            ->get();
         }
     }
 
     /* --------------- ADMIN ------------------ */
 
+    public function createCountForProspectosForAdminNotContacted($paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null){
+        $search = $paginacion->search;
+
+        return DB::table('prospectos')
+        ->leftjoin('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+        ->leftjoin('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+        ->leftjoin('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
+        ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+        ->leftjoin('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
+        ->leftjoin('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
+        ->leftjoin('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'prospectos.id_prospecto')
+        ->leftjoin('etiquetas', 'etiquetas.id_etiqueta', 'etiquetas_prospectos.id_etiqueta')
+        ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'prospectos.id_prospecto')
+        ->leftjoin('empresas', 'empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
+        ->wherenull('prospectos.deleted_at')
+        ->where(function ($query) use ($search) {
+            $query->orWhere('prospectos.nombre', 'like', '%'.$search.'%')
+                    ->orWhere('prospectos.apellido', 'like', '%'.$search.'%')
+                    ->orWhere('prospectos.correo', 'like', '%'.$search.'%')
+                    ->orWhere('detalle_prospecto.telefono', 'like', '%'.$search.'%')
+                    ->orWhere('users.nombre', 'like', '%'.$search.'%')
+                    ->orWhere('prospectos.created_at', 'like', '%'.$search.'%')
+                    ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
+                    ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%')
+                    ->orWhere('empresas.nombre', 'like', '%'.$search.'%');
+        })
+        ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+            $query->when($telefonos,  function ($query) use ($telefonos) {
+                $query->where(function ($query) use ($telefonos) {
+                    $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
+                });
+            });
+            $query->when($fuente,  function ($query) use ($fuente) {
+                $query->where(function ($query) use ($fuente) {
+                    $query->whereIn('cat_fuentes.nombre', $fuente);
+                });
+            });
+            $query->when($etiqueta,  function ($query) use ($etiqueta) {
+                $query->where(function ($query) use ($etiqueta) {
+                    $query->where('etiquetas.nombre', 'LIKE', "%$etiqueta%");
+                });
+            });
+            $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
+                $query->where(function ($query) use ($fechaInicio, $fechaFin) {
+                    $query->whereBetween('prospectos.created_at', [$fechaInicio." 00:00:00", $fechaFin." 23:59:59"]);
+                });
+            });
+        })
+        ->groupby('prospectos.id_prospecto')
+        ->where('status_prospecto.id_cat_status_prospecto','=',2)
+        ->get();
+    }
+
     public function createPageForProspectosForAdmin($paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null){
         $search = $paginacion->search;
         $orderBy = ProspectosListRep::getOrderBy($paginacion->nColumn);
+        $array = array();
 
         return DB::table('prospectos')
             ->leftjoin('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
@@ -341,12 +587,58 @@ class ProspectosListRep
             ->paginate($paginacion->length, ['*'], null, $paginacion->start);
     }
 
-    public function getOrigenByAdmin(){
+    public function getOrigenByAdmin($paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null){
+        $search = $paginacion->search;
+        
         return DB::table('prospectos')
-        ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+        ->leftjoin('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+        ->leftjoin('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+        ->leftjoin('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
+        ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+        ->leftjoin('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
+        ->leftjoin('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
+        ->leftjoin('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'prospectos.id_prospecto')
+        ->leftjoin('etiquetas', 'etiquetas.id_etiqueta', 'etiquetas_prospectos.id_etiqueta')
+        ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'prospectos.id_prospecto')
+        ->leftjoin('empresas', 'empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
         ->wherenull('prospectos.deleted_at')
+        ->where(function ($query) use ($search) {
+            $query->orWhere('prospectos.nombre', 'like', '%'.$search.'%')
+                    ->orWhere('prospectos.apellido', 'like', '%'.$search.'%')
+                    ->orWhere('prospectos.correo', 'like', '%'.$search.'%')
+                    ->orWhere('detalle_prospecto.telefono', 'like', '%'.$search.'%')
+                    ->orWhere('users.nombre', 'like', '%'.$search.'%')
+                    ->orWhere('prospectos.created_at', 'like', '%'.$search.'%')
+                    ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
+                    ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%')
+                    ->orWhere('empresas.nombre', 'like', '%'.$search.'%');
+        })
+        ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+            $query->when($telefonos,  function ($query) use ($telefonos) {
+                $query->where(function ($query) use ($telefonos) {
+                    $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
+                });
+            });
+            $query->when($fuente,  function ($query) use ($fuente) {
+                $query->where(function ($query) use ($fuente) {
+                    $query->whereIn('cat_fuentes.nombre', $fuente);
+                });
+            });
+            $query->when($etiqueta,  function ($query) use ($etiqueta) {
+                $query->where(function ($query) use ($etiqueta) {
+                    $query->where('etiquetas.nombre', 'LIKE', "%$etiqueta%");
+                });
+            });
+            $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
+                $query->where(function ($query) use ($fechaInicio, $fechaFin) {
+                    $query->whereBetween('prospectos.created_at', [$fechaInicio." 00:00:00", $fechaFin." 23:59:59"]);
+                });
+            });
+        })
+        ->groupBy('cat_fuentes.nombre')
+        ->where('status_prospecto.id_cat_status_prospecto','=',2)
         ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(*) as total, cat_fuentes.nombre'))
-        ->groupBy('cat_fuentes.nombre')->get();
+        ->get();
     }
 
     public function getProspectosCountByAdmin($search = null){
@@ -399,6 +691,62 @@ class ProspectosListRep
     }
 
     /*-------------- COLABORADORES --------------------*/
+
+    public function createCountForProspectosForColaboradorNotContacted($id_colaborador, $paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null){
+        $search = $paginacion->search;
+        $orderBy = ProspectosListRep::getOrderBy($paginacion->nColumn);
+        
+            return DB::table('prospectos')
+            ->leftjoin('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
+            ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
+            ->leftjoin('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
+            ->leftjoin('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'prospectos.id_prospecto')
+            ->leftjoin('etiquetas', 'etiquetas.id_etiqueta', 'etiquetas_prospectos.id_etiqueta')
+            ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('empresas', 'empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
+            ->wherenull('prospectos.deleted_at')
+            ->where('users.id', '=', $id_colaborador)
+            ->where(function ($query) use ($search) {
+                $query->orWhere('prospectos.nombre', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.apellido', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.correo', 'like', '%'.$search.'%')
+                        ->orWhere('detalle_prospecto.telefono', 'like', '%'.$search.'%')
+                        ->orWhere('users.nombre', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.created_at', 'like', '%'.$search.'%')
+                        ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
+                        ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%')
+                        ->orWhere('empresas.nombre', 'like', '%'.$search.'%')
+                        ;
+            })
+            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+                $query->when($telefonos,  function ($query) use ($telefonos) {
+                    $query->where(function ($query) use ($telefonos) {
+                        $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
+                    });
+                });
+                $query->when($fuente,  function ($query) use ($fuente) {
+                    $query->where(function ($query) use ($fuente) {
+                        $query->whereIn('cat_fuentes.nombre', $fuente);
+                    });
+                });
+                $query->when($etiqueta,  function ($query) use ($etiqueta) {
+                    $query->where(function ($query) use ($etiqueta) {
+                        $query->where('etiquetas.nombre', 'LIKE', "%$etiqueta%");
+                    });
+                });
+                $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
+                    $query->where(function ($query) use ($fechaInicio, $fechaFin) {
+                        $query->whereBetween('prospectos.created_at', [$fechaInicio." 00:00:00", $fechaFin." 23:59:59"]);
+                    });
+                });
+            })
+            ->groupby('prospectos.id_prospecto')
+            ->where('status_prospecto.id_cat_status_prospecto','=',2)
+            ->get();
+    }
 
     public function createPageForProspectosByColaborador($id_colaborador, $paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null){
         $search = $paginacion->search;
@@ -484,14 +832,59 @@ class ProspectosListRep
                                 ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
     }
 
-    public function getOrigenByColaborador($id_colaborador){
+    public function getOrigenByColaborador($id_colaborador, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin){
+        $search = $paginacion->search;
+        
         return DB::table('prospectos')
-        ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
-        ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', 'prospectos.id_prospecto')
-        ->where('colaborador_prospecto.id_colaborador',$id_colaborador)
-        ->wherenull('prospectos.deleted_at')
-        ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(*) as total, cat_fuentes.nombre'))
-        ->groupBy('cat_fuentes.nombre')->get();
+            ->leftjoin('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('cat_fuentes', 'cat_fuentes.id_fuente', '=', 'prospectos.fuente')
+            ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('cat_status_prospecto', 'cat_status_prospecto.id_cat_status_prospecto', '=', 'status_prospecto.id_cat_status_prospecto')
+            ->leftjoin('users', 'users.id', '=', 'colaborador_prospecto.id_colaborador')
+            ->leftjoin('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', 'prospectos.id_prospecto')
+            ->leftjoin('etiquetas', 'etiquetas.id_etiqueta', 'etiquetas_prospectos.id_etiqueta')
+            ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'prospectos.id_prospecto')
+            ->leftjoin('empresas', 'empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
+            ->wherenull('prospectos.deleted_at')
+            ->where('users.id', '=', $id_colaborador)
+            ->where(function ($query) use ($search) {
+                $query->orWhere('prospectos.nombre', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.apellido', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.correo', 'like', '%'.$search.'%')
+                        ->orWhere('detalle_prospecto.telefono', 'like', '%'.$search.'%')
+                        ->orWhere('users.nombre', 'like', '%'.$search.'%')
+                        ->orWhere('prospectos.created_at', 'like', '%'.$search.'%')
+                        ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
+                        ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%')
+                        ->orWhere('empresas.nombre', 'like', '%'.$search.'%')
+                        ;
+            })
+            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+                $query->when($telefonos,  function ($query) use ($telefonos) {
+                    $query->where(function ($query) use ($telefonos) {
+                        $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
+                    });
+                });
+                $query->when($fuente,  function ($query) use ($fuente) {
+                    $query->where(function ($query) use ($fuente) {
+                        $query->whereIn('cat_fuentes.nombre', $fuente);
+                    });
+                });
+                $query->when($etiqueta,  function ($query) use ($etiqueta) {
+                    $query->where(function ($query) use ($etiqueta) {
+                        $query->where('etiquetas.nombre', 'LIKE', "%$etiqueta%");
+                    });
+                });
+                $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
+                    $query->where(function ($query) use ($fechaInicio, $fechaFin) {
+                        $query->whereBetween('prospectos.created_at', [$fechaInicio." 00:00:00", $fechaFin." 23:59:59"]);
+                    });
+                });
+            })
+            ->where('colaborador_prospecto.id_colaborador',$id_colaborador)
+            ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(*) as total, cat_fuentes.nombre'))
+            ->groupBy('cat_fuentes.nombre')->get();
     }
 
     public function getProspectosStatus(){

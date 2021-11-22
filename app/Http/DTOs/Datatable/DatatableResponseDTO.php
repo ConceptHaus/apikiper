@@ -9,4 +9,6 @@ class DatatableResponseDTO
     public $draw;
     public $recordsTotal;
     public $recordsFiltered;
+    public $noContacted;
+    public $prospectOrigin;
 }
