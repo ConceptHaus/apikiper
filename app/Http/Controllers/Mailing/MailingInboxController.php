@@ -111,7 +111,8 @@ class MailingInboxController extends Controller
     public function getAccount($page_number)
     {
         ini_set('memory_limit', '-1');
-        
+        setlocale(LC_ALL,"es_ES");
+
         $colaborador_id = Auth::user()->id;
         // $colaborador_id = '0e940a0c-c474-3463-bceb-0db0ad1fd42b';
         
@@ -127,6 +128,7 @@ class MailingInboxController extends Controller
                 $username = (!is_null($account->alt_email)) ? $account->alt_email : $colaborador->email;
 
                 $account->password = Crypt::decryptString($account->password);
+
 
                 // return $account;
                 
@@ -181,10 +183,16 @@ class MailingInboxController extends Controller
 
                 // $paginator   =  $oFolder->search()
                 //                         ->since(\Carbon::now()->subDays(30))->get()
-                //                         // ->since(\Carbon::now())->get()
+                //                         ->since(\Carbon::now())->get()
                 //                         ->paginate($perPage = 10, $page = $page_number, $pageName = 'imap_inbox_table');
 
-                $paginator = $oFolder->query()->all()->setFetchOrder("desc")->limit($limit = 10, $page = $page_number)->get();
+                $per_page       = 10;
+
+                $paginator      = $oFolder->query()->all()->setFetchOrder("desc")->limit($limit = $per_page, $page = $page_number)->get();
+                
+                $total_messages = $oFolder->query()->all()->count();
+                
+                $current_count  = (($page_number * $per_page) -  ($per_page - 1)) ." - ". ($page_number * $per_page) ." de ". $total_messages;
                 
                 // return $paginator;
 
@@ -195,30 +203,26 @@ class MailingInboxController extends Controller
                 if($paginator->count() > 0){
                     
                    
+
                     $messages = array();
                     foreach($paginator as $oMessage){
                         
                         $message['UID']             = $oMessage->getUid ();
-                        $message['subject']         = utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)));
-                        // $message['subject']         = mb_convert_encoding(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)), 'UTF-8', 'auto');
-                        // $message['subject']         = $this->utf8convert(utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject))));
-                        // $message['subject']         = utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)));
-                        // $message['subject']         = mb_convert_encoding(mb_decode_mimeheader($oMessage->subject), 'UTF-8', 'UTF-8');
+                        $message['subject']         = $this->utf8convert(utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject))));
                         $message['from']            = $oMessage->getFrom()[0]->mail;
                         $message['has_attachments'] = $oMessage->getAttachments()->count() > 0 ? true : false;
                         $message['attachments']     = ($message['has_attachments']) ? $oMessage->getAttachments() : [];
                         $flags                      = $oMessage->getFlags();
                         $message['seen']            = (isset($flags['seen']) AND $flags['seen'] == "Seen") ? true : false ;
-                        $message['date']            = mb_decode_mimeheader($oMessage->date);
+                        $message['date']            = date('d M Y H:i', strtotime(mb_decode_mimeheader($oMessage->date)));
                         $message['from_name']       = mb_decode_mimeheader($oMessage->fromaddress );
                         $message['response']        = MailingInboxService::getResponse($colaborador_id, $message['date']."|".$message['from']);
                         $message['responses']       = count($message['response']) + 1;
                         $message['reply']           = (count($message['response']) > 0) ? true : false;
                         $message['owner']           = $colaborador->nombre. " ". $colaborador->apellido;
-                        $message['html']            = ($oMessage->hasHTMLBody()) ? utf8_decode($oMessage->getHTMLBody()) : utf8_decode($oMessage->getTextBody());
+                        $html                       = ($oMessage->hasHTMLBody()) ? $oMessage->getHTMLBody() : $oMessage->getTextBody();
+                        $message['html']            = $this->utf8convert($html);
                         $message['has_attachments'] = $oMessage->getAttachments()->count() > 0 ? true : false;
-                        // $message['subject']         = utf8_decode(str_replace("_", " ", mb_decode_mimeheader($oMessage->subject)));
-                       
                         $attachments                = ($message['has_attachments']) ? $oMessage->getAttachments() : [];
                         $mail_attachments           = array();
                         $dir                        =  public_path()."/mail_attatchments";
@@ -234,15 +238,25 @@ class MailingInboxController extends Controller
                             $new_attactchent['extension']   =  $attachment->getExtension();
                             $new_attactchent['name']        =  $attachment->name;
                             $new_attactchent['mime']        =  $attachment->getMimeType();
-                            $new_attactchent['path']        = $attachment->save($path = public_path()."/mail_attatchments/", $filename = null);
+                            try {
+                                $new_attactchent['path']        = $attachment->save($path = public_path()."/mail_attatchments/", $filename = null);
+                            } catch (\Throwable $th) {
+                                $new_attactchent['path']        = null;
+                            }
+                            // $new_attactchent['path']        = $attachment->save($path = public_path()."/mail_attatchments/", $filename = null);
                             $new_attactchent['file_path']   = "public/mail_attatchments/".$attachment->name;
-                            $mail_attachments[]             = $new_attactchent;
+                            if (!is_null($new_attactchent['path'])) {
+                                $mail_attachments[]             = $new_attactchent;
+                            }
+                            
                         }
                         $message['attachments'] = $mail_attachments;
+
                         $messages[]             = $message;
                     }
 
                     $paginated_messages['messages'] = array_reverse($messages);
+                    $paginated_messages['current']  = $current_count;
                     $paginated_messages['next']     = (!is_null($page_number)) ? $page_number + 1 : 2;
                     $paginated_messages['prev']     = (!is_null($page_number) AND $page_number > 1) ? $page_number - 1 : 0;
                     

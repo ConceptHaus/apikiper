@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMailingOportunidades extends Migration
+class AddIdCampanaToDetalleProspecto extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class CreateMailingOportunidades extends Migration
      */
     public function up()
     {
-        Schema::create('mailing_oportunidades', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('id_mailing');
-            $table->uuid('id_oportunidad');
-            $table->timestamps();
+        Schema::table('detalle_prospecto', function (Blueprint $table) {
+            $table->integer('id_campana')->nullable();
         });
     }
 
@@ -28,6 +25,8 @@ class CreateMailingOportunidades extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mailing_oportunidades');
+        Schema::table('detalle_prospecto', function (Blueprint $table) {
+            $table->dropColumn('id_campana');
+        });
     }
 }

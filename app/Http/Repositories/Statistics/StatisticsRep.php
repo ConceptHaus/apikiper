@@ -9,6 +9,9 @@ use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Http\Services\Funnel\FunnelService;
 use App\Http\Services\UtilService;
 use App\Http\Services\Statistics\StatisticsService;
+use App\Modelos\Prospecto\DetalleProspecto;
+use App\Modelos\Extras\IntegracionForm;
+use App\Modelos\Prospecto\ColaboradorProspecto;
 use DB;
 use Carbon\Carbon;
 
@@ -404,5 +407,204 @@ class StatisticsRep
                                     ->get();
                                     
         return StatisticsService::getValuesForMostEffectiveProspects($prospectos);
+    }
+
+    public static function campaignGenerateMoreProspects($start_date=null, $end_date=null, $id_campaign=null){
+        
+        return $campaignProspects = IntegracionForm::select('integracion_forms.nombre as nombre_campana', 
+                                                    DB::raw('count(detalle_prospecto.id_prospecto) as count_prospectos'),
+                                                    'integracion_forms.id_integracion_forms as id_integracion')
+                                    ->leftjoin('detalle_prospecto', 'detalle_prospecto.id_campana', 'integracion_forms.id_integracion_forms')
+                                    ->where(function ($query) use ($start_date, $end_date) {
+                                        $query->when($start_date,  function ($query) use ($start_date) {
+                                                $query->where('detalle_prospecto.created_at', '>=', $start_date . ' 00:00:00');
+                                        });
+                                    })
+                                    ->where(function ($query) use ($end_date) {
+                                        $query->when($end_date,  function ($query) use ($end_date) {
+                                                $query->where('detalle_prospecto.created_at', '<=', $end_date . ' 23:59:59');
+                                        });
+                                    })
+                                    ->where(function ($query) use ($id_campaign) {
+                                        $query->when($id_campaign,  function ($query) use ($id_campaign) {
+                                                $query->where('integracion_forms.id_integracion_forms', $id_campaign);
+                                        });
+                                    })
+                                    ->groupby('integracion_forms.nombre')
+                                    ->orderby('count_prospectos', 'DESC')
+                                    ->get();
+        
+        ;
+    }
+
+    public static function campaignGenerateMoreOpportunities($start_date=null, $end_date=null, $id_campaign=null, $id_origin=null){
+
+        return $campaignOpportunities = IntegracionForm::select('integracion_forms.nombre as nombre_campana', 
+                                                                DB::raw('count(oportunidad_prospecto.id_oportunidad) as count_oportunidad'),
+                                                                'integracion_forms.id_integracion_forms as id_integracion')
+                                ->leftjoin('detalle_prospecto', 'detalle_prospecto.id_campana', 'integracion_forms.id_integracion_forms')
+                                ->leftjoin('prospectos', 'prospectos.id_prospecto', 'detalle_prospecto.id_prospecto')
+                                ->leftjoin('oportunidad_prospecto', 'oportunidad_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                                ->where(function ($query) use ($start_date) {
+                                    $query->when($start_date,  function ($query) use ($start_date) {
+                                            $query->where('oportunidad_prospecto.created_at', '>=', $start_date . ' 00:00:00');
+                                    });
+                                })
+                                ->where(function ($query) use ($end_date) {
+                                    $query->when($end_date,  function ($query) use ($end_date) {
+                                            $query->where('oportunidad_prospecto.created_at', '<=', $end_date . ' 23:59:59');
+                                    });
+                                })
+                                ->where(function ($query) use ($id_campaign) {
+                                    $query->when($id_campaign,  function ($query) use ($id_campaign) {
+                                            $query->where('integracion_forms.id_integracion_forms', $id_campaign);
+                                    });
+                                })
+                                ->where(function ($query) use ($id_origin) {
+                                    $query->when($id_origin,  function ($query) use ($id_origin) {
+                                            $query->where('prospectos.fuente', $id_origin);
+                                    });
+                                })
+                                ->groupby('integracion_forms.id_integracion_forms')
+                                ->orderby('count_oportunidad', 'DESC')
+                                ->get();
+    }
+
+    public static function campaignGeneratesMore($start_date=null, $end_date=null, $id_campaign=null, $id_origin=null){
+
+        return $campaignOpportunitiesMoreMoney = IntegracionForm::select('integracion_forms.nombre as nombre_campana', 
+                                                    DB::raw('IFNULL(sum(detalle_oportunidad.valor * detalle_oportunidad.meses), 0 ) as valor'),
+                                                                'integracion_forms.id_integracion_forms as id_integracion')
+                                ->leftjoin('detalle_prospecto', 'detalle_prospecto.id_campana', 'integracion_forms.id_integracion_forms')
+                                ->leftjoin('prospectos', 'prospectos.id_prospecto', 'detalle_prospecto.id_prospecto')
+                                ->leftjoin('oportunidad_prospecto', 'oportunidad_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                                ->leftjoin('detalle_oportunidad', 'detalle_oportunidad.id_oportunidad', 'oportunidad_prospecto.id_oportunidad')
+                                ->leftjoin('status_oportunidad', 'status_oportunidad.id_oportunidad', 'detalle_oportunidad.id_oportunidad')
+                                ->where(function ($query) use ($start_date) {
+                                    $query->when($start_date,  function ($query) use ($start_date) {
+                                            $query->where('oportunidad_prospecto.created_at', '>=', $start_date . ' 00:00:00');
+                                    });
+                                })
+                                ->where(function ($query) use ($end_date) {
+                                    $query->when($end_date,  function ($query) use ($end_date) {
+                                            $query->where('oportunidad_prospecto.created_at', '<=', $end_date . ' 23:59:59');
+                                    });
+                                })
+                                ->where(function ($query) use ($id_campaign) {
+                                    $query->when($id_campaign,  function ($query) use ($id_campaign) {
+                                            $query->where('integracion_forms.id_integracion_forms', $id_campaign);
+                                    });
+                                })
+                                ->where(function ($query) use ($id_origin) {
+                                    $query->when($id_origin,  function ($query) use ($id_origin) {
+                                            $query->where('prospectos.fuente', $id_origin);
+                                    });
+                                })
+                                ->where('status_oportunidad.id_cat_status_oportunidad', '2')
+                                ->groupby('integracion_forms.id_integracion_forms')
+                                ->orderby('valor', 'DESC')
+                                ->get();
+    }
+
+    public static function statusPossibleMoney($start_date=null, $end_date=null, $id_colaborador=null){
+        
+        return $campaignOpportunitiesMoreMoney = CatStatusOportunidad::select('cat_status_oportunidad.id_cat_status_oportunidad',
+                                                    'cat_status_oportunidad.status',
+                                                    'cat_status_oportunidad.color',
+                                                    DB::raw('IFNULL(sum(detalle_oportunidad.valor * detalle_oportunidad.meses), 0 ) as valor'))
+                                ->leftjoin('status_oportunidad', 'status_oportunidad.id_cat_status_oportunidad', 'cat_status_oportunidad.id_cat_status_oportunidad')
+                                ->leftjoin('detalle_oportunidad', 'detalle_oportunidad.id_oportunidad', 'status_oportunidad.id_oportunidad')
+                                ->leftjoin('colaborador_oportunidad', 'colaborador_oportunidad.id_oportunidad', 'detalle_oportunidad.id_oportunidad')
+                                ->where(function ($query) use ($start_date) {
+                                    $query->when($start_date,  function ($query) use ($start_date) {
+                                            $query->where('detalle_oportunidad.created_at', '>=', $start_date . ' 00:00:00');
+                                    });
+                                })
+                                ->where(function ($query) use ($end_date) {
+                                    $query->when($end_date,  function ($query) use ($end_date) {
+                                            $query->where('detalle_oportunidad.created_at', '<=', $end_date . ' 23:59:59');
+                                    });
+                                })
+                                ->where(function ($query) use ($id_colaborador) {
+                                    $query->when($id_colaborador,  function ($query) use ($id_colaborador) {
+                                            $query->where('colaborador_oportunidad.id_colaborador', $id_colaborador);
+                                    });
+                                })
+                                ->where('status_oportunidad.id_cat_status_oportunidad', '!=', 2)
+                                ->groupby('cat_status_oportunidad.status')
+                                ->orderby('valor', 'DESC')
+                                ->get();
+    }
+
+    public static function getOneStatus($idStatus){
+        return $ColaboradorByStatus = CatStatusOportunidad::select('cat_status_oportunidad.id_cat_status_oportunidad',
+                                                    DB::raw('CONCAT(users.nombre," ",users.apellido) as asesor'),
+                                                    DB::raw('IFNULL(sum(detalle_oportunidad.valor * detalle_oportunidad.meses), 0 ) as valor'))
+                                ->leftjoin('status_oportunidad', 'status_oportunidad.id_cat_status_oportunidad', 'cat_status_oportunidad.id_cat_status_oportunidad')
+                                ->leftjoin('detalle_oportunidad', 'detalle_oportunidad.id_oportunidad', 'status_oportunidad.id_oportunidad')
+                                ->leftjoin('colaborador_oportunidad', 'colaborador_oportunidad.id_oportunidad', 'detalle_oportunidad.id_oportunidad')
+                                ->leftjoin('users', 'users.id', 'colaborador_oportunidad.id_colaborador')
+                                ->where('cat_status_oportunidad.id_cat_status_oportunidad', $idStatus)
+                                ->groupby('users.id')
+                                ->orderby('users.created_at', 'DESC')
+                                ->get();
+    }
+
+    public static function contactSpeed($start_date, $end_date){
+        return $contactSpeed = ColaboradorProspecto::select(DB::raw('sec_to_time(sum(TIMESTAMPDIFF(SECOND, colaborador_prospecto.created_at,  status_prospecto.updated_at)) / count(users.id)) AS tiempo_espera'),
+                                        'users.id as id_asesor',
+                                        DB::raw('CONCAT(users.nombre," ",users.apellido) as asesor'))
+                            ->leftjoin('status_prospecto', 'status_prospecto.id_prospecto', 'colaborador_prospecto.id_prospecto')
+                            ->leftjoin('prospectos', 'prospectos.id_prospecto', 'colaborador_prospecto.id_prospecto')
+                            ->leftjoin('users', 'users.id', 'colaborador_prospecto.id_colaborador')
+                            ->where('status_prospecto.id_cat_status_prospecto', 1)
+                            ->where(function ($query) use ($start_date) {
+                                $query->when($start_date,  function ($query) use ($start_date) {
+                                        $query->where('colaborador_prospecto.created_at', '>=', $start_date . ' 00:00:00');
+                                });
+                            })
+                            ->where(function ($query) use ($end_date) {
+                                $query->when($end_date,  function ($query) use ($end_date) {
+                                        $query->where('colaborador_prospecto.created_at', '<=', $end_date . ' 23:59:59');
+                                });
+                            })
+                            ->groupby('users.id')
+                            ->orderby('tiempo_espera', 'ASC')
+                            ->get()
+        ;
+    }
+
+    public static function getIncomePerOrigin($start_date, $end_date, $id_colaborador){
+        
+        $incomePerOrigin =  Oportunidad::select('oportunidades.id_oportunidad',
+                                                'prospectos.id_prospecto',
+                                                'cat_fuentes.nombre as fuente',
+                                                'oportunidades.nombre_oportunidad',
+                                                'integracion_forms.nombre as integracion',
+                                                DB::raw('CONCAT(users.nombre," ",users.apellido) as asesor'),
+                                                DB::raw('CONCAT(prospectos.nombre," ",prospectos.apellido) as prospecto'),
+                                                DB::raw('(detalle_oportunidad.valor * detalle_oportunidad.meses) as valor'))
+                            ->join('oportunidad_prospecto', 'oportunidad_prospecto.id_oportunidad', 'oportunidades.id_oportunidad')
+                            ->join('prospectos', 'prospectos.id_prospecto', 'oportunidad_prospecto.id_prospecto')
+                            ->join('detalle_prospecto', 'detalle_prospecto.id_prospecto', 'prospectos.id_prospecto')
+                            ->join('integracion_forms', 'integracion_forms.id_integracion_forms', 'detalle_prospecto.id_campana')
+                            ->join('cat_fuentes', 'cat_fuentes.id_fuente', 'prospectos.fuente')
+                            ->join('status_oportunidad', 'status_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
+                            ->join('cat_status_oportunidad', 'cat_status_oportunidad.id_cat_status_oportunidad', 'status_oportunidad.id_cat_status_oportunidad')
+                            ->join('detalle_oportunidad', 'detalle_oportunidad.id_oportunidad', 'status_oportunidad.id_oportunidad')
+                            ->join('colaborador_oportunidad', 'colaborador_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
+                            ->join('users', 'users.id', 'colaborador_oportunidad.id_colaborador')
+                            ->where('status_oportunidad.id_cat_status_oportunidad', 2)
+                            ->where('status_oportunidad.updated_at', '>=', $start_date)
+                            ->where('status_oportunidad.updated_at', '<=', $end_date);
+                            if(!is_null($id_colaborador)){
+                                $incomePerOrigin = $incomePerOrigin->where('colaborador_oportunidad.id_colaborador', $id_colaborador);
+                            }
+                            $incomePerOrigin =  $incomePerOrigin->orderby('cat_fuentes.id_fuente', 'DESC')
+                                                                ->get();
+                            
+        $incomePerOriginArray = (!empty( $incomePerOrigin))  ? UtilService::arrayGroupByKey($incomePerOrigin, 'fuente') : $incomePerOrigin;
+        
+        return $incomePerOriginArray;
     }
 }

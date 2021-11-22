@@ -90,6 +90,36 @@ class StatisticsService
 
     }
 
+    public static function campaignGenerateMoreProspects($start_date, $end_date, $id_campaign){
+        return StatisticsRep::campaignGenerateMoreProspects($start_date, $end_date, $id_campaign);
+
+    }
+
+    public static function campaignGenerateMoreOpportunities($start_date, $end_date, $id_campaign, $id_origin){
+        return StatisticsRep::campaignGenerateMoreOpportunities($start_date, $end_date, $id_campaign, $id_origin);
+
+    }
+
+    public static function campaignGeneratesMore($start_date, $end_date, $id_campaign, $id_origin){
+        return StatisticsRep::campaignGeneratesMore($start_date, $end_date, $id_campaign, $id_origin);
+
+    }
+
+    public static function statusPossibleMoney($start_date, $end_date, $id_colaborador, $id_origin){
+        return StatisticsRep::statusPossibleMoney($start_date, $end_date, $id_colaborador, $id_origin);
+
+    }
+
+    public static function getOneStatus($idStatus){
+        return StatisticsRep::getOneStatus($idStatus);
+
+    }
+
+    public static function contactSpeed($start_date, $end_date){
+        return StatisticsRep::contactSpeed($start_date, $end_date);
+
+    }
+
     public static function getValuesForMostEffectiveProspects($values){
         $arrayNombre = array();
         $arrayValues = array();
@@ -126,6 +156,58 @@ class StatisticsService
         }
         
         return $new_colaboradores;
+    }
+
+    public static function getIncomePerOrigin($start_date, $end_date, $id_colaborador){
+        $incomePerOrigin = StatisticsRep::getIncomePerOrigin($start_date, $end_date, $id_colaborador);
+
+        if(!empty($incomePerOrigin)){
+            foreach ($incomePerOrigin as $key => $value) {
+                $valor_total = 0;
+                foreach ($value as $op_key => $oportunidad) {
+                    $valor_total =  $valor_total + $oportunidad['valor'];
+                    $oportunidad['valor_formateado'] = number_format($oportunidad['valor'], 2);
+                }
+                $incomePerOrigin[$key]['total_ingresos']                = number_format($valor_total, 2);
+                $incomePerOrigin[$key]['total_oportunidades_cerradas']  = count($value);
+                $incomePerOrigin[$key]['detalle_campanas']              = UtilService::arrayGroupByKey($value, 'integracion');
+                foreach ($value as $op_key => $oportunidad) {
+                    unset($incomePerOrigin[$key][$op_key]);
+                }
+                
+                foreach ($incomePerOrigin[$key]['detalle_campanas'] as $op_key => $campana) {
+                    $incomePerOrigin[$key]['detalle_campanas'][$op_key]['total_oportunidades_cerradas'] = count($campana);
+                    $valor_total_por_campana = 0;
+                    foreach ($campana as $op_key_2 => $op) {
+                        $valor_total_por_campana = $valor_total_por_campana + $op['valor'];
+                    }
+                    $incomePerOrigin[$key]['detalle_campanas'][$op_key]['total_ingresos'] = number_format($valor_total_por_campana,2);
+                }
+            }
+
+            $newIncomePerOrigin = array();
+
+            foreach ($incomePerOrigin as $key => $fuente) {
+                $incomePerOrigin[$key]['origen']    = $key;
+                $newIncomePerOrigin[]               = $incomePerOrigin[$key];
+
+            }
+
+            foreach ($newIncomePerOrigin as $key => $fuente) {
+                $campanas = array();
+                foreach ($fuente['detalle_campanas'] as $key_2 => $integracion) {
+                    $newIntegracion = array();
+                    $integracion['campana'] = $key_2;
+                    $campanas[] = $integracion;
+                }
+                $newIncomePerOrigin[$key]['detalle_campanas'] = $campanas;
+                
+            }
+
+            return $newIncomePerOrigin;
+        }
+
+        return $incomePerOrigin;
     }
 
 }

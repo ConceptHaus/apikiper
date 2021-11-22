@@ -101,6 +101,22 @@ class ColaboradoresController extends Controller
         ],200);
     }
 
+    public function getAllColaboradoresEstadisticas(){
+        $colaboradores = DB::table('users')->orderBy('nombre','ASC')->get();
+
+        if ($colaboradores) {
+          return response()->json([
+              'message'=>'Colaboradores obtenidos correctamente.',
+              'error'=>false,
+              'data'=>$colaboradores
+          ],200);
+        }
+        return response()->json([
+            'message'=>'No se encontraron colaboradores.',
+            'error'=>false
+        ],200);
+    }
+
     public function getAllColaboradoresExceptUserToBeDeleted(Request $request){
         
         $colaborador_id = $request->id;
