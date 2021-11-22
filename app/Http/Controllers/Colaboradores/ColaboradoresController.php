@@ -102,7 +102,7 @@ class ColaboradoresController extends Controller
     }
 
     public function getAllColaboradoresEstadisticas(){
-        $colaboradores = DB::table('users')->orderBy('nombre','ASC')->count();
+        $colaboradores = DB::table('users')->orderBy('nombre','ASC')->get();
 
         if ($colaboradores) {
           return response()->json([
