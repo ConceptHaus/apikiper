@@ -89,8 +89,8 @@ class StatisticsRep
                         ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
                         ->join('detalle_oportunidad','colaborador_oportunidad.id_oportunidad','detalle_oportunidad.id_oportunidad')
                         ->whereNull('oportunidades.deleted_at')
-                        ->where('oportunidades.created_at',  '>=', $start_date)
-                        ->where('oportunidades.created_at',  '<=', $end_date)
+                        ->where('status_oportunidad.updated_at',  '>=', $start_date)
+                        ->where('status_oportunidad.updated_at',  '<=', $end_date)
                         ->where('status_oportunidad.id_cat_status_oportunidad','=',$status_id);
         
         if(!is_null($user_id)){
@@ -129,16 +129,16 @@ class StatisticsRep
                     })
                     ->where(function ($query) use ($start_date, $end_date) {
                         $query->when($start_date,  function ($query) use ($start_date, $end_date) {
-                                $query->where('oportunidades.created_at', '>=', $start_date . ' 00:00:00');
+                                $query->where('status_oportunidad.updated_at', '>=', $start_date . ' 00:00:00');
                         });
                     })
                     ->where(function ($query) use ($end_date) {
                         $query->when($end_date,  function ($query) use ($end_date) {
-                                $query->where('oportunidades.created_at', '<=', $end_date . ' 23:59:59');
+                                $query->where('status_oportunidad.updated_at', '<=', $end_date . ' 23:59:59');
                         });
                     })
-                    ->groupby(DB::raw('Month(oportunidades.created_at)'))
-                    ->orderby('oportunidades.created_at')
+                    ->groupby(DB::raw('Month(status_oportunidad.updated_at)'))
+                    ->orderby('status_oportunidad.updated_at')
                     ->get();
                     
     }
@@ -220,7 +220,7 @@ class StatisticsRep
         $end_date   = $end_date ." 23:59:59";
 
         $oportunidades   =   Oportunidad::select(DB::raw('DATE(oportunidades.created_at) as date'), DB::raw('count(*) as total'))
-                                        ->join('colaborador_oportunidad', 'colaborador_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')                            
+                                        ->join('colaborador_oportunidad', 'colaborador_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')                       
                                         ->where('oportunidades.created_at', '>=', $start_date)
                                         ->where('oportunidades.created_at', '<=', $end_date);
         
@@ -245,8 +245,8 @@ class StatisticsRep
         $oportunidades_cerradas =   Oportunidad::join('status_oportunidad', 'status_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')
                                                 ->join('colaborador_oportunidad', 'colaborador_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')                            
                                                 ->where('status_oportunidad.id_cat_status_oportunidad', 2)
-                                                ->where('oportunidades.created_at', '>=', $start_date)
-                                                ->where('oportunidades.created_at', '<=', $end_date);
+                                                ->where('status_oportunidad.updated_at', '>=', $start_date)
+                                                ->where('status_oportunidad.updated_at', '<=', $end_date);
         if(!is_null($user_id)){
             $oportunidades_cerradas  =  $oportunidades_cerradas->where('colaborador_oportunidad.id_colaborador', $user_id);
         }
@@ -274,8 +274,8 @@ class StatisticsRep
                                                 ->join('oportunidad_prospecto', 'oportunidad_prospecto.id_oportunidad', 'oportunidades.id_oportunidad')
                                                 ->join('prospectos', 'prospectos.id_prospecto', 'oportunidad_prospecto.id_prospecto')
                                                 ->join('cat_fuentes', 'cat_fuentes.id_fuente', 'prospectos.fuente')
-                                                ->where('oportunidades.created_at', '>=', $start_date)
-                                                ->where('oportunidades.created_at', '<=', $end_date);
+                                                ->where('status_oportunidad.updated_at', '>=', $start_date)
+                                                ->where('status_oportunidad.updated_at', '<=', $end_date);
         
         if(!is_null($status)){
             $oportunidades_by_fuente  =  $oportunidades_by_fuente->where('status_oportunidad.id_cat_status_oportunidad', $status);
