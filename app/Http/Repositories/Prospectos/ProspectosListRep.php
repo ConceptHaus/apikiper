@@ -636,7 +636,6 @@ class ProspectosListRep
             });
         })
         ->groupBy('cat_fuentes.nombre')
-        ->where('status_prospecto.id_cat_status_prospecto','=',2)
         ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(*) as total, cat_fuentes.nombre'))
         ->get();
     }
