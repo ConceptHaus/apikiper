@@ -174,9 +174,9 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/correos', 'Prospectos\ProspectosListController@findProspectosCorreos');
         Route::get('/prospectosNombres', 'Prospectos\ProspectosListController@findProspectosNombres');
         Route::get('/prospectosTelefono', 'Prospectos\ProspectosListController@findProspectosTelefono');
-        Route::post('/count', 'Prospectos\ProspectosListController@findCountProspectos');
-        Route::post('/countNT', 'Prospectos\ProspectosListController@findCountProspectosNotContacted');
-        Route::post('/prospectosFuente', 'Prospectos\ProspectosListController@findProspectosFuentes');
+        Route::get('/count', 'Prospectos\ProspectosListController@findCountProspectos');
+        Route::get('/countNT', 'Prospectos\ProspectosListController@findCountProspectosNotContacted');
+        Route::get('/prospectosFuente', 'Prospectos\ProspectosListController@findProspectosFuentes');
         Route::get('/prospectosStatus', 'Prospectos\ProspectosListController@findProspectosStatus');
         Route::get('/prospectosColaborador', 'Prospectos\ProspectosListController@findProspectosColaborador');
         Route::get('/prospectosEtiquetas', 'Prospectos\ProspectosListController@findProspectosEtiquetas');
