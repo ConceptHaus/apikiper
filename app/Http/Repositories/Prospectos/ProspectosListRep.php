@@ -403,7 +403,7 @@ class ProspectosListRep
             ->distinct()
                 ->where('colaborador_prospecto.id_colaborador','=', $id_colaborador)
                 ->where('etiquetas.nombre','like','%polanco%')
-                ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status', DB::raw('count(DISTINCT(prospectos.id_prospecto)) as total, cat_fuentes.nombre'))
+                ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status', DB::raw('count(distinct prospectos.id_prospecto) as total, cat_fuentes.nombre'))
                 ->groupBy('cat_fuentes.nombre')
                 ->get();
 
@@ -636,7 +636,7 @@ class ProspectosListRep
             });
         })
         ->groupBy('cat_fuentes.nombre')
-        ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(*) as total, cat_fuentes.nombre'))
+        ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(distinct prospectos.id_prospecto) as total, cat_fuentes.nombre'))
         ->get();
     }
 
@@ -882,7 +882,7 @@ class ProspectosListRep
                 });
             })
             ->where('colaborador_prospecto.id_colaborador',$id_colaborador)
-            ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(*) as total, cat_fuentes.nombre'))
+            ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(distinct prospectos.id_prospecto) as total, cat_fuentes.nombre'))
             ->groupBy('cat_fuentes.nombre')->get();
     }
 
