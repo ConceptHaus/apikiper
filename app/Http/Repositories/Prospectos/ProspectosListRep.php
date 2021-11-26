@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class ProspectosListRep
 {
-    public function createPageForProspectosForRol($id_colaborador, $rol, $paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null){
+    public function createPageForProspectosForRol($id_colaborador, $rol, $paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $estatus=null){
         $search = $paginacion->search;
         $orderBy = ProspectosListRep::getOrderBy($paginacion->nColumn);
 
@@ -38,10 +38,15 @@ class ProspectosListRep
                         ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
                         ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%');
             })
-            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus) {
                 $query->when($telefonos,  function ($query) use ($telefonos) {
                     $query->where(function ($query) use ($telefonos) {
                         $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
+                    });
+                });
+                $query->when($estatus,  function ($query) use ($estatus) {
+                    $query->where(function ($query) use ($estatus) {
+                        $query->where('cat_status_prospecto.id_cat_status_prospecto', $estatus);
                     });
                 });
                 $query->when($fuente,  function ($query) use ($fuente) {
@@ -102,10 +107,15 @@ class ProspectosListRep
                         ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
                         ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%');
             })
-            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus) {
                 $query->when($telefonos,  function ($query) use ($telefonos) {
                     $query->where(function ($query) use ($telefonos) {
                         $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
+                    });
+                });
+                $query->when($estatus,  function ($query) use ($estatus) {
+                    $query->where(function ($query) use ($estatus) {
+                        $query->where('cat_status_prospecto.id_cat_status_prospecto', $estatus);
                     });
                 });
                 $query->when($fuente,  function ($query) use ($fuente) {
@@ -146,7 +156,7 @@ class ProspectosListRep
         
     }
 
-    public function createCountForProspectosForRolNotContacted($id_colaborador, $rol, $paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null){
+    public function createCountForProspectosForRolNotContacted($id_colaborador, $rol, $paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $estatus=null){
         $search = $paginacion->search;
         $orderBy = ProspectosListRep::getOrderBy($paginacion->nColumn);
 
@@ -175,10 +185,15 @@ class ProspectosListRep
                         ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
                         ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%');
             })
-            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus) {
                 $query->when($telefonos,  function ($query) use ($telefonos) {
                     $query->where(function ($query) use ($telefonos) {
                         $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
+                    });
+                });
+                $query->when($estatus,  function ($query) use ($estatus) {
+                    $query->where(function ($query) use ($estatus) {
+                        $query->where('cat_status_prospecto.id_cat_status_prospecto', $estatus);
                     });
                 });
                 $query->when($fuente,  function ($query) use ($fuente) {
@@ -226,10 +241,15 @@ class ProspectosListRep
                         ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
                         ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%');
             })
-            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus) {
                 $query->when($telefonos,  function ($query) use ($telefonos) {
                     $query->where(function ($query) use ($telefonos) {
                         $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
+                    });
+                });
+                $query->when($estatus,  function ($query) use ($estatus) {
+                    $query->where(function ($query) use ($estatus) {
+                        $query->where('cat_status_prospecto.id_cat_status_prospecto', $estatus);
                     });
                 });
                 $query->when($fuente,  function ($query) use ($fuente) {
@@ -350,7 +370,7 @@ class ProspectosListRep
         }
     }
 
-    public function getOrigenByRol($id_colaborador, $rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin){
+    public function getOrigenByRol($id_colaborador, $rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus){
         $search = $paginacion->search;
         
         if ($rol == 1) {
@@ -378,10 +398,15 @@ class ProspectosListRep
                         ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
                         ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%');
             })
-            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus) {
                 $query->when($telefonos,  function ($query) use ($telefonos) {
                     $query->where(function ($query) use ($telefonos) {
                         $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
+                    });
+                });
+                $query->when($estatus,  function ($query) use ($estatus) {
+                    $query->where(function ($query) use ($estatus) {
+                        $query->where('cat_status_prospecto.id_cat_status_prospecto', $estatus);
                     });
                 });
                 $query->when($fuente,  function ($query) use ($fuente) {
@@ -432,10 +457,15 @@ class ProspectosListRep
                         ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
                         ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%');
             })
-            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus) {
                 $query->when($telefonos,  function ($query) use ($telefonos) {
                     $query->where(function ($query) use ($telefonos) {
                         $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
+                    });
+                });
+                $query->when($estatus,  function ($query) use ($estatus) {
+                    $query->where(function ($query) use ($estatus) {
+                        $query->where('cat_status_prospecto.id_cat_status_prospecto', $estatus);
                     });
                 });
                 $query->when($fuente,  function ($query) use ($fuente) {
@@ -497,7 +527,7 @@ class ProspectosListRep
 
     /* --------------- ADMIN ------------------ */
 
-    public function createCountForProspectosForAdminNotContacted($paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null){
+    public function createCountForProspectosForAdminNotContacted($paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $estatus=null){
         $search = $paginacion->search;
 
         return DB::table('prospectos')
@@ -523,10 +553,15 @@ class ProspectosListRep
                     ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%')
                     ->orWhere('empresas.nombre', 'like', '%'.$search.'%');
         })
-        ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+        ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus) {
             $query->when($telefonos,  function ($query) use ($telefonos) {
                 $query->where(function ($query) use ($telefonos) {
                     $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
+                });
+            });
+            $query->when($estatus,  function ($query) use ($estatus) {
+                $query->where(function ($query) use ($estatus) {
+                    $query->where('cat_status_prospecto.id_cat_status_prospecto', $estatus);
                 });
             });
             $query->when($fuente,  function ($query) use ($fuente) {
@@ -550,7 +585,7 @@ class ProspectosListRep
         ->get();
     }
 
-    public function createPageForProspectosForAdmin($paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null){
+    public function createPageForProspectosForAdmin($paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $estatus=null){
         $search = $paginacion->search;
         $orderBy = ProspectosListRep::getOrderBy($paginacion->nColumn);
         $array = array();
@@ -578,10 +613,15 @@ class ProspectosListRep
                         ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%')
                         ->orWhere('empresas.nombre', 'like', '%'.$search.'%');
             })
-            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus) {
                 $query->when($telefonos,  function ($query) use ($telefonos) {
                     $query->where(function ($query) use ($telefonos) {
                         $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
+                    });
+                });
+                $query->when($estatus,  function ($query) use ($estatus) {
+                    $query->where(function ($query) use ($estatus) {
+                        $query->where('cat_status_prospecto.id_cat_status_prospecto', $estatus);
                     });
                 });
                 $query->when($fuente,  function ($query) use ($fuente) {
@@ -619,7 +659,7 @@ class ProspectosListRep
             ->paginate($paginacion->length, ['*'], null, $paginacion->start);
     }
 
-    public function getOrigenByAdmin($paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null){
+    public function getOrigenByAdmin($paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $estatus=null){
         $search = $paginacion->search;
         
         return DB::table('prospectos')
@@ -645,10 +685,15 @@ class ProspectosListRep
                     ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%')
                     ->orWhere('empresas.nombre', 'like', '%'.$search.'%');
         })
-        ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+        ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus) {
             $query->when($telefonos,  function ($query) use ($telefonos) {
                 $query->where(function ($query) use ($telefonos) {
                     $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
+                });
+            });
+            $query->when($estatus,  function ($query) use ($estatus) {
+                $query->where(function ($query) use ($estatus) {
+                    $query->where('cat_status_prospecto.id_cat_status_prospecto', $estatus);
                 });
             });
             $query->when($fuente,  function ($query) use ($fuente) {
@@ -731,7 +776,7 @@ class ProspectosListRep
 
     /*-------------- COLABORADORES --------------------*/
 
-    public function createCountForProspectosForColaboradorNotContacted($id_colaborador, $paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null){
+    public function createCountForProspectosForColaboradorNotContacted($id_colaborador, $paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $estatus=null){
         $search = $paginacion->search;
         $orderBy = ProspectosListRep::getOrderBy($paginacion->nColumn);
         
@@ -760,10 +805,15 @@ class ProspectosListRep
                         ->orWhere('empresas.nombre', 'like', '%'.$search.'%')
                         ;
             })
-            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus) {
                 $query->when($telefonos,  function ($query) use ($telefonos) {
                     $query->where(function ($query) use ($telefonos) {
                         $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
+                    });
+                });
+                $query->when($estatus,  function ($query) use ($estatus) {
+                    $query->where(function ($query) use ($estatus) {
+                        $query->where('cat_status_prospecto.id_cat_status_prospecto', $estatus);
                     });
                 });
                 $query->when($fuente,  function ($query) use ($fuente) {
@@ -787,7 +837,7 @@ class ProspectosListRep
             ->get();
     }
 
-    public function createPageForProspectosByColaborador($id_colaborador, $paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null){
+    public function createPageForProspectosByColaborador($id_colaborador, $paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $estatus=null){
         $search = $paginacion->search;
         $orderBy = ProspectosListRep::getOrderBy($paginacion->nColumn);
         
@@ -816,10 +866,15 @@ class ProspectosListRep
                         ->orWhere('empresas.nombre', 'like', '%'.$search.'%')
                         ;
             })
-            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus) {
                 $query->when($telefonos,  function ($query) use ($telefonos) {
                     $query->where(function ($query) use ($telefonos) {
                         $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
+                    });
+                });
+                $query->when($estatus,  function ($query) use ($estatus) {
+                    $query->where(function ($query) use ($estatus) {
+                        $query->where('cat_status_prospecto.id_cat_status_prospecto', $estatus);
                     });
                 });
                 $query->when($fuente,  function ($query) use ($fuente) {
@@ -871,7 +926,7 @@ class ProspectosListRep
                                 ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
     }
 
-    public function getOrigenByColaborador($id_colaborador, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin){
+    public function getOrigenByColaborador($id_colaborador, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus){
         $search = $paginacion->search;
         
         return DB::table('prospectos')
@@ -899,10 +954,15 @@ class ProspectosListRep
                         ->orWhere('empresas.nombre', 'like', '%'.$search.'%')
                         ;
             })
-            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus) {
                 $query->when($telefonos,  function ($query) use ($telefonos) {
                     $query->where(function ($query) use ($telefonos) {
                         $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
+                    });
+                });
+                $query->when($estatus,  function ($query) use ($estatus) {
+                    $query->where(function ($query) use ($estatus) {
+                        $query->where('cat_status_prospecto.id_cat_status_prospecto', $estatus);
                     });
                 });
                 $query->when($fuente,  function ($query) use ($fuente) {
