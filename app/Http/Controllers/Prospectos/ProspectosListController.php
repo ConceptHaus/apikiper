@@ -176,6 +176,38 @@ class ProspectosListController extends Controller
         }
     }
 
+    public function findProspectosFuentesMovil(){
+        $auth = new AuthService();
+        $auth = $auth->getUserAuthInfo(); 
+        $response = new DatatableResponseDTO();
+        $proListServ = new ProspectosListService();
+
+        $permisos = User::getAuthenticatedUserPermissions();
+
+        try{
+            if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
+                $response = $proListServ->getProspectosFuentesdByRolMovil($auth->id, $auth->rol);
+    
+            }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
+                $response = $proListServ->getProspectosFuentesByAdminMovil();
+    
+            }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
+                $response = $proListServ->getProspectosFuentesByColaboradorMovil($auth->id);
+
+            }else{
+                $response = [];    
+            }
+
+            return response()->json($response, 200);
+
+        }catch(Exception $e){
+            echo 'ProspectosListController.findProspectosFuentesMovil',  $e->getMessage(); 
+
+            $response->error = 'Ocurrio un error inesperado';
+            return response()->json($response, 500);
+        }
+    }
+
     public function findProspectosStatus(){
         $response = new DatatableResponseDTO();
         $proListServ = new ProspectosListService();

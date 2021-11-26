@@ -463,6 +463,38 @@ class ProspectosListRep
         }
     }
 
+    public function getOrigenByRolMovil($id_colaborador, $rol){
+        if($rol == 1){
+            return DB::table('prospectos')
+                ->distinct()
+                ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
+                ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
+                ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+                ->wherenull('prospectos.deleted_at')
+                ->where('colaborador_prospecto.id_colaborador','=', $id_colaborador)
+                ->where('etiquetas.nombre','like','%polanco%')
+                ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status', DB::raw('count(DISTINCT(prospectos.id_prospecto)) as total, cat_fuentes.nombre'))
+                ->groupBy('cat_fuentes.nombre')
+                ->get();
+        } else if($rol == 2){
+            return DB::table('prospectos')
+                ->distinct()
+                ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+                ->join('etiquetas_prospectos','etiquetas_prospectos.id_prospecto','prospectos.id_prospecto')
+                ->join('etiquetas','etiquetas.id_etiqueta','etiquetas_prospectos.id_etiqueta')
+                ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+                ->wherenull('prospectos.deleted_at')
+                ->where('colaborador_prospecto.id_colaborador','=', $id_colaborador)
+                ->where('etiquetas.nombre','like','%napoles%')
+                ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status', DB::raw('count(DISTINCT(prospectos.id_prospecto)) as total, cat_fuentes.nombre'))
+                ->groupBy('cat_fuentes.nombre')
+                ->get();
+        } else {
+            return "";
+        }
+    }
+
     /* --------------- ADMIN ------------------ */
 
     public function createCountForProspectosForAdminNotContacted($paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null){
@@ -638,6 +670,14 @@ class ProspectosListRep
         ->groupBy('cat_fuentes.nombre')
         ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(distinct prospectos.id_prospecto) as total, cat_fuentes.nombre'))
         ->get();
+    }
+
+    public function getOrigenByAdminMovil(){
+        return DB::table('prospectos')
+        ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+        ->wherenull('prospectos.deleted_at')
+        ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(*) as total, cat_fuentes.nombre'))
+        ->groupBy('cat_fuentes.nombre')->get();
     }
 
     public function getProspectosCountByAdmin($search = null){
@@ -884,6 +924,16 @@ class ProspectosListRep
             ->where('colaborador_prospecto.id_colaborador',$id_colaborador)
             ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(distinct prospectos.id_prospecto) as total, cat_fuentes.nombre'))
             ->groupBy('cat_fuentes.nombre')->get();
+    }
+
+    public function getOrigenByColaboradorMovil($id_colaborador){
+        return DB::table('prospectos')
+        ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
+        ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', 'prospectos.id_prospecto')
+        ->where('colaborador_prospecto.id_colaborador',$id_colaborador)
+        ->wherenull('prospectos.deleted_at')
+        ->select('cat_fuentes.nombre','cat_fuentes.url','cat_fuentes.status',DB::raw('count(*) as total, cat_fuentes.nombre'))
+        ->groupBy('cat_fuentes.nombre')->get();
     }
 
     public function getProspectosStatus(){

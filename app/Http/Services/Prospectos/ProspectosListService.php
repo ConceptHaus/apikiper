@@ -161,6 +161,39 @@ class ProspectosListService
         return $response;
     }
 
+    public function getProspectosFuentesByAdminMovil(){
+        $object = new ProspectosListRep;
+
+        $catalogo_fuentes = $object->getCatalogosFuentes();
+        $origen = $object->getOrigenByAdminMovil();
+
+        $response->data["prospectos_fuente"] = $object->fuentesChecker($catalogo_fuentes,$origen);
+
+        return $response;
+    }
+
+    public function getProspectosFuentesByColaboradorMovil($id_colaborador){
+        $object = new ProspectosListRep;
+
+        $catalogo_fuentes = $object->getCatalogosFuentes();
+        $origen = $object->getOrigenByColaboradorMovil($id_colaborador);
+
+        $response->data["prospectos_fuente"] = $object->fuentesChecker($catalogo_fuentes,$origen);
+
+        return $response;
+    }
+
+    public function getProspectosFuentesdByRolMovil($id_colaborador, $rol){
+        $object = new ProspectosListRep;
+
+        $catalogo_fuentes = $object->getCatalogosFuentes();
+        $origen = $object->getOrigenByRolMovil($id_colaborador, $rol);
+
+        $response->data["prospectos_fuente"] = $object->fuentesChecker($catalogo_fuentes,$origen);
+
+        return $response;
+    }
+
     public function getProspectosStatus(){
         $object = new ProspectosListRep;
 
