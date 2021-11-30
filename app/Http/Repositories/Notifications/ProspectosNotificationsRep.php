@@ -84,15 +84,17 @@ class ProspectosNotificationsRep
 
     public static function changeStatusforExisitingProspectoNotification($prospecto_id, $new_status)
     {
-        $prospecto = Notification::where('source_id', $prospecto_id)->first();
+        $prospectos = Notification::where('source_id', $prospecto_id)->get();
         
-        if (!empty($prospecto)) {
-            $prospecto->status = $new_status;
-            $prospecto->save();
+        if(count($prospectos) > 0){
+            foreach ($prospectos as $key => $prospecto) {
+                $prospecto->status = $new_status;
+                $prospecto->save();
+            }
         }
     }
 
-    public static function createProspectoNotification($prospecto)
+    public static function createProspectoNotification($prospecto, $for_admin=false)
     {
         $notificaton                    = new Notification;
         $notificaton->colaborador_id    = $prospecto['colaborador_id'];
@@ -101,14 +103,27 @@ class ProspectosNotificationsRep
         $notificaton->inactivity_period = $prospecto['inactivity_period'];
         $notificaton->view              = 'no-leido';
         $notificaton->attempts          = $prospecto['attempts'];
+        if($for_admin){
+            $notificaton->type          = 2;    
+        }
         $notificaton->save();
     }
 
     public static function checkProspectoNotification($prospecto_id)
     {
-        $exisiting_notification = Notification::where('source_id', $prospecto_id)->first();
-       
-        return !empty($exisiting_notification)? $exisiting_notification: [];
+        $exisiting_notification =   Notification::where('source_id', $prospecto_id)
+                                                ->where(function($q) {
+                                                    $q->where('status', '!=', 'resuelto')
+                                                    ->orWhereNull('status');
+                                                })
+                                                ->where('type', 1)
+                                                ->first();
+                                                
+        if (!empty($exisiting_notification)) {
+            return $exisiting_notification;
+        }else{
+            return [];
+        }
     }
 
     // public static function updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto_id)
@@ -134,6 +149,7 @@ class ProspectosNotificationsRep
                                 $q->where('status', '!=', 'resuelto')
                                 ->orWhereNull('status');
                             })
+                            ->where('type', '!=', 2)
                             ->get()
                             ->toArray();   
     }
@@ -341,24 +357,28 @@ class ProspectosNotificationsRep
         return $inactivity_period;
     }
 
-    public static function updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto_id, $new_inactivity_period, $attempts=NULL)
+    public static function updateAttemptsAndInactivityforExisitingProspectoNotification($prospecto_id, $new_inactivity_period, $attempts=NULL, $view=NULL)
     {
-        $prospecto  =  Notification::where('source_id', $prospecto_id)
+        $prospectos  =  Notification::where('source_id', $prospecto_id)
                                     ->where('notification_type', 'prospecto')
                                     ->where(function($q) {
                                         $q->where('status', '!=', 'resuelto')
                                           ->orWhereNull('status');
                                     })
-                                    ->first();
+                                    ->get();
 
-        if (!empty($prospecto)) {
-            $prospecto->inactivity_period = $new_inactivity_period;
-            if(!is_null($attempts)){
-                $prospecto->attempts = $prospecto->attempts + 1;
+        if (count($prospectos) > 0) {
+            foreach ($prospectos as $key => $prospecto) {
+            
+                $prospecto->inactivity_period = $new_inactivity_period;
+                if(!is_null($attempts)){
+                    $prospecto->attempts = $prospecto->attempts + 1;
+                }
+                if(!is_null($view)){
+                    $prospecto->view = $view;
+                }
+                $prospecto->save();
             }
-            $prospecto->save();
-
-            return $prospecto;
         }
     }
 

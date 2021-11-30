@@ -169,6 +169,7 @@ return [
         Askedio\SoftCascade\Providers\GenericServiceProvider::class,
         Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
 
+        Webklex\IMAP\Providers\LaravelServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -239,7 +240,10 @@ return [
         'Google' => PulkitJalan\Google\Facades\Google::class,
         'LaravelGmail' => Dacastro4\LaravelGmail\Facade\LaravelGmail::class,
         'Mailgun' => Bogardo\Mailgun\Facades\Mailgun::class,
-        'Keygen' => Keygen\Keygen::class
+        'Keygen' => Keygen\Keygen::class,
+
+        'Client' => Webklex\IMAP\Facades\Client::class,
+        'Carbon' => 'Carbon\Carbon',
 
 
     ],

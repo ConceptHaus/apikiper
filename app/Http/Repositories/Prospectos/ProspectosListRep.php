@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class ProspectosListRep
 {
-    public function createPageForProspectosForRol($id_colaborador, $rol, $paginacion, $correos=null, $nombres=null, $telefonos=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null){
+    public function createPageForProspectosForRol($id_colaborador, $rol, $paginacion, $correos=null, $nombres=null, $telefonos=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $correo=null){
         $search = $paginacion->search;
         $orderBy = ProspectosListRep::getOrderBy($paginacion->nColumn);
 
@@ -38,7 +38,13 @@ class ProspectosListRep
                         ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
                         ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%');
             })
-            ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+            ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $correo) {
+                $query->when($correo,  function ($query) use ($correo) {
+                    // $query->where(function ($query) use ($correo) {
+                    //     $query->where('prospectos.correo', 'like', '%'.$correo.'%');
+                    // });  
+                    $query->where('prospectos.correo', 'like', '%'.$correo.'%');    
+                });
                 $query->when($correos,  function ($query) use ($correos) {
                     $query->where(function ($query) use ($correos) {
                         $query->whereIn('prospectos.correo', $correos);
@@ -117,7 +123,10 @@ class ProspectosListRep
                         ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
                         ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%');
             })
-            ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+            ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $correo) {
+                $query->when($correo,  function ($query) use ($correo) {  
+                    $query->where('prospectos.correo', 'like', '%'.$correo.'%');    
+                });
                 $query->when($correos,  function ($query) use ($correos) {
                     $query->orWhere(function ($query) use ($correos) {
                         $query->whereIn('prospectos.correo', $correos);
@@ -303,7 +312,7 @@ class ProspectosListRep
 
     /* --------------- ADMIN ------------------ */
 
-    public function createPageForProspectosForAdmin($paginacion, $correos=null, $nombres=null, $telefonos=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null){
+    public function createPageForProspectosForAdmin($paginacion, $correos=null, $nombres=null, $telefonos=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $correo=null){
         $search = $paginacion->search;
         $orderBy = ProspectosListRep::getOrderBy($paginacion->nColumn);
 
@@ -331,7 +340,10 @@ class ProspectosListRep
                         ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
                         ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%');
             })
-            ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores) {
+            ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $correo) {
+                $query->when($correo,  function ($query) use ($correo) {  
+                    $query->where('prospectos.correo', 'like', '%'.$correo.'%');    
+                });
                 $query->when($correos,  function ($query) use ($correos) {
                     $query->where(function ($query) use ($correos) {
                         $query->whereIn('prospectos.correo', $correos);
@@ -383,10 +395,9 @@ class ProspectosListRep
                 'cat_status_prospecto.status', 
                 'cat_fuentes.nombre as fuente', 
                 'cat_fuentes.url', 
-                'detalle_prospecto.whatsapp'
-                ,'etiquetas.nombre',
-                'empresas.nombre AS nombre_empresa',
-
+                'detalle_prospecto.whatsapp',
+                'etiquetas.nombre',
+                'empresas.nombre AS nombre_empresa'
             )
             ->orderBy($orderBy, $paginacion->order)
             ->groupby('prospectos.id_prospecto')
@@ -414,7 +425,7 @@ class ProspectosListRep
 
     /*-------------- COLABORADORES --------------------*/
 
-    public function createPageForProspectosByColaborador($id_colaborador, $paginacion, $correos=null, $nombres=null, $telefonos=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null){
+    public function createPageForProspectosByColaborador($id_colaborador, $paginacion, $correos=null, $nombres=null, $telefonos=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $correo=null){
         $search = $paginacion->search;
         $orderBy = ProspectosListRep::getOrderBy($paginacion->nColumn);
         
@@ -443,7 +454,10 @@ class ProspectosListRep
                         ->orWhere('empresas.nombre', 'like', '%'.$search.'%')
                         ;
             })
-            ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+            ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $correo) {
+                $query->when($correo,  function ($query) use ($correo) {  
+                    $query->where('prospectos.correo', 'like', '%'.$correo.'%');    
+                });
                 $query->when($correos,  function ($query) use ($correos) {
                     $query->where(function ($query) use ($correos) {
                         $query->whereIn('prospectos.correo', $correos);
@@ -668,6 +682,4 @@ class ProspectosListRep
 
         ->get();
     }
-
-
 }

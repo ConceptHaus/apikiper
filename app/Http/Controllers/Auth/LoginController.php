@@ -51,6 +51,8 @@ class LoginController extends Controller
      */
 
     public function login(Request $request){
+
+        Console::info('Hola: ');
         $credentials = $request->only('email', 'password');
         if ($token = $this->guard()->attempt($credentials)) {
             return $this->respondWithToken($token);

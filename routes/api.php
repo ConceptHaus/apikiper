@@ -354,3 +354,26 @@ Route::prefix('/v1/recordatorios')->group(function(){
         Route::get('/usuarios','Recordatorios\RecordatoriosController@getRecordatoriosUsuarios');
     });
 });
+
+Route::prefix('/v1/imap-email')->group(function(){
+    // Route::middleware(['auth','cors'])->group(function(){
+        //Inbox Settings
+        Route::get('/','Mailing\MailingInboxController@getAccount');
+        Route::get('/get-credentials','Mailing\MailingInboxController@getCredentials');
+        Route::post('/set-credentials','Mailing\MailingInboxController@setCredentials');
+        Route::get('/unset-credentials','Mailing\MailingInboxController@unsetCredentials');
+        //Inbox
+        Route::get('/get-inbox/{page}','Mailing\MailingInboxController@getAccount');
+        // Route::get('/test-db','Mailing\MailingInboxController@testDB');
+        Route::get('/fonts','Mailing\MailingInboxController@getFonts');
+        Route::post('/send-mail','Mailing\MailingInboxController@sendMail');
+        Route::post('/flag-email','Mailing\MailingInboxController@flagEmail');
+    // });
+});
+
+Route::prefix('/mail_attatchments/get-attactchments')->group(function(){
+    // Route::middleware(['auth','cors'])->group(function(){
+        //Inbox Settings
+        Route::get('/{name}','Mailing\MailingInboxController@getFile');
+    // });
+});

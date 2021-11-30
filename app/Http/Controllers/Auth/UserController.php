@@ -66,8 +66,9 @@ class UserController extends Controller
 
 
     public function getAuthUser(Request $request){
-        echo "Hola mundo";
+        
         $id_user = $this->guard()->user()->id;
+        Console::info('Hola: '+$id_user);
         $oportunidades = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('status_oportunidad','status_oportunidad.id_oportunidad','colaborador_oportunidad.id_oportunidad')

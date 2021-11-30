@@ -629,7 +629,8 @@
                     <tbody>
                         <tr>
                             <td align="center" valign="middle" class="mcnButtonContent" style="font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, Verdana, sans-serif; font-size: 16px; padding: 16px;">
-                                <a class="mcnButton " title="Ingresar" href="https://crmv2.kiper.app/" target="_blank" style="font-weight: bold;letter-spacing: 0px;line-height: 100%;text-align: center;text-decoration: none;color: #E74740;">Ingresar</a>
+
+                                <a class="mcnButton " title="Ingresar" href="https://system.kiper.app/" target="_blank" style="font-weight: bold;letter-spacing: 0px;line-height: 100%;text-align: center;text-decoration: none;color: #E74740;">Ingresar</a>
                             </td>
                         </tr>
                     </tbody>
