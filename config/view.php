@@ -27,7 +27,7 @@ return [
     | directory. However, as usual, you are free to change this value.
     |
     */
-
+ 
     'compiled' => realpath(storage_path('framework/views')),
 
 ];
