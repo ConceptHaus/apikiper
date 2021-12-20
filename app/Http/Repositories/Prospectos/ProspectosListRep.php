@@ -582,7 +582,8 @@ class ProspectosListRep
 
     public function getOrderBy($orderBy){
         if ($orderBy == 0) {
-            return $orderBy = "prospectos.nombre";
+             return $orderBy = "prospectos.created_at";
+            //return $orderBy = "prospectos.nombre";
 
         } else if ($orderBy == 1) {
             return $orderBy = "prospectos.correo";
