@@ -508,7 +508,8 @@ class ProspectosListRep
                 ,
                 'empresas.nombre AS nombre_empresa'
             )
-            ->orderBy($orderBy, $paginacion->order)
+            ->orderBy(" ORDER BY prospectos.created_at DESC ")
+            //->orderBy($orderBy, $paginacion->order)
             ->groupby('prospectos.id_prospecto')
             ->paginate($paginacion->length, ['*'], null, $paginacion->end);
     }
