@@ -508,8 +508,7 @@ class ProspectosListRep
                 ,
                 'empresas.nombre AS nombre_empresa'
             )
-            ->orderBy(" ORDER BY prospectos.created_at DESC ")
-            //->orderBy($orderBy, $paginacion->order)
+            ->orderBy($orderBy, $paginacion->order)
             ->groupby('prospectos.id_prospecto')
             ->paginate($paginacion->length, ['*'], null, $paginacion->end);
     }
@@ -599,8 +598,8 @@ class ProspectosListRep
         //return $orderBy = "prospectos.created_at ";
         //echo $orderBy;
         if ($orderBy == 0) {
-           // return $orderBy = "prospectos.nombre";
-            return $orderBy = "prospectos.created_at ";
+            return $orderBy = "prospectos.nombre";
+          //  return $orderBy = "prospectos.created_at ";
 
         } else if ($orderBy == 1) {
             return $orderBy = "prospectos.correo";
