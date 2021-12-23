@@ -399,7 +399,8 @@ class ProspectosListRep
                 'etiquetas.nombre',
                 'empresas.nombre AS nombre_empresa'
             )
-            ->orderBy($orderBy, $paginacion->order)
+            //->orderBy($orderBy, $paginacion->order)
+            ->orderBy('status_prospecto.updated_at','desc')
             ->groupby('prospectos.id_prospecto')
             ->paginate($paginacion->length, ['*'], null, $paginacion->start);
     }
