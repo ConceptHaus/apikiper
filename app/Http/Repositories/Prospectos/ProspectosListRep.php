@@ -510,7 +510,7 @@ class ProspectosListRep
             )
             ->orderBy($orderBy, $paginacion->order)
             ->groupby('prospectos.id_prospecto')
-            ->paginate($paginacion->length, ['*'], null, $paginacion->end);
+            ->paginate($paginacion->length, ['*'], null, $paginacion->start);
     }
 
     public function getProspectosCountByColaborador($id_colaborador){
@@ -595,12 +595,8 @@ class ProspectosListRep
     }
 
     public function getOrderBy($orderBy){
-        //return $orderBy = "prospectos.created_at ";
-        //echo $orderBy;
         if ($orderBy == 0) {
-
-          //  return $orderBy = "prospectos.nombre";
-            return $orderBy = "prospectos.created_at";
+            return $orderBy = "prospectos.nombre";
 
         } else if ($orderBy == 1) {
             return $orderBy = "prospectos.correo";
