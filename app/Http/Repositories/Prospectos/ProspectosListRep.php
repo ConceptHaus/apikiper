@@ -178,8 +178,7 @@ class ProspectosListRep
                 'empresas.nombre AS nombre_empresa'
             )
             ->groupby('prospectos.id_prospecto')
-            ->orderBy('status_prospecto.updated_at','desc')
-            //->orderBy($orderBy, $paginacion->order)
+            ->orderBy($orderBy, $paginacion->order)
             ->paginate($paginacion->length, ['*'], null, $paginacion->start);
         } else {
             return "";
@@ -511,8 +510,7 @@ class ProspectosListRep
                 ,
                 'empresas.nombre AS nombre_empresa'
             )
-            ->orderBy('status_prospecto.updated_at','desc')
-            //->orderBy($orderBy, $paginacion->order)
+            ->orderBy($orderBy, $paginacion->order)
             ->groupby('prospectos.id_prospecto')
             ->paginate($paginacion->length, ['*'], null, $paginacion->start);
     }
@@ -600,7 +598,8 @@ class ProspectosListRep
 
     public function getOrderBy($orderBy){
         if ($orderBy == 0) {
-            return $orderBy = "prospectos.nombre";
+            //return $orderBy = "prospectos.nombre";
+            return $orderBy = 'status_prospecto.updated_at';
 
         } else if ($orderBy == 1) {
             return $orderBy = "prospectos.correo";
