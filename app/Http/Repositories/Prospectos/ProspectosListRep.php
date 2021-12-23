@@ -95,7 +95,8 @@ class ProspectosListRep
                 'empresas.nombre AS nombre_empresa'
             )
             ->groupby('prospectos.id_prospecto')
-            ->orderBy($orderBy, $paginacion->order)
+            ->orderBy('status_prospecto.updated_at','desc')
+            //->orderBy($orderBy, $paginacion->order)
             ->paginate($paginacion->length, ['*'], null, $paginacion->start);
 
         } else if($rol == 2){
@@ -177,7 +178,8 @@ class ProspectosListRep
                 'empresas.nombre AS nombre_empresa'
             )
             ->groupby('prospectos.id_prospecto')
-            ->orderBy($orderBy, $paginacion->order)
+            ->orderBy('status_prospecto.updated_at','desc')
+            //->orderBy($orderBy, $paginacion->order)
             ->paginate($paginacion->length, ['*'], null, $paginacion->start);
         } else {
             return "";
