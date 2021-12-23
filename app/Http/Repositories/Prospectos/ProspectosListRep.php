@@ -553,7 +553,8 @@ class ProspectosListRep
                     ->orWhere('prospectos.created_at', 'like', '%'.$search.'%')
                     ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
                     ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%')
-                    ->orWhere('empresas.nombre', 'like', '%'.$search.'%');
+                    ->orWhere('empresas.nombre', 'like', '%'.$search.'%')
+                    ->orWhere('detalle_prospecto.nombre_campana', 'like', '%'.$search.'%');;
         })
         ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus) {
             $query->when($telefonos,  function ($query) use ($telefonos) {
@@ -613,7 +614,8 @@ class ProspectosListRep
                         ->orWhere('prospectos.created_at', 'like', '%'.$search.'%')
                         ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
                         ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%')
-                        ->orWhere('empresas.nombre', 'like', '%'.$search.'%');
+                        ->orWhere('empresas.nombre', 'like', '%'.$search.'%')
+                        ->orWhere('detalle_prospecto.nombre_campana', 'like', '%'.$search.'%');;
             })
             ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus) {
                 $query->when($telefonos,  function ($query) use ($telefonos) {
@@ -686,7 +688,9 @@ class ProspectosListRep
                     ->orWhere('prospectos.created_at', 'like', '%'.$search.'%')
                     ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
                     ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%')
-                    ->orWhere('empresas.nombre', 'like', '%'.$search.'%');
+                    ->orWhere('empresas.nombre', 'like', '%'.$search.'%')
+                    ->orWhere('detalle_prospecto.nombre_campana', 'like', '%'.$search.'%');;
+
         })
         ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus) {
             $query->when($telefonos,  function ($query) use ($telefonos) {
