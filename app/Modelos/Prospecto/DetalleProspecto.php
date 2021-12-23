@@ -23,7 +23,10 @@ class DetalleProspecto extends Model
         'whatsapp',
         'nota',
         'extension',
-        'id_campana'
+        'id_campana',
+        'nombre_campana',
+        'desarrollo',
+        'ciudad'
     ];
 
     public function prospecto(){
