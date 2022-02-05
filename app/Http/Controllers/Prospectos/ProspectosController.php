@@ -94,6 +94,29 @@ class ProspectosController extends Controller
                 $prospectoDetalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
                 $prospectoDetalle->puesto = $request->puesto;
                 $prospectoDetalle->nota = $request->nota;
+                $prospectoDetalle->idIntSoc = $request->idIntSoc;
+                $prospectoDetalle->tipoafiliacion = $request->tipoafiliacion;
+                $prospectoDetalle->fechaingreso = $request->fechaingreso;
+                $prospectoDetalle->razonsocial= $request->razonsocial;
+                $prospectoDetalle->rfc= $request->rfc;
+                $prospectoDetalle->callef = $request->callef;
+                $prospectoDetalle->numf = $request->numf;
+                $prospectoDetalle->munf = $request->munf;
+                $prospectoDetalle->cpf = $request->cpf;
+                $prospectoDetalle->correof = $request->correof;
+                $prospectoDetalle->nombrec = $request->nombrec;
+                $prospectoDetalle->correocont = $request->correocont;
+                $prospectoDetalle->correobol = $request->correobol;
+                $prospectoDetalle->reprelegal = $request->reprelegal;
+                $prospectoDetalle->contacprin = $request->contacprin;
+                $prospectoDetalle->cargo = $request->cargo;
+                $prospectoDetalle->correoempresarial = $request->correoempresarial;
+                $prospectoDetalle->sector = $request->sector;
+                $prospectoDetalle->TamEmp = $request->TamEmp ;
+                $prospectoDetalle->rama= $request->rama;
+                $prospectoDetalle->acti= $request->acti;
+                $prospectoDetalle->giro= $request->giro;
+                $prospectoDetalle->fechapago= $request->fechapago;
                 $prospecto->fuente = 3;
                 $prospecto->save();
                 $prospecto->status_prospecto()->save($statusProspecto);
@@ -366,7 +389,7 @@ class ProspectosController extends Controller
             $detalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
             $detalle->nota = $request->nota;
             $detalle->puesto = $request->puesto;
-            //$detalle->empresa = $request->empresa;
+            $detalle->empresa = $request->empresa;
             $prospecto->save();
             $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto', $id)->first();
             if($colaborador_prospecto)
