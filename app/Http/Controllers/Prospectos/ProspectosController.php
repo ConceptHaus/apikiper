@@ -88,12 +88,13 @@ class ProspectosController extends Controller
                 $prospecto->nombre = $request->nombre;
                 $prospecto->apellido = $request->apellido;
                 $prospecto->correo = $request->correo;
-                $prospectoDetalle->extension = $request->extension;
+                $prospectoDetalle->puesto = $request->puesto;
+                $prospectoDetalle->empresa=$request->empresa;
                 $prospectoDetalle->telefono = $request->telefono;
                 $prospectoDetalle->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
                 $prospectoDetalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
-                // $prospectoDetalle->puesto = $request->puesto;
                 $prospectoDetalle->nota = $request->nota;
+                $prospectoDetalle->extension = $request->extension;
                 $prospectoDetalle->idIntSoc = $request->idIntSoc;
                 $prospectoDetalle->tipoafiliacion = $request->tipoafiliacion;
                 $prospectoDetalle->fechaingreso = $request->fechaingreso;
@@ -117,7 +118,6 @@ class ProspectosController extends Controller
                 $prospectoDetalle->acti= $request->acti;
                 $prospectoDetalle->giro= $request->giro;
                 $prospectoDetalle->fechapago= $request->fechapago;
-                $prospectoDetalle->empresa=$request->empresa;
                 $prospecto->fuente = 3;
                 $prospecto->save();
                 $prospecto->status_prospecto()->save($statusProspecto);
@@ -305,6 +305,8 @@ class ProspectosController extends Controller
                 'error'=>true,
                 'message'=> $errores_msg
         ],400);
+
+        
     }
 
     public function importProspectos(Request $request){
