@@ -31,7 +31,7 @@ class DetalleProspecto extends Model
         'numf',
         'munf',
         'cpf',
-        'correof',
+        'correoof',
         'nombrec',
         'correocont',
         'correobol',
