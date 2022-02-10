@@ -13,12 +13,14 @@ use Spatie\CalendarLinks\Link;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use RuntimeException;
 
+
 use App\Modelos\User;
 use App\Modelos\Prospecto\Prospecto;
 use App\Modelos\Prospecto\DetalleProspecto;
 use App\Modelos\Prospecto\EtiquetasProspecto;
 use App\Modelos\Prospecto\ArchivosProspectoColaborador;
 use App\Modelos\Prospecto\ColaboradorProspecto;
+
 
 use App\Modelos\Oportunidad\Oportunidad;
 use App\Modelos\Oportunidad\DetalleOportunidad;
@@ -1041,6 +1043,23 @@ class ProspectosController extends Controller
             ]);
 
     }
+
+    //tipo de afiliacion 
+    public function getTiposAfiliacion(){
+        $tiposAfiliacion = DetalleProspecto::tipoAfi();
+
+        if ($tiposAfiliacion) {
+          return response()->json([
+              'message'=>'Tipos de afiliacion obtenidas correctamente.',
+              'error'=>false,
+              'data'=>$tiposAfiliacion
+          ],200);
+        }
+        return response()->json([
+            'message'=>'Tipos de afiliacion no obtenidas.',
+            'error'=>false
+        ],200);
+    };
 
 
     public function sendMailing($id){

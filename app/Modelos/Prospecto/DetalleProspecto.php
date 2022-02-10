@@ -50,4 +50,7 @@ class DetalleProspecto extends Model
     public function prospecto(){
         return $this->belongsTo('App\Modelos\Prospecto\Prospecto','id_prospecto','id_prospecto');
     }
+    public function tipoAfi(){
+        return $this->hasOne('App\Modelos\Prospecto\TipoAfiliacion','id_cat_tipo_afilia','tipoafiliacion');
+    }
 }

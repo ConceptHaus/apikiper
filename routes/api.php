@@ -112,6 +112,9 @@ Route::prefix('/v1/prospectos')->group(function(){
             
             //import
             Route::post('/import/bulk','Prospectos\ProspectosController@importProspectos');
+
+            //Tipo de afiliacion
+            Route::get('/','Prospectos\ProspectosController@getTiposAfiliacion');
         });
 });
 
