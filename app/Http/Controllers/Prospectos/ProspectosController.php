@@ -1045,21 +1045,21 @@ class ProspectosController extends Controller
     }
 
     //tipo de afiliacion 
-    public function getTiposAfiliacion(){
-        $tiposAfiliacion = DetalleProspecto::tipoAfi();
+    // public function getTiposAfiliacion(){
+    //     $tiposAfiliacion = DetalleProspecto::tipoAfi();
 
-        if ($tiposAfiliacion) {
-          return response()->json([
-              'message'=>'Tipos de afiliacion obtenidas correctamente.',
-              'error'=>false,
-              'data'=>$tiposAfiliacion
-          ],200);
-        }
-        return response()->json([
-            'message'=>'Tipos de afiliacion no obtenidas.',
-            'error'=>false
-        ],200);
-    };
+    //     if ($tiposAfiliacion) {
+    //       return response()->json([
+    //           'message'=>'Tipos de afiliacion obtenidas correctamente.',
+    //           'error'=>false,
+    //           'data'=>$tiposAfiliacion
+    //       ],200);
+    //     }
+    //     return response()->json([
+    //         'message'=>'Tipos de afiliacion no obtenidas.',
+    //         'error'=>false
+    //     ],200);
+    // };
 
 
     public function sendMailing($id){
