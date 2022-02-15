@@ -111,7 +111,7 @@ class ProspectosController extends Controller
                 $prospectoDetalle->nombre_contacto = $request->nombre_contacto;
                 $prospectoDetalle->raz_social_emp=$request->razon_social_empresa;
                 $prospectoDetalle->pais_empresa=$request->pais_empresa;
-                $prospectoDetalle->colonia_empresa= request->colonia_empresa;
+                $prospectoDetalle->colonia_empresa= $request->colonia_empresa;
                 $prospectoDetalle->cp_empresa=$request->cp_empresa;
                 $prospectoDetalle->direcc_entrega=$request->direcc_entrega;
                 $prospectoDetalle->num_ext_ent=$request->num_exterior_entrega;
