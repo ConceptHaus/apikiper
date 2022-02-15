@@ -88,34 +88,36 @@ class ProspectosController extends Controller
                 $prospecto->nombre = $request->nombre;
                 $prospecto->apellido = $request->apellido;
                 $prospecto->correo = $request->correo;
-                $prospectoDetalle->codigo_interno_cliente = $request->codigo_interno_cliente;
-                $prospectoDetalle->razon_social_empresa = $request->razon_social_empresa;
+                $prospectoDetalle->puesto = $request->puesto;
+                $prospectoDetalle->empresa = $request->empresa;
+                $prospectoDetalle->telefono = $request->telefono;
+                $prospectoDetalle->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
+                $prospectoDetalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
+                $prospectoDetalle->nota = $request->nota;
+                $prospectoDetalle->extension = $request->extension;
+                $prospectoDetalle->cod_inter_clien=$request->codigo_interno_cliente;
                 $prospectoDetalle->rfc_empresa=$request->rfc_empresa;
                 $prospectoDetalle->tipo_cliente= $request->tipo_cliente;
                 $prospectoDetalle->giro_empresa= $request->giro_empresa;
-                $prospectoDetalle->direccion_fiscal_empresa = $request->direccion_fiscal_empresa;
-                $prospectoDetalle->num_exterior_empresa = $request->num_exterior_empresa;
-                $prospectoDetalle->num_interior_empresa = $request->num_interior_empresa;
-                $prospectoDetalle->municipio_delegacion_empresa = $request->municipio_delegacion_empresa;
-                $prospectoDetalle->estado_empresa = $request->estado_empresa;
-                $prospectoDetalle->pais_empresa = $request->pais_empresa;
-                $prospectoDetalle->colonia_empresa= $request->colonia_empresa;
-                $prospectoDetalle->cp_empresa= $request->cp_empresa;
-                $prospectoDetalle->direcc_entrega= $request->direcc_entrega;
-                $prospectoDetalle->num_exterior_entrega = $request->num_exterior_entrega;
-                $prospectoDetalle->num_interior_entrega = $request->num_interior_entrega;
-                $prospectoDetalle->estado_entrega = $request->estado_entrega;
+                $prospectoDetalle->direcc_fis_emp=$request->direccion_fiscal_empresa;
+                $prospectoDetalle->num_ext_emp=$request->num_exterior_empresa;
+                $prospectoDetalle->num_int_emp=$request->num_interior_empresa;
+                $prospectoDetalle->md_emp=$request->municipio_delegacion_empresa;
+                $prospectoDetalle->estado_empresa=$request->estado_empresa;
                 $prospectoDetalle->pais_entrega = $request->pais_entrega;
                 $prospectoDetalle->colonia_entrega= $request->colonia_entrega;
                 $prospectoDetalle->cp_entrega = $request->cp_entrega;
                 $prospectoDetalle->rfc_entrega = $request->rfc_entrega;
                 $prospectoDetalle->nombre_contacto = $request->nombre_contacto;
-                $prospectoDetalle->extension = $request->extension;
-                $prospectoDetalle->telefono = $request->telefono;
-                $prospectoDetalle->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular),10);
-                $prospectoDetalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
-                $prospectoDetalle->puesto = $request->puesto;
-                $prospectoDetalle->nota = $request->nota;
+                $prospectoDetalle->raz_social_emp=$request->razon_social_empresa;
+                $prospectoDetalle->pais_empresa=$request->pais_empresa;
+                $prospectoDetalle->colonia_empresa= request->colonia_empresa;
+                $prospectoDetalle->cp_empresa=$request->cp_empresa;
+                $prospectoDetalle->direcc_entrega=$request->direcc_entrega;
+                $prospectoDetalle->num_ext_ent=$request->num_exterior_entrega;
+                $prospectoDetalle->num_int_ent=$request->num_interior_entrega;
+                $prospectoDetalle->estado_entrega=$request->estado_entrega;
+                $prospectoDetalle->md_entrega=$request->municipio_delegacion_entrega;           
                 $prospecto->fuente = 3;
                 $prospecto->save();
                 $prospecto->status_prospecto()->save($statusProspecto);
@@ -284,7 +286,6 @@ class ProspectosController extends Controller
 
                 ],400);
             }
-
 
         }
 

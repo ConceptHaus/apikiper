@@ -34,8 +34,8 @@ class DetalleProspecto extends Model
         'estado_empresa',
         'pais_entrega ',
         'colonia_entrega ',
-        'cp_entrega ',
-        'rfc_entrega ',
+        'cp_entrega',
+        'rfc_entrega',
         'nombre_contacto', 
         'razon_social_empresa',
         'pais_empresa',
@@ -46,6 +46,7 @@ class DetalleProspecto extends Model
         'num_interior_entrega',
         'estado_entrega',
         'municipio_delegacion_entrega'
+        
     ];
 
     public function prospecto(){
