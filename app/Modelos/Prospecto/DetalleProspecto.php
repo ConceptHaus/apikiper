@@ -23,7 +23,30 @@ class DetalleProspecto extends Model
         'whatsapp',
         'nota',
         'extension',
-        'id_campana'
+        'id_campana',
+        'codigo_interno_cliente',
+        'razon_social_empres',
+        'rfc_empresa',
+        'tipo_cliente',
+        'giro_empresa',
+        'direccion_fiscal_empresa',
+        'num_exterior_empresa',
+        'num_interior_empresa',
+        'municipio_delegacion_empresa',
+        'estado_empresa',
+        'pais_empres',
+        'colonia_empresa',
+        'cp_empresa',
+        'direcc_entrega',
+        'num_exterior_entreg',
+        'num_interior_entreg',
+        'municipio_delegacion_entrega',
+        'estado_entrega',
+        'pais_entrega ',
+        'colonia_entrega ',
+        'cp_entrega ',
+        'rfc_entrega ',
+        'nombre_contacto' 
     ];
 
     public function prospecto(){
