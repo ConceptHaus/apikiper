@@ -52,7 +52,7 @@ class DetalleProspecto extends Model
         'municipio_comercial',
         'cp_comercial',
         'facebook',
-        'intagram',
+        'instagram',
         'twitter',
         'linkedink',
         'colaboradores',
