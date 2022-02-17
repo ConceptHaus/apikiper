@@ -127,7 +127,7 @@ class ProspectosController extends Controller
                 $prospectoDetalle->municipio_comercial=$request->municipio_comercial;
                 $prospectoDetalle->cp_comercial=$request->cp_comercial;
                 $prospectoDetalle->facebook=$request->facebook;
-                $prospectoDetalle->instragram=$request->instragram;
+                $prospectoDetalle->instagram=$request->instagram;
                 $prospectoDetalle->twitter=$request->twitter;
                 $prospectoDetalle->linkedink=$request->linkedink;
                 $prospectoDetalle->colaboradores_uno=$request->colaboradores;
