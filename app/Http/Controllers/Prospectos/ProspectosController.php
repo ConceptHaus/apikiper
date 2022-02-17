@@ -130,7 +130,7 @@ class ProspectosController extends Controller
                 $prospectoDetalle->instragam=$request->instragam;
                 $prospectoDetalle->twitter=$request->twitter;
                 $prospectoDetalle->linkedink=$request->linkedink;
-                $prospectoDetalle->colaboradores_uno=$request->colaboradores_uno;
+                $prospectoDetalle->colaboradores_uno=$request->colaboradores;
                 $prospectoDetalle->colaboradores_afiliados=$request->colaboradores_afiliados;
                 $prospectoDetalle->nrp=$request->nrp;
                 $prospectoDetalle->nombre_contabilidad=$request->nombre_contabilidad;
