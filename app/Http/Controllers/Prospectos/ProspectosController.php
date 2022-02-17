@@ -152,7 +152,7 @@ class ProspectosController extends Controller
                 $prospectoDetalle->inegi=$request->inegi;
                 $prospectoDetalle->clave_inegi=$request->clave_inegi;
                 $prospectoDetalle->clasificacion=$request->clasificacion;
-                $prospectoDetalle->import_export=$request->import_export;
+                $prospectoDetalle->impor_export=$request->impor_export;
                 $prospectoDetalle->esr=$request->esr;
                 $prospectoDetalle->fecha_esr=$request->fecha_esr;
                 $prospectoDetalle->paises=$request->paises;
