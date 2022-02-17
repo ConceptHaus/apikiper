@@ -159,6 +159,7 @@ class ProspectosController extends Controller
                 $prospectoDetalle->mision=$request->mision;
                 $prospectoDetalle->vision=$request->vision;
                 $prospectoDetalle->valores=$request->valores;
+                $prospectoDetalle->mes=$request->mes;
                 $prospectoDetalle->promotor=$request->promotor;
                 $prospectoDetalle->periodo=$request->periodo;
                 $prospectoDetalle->anio_2020=$request->anio_2020;
