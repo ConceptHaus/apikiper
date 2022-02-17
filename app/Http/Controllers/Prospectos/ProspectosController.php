@@ -147,8 +147,8 @@ class ProspectosController extends Controller
                 $prospectoDetalle->correo_otro=$request->correo_otro;
                 $prospectoDetalle->contacto_ocho=$request->contacto_ocho;
                 $prospectoDetalle->correo_ocho=$request->correo_ocho;
-                $prospectoDetalle->telef_dos=$request->telef_dos;
-                $prospectoDetalle->telef_tres=$request->telef_tres;
+                $prospectoDetalle->telefono_dos=$request->telefono_dos;
+                $prospectoDetalle->telefono_tres=$request->telefono_tres;
                 $prospectoDetalle->inegi=$request->inegi;
                 $prospectoDetalle->clave_inegi=$request->clave_inegi;
                 $prospectoDetalle->clasificacion=$request->clasificacion;
