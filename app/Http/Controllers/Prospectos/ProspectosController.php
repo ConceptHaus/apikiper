@@ -386,7 +386,7 @@ class ProspectosController extends Controller
             }
             if(!$request->hsh){
                 if(isset($request->empresa)){
-                    
+                    echo "empresa : ".$request->empresa;
 
                     $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id);
                     if( $prospecto_empresa ) {
@@ -394,6 +394,10 @@ class ProspectosController extends Controller
                         $prospecto_empresa->delete();
                     }
 
+                    return response()->json([
+                        'error'=>false,
+                        'messages'=> "prospectos_empresa:".$prospecto_empresa."    request empresa:".$request->empresa
+                    ],200);
                     
                     if( Empresa::where('nombre','=',$request->empresa)->first() != null ){
                         $empresa = Empresa::where('nombre','=',$request->empresa)->first();
@@ -435,10 +439,7 @@ class ProspectosController extends Controller
                             
 
                             
-                            return response()->json([
-                                'error'=>false,
-                                'messages'=> "id prospecto:".$prospecto->id_prospecto."    id empresa:".$empresa->id_empresa
-                            ],200);
+                            
                         }
                     }else{
                         echo "else 2";
@@ -452,6 +453,10 @@ class ProspectosController extends Controller
                         $prospecto_empresa->id_empresa = $empresa->id_empresa;
                         $prospecto_empresa->save();
                     }*/
+                    return response()->json([
+                        'error'=>false,
+                        'messages'=> "id prospecto:".$prospecto->id_prospecto."    id empresa:".$empresa->id_empresa
+                    ],200);
                 }
             }else {
                 $detalle->empresa = $request->empresa;
