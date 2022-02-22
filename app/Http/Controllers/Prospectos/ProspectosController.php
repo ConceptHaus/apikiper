@@ -387,7 +387,7 @@ class ProspectosController extends Controller
             if(!$request->hsh){
                 if(isset($request->empresa)){
                     
-                    $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->wherenull('deleted_at')->get();
+                    $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->get();
                     foreach($prospecto_empresa as $pe){
                         $pe->delete();
                     }
