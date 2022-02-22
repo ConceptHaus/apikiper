@@ -398,6 +398,8 @@ class ProspectosController extends Controller
                         'error'=>false,
                         'messages'=> "prospectos_empresa:    request empresa:".$request->empresa
                     ],200);
+
+                    exit;
                     
                     if( Empresa::where('nombre','=',$request->empresa)->first() != null ){
                         $empresa = Empresa::where('nombre','=',$request->empresa)->first();
