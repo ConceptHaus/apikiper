@@ -425,7 +425,7 @@ class ProspectosController extends Controller
                             exit;
                             return response()->json([
                                 'error'=>true,
-                                'messages'=> "id prospecto:".$prospecto->id_prospecto."     \n id empresa:".$empresa->id_empresa
+                                'messages'=> "id prospecto:".$prospecto->id_prospecto."    id empresa:".$empresa->id_empresa
                             ],500);
                         }
                     }else{
