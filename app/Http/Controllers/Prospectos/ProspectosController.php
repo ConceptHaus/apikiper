@@ -466,6 +466,20 @@ class ProspectosController extends Controller
                     ],200);
                 }
             }else {
+
+                if( Empresa::where('nombre','=',$request->empresa)->first() != null ){
+                    $empresa = Empresa::where('nombre','=',$request->empresa)->first();
+                }else{
+                    $empresa = new Empresa;
+                    $empresa->nombre = $request->empresa;
+                    $empresa->save();
+                }
+                return response()->json([
+                    'error'=>false,
+                    'messages'=> "prospectos_empresa:    request empresa:".$empresa->id_empresa
+                ],200);
+
+                exit;
                 $detalle->empresa = $request->empresa;
             }
             $detalle->save();            
