@@ -422,7 +422,7 @@ class ProspectosController extends Controller
                             $prospecto_empresa->id_empresa = $empresa->id_empresa;
                             $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
                             $prospecto_empresa->save();
-                            exit;
+                            
                             return response()->json([
                                 'error'=>false,
                                 'messages'=> "id prospecto:".$prospecto->id_prospecto."    id empresa:".$empresa->id_empresa
