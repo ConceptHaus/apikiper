@@ -424,9 +424,9 @@ class ProspectosController extends Controller
                             $prospecto_empresa->save();
                             exit;
                             return response()->json([
-                                'error'=>true,
+                                'error'=>false,
                                 'messages'=> "id prospecto:".$prospecto->id_prospecto."    id empresa:".$empresa->id_empresa
-                            ],500);
+                            ],200);
                         }
                     }else{
                         echo "else 2";
