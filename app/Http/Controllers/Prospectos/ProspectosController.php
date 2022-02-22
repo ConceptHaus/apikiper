@@ -390,6 +390,7 @@ class ProspectosController extends Controller
 
                     $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id);
                     if( $prospecto_empresa ) {
+                        echo "Hola";
                         $prospecto_empresa->delete();
                     }
 
