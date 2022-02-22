@@ -387,13 +387,12 @@ class ProspectosController extends Controller
             if(!$request->hsh){
                 if(isset($request->empresa)){
                     
-                    $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->get();
 
-                    print_r($prospecto_empresa);
-                    foreach($prospecto_empresa as $pe){
-                        echo $pe;
-                        $pe->delete();
+                    $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id);
+                    if( $prospecto_empresa ) {
+                        $prospecto_empresa->delete();
                     }
+
                     
                     if( Empresa::where('nombre','=',$request->empresa)->first() != null ){
                         $empresa = Empresa::where('nombre','=',$request->empresa)->first();
@@ -403,17 +402,11 @@ class ProspectosController extends Controller
                         $empresa->save();
                     }
                     
-                    if($prospecto_empresa){
-                        $prospecto_empresa = EmpresaProspecto::find($empresa_prospecto->id_prospecto_empresa);
-                        $prospecto_empresa->id_empresa = $empresa->id_empresa;
-                        $prospecto_empresa->save();
-                    }
-                    else{
-                        $prospecto_empresa = new EmpresaProspecto;
-                        $prospecto_empresa->id_empresa = $empresa->id_empresa;
-                        $prospecto_empresa->id_prospecto = $id;
-                        $prospecto_empresa->save();
-                    }
+                    
+                    $prospecto_empresa = new EmpresaProspecto;
+                    $prospecto_empresa->id_empresa = $empresa->id_empresa;
+                    $prospecto_empresa->id_prospecto = $id;
+                    $prospecto_empresa->save();
                     
 
                     /*$empresa = Empresa::where('nombre', '=', $request->empresa)->wherenull('deleted_at')->first();
