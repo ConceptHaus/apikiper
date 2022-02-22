@@ -418,6 +418,9 @@ class ProspectosController extends Controller
                             $prospecto_empresa->save();
                         } else {
                             // se crea nueva empresa
+                            $empresa = new Empresa;
+                            $empresa->nombre = $request->empresa;
+                            $empresa->save();
                             $prospecto_empresa = new EmpresaProspecto;
                             $prospecto_empresa->id_empresa = $empresa->id_empresa;
                             $prospecto_empresa->id_prospecto = $id;
