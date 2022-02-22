@@ -386,7 +386,7 @@ class ProspectosController extends Controller
             }
             if(!$request->hsh){
                 if(isset($request->empresa)){
-                    /*
+                    
                     $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->wherenull('deleted_at')->get();
                     foreach($prospecto_empresa as $pe){
                         $pe->delete();
@@ -405,8 +405,9 @@ class ProspectosController extends Controller
                     $prospecto_empresa->id_empresa = $empresa->id_empresa;
                     $prospecto_empresa->id_prospecto = $id;
                     $prospecto_empresa->save();
-                    */
-                    $empresa = Empresa::where('nombre', '=', $request->empresa)->wherenull('deleted_at')->first();
+                    
+
+                    /*$empresa = Empresa::where('nombre', '=', $request->empresa)->wherenull('deleted_at')->first();
                     
                     if($empresa){
                         $empresa_prospecto = EmpresaProspecto::where('id_prospecto', '=', $prospecto->id_prospecto)
@@ -425,13 +426,10 @@ class ProspectosController extends Controller
                             $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
                             $prospecto_empresa->save();
                             $queries = \DB::getQueryLog();
-                            Log::info(print_r("prospectos_empresas", true));
 
                             print_r($queries);
                             dd($queries);
                             
-
-                            $queries = DB::getQueryLog(); $last_query = print_r($queries);
 
                             
                             return response()->json([
@@ -450,7 +448,7 @@ class ProspectosController extends Controller
                                             ->first();
                         $prospecto_empresa->id_empresa = $empresa->id_empresa;
                         $prospecto_empresa->save();
-                    }
+                    }*/
                 }
             }else {
                 $detalle->empresa = $request->empresa;
