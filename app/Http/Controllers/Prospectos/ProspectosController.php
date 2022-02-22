@@ -426,7 +426,7 @@ class ProspectosController extends Controller
                             DB::enableQueryLog();
                             $list = DB::table("prospectos_empresas")->get();
                             $query = DB::getQueryLog();
-                            dd(end($query));
+                            print_r($query);
                             
                             return response()->json([
                                 'error'=>false,
