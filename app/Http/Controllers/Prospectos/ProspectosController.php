@@ -417,11 +417,16 @@ class ProspectosController extends Controller
                             $prospecto_empresa->id_empresa = $empresa->id_empresa;
                             $prospecto_empresa->save();
                         } else {
+                            // se crea nueva empresa
+                            $prospecto_empresa = new EmpresaProspecto;
+                            $prospecto_empresa->id_empresa = $empresa->id_empresa;
+                            $prospecto_empresa->id_prospecto = $id;
+                            $prospecto_empresa->save();
                             
                             return response()->json([
-                                'error'=>true,
-                                'messages'=> "El prospecto no existe"
-                            ],500);
+                                'error'=>false,
+                                'messages'=> "Se ha asignado la empresa correctamente"
+                            ],200);
                         }
                     }else{
                         
