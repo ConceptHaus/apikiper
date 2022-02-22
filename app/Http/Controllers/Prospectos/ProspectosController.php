@@ -421,12 +421,12 @@ class ProspectosController extends Controller
                             $prospecto_empresa = new EmpresaProspecto;
                             $prospecto_empresa->id_empresa = $empresa->id_empresa;
                             $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
-                            $prospecto_empresa->save();
-                            
-                            return response()->json([
-                                'error'=>false,
-                                'messages'=> "Se ha asignado la empresa correctamente"
-                            ],200);
+                            echo $prospecto_empresa->save();
+                            exit;
+                            //return response()->json([
+                              //  'error'=>false,
+                              //  'messages'=> "Se ha asignado la empresa correctamente"
+                            //],200);
                         }
                     }else{
                         echo "else 2";
