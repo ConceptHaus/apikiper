@@ -422,6 +422,11 @@ class ProspectosController extends Controller
                             $prospecto_empresa->id_empresa = $empresa->id_empresa;
                             $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
                             $prospecto_empresa->save();
+
+                            DB::enableQueryLog();
+                            $list = DB::table("prospectos_empresas")->get();
+                            $query = DB::getQueryLog();
+                            dd(end($query));
                             
                             return response()->json([
                                 'error'=>false,
