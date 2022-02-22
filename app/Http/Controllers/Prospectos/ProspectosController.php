@@ -388,6 +388,8 @@ class ProspectosController extends Controller
                 if(isset($request->empresa)){
                     
                     $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->get();
+
+                    print_r($prospecto_empresa);
                     foreach($prospecto_empresa as $pe){
                         $pe->delete();
                     }
