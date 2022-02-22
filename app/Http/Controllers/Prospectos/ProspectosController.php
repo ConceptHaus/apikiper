@@ -391,6 +391,7 @@ class ProspectosController extends Controller
 
                     print_r($prospecto_empresa);
                     foreach($prospecto_empresa as $pe){
+                        echo $pe;
                         $pe->delete();
                     }
                     
@@ -402,11 +403,17 @@ class ProspectosController extends Controller
                         $empresa->save();
                     }
                     
-
-                    $prospecto_empresa = new EmpresaProspecto;
-                    $prospecto_empresa->id_empresa = $empresa->id_empresa;
-                    $prospecto_empresa->id_prospecto = $id;
-                    $prospecto_empresa->save();
+                    if($prospecto_empresa){
+                        $prospecto_empresa = EmpresaProspecto::find($empresa_prospecto->id_prospecto_empresa);
+                        $prospecto_empresa->id_empresa = $empresa->id_empresa;
+                        $prospecto_empresa->save();
+                    }
+                    else{
+                        $prospecto_empresa = new EmpresaProspecto;
+                        $prospecto_empresa->id_empresa = $empresa->id_empresa;
+                        $prospecto_empresa->id_prospecto = $id;
+                        $prospecto_empresa->save();
+                    }
                     
 
                     /*$empresa = Empresa::where('nombre', '=', $request->empresa)->wherenull('deleted_at')->first();
