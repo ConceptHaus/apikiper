@@ -396,7 +396,7 @@ class ProspectosController extends Controller
 
                     return response()->json([
                         'error'=>false,
-                        'messages'=> "prospectos_empresa:".$prospecto_empresa."    request empresa:".$request->empresa
+                        'messages'=> "prospectos_empresa:    request empresa:".$request->empresa
                     ],200);
                     
                     if( Empresa::where('nombre','=',$request->empresa)->first() != null ){
