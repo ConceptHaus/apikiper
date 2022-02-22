@@ -418,6 +418,7 @@ class ProspectosController extends Controller
                             $prospecto_empresa->save();
                         } else {
                             // se crea nueva empresa
+                            echo "else 1";
                             $empresa = new Empresa;
                             $empresa->nombre = $request->empresa;
                             $empresa->save();
@@ -432,7 +433,7 @@ class ProspectosController extends Controller
                             ],200);
                         }
                     }else{
-                        
+                        echo "else 2";
                         $empresa = new Empresa;
                         $empresa->nombre = $request->empresa;
                         $empresa->save();
