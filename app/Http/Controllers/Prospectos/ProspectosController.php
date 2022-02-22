@@ -425,6 +425,7 @@ class ProspectosController extends Controller
                             $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
                             $prospecto_empresa->save();
                             $queries = \DB::getQueryLog();
+                            Log::info(print_r("prospectos_empresas", true));
 
                             print_r($queries);
                             dd($queries);
