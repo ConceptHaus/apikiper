@@ -394,7 +394,12 @@ class ProspectosController extends Controller
                         $empresa->nombre = $request->empresa;
                         $empresa->save();
                     }
+                    return response()->json([
+                        'error'=>false,
+                        'messages'=> "prospectos_empresa:    request empresa:".$empresa->id_empresa
+                    ],200);
 
+                    exit;
                     $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id);
                     if( $prospecto_empresa ) {
                         $prospecto_empresa->delete();
