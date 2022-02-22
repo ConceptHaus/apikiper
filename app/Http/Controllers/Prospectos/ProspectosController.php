@@ -467,19 +467,7 @@ class ProspectosController extends Controller
                 }
             }else {
 
-                if( Empresa::where('nombre','=',$request->empresa)->first() != null ){
-                    $empresa = Empresa::where('nombre','=',$request->empresa)->first();
-                }else{
-                    $empresa = new Empresa;
-                    $empresa->nombre = $request->empresa;
-                    $empresa->save();
-                }
-                return response()->json([
-                    'error'=>false,
-                    'messages'=> "prospectos_empresa:    request empresa:".$empresa->id_empresa
-                ],200);
-
-                exit;
+                
                 $detalle->empresa = $request->empresa;
             }
             $detalle->save();            
@@ -493,7 +481,20 @@ class ProspectosController extends Controller
                 ->useLog('prospecto')
                 ->log(':causer.nombre :causer.apellido <br> <span class="histroial_status"> :properties.accion el perfil de un prospecto.</span>');
             event( new Historial($actividad));
-                          
+                        
+            if( Empresa::where('nombre','=',$request->empresa)->first() != null ){
+                $empresa = Empresa::where('nombre','=',$request->empresa)->first();
+            }else{
+                $empresa = new Empresa;
+                $empresa->nombre = $request->empresa;
+                $empresa->save();
+            }
+            return response()->json([
+                'error'=>false,
+                'messages'=> "prospectos_empresa:    request empresa:".$empresa->id_empresa
+            ],200);
+
+            exit;
             return response()->json([
                 'error'=>false,
                 'message'=>'Actualizado Correctamente',
