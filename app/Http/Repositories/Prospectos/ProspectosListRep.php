@@ -1141,4 +1141,24 @@ class ProspectosListRep
 
         ->get();
     }
+    public function getRazonsocial($id_colaborador=null, $rol=null){
+        return DB::table('prospectos')
+        ->select('prospectos.id_prospecto', 'detalle_prospecto.razonsocial')
+        ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
+        ->join('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
+        ->wherenull('prospectos.deleted_at')
+        ->wherenull('colaborador_prospecto.deleted_at')
+
+        ->when($id_colaborador, function($query) use ($id_colaborador) {
+            return $query->where('colaborador_prospecto.id_colaborador', $id_colaborador);
+        })     
+
+        ->when($rol, function($query) use ($rol) {
+            return $query->join('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
+                        ->join('etiquetas', 'etiquetas.id_etiqueta', '=', 'etiquetas_prospectos.id_etiqueta')
+            ->where('etiquetas.id_etiqueta', $rol);
+        })
+
+        ->get();
+    }
 }

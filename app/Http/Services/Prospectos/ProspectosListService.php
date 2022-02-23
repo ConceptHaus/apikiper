@@ -5,7 +5,7 @@ namespace App\Http\Services\Prospectos;
 use App\Http\Repositories\Prospectos\ProspectosListRep;
 use App\Http\DTOs\Datatable\DatatableResponseDTO;
 
-class ProspectosListService
+ class ProspectosListService
 {    
     /*----------------------- LISTA DE PROSPECTOS --------------------------*/
     public function getProspectosPageByRol($id_colaborador, $rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus) {
@@ -270,6 +270,13 @@ class ProspectosListService
         $object = new ProspectosListRep;
 
         $response->data["prospectos_telefono"] = $object->getTelefono($id_colaborador, $rol);
+
+        return $response;
+    }
+    public function getProspectosRazonsocial($id_colaborador=null, $rol=null){
+        $object = new ProspectosListRep;
+
+        $response->data["prospectos_razonsocial"] = $object->getRazonsocial($id_colaborador, $rol);
 
         return $response;
     }
