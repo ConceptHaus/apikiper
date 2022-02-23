@@ -355,37 +355,6 @@ class ProspectosListController extends Controller
             return response()->json($response, 500);
         }
     }
-    public function findProspectosRazonsocial(){
-        $auth = new AuthService();
-        $auth = $auth->getUserAuthInfo(); 
-        $response = new DatatableResponseDTO();
-        $proListServ = new ProspectosListService();
-
-        $permisos = User::getAuthenticatedUserPermissions();
-
-        try{
-            if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
-                $response = $proListServ->getProspectosRazonsocial($auth->id, $auth->rol);
-    
-            }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
-                $response = $proListServ->getProspectosRazonsocial();
-    
-            }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
-                $response = $proListServ->getProspectosRazonsocial($auth->id);
-
-            }else{
-                $response = [];    
-            }
-
-            return response()->json($response, 200);
-
-        }catch(Exception $e){
-            echo 'ProspectosListController.findProspectosRazonsocial',  $e->getMessage(); 
-
-            $response->error = 'Ocurrio un error inesperado';
-            return response()->json($response, 500);
-        }
-    }
 
 
 }

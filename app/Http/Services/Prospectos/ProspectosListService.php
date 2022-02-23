@@ -273,12 +273,6 @@ use App\Http\DTOs\Datatable\DatatableResponseDTO;
 
         return $response;
     }
-    public function getProspectosRazonsocial($id_colaborador=null, $rol=null){
-        $object = new ProspectosListRep;
-
-        $response->data["prospectos_razonsocial"] = $object->getRazonsocial($id_colaborador, $rol);
-
-        return $response;
-    }
+    
 
 }

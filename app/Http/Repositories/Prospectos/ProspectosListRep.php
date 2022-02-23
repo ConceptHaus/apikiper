@@ -70,6 +70,7 @@ class ProspectosListRep
                 DB::raw('CONCAT(prospectos.nombre, " ", prospectos.apellido) AS nombre_prospecto'), 
                 'prospectos.correo', 
                 'detalle_prospecto.telefono', 
+                'detalle_prospecto.razonsocial',
                 'users.nombre AS colaborador', 
                 DB::raw('date_format(prospectos.created_at, "%d/%m/%Y") AS created_at'),
                 'cat_status_prospecto.status', 
@@ -138,7 +139,8 @@ class ProspectosListRep
                 'prospectos.id_prospecto', 
                 DB::raw('CONCAT(prospectos.nombre, " ", prospectos.apellido) AS nombre_prospecto'), 
                 'prospectos.correo', 
-                'detalle_prospecto.telefono', 
+                'detalle_prospecto.telefono',
+                'detalle_prospecto.razonsocial', 
                 'users.nombre AS colaborador', 
                 DB::raw('date_format(prospectos.created_at, "%d/%m/%Y") AS created_at'), 
                 'cat_status_prospecto.status', 
@@ -547,6 +549,7 @@ class ProspectosListRep
                     ->orWhere('prospectos.apellido', 'like', '%'.$search.'%')
                     ->orWhere('prospectos.correo', 'like', '%'.$search.'%')
                     ->orWhere('detalle_prospecto.telefono', 'like', '%'.$search.'%')
+                    ->orWhere('detalle_prospecto.razonsocial', 'like', '%'.$search.'%')
                     ->orWhere('users.nombre', 'like', '%'.$search.'%')
                     ->orWhere('prospectos.created_at', 'like', '%'.$search.'%')
                     ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
@@ -607,6 +610,7 @@ class ProspectosListRep
                         ->orWhere('prospectos.apellido', 'like', '%'.$search.'%')
                         ->orWhere('prospectos.correo', 'like', '%'.$search.'%')
                         ->orWhere('detalle_prospecto.telefono', 'like', '%'.$search.'%')
+                        ->orWhere('detalle_prospecto.razonsocial', 'like', '%'.$search.'%')
                         ->orWhere('users.nombre', 'like', '%'.$search.'%')
                         ->orWhere('prospectos.created_at', 'like', '%'.$search.'%')
                         ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
@@ -645,6 +649,7 @@ class ProspectosListRep
                 DB::raw('CONCAT(prospectos.nombre, " ", prospectos.apellido) AS nombre_prospecto'), 
                 'prospectos.correo', 
                 'detalle_prospecto.telefono', 
+                'detalle_prospecto.razonsocial',
                 'users.nombre AS colaborador', 
                 DB::raw('date_format(prospectos.created_at, "%d/%m/%Y") AS created_at'),
                 'cat_status_prospecto.status', 
@@ -679,6 +684,7 @@ class ProspectosListRep
                     ->orWhere('prospectos.apellido', 'like', '%'.$search.'%')
                     ->orWhere('prospectos.correo', 'like', '%'.$search.'%')
                     ->orWhere('detalle_prospecto.telefono', 'like', '%'.$search.'%')
+                    ->orWhere('detalle_prospecto.razonsocial', 'like', '%'.$search.'%')
                     ->orWhere('users.nombre', 'like', '%'.$search.'%')
                     ->orWhere('prospectos.created_at', 'like', '%'.$search.'%')
                     ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
@@ -743,6 +749,7 @@ class ProspectosListRep
                         ->orWhere('prospectos.apellido', 'like', '%'.$search.'%')
                         ->orWhere('prospectos.correo', 'like', '%'.$search.'%')
                         ->orWhere('detalle_prospecto.telefono', 'like', '%'.$search.'%')
+                        ->orWhere('detalle_prospecto.razonsocial', 'like', '%'.$search.'%')
                         ->orWhere('users.nombre', 'like', '%'.$search.'%')
                         ->orWhere('prospectos.created_at', 'like', '%'.$search.'%')
                         ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
@@ -754,6 +761,7 @@ class ProspectosListRep
                 DB::raw('CONCAT(prospectos.nombre, " ", prospectos.apellido) AS nombre_prospecto'), 
                 'prospectos.correo', 
                 'detalle_prospecto.telefono', 
+                'detalle_prospecto.razonsocial',
                 'users.nombre AS colaborador', 
                 DB::raw('date_format(prospectos.created_at, "%d/%m/%Y") AS created_at'),
                 'cat_status_prospecto.status', 
@@ -798,6 +806,7 @@ class ProspectosListRep
                         ->orWhere('prospectos.apellido', 'like', '%'.$search.'%')
                         ->orWhere('prospectos.correo', 'like', '%'.$search.'%')
                         ->orWhere('detalle_prospecto.telefono', 'like', '%'.$search.'%')
+                        ->orWhere('detalle_prospecto.razonsocial', 'like', '%'.$search.'%')
                         ->orWhere('users.nombre', 'like', '%'.$search.'%')
                         ->orWhere('prospectos.created_at', 'like', '%'.$search.'%')
                         ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
@@ -859,6 +868,7 @@ class ProspectosListRep
                         ->orWhere('prospectos.apellido', 'like', '%'.$search.'%')
                         ->orWhere('prospectos.correo', 'like', '%'.$search.'%')
                         ->orWhere('detalle_prospecto.telefono', 'like', '%'.$search.'%')
+                        ->orWhere('detalle_prospecto.razonsocial', 'like', '%'.$search.'%')
                         ->orWhere('users.nombre', 'like', '%'.$search.'%')
                         ->orWhere('prospectos.created_at', 'like', '%'.$search.'%')
                         ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
@@ -898,6 +908,7 @@ class ProspectosListRep
                 DB::raw('CONCAT(prospectos.nombre, " ", prospectos.apellido) AS nombre_prospecto'), 
                 'prospectos.correo', 
                 'detalle_prospecto.telefono', 
+                'detalle_prospecto.razonsocial',
                 'users.nombre AS colaborador', 
                 DB::raw('date_format(prospectos.created_at, "%d/%m/%Y") AS created_at'),
                 'cat_status_prospecto.status', 
@@ -947,6 +958,7 @@ class ProspectosListRep
                         ->orWhere('prospectos.apellido', 'like', '%'.$search.'%')
                         ->orWhere('prospectos.correo', 'like', '%'.$search.'%')
                         ->orWhere('detalle_prospecto.telefono', 'like', '%'.$search.'%')
+                        ->orWhere('detalle_prospecto.razonsocial', 'like', '%'.$search.'%')
                         ->orWhere('users.nombre', 'like', '%'.$search.'%')
                         ->orWhere('prospectos.created_at', 'like', '%'.$search.'%')
                         ->orWhere('cat_status_prospecto.status', 'like', '%'.$search.'%')
@@ -1141,24 +1153,5 @@ class ProspectosListRep
 
         ->get();
     }
-    public function getRazonsocial($id_colaborador=null, $rol=null){
-        return DB::table('prospectos')
-        ->select('prospectos.id_prospecto', 'detalle_prospecto.razonsocial')
-        ->join('colaborador_prospecto', 'colaborador_prospecto.id_prospecto', '=', 'prospectos.id_prospecto')
-        ->join('detalle_prospecto', 'detalle_prospecto.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
-        ->wherenull('prospectos.deleted_at')
-        ->wherenull('colaborador_prospecto.deleted_at')
-
-        ->when($id_colaborador, function($query) use ($id_colaborador) {
-            return $query->where('colaborador_prospecto.id_colaborador', $id_colaborador);
-        })     
-
-        ->when($rol, function($query) use ($rol) {
-            return $query->join('etiquetas_prospectos', 'etiquetas_prospectos.id_prospecto', '=', 'colaborador_prospecto.id_prospecto')
-                        ->join('etiquetas', 'etiquetas.id_etiqueta', '=', 'etiquetas_prospectos.id_etiqueta')
-            ->where('etiquetas.id_etiqueta', $rol);
-        })
-
-        ->get();
-    }
+    
 }
