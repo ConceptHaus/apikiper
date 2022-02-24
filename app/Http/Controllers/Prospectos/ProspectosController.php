@@ -373,8 +373,8 @@ class ProspectosController extends Controller
             {
                 if($colaborador_prospecto->id_colaborador != $auth->id)
                 {
-                    $colaborador_prospecto->id_colaborador = $auth->id;
-                    $colaborador_prospecto->save();
+                    // $colaborador_prospecto->id_colaborador = $auth->id;
+                    // $colaborador_prospecto->save();
                 }
             }
             else
