@@ -310,6 +310,8 @@ class MailingController extends Controller
           'error'=>true
         ],400);
       } catch (Exception $e) {
+        echo $e;
+        exit
         DB::rollback();
         return response()->json([
           'message'=>$e,
