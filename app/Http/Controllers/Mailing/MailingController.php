@@ -50,6 +50,7 @@ class MailingController extends Controller
         $mailing->subject = $request->titulo;
         $mailing->subtitle = $request->subtitulo;
         $mailing->preview_text = "";
+        $mailing->from = "pruebas123456@gmail.com";
         
         if($request->description == 'undefined')
           $mailing->text_body = null;
