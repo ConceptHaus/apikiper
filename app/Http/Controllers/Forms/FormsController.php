@@ -362,6 +362,13 @@ class FormsController extends Controller
           $detalleProspecto->celular = (isset($data['telefono']) ? preg_replace('/[^0-9]+/','',$data['telefono']) : '');
           $detalleProspecto->whatsapp = (isset($data['telefono']) ? preg_replace('/[^0-9]+/','',$data['telefono']) : '');
           $detalleProspecto->nota = (isset($data['mensaje']) ? $data['mensaje'] : '');
+
+          //Campos personalizados
+          $detalleProspecto->interes_de_inversion      = (isset($data['interes_de_inversion'])      ? $data['interes_de_inversion'] : '');
+          $detalleProspecto->depa_ideal                = (isset($data['depa_ideal'])                ? $data['depa_ideal'] : '');
+          $detalleProspecto->forma_contacto            = (isset($data['forma_contacto'])            ? $data['forma_contacto'] : '');
+          $detalleProspecto->tiempo_estimado_inversion = (isset($data['tiempo_estimado_inversion']) ? $data['tiempo_estimado_inversion'] : '');
+          $detalleProspecto->presupuesto_inversion     = (isset($data['presupuesto_inversion'])     ? $data['presupuesto_inversion'] : '');
           $prospecto->detalle_prospecto()->save($detalleProspecto);
           
           $status->id_cat_status_prospecto = 2;
