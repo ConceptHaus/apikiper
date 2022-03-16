@@ -408,14 +408,7 @@ class ProspectosController extends Controller
                         echo "Se actualizao la empresa en la edición";
 
                         if( Empresa::where('nombre','=',$request->empresa)->first() != null ){
-                            return response()->json([
-                                'error'=>false,
-                                'message'=>'la empresa existe',
-                                'data'=>[
-                                    'prospecto'=>$prospecto,
-                                    'detalle'=>$detalle
-                                ]
-                            ],200);
+                            
                             $empresa = Empresa::where('nombre','=',$request->empresa)->first();
                         }else{
                             return response()->json([
