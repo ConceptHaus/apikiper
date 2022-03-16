@@ -431,6 +431,13 @@ class ProspectosController extends Controller
                         $relacion_empresa_prospecto->delete();
 
 
+                        DB::delete("DELETE 
+                                        FROM
+                                        prospectos_empresas 
+                                        WHERE id_prospecto = '".$id."' 
+                                        AND id_empresa = '".$prospecto_empresa->id_empresa."' ;");
+
+
                         $prospecto_empresa = new EmpresaProspecto;
                         $prospecto_empresa->id_empresa = $empresa->id_empresa;
                         $prospecto_empresa->id_prospecto = $id;
