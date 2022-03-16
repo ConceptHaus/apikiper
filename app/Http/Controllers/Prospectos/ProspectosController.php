@@ -387,15 +387,47 @@ class ProspectosController extends Controller
             }
 
             if(!$request->hsh){
+                return response()->json([
+                    'error'=>false,
+                    'message'=>'ifrequest ! hsh',
+                    'data'=>[
+                        'prospecto'=>$prospecto,
+                        'detalle'=>$detalle
+                    ]
+                ],200);
                 if(isset($request->empresa)){
+                    return response()->json([
+                        'error'=>false,
+                        'message'=>'isset empresa',
+                        'data'=>[
+                            'prospecto'=>$prospecto,
+                            'detalle'=>$detalle
+                        ]
+                    ],200);
                     
                     $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->wherenull('deleted_at')->first();
                     $empresa = Empresa::where('id_empresa','=',$prospecto_empresa->id_empresa)->first();
                     if($empresa->nombre == $request->empresa){
                         echo "la empresa es la misma";
+                        return response()->json([
+                            'error'=>false,
+                            'message'=>'la empresa es la misma',
+                            'data'=>[
+                                'prospecto'=>$prospecto,
+                                'detalle'=>$detalle
+                            ]
+                        ],200);
                     }
                     else{
                         echo "Se actualizao la empresa en la edición";
+                        return response()->json([
+                            'error'=>false,
+                            'message'=>'Se actualizao la empresa en la edición',
+                            'data'=>[
+                                'prospecto'=>$prospecto,
+                                'detalle'=>$detalle
+                            ]
+                        ],200);
                     }
                     
                     /*foreach($prospecto_empresa as $pe){
@@ -448,6 +480,14 @@ class ProspectosController extends Controller
                     }*/
                 }
             }else {
+                return response()->json([
+                    'error'=>false,
+                    'message'=>'hsh else',
+                    'data'=>[
+                        'prospecto'=>$prospecto,
+                        'detalle'=>$detalle
+                    ]
+                ],200);
 
                 $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->wherenull('deleted_at')->first();
                 $empresa = Empresa::where('id_empresa','=',$prospecto_empresa->id_empresa)->first();
@@ -481,7 +521,7 @@ class ProspectosController extends Controller
                           
             return response()->json([
                 'error'=>false,
-                'message'=>'Actualizado Correctamente',
+                'message'=>'Actualizado Correctamente 123',
                 'data'=>[
                     'prospecto'=>$prospecto,
                     'detalle'=>$detalle
