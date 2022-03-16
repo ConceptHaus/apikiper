@@ -387,14 +387,7 @@ class ProspectosController extends Controller
             }
 
             if(!$request->hsh){
-                return response()->json([
-                    'error'=>false,
-                    'message'=>'ifrequest ! hsh',
-                    'data'=>[
-                        'prospecto'=>$prospecto,
-                        'detalle'=>$detalle
-                    ]
-                ],200);
+               
                 if(isset($request->empresa)){
                     return response()->json([
                         'error'=>false,
