@@ -354,7 +354,7 @@ class ProspectosController extends Controller
         $prospecto = Prospecto::where('id_prospecto',$id)->first();
         $detalle = DetalleProspecto::where('id_prospecto',$id)->first();
 
-        //try{
+        try{
 
             DB::beginTransaction();
             $prospecto->nombre = $request->nombre;
@@ -448,8 +448,24 @@ class ProspectosController extends Controller
                     }*/
                 }
             }else {
-                $detalle->empresa = $request->empresa;
-                echo "entre al no hsh";
+
+                $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->wherenull('deleted_at')->first();
+                $empresa = Empresa::where('id_empresa','=',$prospecto_empresa->id_empresa)->first();
+                if($empresa->nombre == $request->empresa){
+                    echo "la empresa es la misma";
+
+                }
+                else{
+                    echo "Se actualizao la empresa en la edición";
+                    return response()->json([
+                        'error'=>false,
+                        'message'=>'Se actualizao la empresa en la edición',
+                        'data'=>[
+                            'prospecto'=>$prospecto,
+                            'detalle'=>$detalle
+                        ]
+                    ],200);
+                }
             }
             $detalle->save();            
             DB::commit();
@@ -471,15 +487,13 @@ class ProspectosController extends Controller
                     'detalle'=>$detalle
                 ]
             ],200);
-        //}catch(Exception $e){
-          //  Bugsnag::notifyException(new RuntimeException("No se pudo actualizar un prospecto"));
-            //return response()->json([
-             //   'error'=>true,
-             //   'message'=>$e,
-            //],400);
-       // }
-
-       exit;
+        }catch(Exception $e){
+            Bugsnag::notifyException(new RuntimeException("No se pudo actualizar un prospecto"));
+            return response()->json([
+                'error'=>true,
+                'message'=>$e,
+            ],400);
+        }
 
 
     }
