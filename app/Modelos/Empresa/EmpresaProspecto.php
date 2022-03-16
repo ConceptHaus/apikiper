@@ -18,12 +18,12 @@ class EmpresaProspecto extends Model
     protected $fillable = [
         'id_prospecto',
         'id_empresa',
-        'deleted_at'
+        'deleted_at' 
     ];
     
     public function prospectos(){
         return $this->belongsTo('App\Modelos\Prospecto\Prospecto','id_prospecto','id_prospecto');
-    }
+    }g
 
     public function empresas(){
         return $this->belongsTo('App\Modelos\Empresa\Empresa', 'id_empresa', 'id_empresa');
