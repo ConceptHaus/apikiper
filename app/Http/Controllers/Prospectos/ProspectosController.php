@@ -472,6 +472,17 @@ class ProspectosController extends Controller
                         $prospecto_empresa->save();
                     }*/
                 }
+                else{
+                    return response()->json([
+                        'error'=>false,
+                        'message'=>'isset empresa else',
+                        'data'=>[
+                            'prospecto'=>$prospecto,
+                            'detalle'=>$detalle
+                        ]
+                    ],200);
+                }
+
             }else {
                 return response()->json([
                     'error'=>false,
