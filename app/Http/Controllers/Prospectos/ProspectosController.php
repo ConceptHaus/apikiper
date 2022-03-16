@@ -394,7 +394,7 @@ class ProspectosController extends Controller
                                             ->wherenull('deleted_at')
                                             ->first();
 
-                    $res=EmpresaProspecto::where('id_prospecto',$prospecto_empresa->id_prospecto)->delete();
+                    echo "Hola mundo!";
                         
                     
                     if( Empresa::where('nombre','=',$request->empresa)->first() != null ){
