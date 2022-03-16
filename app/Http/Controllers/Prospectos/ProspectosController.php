@@ -388,14 +388,11 @@ class ProspectosController extends Controller
             if(!$request->hsh){
                 if(isset($request->empresa)){
                     
-                    
-
-                    $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)
-                                            ->wherenull('deleted_at')
-                                            ->first();
-
-                    echo "Hola mundo!";
-                        
+                    $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->wherenull('deleted_at')->get();
+                    foreach($prospecto_empresa as $pe){
+                        $pe->delete();
+                        DB::commit();
+                    }
                     
                     if( Empresa::where('nombre','=',$request->empresa)->first() != null ){
                         $empresa = Empresa::where('nombre','=',$request->empresa)->first();
