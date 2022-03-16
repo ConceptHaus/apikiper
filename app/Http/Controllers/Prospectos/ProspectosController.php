@@ -354,7 +354,7 @@ class ProspectosController extends Controller
         $prospecto = Prospecto::where('id_prospecto',$id)->first();
         $detalle = DetalleProspecto::where('id_prospecto',$id)->first();
 
-        try{
+        //try{
 
             DB::beginTransaction();
             $prospecto->nombre = $request->nombre;
@@ -471,13 +471,15 @@ class ProspectosController extends Controller
                     'detalle'=>$detalle
                 ]
             ],200);
-        }catch(Exception $e){
-            Bugsnag::notifyException(new RuntimeException("No se pudo actualizar un prospecto"));
-            return response()->json([
-                'error'=>true,
-                'message'=>$e,
-            ],400);
-        }
+        //}catch(Exception $e){
+          //  Bugsnag::notifyException(new RuntimeException("No se pudo actualizar un prospecto"));
+            //return response()->json([
+             //   'error'=>true,
+             //   'message'=>$e,
+            //],400);
+       // }
+
+       exit;
 
 
     }
