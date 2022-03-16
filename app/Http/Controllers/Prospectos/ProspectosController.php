@@ -391,7 +391,7 @@ class ProspectosController extends Controller
                     $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->wherenull('deleted_at')->get();
                     foreach($prospecto_empresa as $pe){
                         // $pe->delete();
-                        $pe -> delete_at = date("Y-m-d H:i:s");
+                        $pe->deleted_at = date("Y-m-d H:i:s");
                         $pe->save();
                         // print_r($pe);
                     }
