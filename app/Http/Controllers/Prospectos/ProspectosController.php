@@ -368,14 +368,14 @@ class ProspectosController extends Controller
             $detalle->puesto = $request->puesto;
             $detalle->empresa = $request->empresa;
             $prospecto->save();
+
             $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto', $id)->first();
             if($colaborador_prospecto)
             {
                 if($colaborador_prospecto->id_colaborador != $auth->id)
                 {
                     // $colaborador_prospecto->id_colaborador = $auth->id;
-                    // $colaborador_prospecto->save();
-                    
+                    // $colaborador_prospecto->save();                    
                 }
             }
             else
@@ -385,11 +385,20 @@ class ProspectosController extends Controller
                 $colaborador_prospecto->id_prospecto = $id;
                 $colaborador_prospecto->save();
             }
+
             if(!$request->hsh){
                 if(isset($request->empresa)){
                     
-                    $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->wherenull('deleted_at')->get();
-                    foreach($prospecto_empresa as $pe){
+                    $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->wherenull('deleted_at')->first();
+                    $empresa = Empresa::where('id_empresa','=',$prospecto_empresa->id_empresa)->first();
+                    if($empresa->nombre == $request->empresa){
+                        echo "la empresa es la misma";
+                    }
+                    else{
+                        echo "Se actualizao la empresa en la edición";
+                    }
+                    
+                    /*foreach($prospecto_empresa as $pe){
                         $pe->delete();
                         DB::commit();
                     }
@@ -436,7 +445,7 @@ class ProspectosController extends Controller
                                             ->first();
                         $prospecto_empresa->id_empresa = $empresa->id_empresa;
                         $prospecto_empresa->save();
-                    }
+                    }*/
                 }
             }else {
                 $detalle->empresa = $request->empresa;
