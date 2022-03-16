@@ -389,14 +389,7 @@ class ProspectosController extends Controller
             if(!$request->hsh){
                
                 if(isset($request->empresa)){
-                    return response()->json([
-                        'error'=>false,
-                        'message'=>'isset empresa',
-                        'data'=>[
-                            'prospecto'=>$prospecto,
-                            'detalle'=>$detalle
-                        ]
-                    ],200);
+                    
                     
                     $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->wherenull('deleted_at')->first();
                     $empresa = Empresa::where('id_empresa','=',$prospecto_empresa->id_empresa)->first();
@@ -472,16 +465,7 @@ class ProspectosController extends Controller
                         $prospecto_empresa->save();
                     }*/
                 }
-                else{
-                    return response()->json([
-                        'error'=>false,
-                        'message'=>'isset empresa else',
-                        'data'=>[
-                            'prospecto'=>$prospecto,
-                            'detalle'=>$detalle
-                        ]
-                    ],200);
-                }
+                
 
             }else {
                 return response()->json([
