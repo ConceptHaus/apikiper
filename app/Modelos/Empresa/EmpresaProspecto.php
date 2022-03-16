@@ -18,6 +18,7 @@ class EmpresaProspecto extends Model
     protected $fillable = [
         'id_prospecto',
         'id_empresa',
+        'deleted_at'
     ];
     
     public function prospectos(){
