@@ -23,7 +23,7 @@ class EmpresaProspecto extends Model
     
     public function prospectos(){
         return $this->belongsTo('App\Modelos\Prospecto\Prospecto','id_prospecto','id_prospecto');
-    }g
+    }
 
     public function empresas(){
         return $this->belongsTo('App\Modelos\Empresa\Empresa', 'id_empresa', 'id_empresa');
