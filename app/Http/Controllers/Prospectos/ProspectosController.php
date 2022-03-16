@@ -449,6 +449,7 @@ class ProspectosController extends Controller
                 }
             }else {
                 $detalle->empresa = $request->empresa;
+                echo "entre al no hsh";
             }
             $detalle->save();            
             DB::commit();
