@@ -432,17 +432,12 @@ class ProspectosController extends Controller
                         
                     }
                     else{
-                        $empresa = Empresa::where('id_empresa','=',$prospecto_empresa->id_empresa)->first();
-                        if($empresa->nombre != $request->empresa){                        
-
-                            if( Empresa::where('nombre','=',$request->empresa)->first() != null ){
-                                
-                                $empresa = Empresa::where('nombre','=',$request->empresa)->first();
-                            }else{
-                                $empresa = new Empresa;
-                                $empresa->nombre = $request->empresa;
-                                $empresa->save();
-                            }
+                        $empresa = Empresa::where('nombre','=',$request->empresa)->first();
+                        if(!$empresa){
+                            $empresa = new Empresa;
+                            $empresa->nombre = $request->empresa;
+                            $empresa->save();
+                        }
                             
                             // Conseguimos el objeto
                             $relacion_empresa_prospecto=EmpresaProspecto::where('id_prospecto', '=', $id)->first();
