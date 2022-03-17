@@ -445,7 +445,11 @@ class ProspectosController extends Controller
                         
                         return response()->json([
                             'error'=>false,
-                            'message'=>'Se actualizao la empresa en la edición',
+                            'message'=>"DELETE 
+                            FROM
+                            prospectos_empresas 
+                            WHERE id_prospecto = '".$id."' 
+                            AND id_empresa = '".$prospecto_empresa->id_empresa."' ;",
                             'data'=>[
                                 'prospecto'=>$prospecto,
                                 'detalle'=>$detalle
