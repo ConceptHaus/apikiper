@@ -432,14 +432,41 @@ class ProspectosController extends Controller
                         
                     }
                     else{
-                        $empresa = new Empresa;
-                        $empresa->nombre = $request->empresa;
-                        $empresa->save();
+                        $empresa = Empresa::where('id_empresa','=',$prospecto_empresa->id_empresa)->first();
+                        if($empresa->nombre != $request->empresa){                        
 
-                        $prospecto_empresa = new EmpresaProspecto;
-                        $prospecto_empresa->id_empresa = $empresa->id_empresa;
-                        $prospecto_empresa->id_prospecto = $id;
-                        $prospecto_empresa->save();
+                            if( Empresa::where('nombre','=',$request->empresa)->first() != null ){
+                                
+                                $empresa = Empresa::where('nombre','=',$request->empresa)->first();
+                            }else{
+                                $empresa = new Empresa;
+                                $empresa->nombre = $request->empresa;
+                                $empresa->save();
+                            }
+                            
+                            // Conseguimos el objeto
+                            $relacion_empresa_prospecto=EmpresaProspecto::where('id_prospecto', '=', $id)->first();
+                            
+                            // Lo eliminamos de la base de datos
+                            $relacion_empresa_prospecto->delete();
+
+                        
+                            DB::delete("DELETE 
+                                            FROM
+                                            prospectos_empresas 
+                                            WHERE id_prospecto = '".$id."' 
+                                            AND id_empresa = '".$prospecto_empresa->id_empresa."' ;");
+
+                            /*  DB::table('prospectos_empresas')
+                                ->where('id_prospecto', $id)
+                                ->update(['id_empresa' => $empresa->id_empresa]);*/
+                        
+                            
+
+                            $prospecto_empresa = new EmpresaProspecto;
+                            $prospecto_empresa->id_empresa = $empresa->id_empresa;
+                            $prospecto_empresa->id_prospecto = $id;
+                            $prospecto_empresa->save();
                     }
                     
                    
