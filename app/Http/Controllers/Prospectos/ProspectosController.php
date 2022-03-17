@@ -467,6 +467,7 @@ class ProspectosController extends Controller
                             $prospecto_empresa->id_empresa = $empresa->id_empresa;
                             $prospecto_empresa->id_prospecto = $id;
                             $prospecto_empresa->save();
+                        }
                     }
                     
                    
