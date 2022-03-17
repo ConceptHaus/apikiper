@@ -393,32 +393,12 @@ class ProspectosController extends Controller
                     
                     $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->wherenull('deleted_at')->first();
                     $empresa = Empresa::where('id_empresa','=',$prospecto_empresa->id_empresa)->first();
-                    if($empresa->nombre == $request->empresa){
-                        echo "la empresa es la misma";
-                        return response()->json([
-                            'error'=>false,
-                            'message'=>'la empresa es la misma',
-                            'data'=>[
-                                'prospecto'=>$prospecto,
-                                'detalle'=>$detalle
-                            ]
-                        ],200);
-                    }
-                    else{
-                        echo "Se actualizao la empresa en la edición";
+                    if($empresa->nombre != $request->empresa){                        
 
                         if( Empresa::where('nombre','=',$request->empresa)->first() != null ){
                             
                             $empresa = Empresa::where('nombre','=',$request->empresa)->first();
                         }else{
-                            return response()->json([
-                                'error'=>false,
-                                'message'=>'Se trata de una empresa nueva',
-                                'data'=>[
-                                    'prospecto'=>$prospecto,
-                                    'detalle'=>$detalle
-                                ]
-                            ],200);
                             $empresa = new Empresa;
                             $empresa->nombre = $request->empresa;
                             $empresa->save();
@@ -450,54 +430,7 @@ class ProspectosController extends Controller
                         
                     }
                     
-                    /*foreach($prospecto_empresa as $pe){
-                        $pe->delete();
-                        DB::commit();
-                    }
-                    
-                    if( Empresa::where('nombre','=',$request->empresa)->first() != null ){
-                        $empresa = Empresa::where('nombre','=',$request->empresa)->first();
-                    }else{
-                        $empresa = new Empresa;
-                        $empresa->nombre = $request->empresa;
-                        $empresa->save();
-                    }
-                    
-
-                    $prospecto_empresa = new EmpresaProspecto;
-                    $prospecto_empresa->id_empresa = $empresa->id_empresa;
-                    $prospecto_empresa->id_prospecto = $id;
-                    $prospecto_empresa->save();
-                    
-                    $empresa = Empresa::where('nombre', '=', $request->empresa)->wherenull('deleted_at')->first();
-                    
-                    if($empresa){
-                        $empresa_prospecto = EmpresaProspecto::where('id_prospecto', '=', $prospecto->id_prospecto)
-                                            ->wherenull('deleted_at')
-                                            ->first();
-                        if($empresa_prospecto){
-                            $prospecto_empresa = EmpresaProspecto::find($empresa_prospecto->id_prospecto_empresa);
-                            $prospecto_empresa->id_empresa = $empresa->id_empresa;
-                            $prospecto_empresa->save();
-                        } else {
-                            
-                            return response()->json([
-                                'error'=>true,
-                                'messages'=> "El prospecto no existe"
-                            ],500);
-                        }
-                    }else{
-                        
-                        $empresa = new Empresa;
-                        $empresa->nombre = $request->empresa;
-                        $empresa->save();
-
-                        $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $prospecto->id_prospecto)
-                                            ->wherenull('deleted_at')
-                                            ->first();
-                        $prospecto_empresa->id_empresa = $empresa->id_empresa;
-                        $prospecto_empresa->save();
-                    }*/
+                   
                 }
                 
 
