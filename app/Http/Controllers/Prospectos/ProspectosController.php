@@ -437,22 +437,11 @@ class ProspectosController extends Controller
                                         WHERE id_prospecto = '".$id."' 
                                         AND id_empresa = '".$prospecto_empresa->id_empresa."' ;");
 
-                            DB::table('prospectos_empresas')
+                          /*  DB::table('prospectos_empresas')
                             ->where('id_prospecto', $id)
-                            ->update(['id_empresa' => $empresa->id_empresa]);
+                            ->update(['id_empresa' => $empresa->id_empresa]);*/
                        
-                        return response()->json([
-                            'error'=>false,
-                            'message'=>"DELETE 
-                            FROM
-                            prospectos_empresas 
-                            WHERE id_prospecto = '".$id."' 
-                            AND id_empresa = '".$prospecto_empresa->id_empresa."' ;",
-                            'data'=>[
-                                'prospecto'=>$prospecto,
-                                'detalle'=>$detalle
-                            ]
-                        ],200);
+                        
 
                         $prospecto_empresa = new EmpresaProspecto;
                         $prospecto_empresa->id_empresa = $empresa->id_empresa;
@@ -513,31 +502,12 @@ class ProspectosController extends Controller
                 
 
             }else {
-                return response()->json([
-                    'error'=>false,
-                    'message'=>'hsh else',
-                    'data'=>[
-                        'prospecto'=>$prospecto,
-                        'detalle'=>$detalle
-                    ]
-                ],200);
-
                 $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->wherenull('deleted_at')->first();
                 $empresa = Empresa::where('id_empresa','=',$prospecto_empresa->id_empresa)->first();
                 if($empresa->nombre == $request->empresa){
-                    echo "la empresa es la misma";
 
                 }
                 else{
-                    echo "Se actualizao la empresa en la edición";
-                    return response()->json([
-                        'error'=>false,
-                        'message'=>'Se actualizao la empresa en la edición',
-                        'data'=>[
-                            'prospecto'=>$prospecto,
-                            'detalle'=>$detalle
-                        ]
-                    ],200);
                 }
             }
             $detalle->save();            
