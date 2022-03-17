@@ -438,11 +438,7 @@ class ProspectosController extends Controller
                                         AND id_empresa = '".$prospecto_empresa->id_empresa."' ;");
 
 
-                        $prospecto_empresa = new EmpresaProspecto;
-                        $prospecto_empresa->id_empresa = $empresa->id_empresa;
-                        $prospecto_empresa->id_prospecto = $id;
-                        $prospecto_empresa->save();
-                        
+                       
                         return response()->json([
                             'error'=>false,
                             'message'=>"DELETE 
@@ -455,6 +451,12 @@ class ProspectosController extends Controller
                                 'detalle'=>$detalle
                             ]
                         ],200);
+
+                        $prospecto_empresa = new EmpresaProspecto;
+                        $prospecto_empresa->id_empresa = $empresa->id_empresa;
+                        $prospecto_empresa->id_prospecto = $id;
+                        $prospecto_empresa->save();
+                        
                     }
                     
                     /*foreach($prospecto_empresa as $pe){
