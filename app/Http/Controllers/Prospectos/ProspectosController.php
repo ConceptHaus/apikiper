@@ -439,25 +439,7 @@ class ProspectosController extends Controller
                             $empresa->save();
                         }
                             
-                        // Conseguimos el objeto
-                        $relacion_empresa_prospecto=EmpresaProspecto::where('id_prospecto', '=', $id)->first();
                         
-                        // Lo eliminamos de la base de datos
-                        $relacion_empresa_prospecto->delete();
-
-                    
-                        DB::delete("DELETE 
-                                        FROM
-                                        prospectos_empresas 
-                                        WHERE id_prospecto = '".$id."' 
-                                        AND id_empresa = '".$prospecto_empresa->id_empresa."' ;");
-
-                        /*  DB::table('prospectos_empresas')
-                            ->where('id_prospecto', $id)
-                            ->update(['id_empresa' => $empresa->id_empresa]);*/
-                    
-                        
-
                         $prospecto_empresa = new EmpresaProspecto;
                         $prospecto_empresa->id_empresa = $empresa->id_empresa;
                         $prospecto_empresa->id_prospecto = $id;
