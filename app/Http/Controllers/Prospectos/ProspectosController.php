@@ -524,7 +524,7 @@ class ProspectosController extends Controller
                           
             return response()->json([
                 'error'=>false,
-                'message'=>'Actualizado Correctamente 123',
+                'message'=>'Actualizado Correctamente',
                 'data'=>[
                     'prospecto'=>$prospecto,
                     'detalle'=>$detalle
