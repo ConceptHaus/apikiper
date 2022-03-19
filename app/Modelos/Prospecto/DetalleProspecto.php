@@ -89,7 +89,8 @@ class DetalleProspecto extends Model
         'periodo',
         'anio_2020',
         'anio_2021',
-        'anio_2022'
+        'anio_2022',
+        'paginaweb'
     ];
 
     public function prospecto(){
