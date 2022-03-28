@@ -1198,7 +1198,7 @@ class ProspectosController extends Controller
             'celular'   => 'max:9999999999',
             'extension' => 'max:999999',
             'empresa'   => 'nullable|string|max:50',
-            'puesto'    => 'nullable|string|max:35',
+            'puesto'    => 'nullable|string|max:50',
             'nota'      => 'nullable|string|max:250',
 
 
