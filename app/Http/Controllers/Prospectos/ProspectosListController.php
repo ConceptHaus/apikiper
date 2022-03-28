@@ -37,6 +37,8 @@ class ProspectosListController extends Controller
         $telefonos = json_decode($request->telefonos);
         $estatus = json_decode($request->estatus);
         $fuente = json_decode($request->fuente);
+        //nuevo campo 
+        $empresas = json_decode($request->empresa);
         $etiqueta = json_decode($request->etiqueta);
         $fechaInicio = json_decode($request->fechaInicio);
         $fechaFin = json_decode($request->fechaFin);
@@ -49,10 +51,10 @@ class ProspectosListController extends Controller
                 $response = $proListServ->getProspectosPageByRol($auth->id, $auth->rol, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin);
     
             }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
-                $response = $proListServ->getProspectosPageForAdmin($paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores);
+                $response = $proListServ->getProspectosPageForAdmin($paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $empresas, $etiqueta, $fechaInicio, $fechaFin, $colaboradores);
     
             }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
-                $response = $proListServ->getAllProspectosPageByColaborador($auth->id, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin);
+                $response = $proListServ->getAllProspectosPageByColaborador($auth->id, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $empresas, $etiqueta, $fechaInicio, $fechaFin);
 
             }else{
                 $response = [];    
