@@ -8,7 +8,7 @@ use App\Http\DTOs\Datatable\DatatableResponseDTO;
 class ProspectosListService
 {    
     /*----------------------- LISTA DE PROSPECTOS --------------------------*/
-    public function getProspectosPageByRol($id_colaborador, $rol, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin){
+    public function getProspectosPageByRol($id_colaborador, $rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus) {
         $response = new DatatableResponseDTO();
         $object = new ProspectosListRep;
 
@@ -17,8 +17,10 @@ class ProspectosListService
         $response->message = "Correcto";
         $response->error = false;
 
-        $datos = $object->createPageForProspectosForRol($id_colaborador, $rol, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin);
+        $datos = $object->createPageForProspectosForRol($id_colaborador, $rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus);
         $response->data =  $datos->items("data");
+        $response->noContacted = $object->createCountForProspectosForRolNotContacted($id_colaborador, $rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus)->count();
+        $response->prospectOrigin = ProspectosListService::getProspectosFuentesdByRol($id_colaborador, $rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus);
 
         $response->recordsTotal = $datos->total();
         $response->draw = 0;
@@ -27,7 +29,7 @@ class ProspectosListService
         return $response;
     }
 
-    public function getProspectosPageForAdmin($paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores){
+    public function getProspectosPageForAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus){
         $response = new DatatableResponseDTO();
         $object = new ProspectosListRep;
 
@@ -36,9 +38,11 @@ class ProspectosListService
         $response->message = "Correcto";
         $response->error = false;
 
-        $datos =  $object->createPageForProspectosForAdmin($paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores);
+        $datos =  $object->createPageForProspectosForAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus);
         $response->data = $datos->items("data");
 
+        $response->noContacted = $object->createCountForProspectosForAdminNotContacted($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus)->count();
+        $response->prospectOrigin = ProspectosListService::getProspectosFuentesByAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus);
         $response->recordsTotal = $datos->total();
         $response->draw = 0;
         $response->recordsFiltered = $response->recordsTotal;
@@ -46,7 +50,7 @@ class ProspectosListService
         return $response;
     }
 
-    public function getAllProspectosPageByColaborador($id_colaborador, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin){
+    public function getAllProspectosPageByColaborador($id_colaborador, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus){
         $response = new DatatableResponseDTO;
         $object = new ProspectosListRep;
 
@@ -55,8 +59,12 @@ class ProspectosListService
         $response->message = "Correcto";
         $response->error = false;
 
-        $datos = $object->createPageForProspectosByColaborador($id_colaborador, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin);
+        $datos = $object->createPageForProspectosByColaborador($id_colaborador, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus);
         $response->data = $datos->items("data");
+
+        $response->noContacted = $object->createCountForProspectosForColaboradorNotContacted($id_colaborador, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus)->count();
+        $response->prospectOrigin = ProspectosListService::getProspectosFuentesByColaborador($id_colaborador, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus);
+
         
         $response->recordsTotal = $datos->total();
         $response->draw = 0;
@@ -67,10 +75,10 @@ class ProspectosListService
 
 
     /*-------------------- TOTAL DE PROSPECTOS ---------------------*/
-    public function getCountProspectosForAdmin(){
+    public function getCountProspectosForAdmin($busqueda = null){
         $object = new ProspectosListRep;
 
-        $response->data["prospectos_total"] = $object->getProspectosCountByAdmin();
+        $response->data["prospectos_total"] = $object->getProspectosCountByAdmin($busqueda)->total();
 
         return $response;
     }
@@ -120,33 +128,66 @@ class ProspectosListService
     }
 
     /*--------------- PROSPECTOS FUENTE ----------------*/
-    public function getProspectosFuentesByAdmin(){
+    public function getProspectosFuentesByAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus){
         $object = new ProspectosListRep;
 
         $catalogo_fuentes = $object->getCatalogosFuentes();
-        $origen = $object->getOrigenByAdmin();
+        $origen = $object->getOrigenByAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus);
 
         $response->data["prospectos_fuente"] = $object->fuentesChecker($catalogo_fuentes,$origen);
 
         return $response;
     }
 
-    public function getProspectosFuentesByColaborador($id_colaborador){
+    public function getProspectosFuentesByColaborador($id_colaborador, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus){
         $object = new ProspectosListRep;
 
         $catalogo_fuentes = $object->getCatalogosFuentes();
-        $origen = $object->getOrigenByColaborador($id_colaborador);
+        $origen = $object->getOrigenByColaborador($id_colaborador, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus);
 
         $response->data["prospectos_fuente"] = $object->fuentesChecker($catalogo_fuentes,$origen);
 
         return $response;
     }
 
-    public function getProspectosFuentesdByRol($id_colaborador, $rol){
+    public function getProspectosFuentesdByRol($id_colaborador, $rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus){
         $object = new ProspectosListRep;
 
         $catalogo_fuentes = $object->getCatalogosFuentes();
-        $origen = $object->getOrigenByRol($id_colaborador, $rol);
+        $origen = $object->getOrigenByRol($id_colaborador, $rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus);
+
+        $response->data["prospectos_fuente"] = $object->fuentesChecker($catalogo_fuentes,$origen);
+
+        return $response;
+    }
+
+    public function getProspectosFuentesByAdminMovil(){
+        $object = new ProspectosListRep;
+
+        $catalogo_fuentes = $object->getCatalogosFuentes();
+        $origen = $object->getOrigenByAdminMovil();
+
+        $response->data["prospectos_fuente"] = $object->fuentesChecker($catalogo_fuentes,$origen);
+
+        return $response;
+    }
+
+    public function getProspectosFuentesByColaboradorMovil($id_colaborador){
+        $object = new ProspectosListRep;
+
+        $catalogo_fuentes = $object->getCatalogosFuentes();
+        $origen = $object->getOrigenByColaboradorMovil($id_colaborador);
+
+        $response->data["prospectos_fuente"] = $object->fuentesChecker($catalogo_fuentes,$origen);
+
+        return $response;
+    }
+
+    public function getProspectosFuentesdByRolMovil($id_colaborador, $rol){
+        $object = new ProspectosListRep;
+
+        $catalogo_fuentes = $object->getCatalogosFuentes();
+        $origen = $object->getOrigenByRolMovil($id_colaborador, $rol);
 
         $response->data["prospectos_fuente"] = $object->fuentesChecker($catalogo_fuentes,$origen);
 
