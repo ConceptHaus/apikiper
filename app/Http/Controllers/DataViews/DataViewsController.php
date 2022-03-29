@@ -1830,7 +1830,7 @@ class DataViewsController extends Controller
     //AUX
     public function validadorEtiqueta(array $data){
         return Validator::make($data,[
-            'nombre' => 'required|string|max:45|unique:etiquetas,nombre,NULL,id_etiqueta,deleted_at,NULL',
+            'nombre' => 'required|string|max:50|unique:etiquetas,nombre,NULL,id_etiqueta,deleted_at,NULL',
             'descripcion'=>'string|max:150',
 
         ]);
@@ -1838,7 +1838,7 @@ class DataViewsController extends Controller
 
     public function validateUpdateEtiqueta(array $data){
         return Validator::make($data,[
-            'nombre' => 'required|string|max:45|unique:etiquetas,nombre,'.$data['id_etiqueta'].',id_etiqueta,deleted_at,NULL',
+            'nombre' => 'required|string|max:50|unique:etiquetas,nombre,'.$data['id_etiqueta'].',id_etiqueta,deleted_at,NULL',
             'descripcion'=>'string|max:150',
 
         ]);
@@ -1846,14 +1846,14 @@ class DataViewsController extends Controller
 
     public function validadorServicio(array $data){
         return Validator::make($data,[
-            'nombre' => 'required|string|max:45|unique:cat_servicios,nombre,NULL,id_servicio_cat,deleted_at,NULL',
+            'nombre' => 'required|string|max:50|unique:cat_servicios,nombre,NULL,id_servicio_cat,deleted_at,NULL',
             'descripcion'=>'string|max:150',
         ]);
     }
 
     public function validateUpdateServicio(array $data){
         return Validator::make($data,[
-            'nombre' => 'required|string|max:45|unique:cat_servicios,nombre,'.$data['id_servicio_cat'].',id_servicio_cat,deleted_at,NULL',
+            'nombre' => 'required|string|max:50|unique:cat_servicios,nombre,'.$data['id_servicio_cat'].',id_servicio_cat,deleted_at,NULL',
             'descripcion'=>'string|max:150',
         ]);
     }
