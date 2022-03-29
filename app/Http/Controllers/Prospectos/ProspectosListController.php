@@ -32,27 +32,28 @@ class ProspectosListController extends Controller
 
         $paginacion = $this->findPaginacion($request);
 
-        $correos = json_decode($request->correos);
         $nombres = json_decode($request->nombres);
+        $correos = json_decode($request->correos);
         $telefonos = json_decode($request->telefonos);
+        $fechaInicio = json_decode($request->fechaInicio);
+        $fechaFin = json_decode($request->fechaFin);
+        $nombre_empresa = json_decode($request->empresa);
         $estatus = json_decode($request->estatus);
         $fuente = json_decode($request->fuente);
         $etiqueta = json_decode($request->etiqueta);
-        $fechaInicio = json_decode($request->fechaInicio);
-        $fechaFin = json_decode($request->fechaFin);
         $colaboradores = json_decode($request->colaborador);
         
         $permisos = User::getAuthenticatedUserPermissions();
         
         try{
             if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
-                $response = $proListServ->getProspectosPageByRol($auth->id, $auth->rol, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin);
+                $response = $proListServ->getProspectosPageByRol($auth->id, $auth->rol, $paginacion, $nombres, $correos,  $telefonos, $fechaInicio, $fechaFin, $nombre_empresa, $estatus, $fuente, $etiqueta );
     
             }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
-                $response = $proListServ->getProspectosPageForAdmin($paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores);
+                $response = $proListServ->getProspectosPageForAdmin($paginacion, $nombres, $correos, $telefonos, $fechaInicio, $fechaFin, $nombre_empresa, $estatus, $fuente, $etiqueta, $colaboradores);
     
             }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
-                $response = $proListServ->getAllProspectosPageByColaborador($auth->id, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin);
+                $response = $proListServ->getAllProspectosPageByColaborador($auth->id, $paginacion, $nombres, $correos, $telefonos, $fechaInicio, $fechaFin, $nombre_empresa, $estatus, $fuente, $etiqueta );
 
             }else{
                 $response = [];    
