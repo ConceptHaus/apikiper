@@ -504,8 +504,7 @@ class ProspectosListRep
                 'cat_status_prospecto.status', 
                 'cat_fuentes.nombre as fuente', 
                 'cat_fuentes.url', 
-                'detalle_prospecto.whatsapp'
-                ,
+                'detalle_prospecto.whatsapp',
                 'empresas.nombre AS nombre_empresa'
             )
             ->orderBy($orderBy, $paginacion->order)
