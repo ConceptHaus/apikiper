@@ -32,28 +32,24 @@ class ProspectosListController extends Controller
 
         $paginacion = $this->findPaginacion($request);
 
-        $nombres = json_decode($request->nombres);
-        $correos = json_decode($request->correos);
         $telefonos = json_decode($request->telefonos);
-        $fechaInicio = json_decode($request->fechaInicio);
-        $fechaFin = json_decode($request->fechaFin);
-        $nombre_empresa = json_decode($request->empresa);
-        $estatus = json_decode($request->estatus);
         $fuente = json_decode($request->fuente);
         $etiqueta = json_decode($request->etiqueta);
-        $colaboradores = json_decode($request->colaborador);
+        $fechaInicio = json_decode($request->fechaInicio);
+        $fechaFin = json_decode($request->fechaFin);
+        $estatus = json_decode($request->estatus);
         
         $permisos = User::getAuthenticatedUserPermissions();
         
         try{
             if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
-                $response = $proListServ->getProspectosPageByRol($auth->id, $auth->rol, $paginacion, $nombres, $correos,  $telefonos, $fechaInicio, $fechaFin, $nombre_empresa, $estatus, $fuente, $etiqueta );
+                $response = $proListServ->getProspectosPageByRol($auth->id, $auth->rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus);
     
             }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
-                $response = $proListServ->getProspectosPageForAdmin($paginacion, $nombres, $correos, $telefonos, $fechaInicio, $fechaFin, $nombre_empresa, $estatus, $fuente, $etiqueta, $colaboradores);
+                $response = $proListServ->getProspectosPageForAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus);
     
             }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
-                $response = $proListServ->getAllProspectosPageByColaborador($auth->id, $paginacion, $nombres, $correos, $telefonos, $fechaInicio, $fechaFin, $nombre_empresa, $estatus, $fuente, $etiqueta );
+                $response = $proListServ->getAllProspectosPageByColaborador($auth->id, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus);
 
             }else{
                 $response = [];    
@@ -64,7 +60,7 @@ class ProspectosListController extends Controller
         }catch(Exception $e){
             echo 'ProspectosListController.findProspectos',  $e->getMessage(); 
 
-            $response->error = 'Ocurrio un error inesperado';
+            $response->error = 'Ocurrio un error inesperado 1';
             return response()->json($response, 500);
         }
     }
@@ -77,11 +73,13 @@ class ProspectosListController extends Controller
 
         $paginacion = $this->findPaginacion($request);
 
+        $busqueda = $request->busqueda;
+
         $permisos = User::getAuthenticatedUserPermissions();
 
         try{
             if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
-                $response = $proListServ->getCountProspectosForAdmin();
+                $response = $proListServ->getCountProspectosForAdmin($busqueda);
     
             }else if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
                 $response = $proListServ->getCountProspectosByRol($auth->id, $auth->rol, $paginacion);
@@ -98,12 +96,12 @@ class ProspectosListController extends Controller
         }catch(Exception $e){
             echo 'ProspectosListController.findCountProspectos',  $e->getMessage(); 
 
-            $response->error = 'Ocurrio un error inesperado';
+            $response->error = 'Ocurrio un error inesperado 2';
             return response()->json($response, 500);
         }
     }
 
-    public function findCountProspectosNotContacted(){
+    public function findCountProspectosNotContacted(Request $request){
         $auth = new AuthService();
         $auth = $auth->getUserAuthInfo(); 
         $response = new DatatableResponseDTO();
@@ -129,8 +127,8 @@ class ProspectosListController extends Controller
 
         }catch(Exception $e){
             echo 'ProspectosListController.findCountProspectosNotContacted',  $e->getMessage(); 
-
-            $response->error = 'Ocurrio un error inesperado';
+ 
+            $response->error = 'Ocurrio un error inesperado 3';
             return response()->json($response, 500);
         }
     }
@@ -174,7 +172,39 @@ class ProspectosListController extends Controller
         }catch(Exception $e){
             echo 'ProspectosListController.findProspectosFuentes',  $e->getMessage(); 
 
-            $response->error = 'Ocurrio un error inesperado';
+            $response->error = 'Ocurrio un error inesperado 4';
+            return response()->json($response, 500);
+        }
+    }
+
+    public function findProspectosFuentesMovil(){
+        $auth = new AuthService();
+        $auth = $auth->getUserAuthInfo(); 
+        $response = new DatatableResponseDTO();
+        $proListServ = new ProspectosListService();
+
+        $permisos = User::getAuthenticatedUserPermissions();
+
+        try{
+            if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
+                $response = $proListServ->getProspectosFuentesdByRolMovil($auth->id, $auth->rol);
+    
+            }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
+                $response = $proListServ->getProspectosFuentesByAdminMovil();
+    
+            }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
+                $response = $proListServ->getProspectosFuentesByColaboradorMovil($auth->id);
+
+            }else{
+                $response = [];    
+            }
+
+            return response()->json($response, 200);
+
+        }catch(Exception $e){
+            echo 'ProspectosListController.findProspectosFuentesMovil',  $e->getMessage(); 
+
+            $response->error = 'Ocurrio un error inesperado 5';
             return response()->json($response, 500);
         }
     }
@@ -191,7 +221,7 @@ class ProspectosListController extends Controller
         }catch(Exception $e){
             echo 'ProspectosListController.findProspectosStatus',  $e->getMessage(); 
 
-            $response->error = 'Ocurrio un error inesperado';
+            $response->error = 'Ocurrio un error inesperado 6';
             return response()->json($response, 500);
         }
     }
@@ -208,7 +238,7 @@ class ProspectosListController extends Controller
         }catch(Exception $e){
             echo 'ProspectosListController.findProspectosColaborador',  $e->getMessage(); 
 
-            $response->error = 'Ocurrio un error inesperado';
+            $response->error = 'Ocurrio un error inesperado 7';
             return response()->json($response, 500);
         }
     }
@@ -225,7 +255,7 @@ class ProspectosListController extends Controller
         }catch(Exception $e){
             echo 'ProspectosListController.findProspectosEtiquetas',  $e->getMessage(); 
 
-            $response->error = 'Ocurrio un error inesperado';
+            $response->error = 'Ocurrio un error inesperado 8';
             return response()->json($response, 500);
         }
     }
@@ -257,7 +287,7 @@ class ProspectosListController extends Controller
         }catch(Exception $e){
             echo 'ProspectosListController.findProspectosCorreos',  $e->getMessage(); 
 
-            $response->error = 'Ocurrio un error inesperado';
+            $response->error = 'Ocurrio un error inesperado 9';
             return response()->json($response, 500);
         }
     }
@@ -289,7 +319,7 @@ class ProspectosListController extends Controller
         }catch(Exception $e){
             echo 'ProspectosListController.findProspectosNombres',  $e->getMessage(); 
 
-            $response->error = 'Ocurrio un error inesperado';
+            $response->error = 'Ocurrio un error inesperado 10';
             return response()->json($response, 500);
         }
     }
@@ -321,7 +351,7 @@ class ProspectosListController extends Controller
         }catch(Exception $e){
             echo 'ProspectosListController.findProspectosTelefono',  $e->getMessage(); 
 
-            $response->error = 'Ocurrio un error inesperado';
+            $response->error = 'Ocurrio un error inesperado 11';
             return response()->json($response, 500);
         }
     }
