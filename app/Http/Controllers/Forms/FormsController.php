@@ -364,6 +364,7 @@ class FormsController extends Controller
           $detalleProspecto->nota = (isset($data['mensaje']) ? $data['mensaje'] : '');
           //Campos perzonalizados
           $detalleProspecto->ciudad = (isset($data['ciudad']) ? $data['ciudad'] : '');
+          $detalleProspecto->rfc = (isset($data['rfc']) ? $data['rfc'] : '');
           $detalleProspecto->num_empleados = (isset($data['num_empleados']) ? $data['num_empleados'] : '');
           $detalleProspecto->mas_anio_operando = (isset($data['mas_anio_operando']) ? $data['mas_anio_operando'] : '');
           $prospecto->detalle_prospecto()->save($detalleProspecto);
