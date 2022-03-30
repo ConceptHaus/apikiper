@@ -69,6 +69,7 @@ class OportunidadesController extends Controller
 
         $oportunidades_cotizadas = DB::table('oportunidades')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
                             ->whereNull('oportunidades.deleted_at')
                             ->whereNull('status_oportunidad.deleted_at')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
