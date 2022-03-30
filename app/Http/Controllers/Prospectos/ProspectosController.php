@@ -166,6 +166,9 @@ class ProspectosController extends Controller
                 $prospectoDetalle->anio_2020=$request->anio_2020;
                 $prospectoDetalle->anio_2021=$request->anio_2021;
                 $prospectoDetalle->anio_2022=$request->anio_2022;
+                $prospectoDetalle->ciudad=$request->ciudad;
+                $prospectoDetalle->num_empleados=$request->num_empleados;
+                $prospectoDetalle->mas_anio_operando=$request->mas_anio_operando;
                 $prospecto->fuente = 3;
                 $prospecto->save();
                 $prospecto->status_prospecto()->save($statusProspecto);

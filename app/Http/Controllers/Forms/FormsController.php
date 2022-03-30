@@ -362,6 +362,10 @@ class FormsController extends Controller
           $detalleProspecto->celular = (isset($data['telefono']) ? preg_replace('/[^0-9]+/','',$data['telefono']) : '');
           $detalleProspecto->whatsapp = (isset($data['telefono']) ? preg_replace('/[^0-9]+/','',$data['telefono']) : '');
           $detalleProspecto->nota = (isset($data['mensaje']) ? $data['mensaje'] : '');
+          //Campos perzonalizados
+          $detalleProspecto->ciudad = (isset($data['ciudad']) ? $data['ciudad'] : '');
+          $detalleProspecto->num_empleados = (isset($data['num_empleados']) ? $data['num_empleados'] : '');
+          $detalleProspecto->mas_anio_operando = (isset($data['mas_anio_operando']) ? $data['mas_anio_operando'] : '');
           $prospecto->detalle_prospecto()->save($detalleProspecto);
           
           $status->id_cat_status_prospecto = 2;

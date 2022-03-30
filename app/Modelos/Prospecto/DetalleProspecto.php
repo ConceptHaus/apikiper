@@ -90,7 +90,10 @@ class DetalleProspecto extends Model
         'anio_2020',
         'anio_2021',
         'anio_2022',
-        'paginaweb'
+        'paginaweb',
+        'ciudad',
+        'num_empleados',
+        'mas_anio_operando'
     ];
 
     public function prospecto(){
