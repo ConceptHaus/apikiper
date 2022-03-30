@@ -1906,7 +1906,7 @@ class DataViewsController extends Controller
         return Validator::make($data, [
           'id_mediocontacto_catalogo'=>'required|exists:mediocontacto_catalogo,id_mediocontacto_catalogo',
           'id_oportunidad'=>'required|exists:oportunidades,id_oportunidad',
-          'descripcion'=>'required|string|max:255'
+          'descripcion'=>'required|string|max:800'
           // 'fecha'=>'required',
           // 'hora'=>'required',
           // 'lugar'=>'required|string|max:255'
