@@ -69,10 +69,16 @@ class OportunidadesController extends Controller
 
         $oportunidades_cotizadas = DB::table('oportunidades')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
-                            ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
                             ->whereNull('oportunidades.deleted_at')
                             ->whereNull('status_oportunidad.deleted_at')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
+
+        $valor_cotizadas = DB::table('detalle_oportunidad')
+                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',1)
+                            ->select('SUM(detalle_oportunidad.valor * detalle_oportunidad.meses) AS resultado')
+                            ->groupBy('status_oportunidad.id_cat_status_oportunidad')->get();
+
 
         $oportunidades_cerradas = DB::table('oportunidades')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
@@ -152,7 +158,8 @@ class OportunidadesController extends Controller
                 'cotizadas'=>[
                     'valor'=>$oportunidades_cotizadas,
                     'porcentaje'=>$porcentaje_cerradas,
-                    'color'=>$this->colorsOportunidades(1)
+                    'color'=>$this->colorsOportunidades(1),
+                    'valor_total' => $valor_cotizadas
 
                 ],
                 'cerradas'=>[
