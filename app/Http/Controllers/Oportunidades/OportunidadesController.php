@@ -74,7 +74,7 @@ class OportunidadesController extends Controller
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',1)->count();
 
         $valor_cotizadas = DB::table('detalle_oportunidad')
-                            ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->join('status_oportunidad','detalle_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',1)
                             ->groupBy('status_oportunidad.id_cat_status_oportunidad')
                             ->sum('detalle_oportunidad.valor * detalle_oportunidad.meses');
