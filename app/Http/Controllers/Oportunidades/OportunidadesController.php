@@ -195,7 +195,7 @@ class OportunidadesController extends Controller
                     'valor'=>$oportunidades_no_viables,
                     'porcentaje'=>$porcentaje_no_viables,
                     'color'=>$this->colorsOportunidades(3),
-                    'valor_total' => $valor_noviables
+                    'valor_total' => $valor_no_viables
 
                 ],
                 'oportunidades'=>$oportunidades,
