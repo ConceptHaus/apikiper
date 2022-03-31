@@ -87,11 +87,23 @@ class OportunidadesController extends Controller
                             ->whereNull('status_oportunidad.deleted_at')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',2)->count();
 
+        $valor_cerradas = DB::table('detalle_oportunidad')
+                            ->join('status_oportunidad','detalle_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',2)
+                            ->groupBy('status_oportunidad.id_cat_status_oportunidad')
+                            ->sum(DB::raw('detalle_oportunidad.valor * detalle_oportunidad.meses'));
+
         $oportunidades_no_viables = DB::table('oportunidades')
                             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->whereNull('oportunidades.deleted_at')
                             ->whereNull('status_oportunidad.deleted_at')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',3)->count();
+
+        $valor_no_viables = DB::table('detalle_oportunidad')
+                            ->join('status_oportunidad','detalle_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',3)
+                            ->groupBy('status_oportunidad.id_cat_status_oportunidad')
+                            ->sum(DB::raw('detalle_oportunidad.valor * detalle_oportunidad.meses'));
 
 
 
@@ -121,13 +133,22 @@ class OportunidadesController extends Controller
             $s_o = CatStatusOportunidad::all(); 
             $oportunidades_status = Array();
             $oportunidades_status_p = Array();
+            $oportunidades_valor_status = Array();
             foreach( $s_o as $status)
             {
+
+                $valor_status = DB::table('detalle_oportunidad')
+                            ->join('status_oportunidad','detalle_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',$status->id_cat_status_oportunidad)
+                            ->groupBy('status_oportunidad.id_cat_status_oportunidad')
+                            ->sum(DB::raw('detalle_oportunidad.valor * detalle_oportunidad.meses'));
+
                 $total_status = $this->oportunidades_por_status($status->id_cat_status_oportunidad);
                 $porcentaje_status = $this->porcentajeOportunidades($total_status,$oportunidades_total);
                     
                 array_push($oportunidades_status, $total_status);
                 array_push($oportunidades_status_p, $porcentaje_status);
+                array_push($oportunidades_valor_status, $valor_status );
             }
 
 
@@ -166,18 +187,21 @@ class OportunidadesController extends Controller
                 'cerradas'=>[
                     'valor'=>$oportunidades_cerradas,
                     'porcentaje'=>$oportunidades_cerradas,
-                    'color'=>$this->colorsOportunidades(2)
+                    'color'=>$this->colorsOportunidades(2),
+                    'valor_total' => $valor_cerradas
 
                 ],
                 'no_viables'=>[
                     'valor'=>$oportunidades_no_viables,
                     'porcentaje'=>$porcentaje_no_viables,
-                    'color'=>$this->colorsOportunidades(3)
+                    'color'=>$this->colorsOportunidades(3),
+                    'valor_total' => $valor_noviables
 
                 ],
                 'oportunidades'=>$oportunidades,
                 'oportunidades_status' => $oportunidades_status,
-                'porcentaje_status' => $oportunidades_status_p
+                'porcentaje_status' => $oportunidades_status_p,
+                'valor_total' => $oportunidades_valor_status
             ]
             ],200);
     }
