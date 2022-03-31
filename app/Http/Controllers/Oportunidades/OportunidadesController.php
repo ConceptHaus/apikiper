@@ -77,7 +77,7 @@ class OportunidadesController extends Controller
                             ->join('status_oportunidad','detalle_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',1)
                             ->groupBy('status_oportunidad.id_cat_status_oportunidad')
-                            ->sum('detalle_oportunidad.valor * detalle_oportunidad.meses');
+                            ->sum(DB::raw('detalle_oportunidad.valor * detalle_oportunidad.meses'));
 
 
 
