@@ -363,7 +363,7 @@ class ProspectosController extends Controller
             $prospecto->correo = $request->correo;
             $detalle->telefono = $request->telefono;
             $detalle->celular = $request->celular;
-            $detalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
+            $detalle->whatsapp = intval(preg_replace('/[^0-9]+/', '', $request->celular), 10); //'521'.
             $detalle->nota = $request->nota;
             $detalle->puesto = $request->puesto;
             //$detalle->empresa = $request->empresa;
