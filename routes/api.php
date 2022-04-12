@@ -24,7 +24,7 @@ Route::prefix('/v1')->group(function(){
         Route::post('/google','Integraciones\GoogleController@googleApi');
         Route::post('/google/callback','Integraciones\GoogleController@googleApiCallback');
         Route::get('/template',function(){return view('mailing.template_one');});
-        Route::get('/download/prospectos/{role_id}/{rol}/{id_user}/{correos}/{nombre}/{telefono}/{status}/{grupo}/{etiquetas}/{fechaInicio}/{fechaFin}/{colaboradores}/{busqueda}','Prospectos\ProspectosController@downloadProspectos');
+        Route::get('/download/prospectos/{role_id}/{rol}/{id_user}/{correos}/{nombre}/{telefono}/{status}/{grupo}/{etiquetas}/{fechaInicio}/{fechaFin}/{colaboradores}/{busqueda}/{celular}','Prospectos\ProspectosController@downloadProspectos');
     });
 });
 
