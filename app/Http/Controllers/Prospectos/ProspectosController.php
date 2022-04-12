@@ -1169,7 +1169,7 @@ class ProspectosController extends Controller
             'Seguimiento',
             'Etiquetas',
             'Empresa',
-            'celular'
+            'Celular'
         ];
 
         if($rol == OldRole::POLANCO){
