@@ -1137,7 +1137,7 @@ class ProspectosController extends Controller
         ]);
     }
 
-    public function downloadProspectos($role_id, $rol, $id_user, $correos, $nombre, $telefono, $status, $grupo, $etiquetas, $fechaInicio, $fechaFin, $colaboradores, $busqueda, $celular){
+    public function downloadProspectos($role_id, $rol, $id_user, $correos, $nombre, $telefono, $status, $grupo, $etiquetas, $fechaInicio, $fechaFin, $colaboradores, $busqueda){
         $correos = json_decode($correos);
         $nombre = json_decode($nombre);
         $telefono = json_decode($telefono);
@@ -1148,7 +1148,7 @@ class ProspectosController extends Controller
         $fechaFin = json_decode($fechaFin);
         $colaboradores = json_decode($colaboradores);
         $busqueda = json_decode($busqueda);
-        $celular = json_decode($celular);
+        // $celular = json_decode($celular);
 
         $usuario = $this->userServ->findById($id_user);
         $roles = $this->roleServ->findById($usuario->role_id);
