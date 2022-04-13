@@ -13,14 +13,12 @@ use Spatie\CalendarLinks\Link;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use RuntimeException;
 
-
 use App\Modelos\User;
 use App\Modelos\Prospecto\Prospecto;
 use App\Modelos\Prospecto\DetalleProspecto;
 use App\Modelos\Prospecto\EtiquetasProspecto;
 use App\Modelos\Prospecto\ArchivosProspectoColaborador;
 use App\Modelos\Prospecto\ColaboradorProspecto;
-
 
 use App\Modelos\Oportunidad\Oportunidad;
 use App\Modelos\Oportunidad\DetalleOportunidad;
@@ -90,85 +88,12 @@ class ProspectosController extends Controller
                 $prospecto->nombre = $request->nombre;
                 $prospecto->apellido = $request->apellido;
                 $prospecto->correo = $request->correo;
-                $prospectoDetalle->puesto = $request->puesto;
-                $prospectoDetalle->empresa = $request->empresa;
-                $prospectoDetalle->telefono = $request->telefono;
-                $prospectoDetalle->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
-                $prospectoDetalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
-                $prospectoDetalle->nota = $request->nota;
                 $prospectoDetalle->extension = $request->extension;
-                $prospectoDetalle->idIntSoc = $request->idIntSoc;
-                $prospectoDetalle->tipoafiliacion = $request->tipoafiliacion;
-                $prospectoDetalle->fechaingreso = $request->fechaingreso;
-                $prospectoDetalle->razonsocial= $request->razonsocial;
-                $prospectoDetalle->rfc= $request->rfc;
-                $prospectoDetalle->callef = $request->callef;
-                $prospectoDetalle->numf = $request->numf;
-                $prospectoDetalle->munf = $request->munf;
-                $prospectoDetalle->cpf = $request->cpf;
-                $prospectoDetalle->correoof = $request->correof;
-                $prospectoDetalle->nombrec = $request->nombrec;
-                $prospectoDetalle->correocont = $request->correocont;
-                $prospectoDetalle->correobol = $request->correobol;
-                $prospectoDetalle->reprelegal = $request->reprelegal;
-                $prospectoDetalle->contacprin = $request->contacprin;
-                $prospectoDetalle->cargo = $request->cargo;
-                $prospectoDetalle->correoempresarial = $request->correoempresarial;
-                $prospectoDetalle->sector = $request->sector;
-                $prospectoDetalle->TamEmp = $request->TamEmp ;
-                $prospectoDetalle->rama= $request->rama;
-                $prospectoDetalle->acti= $request->acti;
-                $prospectoDetalle->giro= $request->giro;
-                $prospectoDetalle->fechapago= $request->fechapago;
-                $prospectoDetalle->no_excel=$request->no_excel;
-                $prospectoDetalle->curriculum_ciudadano=$request->curriculum_ciudadano;
-                $prospectoDetalle->calle_comercial=$request->calle_comercial;
-                $prospectoDetalle->colonia_comercial=$request->colonia_comercial;
-                $prospectoDetalle->municipio_comercial=$request->municipio_comercial;
-                $prospectoDetalle->cp_comercial=$request->cp_comercial;
-                $prospectoDetalle->facebook=$request->facebook;
-                $prospectoDetalle->instagram=$request->instagram;
-                $prospectoDetalle->twitter=$request->twitter;
-                $prospectoDetalle->linkedink=$request->linkedink;
-                $prospectoDetalle->paginaweb=$request->paginaweb;
-                $prospectoDetalle->colaboradores=$request->colaboradores_uno;
-                $prospectoDetalle->colaboradores_afiliados=$request->colaboradores_afiliados;
-                $prospectoDetalle->nrp=$request->nrp;
-                $prospectoDetalle->nombre_contabilidad=$request->nombre_contabilidad;
-                $prospectoDetalle->correo_contabilidad=$request->correo_contabilidad;
-                $prospectoDetalle->nombre_rh=$request->nombre_rh;
-                $prospectoDetalle->correo_rh=$request->correo_rh;
-                $prospectoDetalle->nombre_capacitacion=$request->nombre_capacitacion;
-                $prospectoDetalle->correo_capacitacion=$request->correo_capacitacion;
-                $prospectoDetalle->nombre_relaciones=$request->nombre_relaciones;
-                $prospectoDetalle->correo_relaciones=$request->correo_relaciones;
-                $prospectoDetalle->nombre_recepcion=$request->nombre_recepcion;
-                $prospectoDetalle->correo_recepcion=$request->correo_recepcion;
-                $prospectoDetalle->nombre_otro=$request->nombre_otro;
-                $prospectoDetalle->correo_otro=$request->correo_otro;
-                $prospectoDetalle->contacto_ocho=$request->contacto_ocho;
-                $prospectoDetalle->correo_ocho=$request->correo_ocho;
-                $prospectoDetalle->telefono_dos=$request->telefono_dos;
-                $prospectoDetalle->telefono_tres=$request->telefono_tres;
-                $prospectoDetalle->inegi=$request->inegi;
-                $prospectoDetalle->clave_inegi=$request->clave_inegi;
-                $prospectoDetalle->clasificacion=$request->clasificacion;
-                $prospectoDetalle->impor_export=$request->impor_export;
-                $prospectoDetalle->esr=$request->esr;
-                $prospectoDetalle->fecha_esr=$request->fecha_esr;
-                $prospectoDetalle->paises=$request->paises;
-                $prospectoDetalle->mision=$request->mision;
-                $prospectoDetalle->vision=$request->vision;
-                $prospectoDetalle->valores=$request->valores;
-                $prospectoDetalle->mes=$request->mes;
-                $prospectoDetalle->promotor=$request->promotor;
-                $prospectoDetalle->periodo=$request->periodo;
-                $prospectoDetalle->anio_2020=$request->anio_2020;
-                $prospectoDetalle->anio_2021=$request->anio_2021;
-                $prospectoDetalle->anio_2022=$request->anio_2022;
-                $prospectoDetalle->ciudad=$request->ciudad;
-                $prospectoDetalle->num_empleados=$request->num_empleados;
-                $prospectoDetalle->mas_anio_operando=$request->mas_anio_operando;
+                $prospectoDetalle->telefono = $request->telefono;
+                $prospectoDetalle->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular),10);
+                $prospectoDetalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
+                $prospectoDetalle->puesto = $request->puesto;
+                $prospectoDetalle->nota = $request->nota;
                 $prospecto->fuente = 3;
                 $prospecto->save();
                 $prospecto->status_prospecto()->save($statusProspecto);
@@ -356,8 +281,6 @@ class ProspectosController extends Controller
                 'error'=>true,
                 'message'=> $errores_msg
         ],400);
-
-        
     }
 
     public function importProspectos(Request $request){
@@ -443,7 +366,7 @@ class ProspectosController extends Controller
             $detalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
             $detalle->nota = $request->nota;
             $detalle->puesto = $request->puesto;
-            $detalle->empresa = $request->empresa;
+            //$detalle->empresa = $request->empresa;
             $prospecto->save();
             $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto', $id)->first();
             if($colaborador_prospecto)
@@ -1093,23 +1016,6 @@ class ProspectosController extends Controller
 
     }
 
-    //tipo de afiliacion 
-    // public function getTiposAfiliacion(){
-    //     $tiposAfiliacion = DetalleProspecto::tipoAfi();
-
-    //     if ($tiposAfiliacion) {
-    //       return response()->json([
-    //           'message'=>'Tipos de afiliacion obtenidas correctamente.',
-    //           'error'=>false,
-    //           'data'=>$tiposAfiliacion
-    //       ],200);
-    //     }
-    //     return response()->json([
-    //         'message'=>'Tipos de afiliacion no obtenidas.',
-    //         'error'=>false
-    //     ],200);
-    // };
-
 
     public function sendMailing($id){
         $oportunidades = DB::table('oportunidades')->whereNull(deleted_at)->get();
@@ -1137,11 +1043,10 @@ class ProspectosController extends Controller
         ]);
     }
 
-    public function downloadProspectos($role_id, $rol, $id_user, $correos, $nombre, $telefono, $rfc, $status, $grupo, $etiquetas, $fechaInicio, $fechaFin, $colaboradores, $busqueda){
+    public function downloadProspectos($role_id, $rol, $id_user, $correos, $nombre, $telefono, $status, $grupo, $etiquetas, $fechaInicio, $fechaFin, $colaboradores, $busqueda){
         $correos = json_decode($correos);
         $nombre = json_decode($nombre);
         $telefono = json_decode($telefono);
-        $rfc = json_decode($rfc);
         $status = json_decode($status);
         $fuente = json_decode($grupo);
         $etiqueta = json_decode($etiquetas);
@@ -1164,7 +1069,6 @@ class ProspectosController extends Controller
             'Cómo se enteró',
             'Cliente',
             'Teléfono',
-            'rfc',
             'Mail',
             'Comentarios',
             'Seguimiento',
@@ -1189,21 +1093,21 @@ class ProspectosController extends Controller
                 'message'=>'No tienes permiso',
                 'error'=>true],401);
         }
-        return (new ProspectosReports($headings,$desarrollo,$id_user, $correos, $nombre, $telefono, $rfc, $status, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $busqueda))->download("{$date}_{$desarrollo}_reporte.xlsx");
+        return (new ProspectosReports($headings,$desarrollo,$id_user, $correos, $nombre, $telefono, $status, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $busqueda))->download("{$date}_{$desarrollo}_reporte.xlsx");
     }
 
     //Functiones auxiliares
     public function validadorProspectos(array $data){
 
         return Validator::make($data,[
-            'nombre'    => 'nullable|string|max:100',
-            'apellido'  => 'nullable|string|max:50',
+            'nombre'    => 'nullable|string|max:30',
+            'apellido'  => 'nullable|string|max:30',
             'correo'    => 'required|email|max:50|unique:prospectos,correo',
             'telefono'  => 'required|max:9999999999',
             'celular'   => 'max:9999999999',
             'extension' => 'max:999999',
             'empresa'   => 'nullable|string|max:50',
-            'puesto'    => 'nullable|string|max:50',
+            'puesto'    => 'nullable|string|max:35',
             'nota'      => 'nullable|string|max:250',
 
 
