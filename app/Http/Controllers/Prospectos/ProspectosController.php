@@ -68,7 +68,7 @@ class ProspectosController extends Controller
         $this->roleServ = $roleService;
     }
 
-    public function registerProspecto(Request $request){
+   public function registerProspecto(Request $request){
         
         $auth = $this->guard()->user();
         $validator = $this->validadorProspectos($request->all());
@@ -76,10 +76,8 @@ class ProspectosController extends Controller
         $etiquetas = $request->etiquetas;
         
         if($validator->passes()){
-
             try{
                 DB::beginTransaction();
-
                 $prospecto = new Prospecto;
                 $prospectoDetalle = new DetalleProspecto;
                 $statusProspecto = new StatusProspecto;
@@ -88,21 +86,91 @@ class ProspectosController extends Controller
                 $prospecto->nombre = $request->nombre;
                 $prospecto->apellido = $request->apellido;
                 $prospecto->correo = $request->correo;
-                $prospectoDetalle->extension = $request->extension;
-                $prospectoDetalle->telefono = $request->telefono;
-                $prospectoDetalle->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular),10);
-                $prospectoDetalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
                 $prospectoDetalle->puesto = $request->puesto;
+                $prospectoDetalle->empresa = $request->empresa;
+                $prospectoDetalle->telefono = $request->telefono;
+                $prospectoDetalle->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
+                $prospectoDetalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
                 $prospectoDetalle->nota = $request->nota;
+                $prospectoDetalle->extension = $request->extension;
+                $prospectoDetalle->idIntSoc = $request->idIntSoc;
+                $prospectoDetalle->tipoafiliacion = $request->tipoafiliacion;
+                $prospectoDetalle->fechaingreso = $request->fechaingreso;
+                $prospectoDetalle->razonsocial= $request->razonsocial;
+                $prospectoDetalle->rfc= $request->rfc;
+                $prospectoDetalle->callef = $request->callef;
+                $prospectoDetalle->numf = $request->numf;
+                $prospectoDetalle->munf = $request->munf;
+                $prospectoDetalle->cpf = $request->cpf;
+                $prospectoDetalle->correoof = $request->correof;
+                $prospectoDetalle->nombrec = $request->nombrec;
+                $prospectoDetalle->correocont = $request->correocont;
+                $prospectoDetalle->correobol = $request->correobol;
+                $prospectoDetalle->reprelegal = $request->reprelegal;
+                $prospectoDetalle->contacprin = $request->contacprin;
+                $prospectoDetalle->cargo = $request->cargo;
+                $prospectoDetalle->correoempresarial = $request->correoempresarial;
+                $prospectoDetalle->sector = $request->sector;
+                $prospectoDetalle->TamEmp = $request->TamEmp ;
+                $prospectoDetalle->rama= $request->rama;
+                $prospectoDetalle->acti= $request->acti;
+                $prospectoDetalle->giro= $request->giro;
+                $prospectoDetalle->fechapago= $request->fechapago;
+                $prospectoDetalle->no_excel=$request->no_excel;
+                $prospectoDetalle->curriculum_ciudadano=$request->curriculum_ciudadano;
+                $prospectoDetalle->calle_comercial=$request->calle_comercial;
+                $prospectoDetalle->colonia_comercial=$request->colonia_comercial;
+                $prospectoDetalle->municipio_comercial=$request->municipio_comercial;
+                $prospectoDetalle->cp_comercial=$request->cp_comercial;
+                $prospectoDetalle->facebook=$request->facebook;
+                $prospectoDetalle->instagram=$request->instagram;
+                $prospectoDetalle->twitter=$request->twitter;
+                $prospectoDetalle->linkedink=$request->linkedink;
+                $prospectoDetalle->paginaweb=$request->paginaweb;
+                $prospectoDetalle->colaboradores=$request->colaboradores_uno;
+                $prospectoDetalle->colaboradores_afiliados=$request->colaboradores_afiliados;
+                $prospectoDetalle->nrp=$request->nrp;
+                $prospectoDetalle->nombre_contabilidad=$request->nombre_contabilidad;
+                $prospectoDetalle->correo_contabilidad=$request->correo_contabilidad;
+                $prospectoDetalle->nombre_rh=$request->nombre_rh;
+                $prospectoDetalle->correo_rh=$request->correo_rh;
+                $prospectoDetalle->nombre_capacitacion=$request->nombre_capacitacion;
+                $prospectoDetalle->correo_capacitacion=$request->correo_capacitacion;
+                $prospectoDetalle->nombre_relaciones=$request->nombre_relaciones;
+                $prospectoDetalle->correo_relaciones=$request->correo_relaciones;
+                $prospectoDetalle->nombre_recepcion=$request->nombre_recepcion;
+                $prospectoDetalle->correo_recepcion=$request->correo_recepcion;
+                $prospectoDetalle->nombre_otro=$request->nombre_otro;
+                $prospectoDetalle->correo_otro=$request->correo_otro;
+                $prospectoDetalle->contacto_ocho=$request->contacto_ocho;
+                $prospectoDetalle->correo_ocho=$request->correo_ocho;
+                $prospectoDetalle->telefono_dos=$request->telefono_dos;
+                $prospectoDetalle->telefono_tres=$request->telefono_tres;
+                $prospectoDetalle->inegi=$request->inegi;
+                $prospectoDetalle->clave_inegi=$request->clave_inegi;
+                $prospectoDetalle->clasificacion=$request->clasificacion;
+                $prospectoDetalle->impor_export=$request->impor_export;
+                $prospectoDetalle->esr=$request->esr;
+                $prospectoDetalle->fecha_esr=$request->fecha_esr;
+                $prospectoDetalle->paises=$request->paises;
+                $prospectoDetalle->mision=$request->mision;
+                $prospectoDetalle->vision=$request->vision;
+                $prospectoDetalle->valores=$request->valores;
+                $prospectoDetalle->mes=$request->mes;
+                $prospectoDetalle->promotor=$request->promotor;
+                $prospectoDetalle->periodo=$request->periodo;
+                $prospectoDetalle->anio_2020=$request->anio_2020;
+                $prospectoDetalle->anio_2021=$request->anio_2021;
+                $prospectoDetalle->anio_2022=$request->anio_2022;
+                $prospectoDetalle->ciudad=$request->ciudad;
+                $prospectoDetalle->num_empleados=$request->num_empleados;
+                $prospectoDetalle->mas_anio_operando=$request->mas_anio_operando;
                 $prospecto->fuente = 3;
                 $prospecto->save();
                 $prospecto->status_prospecto()->save($statusProspecto);
                 
-                
-                
                 // $prospecto->colaborador_prospecto()->save($colaborador_prospecto);
                 // $prospecto->save($colaborador_prospecto);
-
                 $colaborador_prospecto = new ColaboradorProspecto;
                 
                 if( isset($request->colaborador['id'])){
@@ -114,8 +182,6 @@ class ProspectosController extends Controller
                 
                 $colaborador_prospecto->save();
                 
-
-
                 
                 if(!$request->hsh){
                     if( isset($request->empresa))
@@ -150,7 +216,6 @@ class ProspectosController extends Controller
                 
                 if($etiquetas != null){
                     //Crear etiquetas
-
                     foreach($etiquetas as $etiqueta){
                        $etiqueta_prospecto = new EtiquetasProspecto;
                        $etiqueta_prospecto->id_etiqueta = $etiqueta['id_etiqueta'];
@@ -159,13 +224,11 @@ class ProspectosController extends Controller
                     }
                 }
                 if($oportunidades != null){
-
                     //Crear oportunidades
                     foreach($oportunidades as $oportunidad){
                         
                         $statusProspecto->id_cat_status_prospecto = 1;
                         $prospecto->status_prospecto()->save($statusProspecto);
-
                         //Datos generales oportunidad
                         $nueva_oportunidad = new Oportunidad;
                         $statusOportunidad = new StatusOportunidad;
@@ -173,7 +236,6 @@ class ProspectosController extends Controller
                         $nueva_oportunidad->nombre_oportunidad = $oportunidad['nombre_oportunidad'];
                         $nueva_oportunidad->save();
                         $nueva_oportunidad->status_oportunidad()->save($statusOportunidad);
-
                         //Detalle de oportunidades
                         $detalle_oportunidad = new DetalleOportunidad;
                         if(isset($oportunidad['valor'])){
@@ -187,19 +249,12 @@ class ProspectosController extends Controller
                         if(isset($oportunidad['meses']))
                             $detalle_oportunidad->meses = $oportunidad['meses'];
                         $nueva_oportunidad->detalle_oportunidad()->save($detalle_oportunidad);
-
-
                         //Servicio de la oportunidad
-
-
                             $servicio_oportunidad = new ServicioOportunidad;
                             $servicio_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                             $servicio_oportunidad->id_servicio_cat = $oportunidad['id_servicio_cat'];
                             $nueva_oportunidad->servicio_oportunidad()->save($servicio_oportunidad);
-
-
                         //Asignación a colaborador
-
                             if(count($oportunidad['id_colaborador']) > 0){
                                 foreach($oportunidad['id_colaborador'] as $col_op){
                                     $colaborador_oportunidad = new ColaboradorOportunidad;
@@ -215,15 +270,11 @@ class ProspectosController extends Controller
                             }
                             
                             
-
-
-
                         //Asignación a prospecto
                         $prospecto_oportunidad = new ProspectoOportunidad;
                         $prospecto_oportunidad->id_prospecto = $prospecto->id_prospecto;
                         $prospecto_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                         $prospecto_oportunidad->save();
-
                         if(isset($oportunidad['etiquetas'])){
                             //Etiquetas de oportunidad
                             foreach($oportunidad['etiquetas'] as $etiqueta){
@@ -232,11 +283,8 @@ class ProspectosController extends Controller
                                 $etiqueta_oportunidad->id_etiqueta = $etiqueta['id_etiqueta'];
                                 $nueva_oportunidad->etiquetas_oportunidad()->save($etiqueta_oportunidad);
                             }
-
                         }
-
                     }
-
                 }
                 DB::commit();
                 //Historial
@@ -259,28 +307,22 @@ class ProspectosController extends Controller
                 return response()->json([
                     'message'=>$e,
                     'error'=>true,
-
                 ],400);
             }
-
-
         }
-
         $errores = $validator->errors()->toArray();
-
         $errores_msg = array();
-
         if (!empty($errores)) {
             foreach ($errores as $key => $error_m) {
                 $errores_msg[] = $error_m[0];
                 break;
             }
         }
-
         return response()->json([
                 'error'=>true,
                 'message'=> $errores_msg
         ],400);
+        
     }
 
     public function importProspectos(Request $request){
@@ -1043,7 +1085,7 @@ class ProspectosController extends Controller
         ]);
     }
 
-    public function downloadProspectos($role_id, $rol, $id_user, $correos, $nombre, $telefono, $status, $grupo, $etiquetas, $fechaInicio, $fechaFin, $colaboradores, $busqueda, $razonsocial){
+    public function downloadProspectos($role_id, $rol, $id_user, $correos, $nombre, $telefono, $status, $grupo, $etiquetas, $fechaInicio, $fechaFin, $colaboradores, $busqueda){
         $correos = json_decode($correos);
         $nombre = json_decode($nombre);
         $telefono = json_decode($telefono);
@@ -1054,7 +1096,6 @@ class ProspectosController extends Controller
         $fechaFin = json_decode($fechaFin);
         $colaboradores = json_decode($colaboradores);
         $busqueda = json_decode($busqueda);
-        $razonsocial = json_decode($razonsocial);
 
         $usuario = $this->userServ->findById($id_user);
         $roles = $this->roleServ->findById($usuario->role_id);
@@ -1074,8 +1115,7 @@ class ProspectosController extends Controller
             'Comentarios',
             'Seguimiento',
             'Etiquetas',
-            'Empresa',
-            'Razon Social'
+            'Empresa'
         ];
 
         if($rol == OldRole::POLANCO){
@@ -1095,7 +1135,7 @@ class ProspectosController extends Controller
                 'message'=>'No tienes permiso',
                 'error'=>true],401);
         }
-        return (new ProspectosReports($headings,$desarrollo,$id_user, $correos, $nombre, $telefono, $status, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $busqueda, $razonsocial))->download("{$date}_{$desarrollo}_reporte.xlsx");
+        return (new ProspectosReports($headings,$desarrollo,$id_user, $correos, $nombre, $telefono, $status, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $busqueda))->download("{$date}_{$desarrollo}_reporte.xlsx");
     }
 
     //Functiones auxiliares
