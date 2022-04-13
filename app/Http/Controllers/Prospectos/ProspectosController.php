@@ -1137,10 +1137,11 @@ class ProspectosController extends Controller
         ]);
     }
 
-    public function downloadProspectos($role_id, $rol, $id_user, $correos, $nombre, $telefono, $status, $grupo, $etiquetas, $fechaInicio, $fechaFin, $colaboradores, $busqueda){
+    public function downloadProspectos($role_id, $rol, $id_user, $correos, $nombre, $telefono, $celular, $status, $grupo, $etiquetas, $fechaInicio, $fechaFin, $colaboradores, $busqueda){
         $correos = json_decode($correos);
         $nombre = json_decode($nombre);
         $telefono = json_decode($telefono);
+        $celular = json_decode($celular);
         $status = json_decode($status);
         $fuente = json_decode($grupo);
         $etiqueta = json_decode($etiquetas);
@@ -1164,12 +1165,12 @@ class ProspectosController extends Controller
             'Cómo se enteró',
             'Cliente',
             'Teléfono',
+            'Celular',
             'Mail',
             'Comentarios',
             'Seguimiento',
             'Etiquetas',
-            'Empresa',
-            'Celular'
+            'Empresa'
         ];
 
         if($rol == OldRole::POLANCO){
