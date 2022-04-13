@@ -1043,7 +1043,7 @@ class ProspectosController extends Controller
         ]);
     }
 
-    public function downloadProspectos($role_id, $rol, $id_user, $correos, $nombre, $telefono, $status, $grupo, $etiquetas, $fechaInicio, $fechaFin, $colaboradores, $busqueda){
+    public function downloadProspectos($role_id, $rol, $id_user, $correos, $nombre, $telefono, $status, $grupo, $etiquetas, $fechaInicio, $fechaFin, $colaboradores, $busqueda, $razonsocial){
         $correos = json_decode($correos);
         $nombre = json_decode($nombre);
         $telefono = json_decode($telefono);
@@ -1054,6 +1054,7 @@ class ProspectosController extends Controller
         $fechaFin = json_decode($fechaFin);
         $colaboradores = json_decode($colaboradores);
         $busqueda = json_decode($busqueda);
+        $razonsocial = json_decode($razonsocial);
 
         $usuario = $this->userServ->findById($id_user);
         $roles = $this->roleServ->findById($usuario->role_id);
@@ -1073,7 +1074,8 @@ class ProspectosController extends Controller
             'Comentarios',
             'Seguimiento',
             'Etiquetas',
-            'Empresa'
+            'Empresa',
+            'Razon Social'
         ];
 
         if($rol == OldRole::POLANCO){
@@ -1093,7 +1095,7 @@ class ProspectosController extends Controller
                 'message'=>'No tienes permiso',
                 'error'=>true],401);
         }
-        return (new ProspectosReports($headings,$desarrollo,$id_user, $correos, $nombre, $telefono, $status, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $busqueda))->download("{$date}_{$desarrollo}_reporte.xlsx");
+        return (new ProspectosReports($headings,$desarrollo,$id_user, $correos, $nombre, $telefono, $status, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $busqueda, $razonsocial))->download("{$date}_{$desarrollo}_reporte.xlsx");
     }
 
     //Functiones auxiliares

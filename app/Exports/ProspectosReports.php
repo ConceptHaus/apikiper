@@ -24,7 +24,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
     protected $desarrollo;
     protected $id_user;
     
-    public function __construct($headings, $desarrollo,$id_user, $correos=null, $nombre=null, $telefono=null, $status=null, $grupo=null, $etiquetas=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null)
+    public function __construct($headings, $desarrollo,$id_user, $correos=null, $nombre=null, $telefono=null, $status=null, $grupo=null, $etiquetas=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null, $razonsocial=null)
     {
         $this->headings = $headings;
         $this->desarrollo = $desarrollo;
@@ -39,17 +39,18 @@ class ProspectosReports implements WithHeadings,FromCollection{
         $this->fechaFin = $fechaFin;
         $this->colaboradores = $colaboradores;
         $this->busqueda = $busqueda;
+        $this->razonsocial= $razonsocial;
     }
     
     public function collection()
     {
             
         return $this->getProspectos($this->desarrollo,$this->id_user,$this->correos,$this->nombre,$this->telefono,$this->status,
-                                    $this->grupo,$this->etiquetas,$this->fechaInicio,$this->fechaFin,$this->colaboradores, $this->busqueda);
+                                    $this->grupo,$this->etiquetas,$this->fechaInicio,$this->fechaFin,$this->colaboradores, $this->busqueda, $this->razonsocial);
 
         
     }
-    public function getProspectos($desarrollo, $id_user, $correos, $nombres, $telefonos=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null){
+    public function getProspectos($desarrollo, $id_user, $correos=null, $nombres=null, $telefonos=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null, $razonsocial=null){
         $user = User::find($id_user);
         if($desarrollo == 'all'){
 
@@ -78,6 +79,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                             ->orWhere('cat_status_prospecto.status', 'like', '%'.$busqueda.'%')
                             ->orWhere('cat_fuentes.nombre', 'like', '%'.$busqueda.'%')
                             ->orWhere('empresas.nombre', 'like', '%'.$busqueda.'%')
+                            ->orWhere('detalle_prospecto.razonsocial', 'like', '%'.$busqueda.'%')
                             ;
                 })
                 ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores) {
