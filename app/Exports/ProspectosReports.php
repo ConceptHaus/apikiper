@@ -24,7 +24,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
     protected $desarrollo;
     protected $id_user;
     
-    public function __construct($headings, $desarrollo,$id_user, $correos=null, $nombre=null, $telefono=null, $status=null, $grupo=null, $etiquetas=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null)
+    public function __construct($headings, $desarrollo,$id_user, $correos=null, $nombre=null, $telefono=null, $rfc=null, $status=null, $grupo=null, $etiquetas=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null)
     {
         $this->headings = $headings;
         $this->desarrollo = $desarrollo;
@@ -32,6 +32,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
         $this->correos = $correos;
         $this->nombre = $nombre;
         $this->telefono = $telefono;
+        $this->rfc = $rfc;
         $this->status = $status;
         $this->grupo = $grupo;
         $this->etiquetas = $etiquetas;
@@ -44,12 +45,12 @@ class ProspectosReports implements WithHeadings,FromCollection{
     public function collection()
     {
             
-        return $this->getProspectos($this->desarrollo,$this->id_user,$this->correos,$this->nombre,$this->telefono,$this->status,
+        return $this->getProspectos($this->desarrollo,$this->id_user,$this->correos,$this->nombre,$this->telefono,$this->$rfc,$this->status,
                                     $this->grupo,$this->etiquetas,$this->fechaInicio,$this->fechaFin,$this->colaboradores, $this->busqueda);
 
         
     }
-    public function getProspectos($desarrollo, $id_user, $correos, $nombres, $telefonos=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null){
+    public function getProspectos($desarrollo, $id_user, $correos, $nombres, $telefonos=null, $rfc=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null){
         $user = User::find($id_user);
         if($desarrollo == 'all'){
 
@@ -73,6 +74,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                             ->orWhere('prospectos.apellido', 'like', '%'.$busqueda.'%')
                             ->orWhere('prospectos.correo', 'like', '%'.$busqueda.'%')
                             ->orWhere('detalle_prospecto.telefono', 'like', '%'.$busqueda.'%')
+                            ->orWhere('detalle_prospecto.rfc', 'like', '%'.$busqueda.'%')
                             ->orWhere('users.nombre', 'like', '%'.$busqueda.'%')
                             ->orWhere('prospectos.created_at', 'like', '%'.$busqueda.'%')
                             ->orWhere('cat_status_prospecto.status', 'like', '%'.$busqueda.'%')

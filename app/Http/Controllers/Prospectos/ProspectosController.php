@@ -1149,7 +1149,6 @@ class ProspectosController extends Controller
         $fechaFin = json_decode($fechaFin);
         $colaboradores = json_decode($colaboradores);
         $busqueda = json_decode($busqueda);
-        // $celular = json_decode($celular);
 
         $usuario = $this->userServ->findById($id_user);
         $roles = $this->roleServ->findById($usuario->role_id);
@@ -1190,7 +1189,7 @@ class ProspectosController extends Controller
                 'message'=>'No tienes permiso',
                 'error'=>true],401);
         }
-        return (new ProspectosReports($headings,$desarrollo,$id_user, $correos, $nombre, $telefono, $status, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $busqueda))->download("{$date}_{$desarrollo}_reporte.xlsx");
+        return (new ProspectosReports($headings,$desarrollo,$id_user, $correos, $nombre, $telefono, $rfc, $status, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $busqueda))->download("{$date}_{$desarrollo}_reporte.xlsx");
     }
 
     //Functiones auxiliares
