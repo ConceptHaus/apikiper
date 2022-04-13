@@ -45,7 +45,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
     {
             
         return $this->getProspectos($this->desarrollo,$this->id_user,$this->correos,$this->nombre,$this->telefono,$this->status,
-                                    $this->grupo,$this->etiquetas,$this->fechaInicio,$this->fechaFin,$this->colaboradores, $this->busqueda, $this->razonsocial);
+                                    $this->grupo,$this->etiquetas,$this->fechaInicio,$this->fechaFin,$this->colaboradores, $this->busqueda);
 
         
     }
