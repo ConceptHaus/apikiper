@@ -134,8 +134,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                         DB::raw("group_concat(medio_contacto_prospectos.descripcion SEPARATOR '  --  ') as seguimiento"),
                         DB::raw("group_concat(etiquetas.nombre SEPARATOR '  --  ') as etiquetas"),
                         DB::raw('IFNULL(empresas.nombre, "Sin Asignar") as nombre_empresa'),
-                        DB::raw(""),'detalle_prospecto.*',
-                        
+                        'detalle_prospecto.*',
                         )->get();
                 
         } else if($desarrollo == 'user'){
@@ -222,7 +221,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                         DB::raw("group_concat(medio_contacto_prospectos.descripcion SEPARATOR '  --  ') as seguimiento"),
                         DB::raw("group_concat(etiquetas.nombre SEPARATOR '  --  ') as etiquetas"),
                         'empresas.nombre AS nombre_empresa',
-                        DB::raw(""),'detalle_prospecto.*',
+                        'detalle_prospecto.*',
                         )->get();
         } else {
             return  DB::table('prospectos')
@@ -306,7 +305,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                         DB::raw("group_concat(medio_contacto_prospectos.descripcion SEPARATOR '  --  ') as seguimiento"),
                         DB::raw("group_concat(etiquetas.nombre SEPARATOR '  --  ') as etiquetas"),
                         'empresas.nombre AS nombre_empresa',
-                        DB::raw(""),'detalle_prospecto.*',
+                        'detalle_prospecto.*',
                         )->get();
         }
         
