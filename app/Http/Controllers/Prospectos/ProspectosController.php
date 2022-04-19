@@ -1116,7 +1116,7 @@ class ProspectosController extends Controller
             'Seguimiento',
             'Etiquetas',
             'Empresa',
-            'id_interno_socio',
+            'id interno de socio',
             'Tipo de afiliacion',
             'Fecha de ingreso',
             'Razon social',
