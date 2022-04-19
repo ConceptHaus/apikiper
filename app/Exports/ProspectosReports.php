@@ -24,7 +24,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
     protected $desarrollo;
     protected $id_user;
     
-    public function __construct($headings, $desarrollo,$id_user, $correos=null, $nombre=null, $telefono=null, $status=null, $grupo=null, $etiquetas=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null)
+    public function __construct($headings, $desarrollo,$id_user, $correos=null, $nombre=null, $telefono=null, $status=null, $grupo=null, $etiquetas=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null, $rfc=null )
     {
         $this->headings = $headings;
         $this->desarrollo = $desarrollo;
@@ -39,17 +39,18 @@ class ProspectosReports implements WithHeadings,FromCollection{
         $this->fechaFin = $fechaFin;
         $this->colaboradores = $colaboradores;
         $this->busqueda = $busqueda;
+        $this->rfc = $rfc;
     }
     
     public function collection()
     {
             
         return $this->getProspectos($this->desarrollo,$this->id_user,$this->correos,$this->nombre,$this->telefono,$this->status,
-                                    $this->grupo,$this->etiquetas,$this->fechaInicio,$this->fechaFin,$this->colaboradores, $this->busqueda, $this->razonsocial);
+                                    $this->grupo,$this->etiquetas,$this->fechaInicio,$this->fechaFin,$this->colaboradores, $this->busqueda, $this->rfc);
 
         
     }
-    public function getProspectos($desarrollo, $id_user, $correos=null, $nombres=null, $telefonos=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null){
+    public function getProspectos($desarrollo, $id_user, $correos=null, $nombres=null, $telefonos=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null, $rfc=null ){
         $user = User::find($id_user);
         if($desarrollo == 'all'){
 
@@ -65,6 +66,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                 ->leftjoin('prospectos_empresas', 'prospectos_empresas.id_prospecto', '=', 'prospectos.id_prospecto')
                 ->leftjoin('empresas', 'empresas.id_empresa', '=', 'prospectos_empresas.id_empresa')
                 ->leftjoin('medio_contacto_prospectos','prospectos.id_prospecto','medio_contacto_prospectos.id_prospecto')
+                ->leftjoin('detalle_prospecto', 'detalle_prospecto.rfc', '=', 'prospectos.id_prospecto')
                 ->whereNull('prospectos.deleted_at')
                 ->groupBy('prospectos.id_prospecto')
                 ->orderBy('prospectos.created_at','desc')
@@ -78,9 +80,10 @@ class ProspectosReports implements WithHeadings,FromCollection{
                             ->orWhere('cat_status_prospecto.status', 'like', '%'.$busqueda.'%')
                             ->orWhere('cat_fuentes.nombre', 'like', '%'.$busqueda.'%')
                             ->orWhere('empresas.nombre', 'like', '%'.$busqueda.'%')
+                            ->orWhere('detalle_prospecto.rfc', 'like', '%'.$busqueda.'%')
                             ;
                 })
-                ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores) {
+                ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $rfc) {
                     $query->when($correos,  function ($query) use ($correos) {
                         $query->where(function ($query) use ($correos) {
                             $query->whereIn('prospectos.correo', $correos);
@@ -121,6 +124,11 @@ class ProspectosReports implements WithHeadings,FromCollection{
                             $query->whereBetween('prospectos.created_at', [$fechaInicio." 00:00:00", $fechaFin." 23:59:59"]);
                         });
                     });
+                    $query->when($rfc,  function ($query) use ($rfc) {
+                        $query->where(function ($query) use ($rfc) {
+                            $query->whereIn('detalle_prospecto.id_prospecto', $rfc);
+                        });
+                    });
                 })
                 ->select(
                         DB::raw('IFNULL(CONCAT(users.nombre," ",users.apellido), "Sin Asignar") as asesor'),
@@ -129,6 +137,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                         'cat_fuentes.nombre as como se enteró',
                         DB::raw('CONCAT(prospectos.nombre," ",prospectos.apellido) as cliente'),
                         'detalle_prospecto.telefono',
+                        'detalle_prospecto.rfc',
                         'prospectos.correo as mail',
                         'detalle_prospecto.nota as comentarios',
                         DB::raw("group_concat(medio_contacto_prospectos.descripcion SEPARATOR '  --  ') as seguimiento"),
