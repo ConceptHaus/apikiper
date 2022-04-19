@@ -129,12 +129,12 @@ class ProspectosReports implements WithHeadings,FromCollection{
                         'cat_fuentes.nombre as como se enteró',
                         DB::raw('CONCAT(prospectos.nombre," ",prospectos.apellido) as cliente'),
                         'detalle_prospecto.telefono',
-                        'detalle_prospecto.*',
                         'prospectos.correo as mail',
                         'detalle_prospecto.nota as comentarios',
                         DB::raw("group_concat(medio_contacto_prospectos.descripcion SEPARATOR '  --  ') as seguimiento"),
                         DB::raw("group_concat(etiquetas.nombre SEPARATOR '  --  ') as etiquetas"),
-                        DB::raw('IFNULL(empresas.nombre, "Sin Asignar") as nombre_empresa')
+                        DB::raw('IFNULL(empresas.nombre, "Sin Asignar") as nombre_empresa'),
+                        DB::raw(""),'detalle_prospecto.*',
                         
                         )->get();
                 
@@ -217,12 +217,12 @@ class ProspectosReports implements WithHeadings,FromCollection{
                         'cat_fuentes.nombre as como se enteró',
                         DB::raw('CONCAT(prospectos.nombre," ",prospectos.apellido) as cliente'),
                         'detalle_prospecto.telefono',
-                        'detalle_prospecto.idIntSoc',
                         'prospectos.correo as mail',
                         'detalle_prospecto.nota as comentarios',
                         DB::raw("group_concat(medio_contacto_prospectos.descripcion SEPARATOR '  --  ') as seguimiento"),
                         DB::raw("group_concat(etiquetas.nombre SEPARATOR '  --  ') as etiquetas"),
-                        'empresas.nombre AS nombre_empresa'
+                        'empresas.nombre AS nombre_empresa',
+                        DB::raw(""),'detalle_prospecto.*',
                         )->get();
         } else {
             return  DB::table('prospectos')
@@ -301,12 +301,12 @@ class ProspectosReports implements WithHeadings,FromCollection{
                         'cat_fuentes.nombre as como se enteró',
                         DB::raw('CONCAT(prospectos.nombre," ",prospectos.apellido) as cliente'),
                         'detalle_prospecto.telefono',
-                        'detalle_prospecto.idIntSoc',
                         'prospectos.correo as mail',
                         'detalle_prospecto.nota as comentarios',
                         DB::raw("group_concat(medio_contacto_prospectos.descripcion SEPARATOR '  --  ') as seguimiento"),
                         DB::raw("group_concat(etiquetas.nombre SEPARATOR '  --  ') as etiquetas"),
-                        'empresas.nombre AS nombre_empresa'
+                        'empresas.nombre AS nombre_empresa',
+                        DB::raw(""),'detalle_prospecto.*',
                         )->get();
         }
         
