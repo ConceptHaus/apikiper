@@ -1115,7 +1115,8 @@ class ProspectosController extends Controller
             'Comentarios',
             'Seguimiento',
             'Etiquetas',
-            'Empresa'
+            'Empresa',
+            'RFC'
         ];
 
         if($rol == OldRole::POLANCO){
