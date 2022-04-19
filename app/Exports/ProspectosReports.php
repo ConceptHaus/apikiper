@@ -298,7 +298,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                         'cat_status_prospecto.status as estado',
                         'cat_fuentes.nombre as como se enteró',
                         DB::raw('CONCAT(prospectos.nombre," ",prospectos.apellido) as cliente'),
-                        'detalle_prospecto.telefono',
+                        'detalle_prospecto.*',
                         'prospectos.correo as mail',
                         'detalle_prospecto.nota as comentarios',
                         DB::raw("group_concat(medio_contacto_prospectos.descripcion SEPARATOR '  --  ') as seguimiento"),
