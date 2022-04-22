@@ -18,7 +18,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     protected $primaryKey = 'id_oportunidad';
     protected $fillable = [
         'id_oportunidad',
-        'nombre_oportunidad'
+        'nombre_oportunidad',
+        'mes_cierre_estimado',
+        'anio_cierre_estimado'
     ];
 
     protected $softCascade = [
