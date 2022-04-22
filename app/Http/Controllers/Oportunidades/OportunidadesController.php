@@ -63,7 +63,7 @@ class OportunidadesController extends Controller
                                     ->whereNull('prospectos.deleted_at')
                                     ->whereNull('status_oportunidad.deleted_at')
                                     ->whereNull('servicio_oportunidad.deleted_at')
-                                    ->select('oportunidades.id_oportunidad','oportunidades.nombre_oportunidad', 'oportunidades.mes_cierre_estimado', 'oportunidades.anio_cierre_estimado','detalle_oportunidad.valor','detalle_oportunidad.meses','cat_status_oportunidad.id_cat_status_oportunidad  as status_id','cat_status_oportunidad.status','cat_status_oportunidad.color','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','users.id as id_colaborador','users.nombre as asigando_nombre','users.apellido as asigando_apellido','oportunidades.created_at')
+                                    ->select('oportunidades.id_oportunidad','oportunidades.nombre_oportunidad','detalle_oportunidad.valor','detalle_oportunidad.meses','cat_status_oportunidad.id_cat_status_oportunidad  as status_id','cat_status_oportunidad.status','cat_status_oportunidad.color','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','users.id as id_colaborador','users.nombre as asigando_nombre','users.apellido as asigando_apellido','oportunidades.created_at')
                                     ->orderBy('oportunidades.created_at', 'desc')
                                     ->count();
 
@@ -122,7 +122,7 @@ class OportunidadesController extends Controller
                             ->whereNull('prospectos.deleted_at')
                             ->whereNull('status_oportunidad.deleted_at')
                             ->whereNull('servicio_oportunidad.deleted_at')
-                            ->select('oportunidades.id_oportunidad','oportunidades.nombre_oportunidad','detalle_oportunidad.valor','detalle_oportunidad.meses','cat_status_oportunidad.id_cat_status_oportunidad  as status_id','cat_status_oportunidad.status','cat_status_oportunidad.color','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','users.id as id_colaborador','users.nombre as asigando_nombre','users.apellido as asigando_apellido','oportunidades.created_at')
+                            ->select('oportunidades.id_oportunidad','oportunidades.nombre_oportunidad', 'oportunidades.mes_cierre_estimado', 'oportunidades.anio_cierre_estimado','detalle_oportunidad.valor','detalle_oportunidad.meses','cat_status_oportunidad.id_cat_status_oportunidad  as status_id','cat_status_oportunidad.status','cat_status_oportunidad.color','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','users.id as id_colaborador','users.nombre as asigando_nombre','users.apellido as asigando_apellido','oportunidades.created_at')
                             ->orderBy('oportunidades.created_at', 'desc')
                             ->get();
             
