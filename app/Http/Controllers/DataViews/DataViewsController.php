@@ -443,7 +443,8 @@ class DataViewsController extends Controller
 
         $oportunidades_cotizadas = $this->oportunidades_por_colaborador_por_status($id,1);
 
-        $valor_cotizadas = DB::table('detalle_oportunidad')
+        $valor_cotizadas = DB::table('oportunidades')
+                            ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->join('status_oportunidad','detalle_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',1, )
