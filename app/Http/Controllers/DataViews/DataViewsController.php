@@ -552,7 +552,7 @@ class DataViewsController extends Controller
                     'valor'=>$oportunidades_no_viables,
                     'porcentaje'=>$this->porcentajeOportunidades($oportunidades_no_viables,$oportunidades_total),
                     'color'=>$this->colorsOportunidades(3),
-                    'valorPorStatus' => $valor_no_viables
+                    'valorPorStatus' => $valorno_viables
 
                 ],
                 'oportunidades'=>$oportunidades,
