@@ -558,7 +558,8 @@ class DataViewsController extends Controller
                 'oportunidades'=>$oportunidades,
 
                 'oportunidades_status' => $oportunidades_status,
-                'porcentaje_status' => $oportunidades_status_p
+                'porcentaje_status' => $oportunidades_status_p,
+                'valor_total' => $oportunidades_valor_status
             ]
             ],200);
     }
