@@ -443,6 +443,16 @@ class DataViewsController extends Controller
 
         $oportunidades_cotizadas = $this->oportunidades_por_colaborador_por_status($id,1);
 
+        $valor_cotizadas = DB::table('oportunidades')
+                            ->join('status_oportunidad','detalle_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',1, )
+                            ->whereNull('oportunidades.deleted_at')
+                            ->where('colaborador_oportunidad.id_colaborador',$id)
+                            ->groupBy('status_oportunidad.id_cat_status_oportunidad')
+                            ->sum(DB::raw('detalle_oportunidad.valor * detalle_oportunidad.meses'));
+
+
         $oportunidades_cerradas = $this->oportunidades_por_colaborador_por_status($id,2);
 
         $oportunidades_no_viables = $this->oportunidades_por_colaborador_por_status($id,3);
@@ -498,7 +508,8 @@ class DataViewsController extends Controller
                 'cotizadas'=>[
                     'valor'=>$oportunidades_cotizadas,
                     'porcentaje'=>$this->porcentajeOportunidades($oportunidades_cotizadas,$oportunidades_total),
-                    'color'=>$this->colorsOportunidades(1)
+                    'color'=>$this->colorsOportunidades(1),
+                    'valorPorStatus' => $valor_cotizadas
 
                 ],
                 'cerradas'=>[
