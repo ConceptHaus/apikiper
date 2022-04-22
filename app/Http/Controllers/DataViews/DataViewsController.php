@@ -519,7 +519,7 @@ class DataViewsController extends Controller
                             ->whereNull('status_oportunidad.deleted_at')
                             ->whereNull('servicio_oportunidad.deleted_at')
                             ->whereNull('users.deleted_at')
-                            ->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','detalle_oportunidad.valor','detalle_oportunidad.meses','cat_status_oportunidad.status','cat_status_oportunidad.color as color_status','cat_status_oportunidad.id_cat_status_oportunidad as id_status','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.nombre as fuente_url','oportunidades.created_at','users.id as id_colaborador', 'users.nombre as asignado_nombre', 'users.apellido as asignado_apellido')
+                            ->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','oportunidades.mes_cierre_estimado', 'oportunidades.anio_cierre_estimado','detalle_oportunidad.valor','detalle_oportunidad.meses','cat_status_oportunidad.status','cat_status_oportunidad.color as color_status','cat_status_oportunidad.id_cat_status_oportunidad as id_status','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.nombre as fuente_url','oportunidades.created_at','users.id as id_colaborador', 'users.nombre as asignado_nombre', 'users.apellido as asignado_apellido')
                             ->orderBy('status_oportunidad.updated_at','desc')
                             ->get();
 
