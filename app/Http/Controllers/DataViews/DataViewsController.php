@@ -455,12 +455,31 @@ class DataViewsController extends Controller
 
         $oportunidades_cerradas = $this->oportunidades_por_colaborador_por_status($id,2);
 
+        $valor_cerradas = DB::table('oportunidades')
+                            ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','detalle_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',2, )
+                            ->where('colaborador_oportunidad.id_colaborador',$id)
+                            ->groupBy('status_oportunidad.id_cat_status_oportunidad')
+                            ->sum(DB::raw('detalle_oportunidad.valor * detalle_oportunidad.meses'));
+
         $oportunidades_no_viables = $this->oportunidades_por_colaborador_por_status($id,3);
+
+        $valorno_viables = DB::table('oportunidades')
+                            ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','detalle_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',3, )
+                            ->where('colaborador_oportunidad.id_colaborador',$id)
+                            ->groupBy('status_oportunidad.id_cat_status_oportunidad')
+                            ->sum(DB::raw('detalle_oportunidad.valor * detalle_oportunidad.meses'));
 
         $s_o = CatStatusOportunidad::all(); 
         
         $oportunidades_status = Array();
         $oportunidades_status_p = Array();
+        $oportunidades_valor_status = Array();
         foreach( $s_o as $status)
         {
             $total_status = $this->oportunidades_por_colaborador_por_status($id,$status->id_cat_status_oportunidad);
@@ -468,6 +487,16 @@ class DataViewsController extends Controller
 
             array_push($oportunidades_status, $total_status);
             array_push($oportunidades_status_p, $porcentaje_status);
+
+            $valor_status = DB::table('oportunidades')
+                            ->join('detalle_oportunidad','detalle_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->join('status_oportunidad','detalle_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+                            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+                            ->where('status_oportunidad.id_cat_status_oportunidad','=',$status->id_cat_status_oportunidad, )
+                            ->where('colaborador_oportunidad.id_colaborador',$id)
+                            ->groupBy('status_oportunidad.id_cat_status_oportunidad')
+                            ->sum(DB::raw('detalle_oportunidad.valor * detalle_oportunidad.meses'));
+            array_push($oportunidades_valor_status, $valor_status );
         }
        
         $oportunidades = DB::table('oportunidades')
@@ -515,13 +544,15 @@ class DataViewsController extends Controller
                 'cerradas'=>[
                     'valor'=>$oportunidades_cerradas,
                     'porcentaje'=>$this->porcentajeOportunidades($oportunidades_cerradas,$oportunidades_total),
-                    'color'=>$this->colorsOportunidades(2)
+                    'color'=>$this->colorsOportunidades(2),
+                    'valorPorStatus' => $valor_cerradas
 
                 ],
                 'no_viables'=>[
                     'valor'=>$oportunidades_no_viables,
                     'porcentaje'=>$this->porcentajeOportunidades($oportunidades_no_viables,$oportunidades_total),
-                    'color'=>$this->colorsOportunidades(3)
+                    'color'=>$this->colorsOportunidades(3),
+                    'valorPorStatus' => $valor_no_viables
 
                 ],
                 'oportunidades'=>$oportunidades,
