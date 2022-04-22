@@ -17,7 +17,9 @@ class DetalleOportunidad extends Model
         'id_oportunidad',
         'descripcion',
         'valor',
-        'meses'
+        'meses',
+        'mes_cierre_estimado',
+        'anio_cierre_estimado'
     ];
 
     public function oportunidad(){
