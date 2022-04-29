@@ -147,7 +147,7 @@ Route::prefix('/v1/oportunidades')->group(function(){
             Route::delete('/etiquetas/{etiqueta}', 'Oportunidades\OportunidadesController@deleteEtiquetas');
 
             // Funciones de objecion 
-            Route::post('/{id}/etiquetas','Oportunidades\OportunidadesController@addObjeciones');
+            Route::post('/{id}/objeciones','Oportunidades\OportunidadesController@addObjeciones');
 
             Route::get('/{id}/archivos','Oportunidades\OportunidadesController@getArchivos');
             Route::post('/{id}/archivos','Oportunidades\OportunidadesController@addArchivos');
