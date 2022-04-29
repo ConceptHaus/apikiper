@@ -425,7 +425,7 @@ class OportunidadesController extends Controller
 
 
           try {
-            foreach($request->objeciones as $objecion){
+            foreach($request->objecion as $objeciones){
                 $objeciones = ObjecionesOportunidad::where('id_oportunidad',$oportunidad->id_oportunidad)->where('id_objecion', $objecion['id_objecion'])->select('id_objecion')->get();
                 if ($objeciones->isEmpty()) {
                   DB::beginTransaction();
