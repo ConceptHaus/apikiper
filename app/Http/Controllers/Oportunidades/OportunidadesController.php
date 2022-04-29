@@ -21,7 +21,7 @@ use App\Modelos\Oportunidad\Oportunidad;
 use App\Modelos\Oportunidad\DetalleOportunidad;
 use App\Modelos\Oportunidad\EtiquetasOportunidad;
 // 
-use App\Modelos\Oportunidad\ObjecionOportunidad;
+use App\Modelos\Oportunidad\ObjecionesOportunidad;
 use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Modelos\Oportunidad\ColaboradorOportunidad;
 use App\Modelos\Oportunidad\ServicioOportunidad;
