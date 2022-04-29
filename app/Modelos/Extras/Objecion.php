@@ -9,10 +9,10 @@ class Etiqueta extends Model
 {
     use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
     use SoftDeletes;
-    protected $table = 'etiquetas';
-    protected $primaryKey = 'id_etiqueta';
+    protected $table = 'cat_objeciones';
+    protected $primaryKey = 'id_objecion';
     protected $fillable = [
-        'id_etiqueta',
+        'id_objecion',
         'nombre',
         'descripcion'
     ];
@@ -23,7 +23,7 @@ class Etiqueta extends Model
     }
 
     public function oportunidad(){
-        return $this->belongsTo('App\Modelos\Oportunidad\EtiquetasOportunidad','id_etiqueta','id_etiqueta');
+        return $this->belongsTo('App\Modelos\Oportunidad\ObjecionOportunidad','id_objecion','id_objecion');
     }
 
 }

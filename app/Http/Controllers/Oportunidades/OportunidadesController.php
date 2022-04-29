@@ -20,6 +20,8 @@ use App\Modelos\Prospecto\DetalleProspecto;
 use App\Modelos\Oportunidad\Oportunidad;
 use App\Modelos\Oportunidad\DetalleOportunidad;
 use App\Modelos\Oportunidad\EtiquetasOportunidad;
+// 
+use App\Modelos\Oportunidad\ObjecionOportunidad;
 use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Modelos\Oportunidad\ColaboradorOportunidad;
 use App\Modelos\Oportunidad\ServicioOportunidad;
@@ -414,6 +416,59 @@ class OportunidadesController extends Controller
             ],400);
           }
     }
+
+    // agregar objeciones
+    public function addObjecion(Request $request, $id){
+        //Agregar objeciones aoportunidad
+        $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
+        $colaborador = $this->guard()->user();
+
+
+          try {
+            foreach($request->objeciones as $objecion){
+                $objeciones = ObjecionOportunidad::where('id_oportunidad',$oportunidad->id_oportunidad)->where('id_objecion', $objecion['id_etiqueta'])->select('id_etiqueta')->get();
+                if ($objeciones->isEmpty()) {
+                  DB::beginTransaction();
+                    $objecion_oportunidad = new ObjecionOportunidad;
+                    $objecion_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
+                    $objecion_oportunidad->id_objecion = $objecion['id_objecion'];
+                    $objecion_oportunidad->save();
+                  DB::commit();
+                }
+            }
+
+            return response()->json([
+                        'error'=>false,
+                        'message'=>'Registro Correcto',
+                        'data'=>$oportunidad
+                    ],200);
+
+          } catch (Exception $e) {
+            DB::rollBack();
+            Bugsnag::notifyException(new RuntimeException("No se pudo agregar una objecion en oportunidad"));
+            return response()->json([
+              'error'=>true,
+              'message'=>$e
+            ],400);
+          }
+    }
+    // nuevo objeciones
+    public function getEtiquetas($id){
+        $oportunidad_etiquetas = Oportunidad::GetOportunidadEtiquetas($id);
+        if ($oportunidad_etiquetas) {
+          return response()->json([
+              'error'=>false,
+              'message'=>'Correcto',
+              'data'=>$oportunidad_etiquetas
+          ],200);
+        }
+        return response()->json([
+            'error'=>true,
+            'message'=>'No hay etiquetas.'
+        ],400);
+    }
+
+    // end objeciones
 
     public function deleteEtiquetas($id_etiqueta){
 

@@ -59,7 +59,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     public function etiquetas_oportunidad(){
         return $this->hasMany('App\Modelos\Oportunidad\EtiquetasOportunidad','id_oportunidad','id_oportunidad');
     }
-
+    // 
+    public function objecion_oportunidad(){
+        return $this->hasMany('App\Modelos\Oportunidad\ObjecionOportunidad','id_oportunidad','id_oportunidad');
+    }
     public function archivos_oportunidad(){
         return $this->hasMany('App\Modelos\Oportunidad\ArchivosOportunidadColaborador','id_oportunidad','id_oportunidad');
     }
