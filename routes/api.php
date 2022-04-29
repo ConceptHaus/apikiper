@@ -146,6 +146,9 @@ Route::prefix('/v1/oportunidades')->group(function(){
             Route::post('/{id}/etiquetas','Oportunidades\OportunidadesController@addEtiquetas');
             Route::delete('/etiquetas/{etiqueta}', 'Oportunidades\OportunidadesController@deleteEtiquetas');
 
+            // Funciones de objecion 
+            Route::post('/{id}/etiquetas','Oportunidades\OportunidadesController@addObjeciones');
+
             Route::get('/{id}/archivos','Oportunidades\OportunidadesController@getArchivos');
             Route::post('/{id}/archivos','Oportunidades\OportunidadesController@addArchivos');
             Route::delete('/{oportunidad}/archivos/{id}','Oportunidades\OportunidadesController@deleteArchivos');
@@ -210,7 +213,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/estadisticas/finanzas/mensual','DataViews\DataViewsController@estadisticas_finanzas_mensual');
         Route::get('/estadisticas/finanzas/anual','DataViews\DataViewsController@estadisticas_finanzas_anual');
         Route::get('/etiquetas','DataViews\DataViewsController@etiquetas');
-        // nueva ruta
+        // get objeciones
         Route::get('/objeciones','DataViews\DataViewsController@objeciones');
         Route::get('/status','DataViews\DataViewsController@status_oportunidades');
         Route::get('/servicios','DataViews\DataViewsController@servicios');

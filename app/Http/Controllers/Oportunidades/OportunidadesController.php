@@ -418,7 +418,7 @@ class OportunidadesController extends Controller
     }
 
     // agregar objeciones
-    public function addObjecion(Request $request, $id){
+    public function addObjeciones(Request $request, $id){
         //Agregar objeciones aoportunidad
         $oportunidad = Oportunidad::where('id_oportunidad',$id)->first();
         $colaborador = $this->guard()->user();
@@ -426,10 +426,10 @@ class OportunidadesController extends Controller
 
           try {
             foreach($request->objeciones as $objecion){
-                $objeciones = ObjecionOportunidad::where('id_oportunidad',$oportunidad->id_oportunidad)->where('id_objecion', $objecion['id_etiqueta'])->select('id_etiqueta')->get();
+                $objeciones = ObjecionesOportunidad::where('id_oportunidad',$oportunidad->id_oportunidad)->where('id_objecion', $objecion['id_etiqueta'])->select('id_etiqueta')->get();
                 if ($objeciones->isEmpty()) {
                   DB::beginTransaction();
-                    $objecion_oportunidad = new ObjecionOportunidad;
+                    $objecion_oportunidad = new ObjecionesOportunidad;
                     $objecion_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
                     $objecion_oportunidad->id_objecion = $objecion['id_objecion'];
                     $objecion_oportunidad->save();
