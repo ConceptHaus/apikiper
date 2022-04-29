@@ -59,10 +59,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     public function etiquetas_oportunidad(){
         return $this->hasMany('App\Modelos\Oportunidad\EtiquetasOportunidad','id_oportunidad','id_oportunidad');
     }
-    // 
-    // public function objecion_oportunidad(){
-    //     return $this->hasMany('App\Modelos\Oportunidad\ObjecionOportunidad','id_oportunidad','id_oportunidad');
-    // }
+
     public function archivos_oportunidad(){
         return $this->hasMany('App\Modelos\Oportunidad\ArchivosOportunidadColaborador','id_oportunidad','id_oportunidad');
     }
@@ -86,9 +83,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
     public function scopeGetOportunidadEtiquetas($query,$id){
         return $query->with('etiquetas_oportunidad.etiqueta')->where('id_oportunidad',$id)->first();
-    }
-    public function scopeGetOportunidadObjecion($query,$id){
-        return $query->with('objecion_oportunidad.objecion')->where('id_oportunidad',$id)->first();
     }
     public function scopeGetOportunidadArchivos($query,$id){
         return $query->with('archivos_oportunidad')->where('id_oportunidad',$id)->first();
