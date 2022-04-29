@@ -5,13 +5,13 @@ namespace App\Modelos\Oportunidad;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class EtiquetasOportunidad extends Model
+class ObjecionesOportunidad extends Model
 {
     use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
     use SoftDeletes;
 
-    protected $table = 'etiquetas_oportunidades';
-    protected $primaryKey = 'id_etiqueta_oportunidad';
+    protected $table = 'objeciones_oportunidades';
+    protected $primaryKey = 'id_objecion_oportunidad';
     protected $fillable = [
         'id_objecion_oportunidad',
         'id_objecion',
