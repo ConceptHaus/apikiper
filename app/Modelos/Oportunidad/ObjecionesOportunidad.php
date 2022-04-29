@@ -10,7 +10,7 @@ class ObjecionesOportunidad extends Model
     use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
     use SoftDeletes;
 
-    protected $table = 'objeciones_oportunidades';
+    protected $table = 'objeciones_oportunidad';
     protected $primaryKey = 'id_objecion_oportunidad';
     protected $fillable = [
         'id_objecion_oportunidad',
