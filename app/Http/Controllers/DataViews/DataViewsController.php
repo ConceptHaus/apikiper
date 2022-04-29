@@ -1411,7 +1411,31 @@ class DataViewsController extends Controller
             ],200);
 
     }
+    // agregado 
+    public function objeciones(){
+        $objeciones = DB::table('cat_objeciones')
+        ->where('status',1)
+        ->whereNull('deleted_at')
+        ->orderBy('created_at', 'DESC')
+        ->get();
 
+        if ($objeciones) {
+          return response()->json([
+              'message'=>'Correcto',
+              'error'=>false,
+              'data'=>[
+                  'objeciones'=>$objeciones
+              ]
+              ],200);
+        }
+        return response()->json([
+            'message'=>'No hay etiquetas',
+            'error'=>false
+            ],200);
+
+    }
+    // end
+    
     public function getEtiquetasAjustes(){
       $etiquetas = DB::table('etiquetas')
       // ->where('status',1)

@@ -210,6 +210,8 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/estadisticas/finanzas/mensual','DataViews\DataViewsController@estadisticas_finanzas_mensual');
         Route::get('/estadisticas/finanzas/anual','DataViews\DataViewsController@estadisticas_finanzas_anual');
         Route::get('/etiquetas','DataViews\DataViewsController@etiquetas');
+        // nueva ruta
+        Route::get('/objeciones','DataViews\DataViewsController@objeciones');
         Route::get('/status','DataViews\DataViewsController@status_oportunidades');
         Route::get('/servicios','DataViews\DataViewsController@servicios');
         Route::get('/servicios/ajustes','DataViews\DataViewsController@serviciosAjustes');
