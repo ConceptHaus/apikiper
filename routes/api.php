@@ -145,7 +145,7 @@ Route::prefix('/v1/oportunidades')->group(function(){
             Route::get('/{id}/etiquetas','Oportunidades\OportunidadesController@getEtiquetas');
             Route::post('/{id}/etiquetas','Oportunidades\OportunidadesController@addEtiquetas');
             // Nueva 
-            Route::post('/{id}/objeciones','Oportunidades\OportunidadesController@addObjeciones');
+            // Route::post('/{id}/objeciones','Oportunidades\OportunidadesController@addObjeciones');
             Route::delete('/etiquetas/{etiqueta}', 'Oportunidades\OportunidadesController@deleteEtiquetas');
 
             Route::get('/{id}/archivos','Oportunidades\OportunidadesController@getArchivos');

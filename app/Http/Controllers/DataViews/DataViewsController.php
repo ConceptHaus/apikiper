@@ -1429,13 +1429,13 @@ class DataViewsController extends Controller
               ],200);
         }
         return response()->json([
-            'message'=>'No hay etiquetas',
+            'message'=>'No hay objeciones',
             'error'=>false
             ],200);
 
     }
     // end
-    
+
     public function getEtiquetasAjustes(){
       $etiquetas = DB::table('etiquetas')
       // ->where('status',1)
