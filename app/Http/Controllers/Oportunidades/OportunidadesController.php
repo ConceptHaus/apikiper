@@ -453,18 +453,18 @@ class OportunidadesController extends Controller
           }
     }
     // nuevo objeciones
-    public function getEtiquetas($id){
-        $oportunidad_etiquetas = Oportunidad::GetOportunidadEtiquetas($id);
-        if ($oportunidad_etiquetas) {
+    public function getObjecion($id){
+        $oportunidad_objecion = Oportunidad::GetOportunidadEtiquetas($id);
+        if (oportunidad_objecions) {
           return response()->json([
               'error'=>false,
               'message'=>'Correcto',
-              'data'=>$oportunidad_etiquetas
+              'data'=>$oportunidad_objecion 
           ],200);
         }
         return response()->json([
             'error'=>true,
-            'message'=>'No hay etiquetas.'
+            'message'=>'No hay objecion.'
         ],400);
     }
 

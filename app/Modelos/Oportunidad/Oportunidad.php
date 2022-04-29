@@ -87,6 +87,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     public function scopeGetOportunidadEtiquetas($query,$id){
         return $query->with('etiquetas_oportunidad.etiqueta')->where('id_oportunidad',$id)->first();
     }
+    public function scopeGetOportunidadObjecion($query,$id){
+        return $query->with('objecion_oportunidad.objecion')->where('id_oportunidad',$id)->first();
+    }
     public function scopeGetOportunidadArchivos($query,$id){
         return $query->with('archivos_oportunidad')->where('id_oportunidad',$id)->first();
     }
