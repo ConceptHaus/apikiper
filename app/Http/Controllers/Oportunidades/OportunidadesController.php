@@ -431,7 +431,7 @@ class OportunidadesController extends Controller
                   DB::beginTransaction();
                     $objecion_oportunidad = new ObjecionesOportunidad;
                     $objecion_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
-                    $objecion_oportunidad->id_objecion = $objecion['id_objecion'];
+                    $objecion_oportunidad->id_objecion = $objeciones['id_objecion'];
                     $objecion_oportunidad->save();
                   DB::commit();
                 }
