@@ -724,8 +724,10 @@ class OportunidadesController extends Controller
             $valor = str_replace('$ ', '', $request->valor);
             $valor = str_replace(',', '', $valor);
             $meses = intval($request->meses);
+            $acepta = str_replace($request->$acepta);
             $detalle->valor = $valor;
             $detalle->meses = $meses;
+            $detalle->acepta = $acepta;
             $detalle->save();
             DB::commit();
             $actividad = activity('oportunidad')
