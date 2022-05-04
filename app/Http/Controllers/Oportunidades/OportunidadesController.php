@@ -725,7 +725,7 @@ class OportunidadesController extends Controller
             $valor = str_replace(',', '', $valor);
             $meses = intval($request->meses);
             // $confirmacion_cotizacion = str_replace($request->$confirmacion_cotizacion);
-            $confirmacion_cotizacion = str_replace($request->$confirmacion_cotizacion);
+            // $confirmacion_cotizacion = str_replace($request->$confirmacion_cotizacion);
             $detalle->valor = $valor;
             $detalle->meses = $meses;
             $detalle->confirmacion_cotizacion = $confirmacion_cotizacion;
