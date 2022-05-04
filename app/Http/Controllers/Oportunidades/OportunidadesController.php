@@ -454,7 +454,7 @@ class OportunidadesController extends Controller
     }
     // nuevo objeciones
     public function getObjecion($id){
-        $oportunidad_objecion = Oportunidad::GetOportunidadEtiquetas($id);
+        $oportunidad_objecion = Oportunidad::GetOportunidadObjecion($id);
         if (oportunidad_objecions) {
           return response()->json([
               'error'=>false,
