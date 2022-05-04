@@ -18,7 +18,7 @@ class DetalleOportunidad extends Model
         'descripcion',
         'valor',
         'meses',
-        'confimacion_cotizacion'
+        'confirmacion_cotizacion'
     ];
 
     public function oportunidad(){
