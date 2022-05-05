@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modelos\Oportunidad;
+namespace App\Modelos\Extras;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,12 +10,12 @@ class Objecion extends Model
     use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
     use SoftDeletes;
 
-    protected $table = 'objeciones_oportunidad';
-    protected $primaryKey = 'id_objecion_oportunidad';
+    protected $table = 'cat_objecion';
+    protected $primaryKey = 'id_objecion';
     protected $fillable = [
-        'id_objecion_oportunidad',
         'id_objecion',
-        'id_oportunidad'
+        'nombre',
+        'descripcion'
         
     ];
 
