@@ -25,9 +25,6 @@ class ObjecionesOportunidad extends Model
         return $this->belongsTo('App\Modelos\Oportunidad\Oportunidad','id_oportunidad','id_oportunidad');
     }
 
-    // public function etiqueta(){
-    //     return $this->belongsTo('App\Modelos\Extras\Etiqueta','id_etiqueta','id_etiqueta');
-    // }
     public function objecion(){
         return $this->belongsTo('App\Modelos\Extras\Objecion','id_objecion','id_objecion');
     }
