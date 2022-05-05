@@ -61,7 +61,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     }
 
     public function objeciones_oportunidad(){
-        return $this->hasMany('App\Modelos\Oportunidad\ObjecionesOportunidad', 'id_objecion', 'id_objecion');
+        return $this->hasMany('App\Modelos\Oportunidad\ObjecionesOportunidad', 'id_oportunidad', 'id_oportunidad');
     }
 
     public function archivos_oportunidad(){
@@ -98,7 +98,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
         return $query->with('eventos.detalle')->where('id_oportunidad',$id)->first();
     }
     public function scopeGetOportunidadObjecion($query,$id){
-        return $query->with('ObjecionesOportunidad.objecion')->where('id_oportunidad',$id)->first();
+        return $query->with('Objeciones_Oportunidad.objecion')->where('id_oportunidad',$id)->first();
     }
 
  }
