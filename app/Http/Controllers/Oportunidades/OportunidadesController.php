@@ -503,6 +503,39 @@ class OportunidadesController extends Controller
 
     }
 
+    public function deleteObjeciones($id_objecion){
+
+        $objecion = ObjecionOportunidad::find($id_objecion);
+  
+        if ($objecion) {
+          try {
+            DB::beginTransaction();
+            $objecion->delete();
+            DB::commit();
+  
+            return response()->json([
+              'error'=>false,
+              'message'=>'objecion borrada correctamente'
+            ],200);
+  
+          } catch (Exception $e) {
+            DB::rollBack();
+            Bugsnag::notifyException(new RuntimeException("No se pudo eliminar una objecion en oportunidad"));
+            return response()->json([
+              'error'=>true,
+              'message'=>$e
+            ],400);
+          }
+  
+        }
+  
+        return response()->json([
+          'error'=>false,
+          'message'=>'Objecion no encontrada.'
+        ],200);
+  
+      }
+
     public function getArchivos($id){
         $oportunidad_archivos = Oportunidad::GetOportunidadArchivos($id);
         if ($oportunidad_archivos) {
