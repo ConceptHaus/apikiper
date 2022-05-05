@@ -94,7 +94,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
         return $query->with('eventos.detalle')->where('id_oportunidad',$id)->first();
     }
     public function scopeGetOportunidadObjecion($query,$id){
-        return $query->with('objeciones_oportunidad.objecion')->where('id_oportunidad',$id)->first();
+        return $query->with('objeciones_oportunidad.id_objecion')->where('id_oportunidad',$id)->first();
     }
 
  }
