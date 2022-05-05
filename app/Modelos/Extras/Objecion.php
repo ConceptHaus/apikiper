@@ -5,7 +5,7 @@ namespace App\Modelos\Oportunidad;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ObjecionesOportunidad extends Model
+class Objecion extends Model
 {
     use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
     use SoftDeletes;
@@ -19,17 +19,10 @@ class ObjecionesOportunidad extends Model
         
     ];
 
-    protected $dates = ['deleted_at'];
+    protected $softCascade = ['oportunidad'];
 
     public function oportunidad(){
-        return $this->belongsTo('App\Modelos\Oportunidad\Oportunidad','id_oportunidad','id_oportunidad');
-    }
-
-    // public function etiqueta(){
-    //     return $this->belongsTo('App\Modelos\Extras\Etiqueta','id_etiqueta','id_etiqueta');
-    // }
-    public function objecion(){
-        return $this->belongsTo('App\Modelos\Extras\Objecion','id_objecion','id_objecion');
+        return $this->belongsTo('App\Modelos\Oportunidad\EtiquetasOportunidad','id_etiqueta','id_etiqueta');
     }
 
 }

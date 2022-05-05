@@ -431,7 +431,7 @@ class OportunidadesController extends Controller
                   DB::beginTransaction();
                     $objecion_oportunidad = new ObjecionesOportunidad;
                     $objecion_oportunidad->id_oportunidad = $oportunidad->id_oportunidad;
-                    $objecion_oportunidad->objecion = $objecion['id_objecion'];
+                    $objecion_oportunidad->id_objecion = $objecion['id_objecion'];
                     $objecion_oportunidad->save();
                   DB::commit();
                 }
@@ -455,7 +455,7 @@ class OportunidadesController extends Controller
     // nuevo objeciones
     public function getObjecion($id){
         $oportunidad_objecion = Oportunidad::GetOportunidadObjecion($id);
-        if (oportunidad_objecions) {
+        if (oportunidad_objecion) {
           return response()->json([
               'error'=>false,
               'message'=>'Correcto',
