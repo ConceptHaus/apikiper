@@ -505,7 +505,7 @@ class OportunidadesController extends Controller
 
     public function deleteObjeciones($id_objecion){
 
-        $objecion = ObjecionOportunidad::find($id_objecion);
+        $objecion = ObjecionesOportunidad::find($id_objecion);
   
         if ($objecion) {
           try {
