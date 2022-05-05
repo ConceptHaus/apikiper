@@ -22,7 +22,7 @@ class Objecion extends Model
     protected $softCascade = ['oportunidad'];
 
     public function oportunidad(){
-        return $this->belongsTo('App\Modelos\Oportunidad\EtiquetasOportunidad','id_etiqueta','id_etiqueta');
+        return $this->belongsTo('App\Modelos\Oportunidad\ObjecionesOportunidad','id_objecion','id_objecion');
     }
 
 }
