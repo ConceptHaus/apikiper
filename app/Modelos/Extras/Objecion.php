@@ -10,7 +10,7 @@ class Objecion extends Model
     use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
     use SoftDeletes;
 
-    protected $table = 'cat_objecion';
+    protected $table = 'cat_objeciones';
     protected $primaryKey = 'id_objecion';
     protected $fillable = [
         'id_objecion',
