@@ -21,7 +21,9 @@ class Prospecto extends Model
         'nombre',
         'apellido',
         'correo',
-        'fuente'
+        'fuente',
+        'mes_cierre_estimado',
+        'anio_cierre_estimado'
     ];
     protected $softCascade = [
       'detalle_prospecto',
