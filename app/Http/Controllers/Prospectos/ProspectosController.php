@@ -171,8 +171,8 @@ class ProspectosController extends Controller
                         $statusOportunidad = new StatusOportunidad;
                         $statusOportunidad->id_cat_status_oportunidad = 1;
                         $nueva_oportunidad->nombre_oportunidad = $oportunidad['nombre_oportunidad'];
-                        $nueva_oportunidad->mes_cierre_estimado = $request->mesPosible;
-                        $nueva_oportunidad->anio_cierre_estimado = $request->anioPosible;
+                        $nueva_oportunidad->mes_cierre_estimado = $request->mes_cierre_estimado;
+                        $nueva_oportunidad->anio_cierre_estimado = $request->anio_cierre_estimado;
                         $nueva_oportunidad->save();
                         $nueva_oportunidad->status_oportunidad()->save($statusOportunidad);
 
