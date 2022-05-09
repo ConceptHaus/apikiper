@@ -182,7 +182,6 @@ class ProspectosController extends Controller
                             $valor = str_replace('$ ', '',$oportunidad['valor']);
                             $valor = str_replace(',', '', $valor);
                             $detalle_oportunidad->valor = $valor;
-                            $de
 
                         }
                         else{
