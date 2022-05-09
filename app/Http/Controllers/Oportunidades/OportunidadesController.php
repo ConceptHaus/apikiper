@@ -314,8 +314,8 @@ class OportunidadesController extends Controller
         try{
             DB::beginTransaction();
             $oportunidad->nombre_oportunidad  = $request->nombre_oportunidad;
-            $oportunidad->mes_cierre_estimado  = $request->mes_cierre_estimado;
-            $oportunidad->anio_cierre_estimado  = $request->anio_cierre_estimado;
+            $oportunidad->mes_cierre_estimado = $request->mes_cierre_estimado;
+            $oportunidad->anio_cierre_estimado = $request->anio_cierre_estimado;
 
             $prospecto_oportunidad->id_prospecto = $request->id_prospecto;
             $colaborador_oportunidad->id_colaborador = $request->id_colaborador;
