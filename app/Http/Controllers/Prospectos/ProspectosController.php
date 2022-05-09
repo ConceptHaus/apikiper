@@ -580,8 +580,8 @@ class ProspectosController extends Controller
                 //Datos generales oportunidad
                 $nueva_oportunidad = new Oportunidad;
                 $nueva_oportunidad->nombre_oportunidad = $request->nombre_oportunidad;
-                $nueva_oportunidad->mes_cierre_estimado = $request->mes_cierre_estimado;
-                $nueva_oportunidad->anio_cierre_estimado = $request->anio_cierre_estimado;
+                $nueva_oportunidad->mes_cierre_estimado = $request->mesPosible;
+                $nueva_oportunidad->anio_cierre_estimado = $request->anioPosible;
                 $nueva_oportunidad->save();
 
                 //Servicio de la oportunidad
