@@ -50,6 +50,7 @@ class MailingController extends Controller
         $mailing->subject = $request->titulo;
         $mailing->subtitle = $request->subtitulo;
         $mailing->preview_text = "";
+        $mailing->from = "pruebas123456@gmail.com";
         
         if($request->description == 'undefined')
           $mailing->text_body = null;
@@ -76,7 +77,8 @@ class MailingController extends Controller
         else
           $mailing->color_cta = $request->color_cta;
         
-        if($opcion_estatus)
+        if($request->$opcion_estatus == 'undefined')
+          $mailing->$opcion_status = null;
         {
           $mailing->opcion_status = $opcion_estatus;
         }      
@@ -84,7 +86,8 @@ class MailingController extends Controller
         {
           $mailing->opcion_etiqueta =  $opcion_etiqueta;
         }
-        if($opcion_servicio)
+        if($request->$opcion_servicio == 'undefined')
+          $mailing->$opcion_servicio = null;
         {
           $mailing->opcion_servicio =  $opcion_servicio;
         }

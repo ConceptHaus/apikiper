@@ -16,19 +16,19 @@ return [
      * Domain name registered with Mailgun
      *
      */
-    'domain' => env('MAILGUN_DOMAIN', ''),
+    'domain' => env('MAILGUN_DOMAIN', 'mg.kiper.io'),
 
     /*
      * Mailgun (private) API key
      *
      */
-    'api_key' => env('MAILGUN_PRIVATE', ''),
+    'api_key' => env('MAILGUN_PRIVATE', 'key-5b0abcb017ce11bda463f23122b62a58'),
 
     /*
      * Mailgun public API key
      *
      */
-    'public_api_key' => env('MAILGUN_PUBLIC', ''),
+    'public_api_key' => env('MAILGUN_PUBLIC', 'pubkey-71cac5914b4721a07cae791af2d94ee1'),
 
     /*
      * You may wish for all e-mails sent with Mailgun to be sent from
@@ -37,15 +37,15 @@ return [
      *
      */
     'from' => [
-        'address' => env('MAILGUN_FROM_ADDRESS', ''),
-        'name' => env('MAILGUN_FROM_NAME', ''),
+        'address' => env('MAILGUN_FROM_ADDRESS', 'pruebafrom@gmail.com'),
+        'name' => env('MAILGUN_FROM_NAME', 'prueba name'),
     ],
 
     /*
      * Global reply-to e-mail address
      *
      */
-    'reply_to' => env('MAILGUN_REPLY_TO', ''),
+    'reply_to' => env('MAILGUN_REPLY_TO', 'pruebareply@gmail.com'),
 
     /*
      * Force the from address
