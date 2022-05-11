@@ -32,27 +32,24 @@ class ProspectosListController extends Controller
 
         $paginacion = $this->findPaginacion($request);
 
-        $correos = json_decode($request->correos);
-        $nombres = json_decode($request->nombres);
         $telefonos = json_decode($request->telefonos);
-        $estatus = json_decode($request->estatus);
         $fuente = json_decode($request->fuente);
         $etiqueta = json_decode($request->etiqueta);
         $fechaInicio = json_decode($request->fechaInicio);
         $fechaFin = json_decode($request->fechaFin);
-        $colaboradores = json_decode($request->colaborador);
+        $estatus = json_decode($request->estatus);
         
         $permisos = User::getAuthenticatedUserPermissions();
         
         try{
             if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
-                $response = $proListServ->getProspectosPageByRol($auth->id, $auth->rol, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin);
+                $response = $proListServ->getProspectosPageByRol($auth->id, $auth->rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus);
     
             }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
-                $response = $proListServ->getProspectosPageForAdmin($paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores);
+                $response = $proListServ->getProspectosPageForAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus);
     
             }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
-                $response = $proListServ->getAllProspectosPageByColaborador($auth->id, $paginacion, $correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin);
+                $response = $proListServ->getAllProspectosPageByColaborador($auth->id, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus);
 
             }else{
                 $response = [];    
@@ -76,11 +73,13 @@ class ProspectosListController extends Controller
 
         $paginacion = $this->findPaginacion($request);
 
+        $busqueda = $request->busqueda;
+
         $permisos = User::getAuthenticatedUserPermissions();
 
         try{
             if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
-                $response = $proListServ->getCountProspectosForAdmin();
+                $response = $proListServ->getCountProspectosForAdmin($busqueda);
     
             }else if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
                 $response = $proListServ->getCountProspectosByRol($auth->id, $auth->rol, $paginacion);
@@ -102,7 +101,7 @@ class ProspectosListController extends Controller
         }
     }
 
-    public function findCountProspectosNotContacted(){
+    public function findCountProspectosNotContacted(Request $request){
         $auth = new AuthService();
         $auth = $auth->getUserAuthInfo(); 
         $response = new DatatableResponseDTO();
@@ -172,6 +171,38 @@ class ProspectosListController extends Controller
 
         }catch(Exception $e){
             echo 'ProspectosListController.findProspectosFuentes',  $e->getMessage(); 
+
+            $response->error = 'Ocurrio un error inesperado';
+            return response()->json($response, 500);
+        }
+    }
+
+    public function findProspectosFuentesMovil(){
+        $auth = new AuthService();
+        $auth = $auth->getUserAuthInfo(); 
+        $response = new DatatableResponseDTO();
+        $proListServ = new ProspectosListService();
+
+        $permisos = User::getAuthenticatedUserPermissions();
+
+        try{
+            if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
+                $response = $proListServ->getProspectosFuentesdByRolMovil($auth->id, $auth->rol);
+    
+            }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
+                $response = $proListServ->getProspectosFuentesByAdminMovil();
+    
+            }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
+                $response = $proListServ->getProspectosFuentesByColaboradorMovil($auth->id);
+
+            }else{
+                $response = [];    
+            }
+
+            return response()->json($response, 200);
+
+        }catch(Exception $e){
+            echo 'ProspectosListController.findProspectosFuentesMovil',  $e->getMessage(); 
 
             $response->error = 'Ocurrio un error inesperado';
             return response()->json($response, 500);
