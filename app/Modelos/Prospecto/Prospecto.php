@@ -23,6 +23,7 @@ class Prospecto extends Model
         'correo',
         'fuente'
     ];
+    
     protected $softCascade = [
       'detalle_prospecto',
       'status_prospecto',
