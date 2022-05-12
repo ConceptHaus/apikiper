@@ -15,8 +15,7 @@ class Etiqueta extends Model
         'id_etiqueta',
         'nombre',
         'descripcion',
-        'deleted_at',
-        'created_at'
+        'deleted_at'
     ];
      protected $softCascade = ['prospecto','oportunidad'];
 
