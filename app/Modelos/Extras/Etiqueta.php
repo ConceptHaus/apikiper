@@ -14,7 +14,8 @@ class Etiqueta extends Model
     protected $fillable = [
         'id_etiqueta',
         'nombre',
-        'descripcion'
+        'descripcion',
+        'deleted_at'
     ];
      protected $softCascade = ['prospecto','oportunidad'];
 
