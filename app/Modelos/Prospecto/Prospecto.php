@@ -21,10 +21,8 @@ class Prospecto extends Model
         'nombre',
         'apellido',
         'correo',
-        'fuente',
-        'deleted_at'
+        'fuente'
     ];
-
     protected $softCascade = [
       'detalle_prospecto',
       'status_prospecto',
