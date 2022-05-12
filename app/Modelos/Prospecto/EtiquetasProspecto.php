@@ -15,7 +15,8 @@ class EtiquetasProspecto extends Model
     protected $fillable = [
         'id_etiquetas_prospecto',
         'id_prospecto',
-        'id_etiqueta'
+        'id_etiqueta',
+        'deleted_at'
     ];
 
     protected $dates = ['deleted_at'];
