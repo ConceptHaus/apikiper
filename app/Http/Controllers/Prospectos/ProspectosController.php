@@ -400,7 +400,6 @@ class ProspectosController extends Controller
                         $empresa->save();
                     }
                     
-
                     $prospecto_empresa = new EmpresaProspecto;
                     $prospecto_empresa->id_empresa = $empresa->id_empresa;
                     $prospecto_empresa->id_prospecto = $id;
@@ -1102,7 +1101,7 @@ class ProspectosController extends Controller
         return Validator::make($data,[
             'nombre'    => 'nullable|string|max:30',
             'apellido'  => 'nullable|string|max:30',
-            'correo'    => 'nullable|email|max:50|unique:prospectos,correo',
+            'correo'    => 'required|email|max:50|unique:prospectos,correo',
             'telefono'  => 'required|max:9999999999',
             'celular'   => 'max:9999999999',
             'extension' => 'max:999999',
