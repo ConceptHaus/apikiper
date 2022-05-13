@@ -401,7 +401,6 @@ class ProspectosController extends Controller
             DB::beginTransaction();
             $prospecto->nombre = $request->nombre;
             $prospecto->apellido = $request->apellido;
-            $prospecto->fuente = $request->fuente;
             $prospecto->correo = $request->correo;
             $detalle->tipoafiliacion = $request-> TipoAfiliacion;
             $detalle->fechaingreso = $request-> fechaIngreso;
@@ -421,6 +420,7 @@ class ProspectosController extends Controller
             $detalle->correoempresarial = $request-> CorreoEmpresarial;
             $detalle->telefono = $request->telefono;
             $detalle->celular = $request->celular;
+            $prospecto->fuente = $request->fuente;
             $detalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
             $detalle->nota = $request->nota;
             $detalle->puesto = $request->puesto;
