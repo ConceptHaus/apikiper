@@ -406,7 +406,7 @@ class ProspectosController extends Controller
             $detalle->tipoafiliacion = $request-> TipoAfiliacion;
             $detalle->fechaingreso = $request-> fechaIngreso;
             $detalle->razonsocial= $request-> razonSocial;
-            $detalle->rfc= $request-> RFC;
+            $detalle->rfc = $request-> RFC;
             $detalle->callef = $request-> callefiscal;
             $detalle->numf = $request-> NumFiscal;
             $detalle->munf = $request-> MunicipioFiscal;
