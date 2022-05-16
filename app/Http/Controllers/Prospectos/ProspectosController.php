@@ -165,7 +165,7 @@ class ProspectosController extends Controller
                 $prospectoDetalle->ciudad=$request->ciudad;
                 $prospectoDetalle->num_empleados=$request->num_empleados;
                 $prospectoDetalle->mas_anio_operando=$request->mas_anio_operando;
-                $prospecto->fuente = 3;
+                $prospecto->fuente = $request->Fuente;
                 $prospecto->save();
                 $prospecto->status_prospecto()->save($statusProspecto);
                 
