@@ -622,10 +622,10 @@ class ProspectosController extends Controller
                 $detalle_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                 $valor = str_replace('$ ', '', $request->valor);
                 $valor = str_replace(',', '', $valor);
-                $detalle_oportunidad->checkIn = $request->checkin;
-                $detalle_oportunidad->checkOut = $request->checkout;
                 $detalle_oportunidad->valor = $valor;
                 $detalle_oportunidad->meses = $request->meses;
+                $detalle_oportunidad->checkIn = $request->checkin;
+                $detalle_oportunidad->checkOut = $request->checkout;
                 $detalle_oportunidad->save();
 
                 //Cambio de Status Prospecto
