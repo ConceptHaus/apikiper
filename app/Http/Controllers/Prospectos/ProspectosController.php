@@ -622,12 +622,12 @@ class ProspectosController extends Controller
                 //Guarda detalle oportunidad
                 $detalle_oportunidad = new DetalleOportunidad;
                 $detalle_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
-                $detalle_oportunidad->checkin_opor = $nueva_oportunidad['fecha_ingreso']; 
-                $detalle_oportunidad->checkout_opor = $nueva_oportunidad['fecha_salida'];
                 $valor = str_replace('$ ', '', $request->valor);
                 $valor = str_replace(',', '', $valor);
                 $detalle_oportunidad->valor = $valor;
                 $detalle_oportunidad->meses = $request->meses;
+                $detalle_oportunidad->checkin_opor = $request->fecha_ingreso; 
+                $detalle_oportunidad->checkout_opor = $request->fecha_salida;
                 $detalle_oportunidad->save();
 
                 //Cambio de Status Prospecto
