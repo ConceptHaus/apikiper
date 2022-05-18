@@ -181,7 +181,7 @@ class ProspectosController extends Controller
                         //Detalle de oportunidades
                         $detalle_oportunidad = new DetalleOportunidad;
                         $detalle_oportunidad->checkin_opor = $oportunidad['fecha_ingreso']; 
-                        $detalle_oportunidad->checkout_opor = $request -> fecha_salida;
+                        $detalle_oportunidad->checkout_opor = $oportunidad['fecha_salida'];
                         if(isset($oportunidad['valor'])){
                             $valor = str_replace('$ ', '',$oportunidad['valor']);
                             $valor = str_replace(',', '', $valor);
