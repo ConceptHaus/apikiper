@@ -184,8 +184,8 @@ class ProspectosController extends Controller
                             $valor = str_replace('$ ', '',$oportunidad['valor']);
                             $valor = str_replace(',', '', $valor);
                             $detalle_oportunidad->valor = $valor;
-                            $detalle_oportunidad->checkIn = $request -> checkin;
-                            $detalle_oportunidad->checkOut = $request -> checkout;
+                            $detalle_oportunidad -> checkin_opor = $request -> checkin_opor;
+                            $detalle_oportunidad -> checkout_opor = $request -> checkout_opor;
                         }
                         else{
                             $detalle_oportunidad->valor = 0;
