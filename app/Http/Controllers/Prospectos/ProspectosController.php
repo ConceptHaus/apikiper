@@ -93,6 +93,9 @@ class ProspectosController extends Controller
                 $prospectoDetalle->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular),10);
                 $prospectoDetalle->checkIn = $request->checkIn;
                 $prospectoDetalle->checkOut = $request->checkOut;
+                $prospectoDetalle-> adultos_prosp = $request-> adultos ; 
+                $prospectoDetalle-> menor_prosp = $request-> menor; 
+                $prospectoDetalle-> bebes_prosp = $request-> bebes ; 
                 $prospectoDetalle->cumpleanios = $request->cumpleanios;
                 $prospectoDetalle->costo_noche = $request->costo_noche;
                 $prospectoDetalle->whatsapp = $request -> celular; //'521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);

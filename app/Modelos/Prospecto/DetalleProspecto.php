@@ -28,6 +28,9 @@ class DetalleProspecto extends Model
         'checkOut',
         'cumpleanios',
         'costo_noche',
+        'adultos_prosp',
+        'menor_prosp',
+        'bebes_prosp'
     ];
 
     public function prospecto(){
