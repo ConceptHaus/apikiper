@@ -18,8 +18,8 @@ class DetalleOportunidad extends Model
         'descripcion',
         'valor',
         'meses',
-        'checkIn',
-        'checkOut'
+        'checkin_opor',
+        'checkout_opor'
     ];
 
     public function oportunidad(){
