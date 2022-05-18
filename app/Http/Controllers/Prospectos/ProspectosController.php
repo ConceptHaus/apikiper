@@ -180,7 +180,7 @@ class ProspectosController extends Controller
 
                         //Detalle de oportunidades
                         $detalle_oportunidad = new DetalleOportunidad;
-                        $detalle_oportunidad->checkin_opor = $DetalleOportunidad['fecha_ingreso'];
+                        $detalle_oportunidad->checkin_opor = $request -> fecha_ingreso;
                         $detalle_oportunidad->checkout_opor = $request -> fecha_salida;
                         $detalle_oportunidad->save();
                         if(isset($oportunidad['valor'])){
