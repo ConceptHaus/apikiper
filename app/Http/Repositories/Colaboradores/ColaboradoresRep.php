@@ -104,7 +104,7 @@ class ColaboradoresRep
 
             $arrayColaborador = $colaborador->toArray();
             $arrayColaborador['pass'] = $pass;
-            $arrayColaborador['link'] = 'http://system-demo.kiper.app';
+            $arrayColaborador['link'] = env('https://system-demo.kiper.app');
             $arrayColaborador['dominio'] = env('DOMINIO');
 
             Mailgun::send('auth.emails.register',$arrayColaborador,function ($contacto) use ($arrayColaborador){
