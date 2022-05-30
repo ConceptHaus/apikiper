@@ -367,6 +367,7 @@ class ProspectosController extends Controller
             $detalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
             $detalle->nota = $request->nota;
             $detalle->puesto = $request->puesto;
+            $detalle->fecha_visita = $request->fecha_visita;
             //$detalle->empresa = $request->empresa;
             $prospecto->save();
             $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto', $id)->first();
