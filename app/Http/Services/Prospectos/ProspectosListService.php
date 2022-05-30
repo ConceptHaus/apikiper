@@ -41,7 +41,6 @@ class ProspectosListService
         $datos =  $object->createPageForProspectosForAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus);
         $response->data = $datos->items("data");
 
-        $response->noContacted = $object->createCountForProspectosForAdminNotContacted($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus)->count();
         $response->prospectOrigin = ProspectosListService::getProspectosFuentesByAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus);
         $response->recordsTotal = $datos->total();
         $response->draw = 0;
