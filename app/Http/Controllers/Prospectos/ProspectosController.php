@@ -634,6 +634,9 @@ class ProspectosController extends Controller
                 $detalle_oportunidad->meses = $request->meses;
                 $detalle_oportunidad->checkin_opor = $request->fecha_ingreso; 
                 $detalle_oportunidad->checkout_opor = $request->fecha_salida;
+                $detalle_oportunidad->adultos_oport = $request->adultos;
+                $detalle_oportunidad->menor_oport = $request->menor;
+                $detalle_oportunidad->bebes_oport = $request->bebes;
                 $detalle_oportunidad->save();
 
                 //Cambio de Status Prospecto
