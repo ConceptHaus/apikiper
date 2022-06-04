@@ -236,6 +236,9 @@ Route::prefix('/v1/generales')->group(function(){
         Route::delete('/etiquetas/{id}','DataViews\DataViewsController@deleteEtiquetas');
         Route::delete('/servicios/{id}','DataViews\DataViewsController@deleteServicios');
 
+        //WhatsApp
+        Route::get('/whatsapp','Whatsapp\whatsappController@getChats');
+
     });
 
 
