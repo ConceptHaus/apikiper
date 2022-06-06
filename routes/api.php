@@ -181,6 +181,9 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/prospectosEtiquetas', 'Prospectos\ProspectosListController@findProspectosEtiquetas');
         Route::get('/prospectosPrueba/{status}','Prospectos\ProspectosListNotContactedController@findProspectosNotContacted');
         
+         //WhatsApp
+         Route::get('/whatsapp','whatsapp\whatsappController@getChats');
+
         Route::get('/dashboard','DataViews\DataViewsController@dashboard');
         Route::get('/dashboard/semanal','DataViews\DataViewsController@dashboardSemanal');
         Route::get('/dashboard/mensual','DataViews\DataViewsController@dashboardMensual');
@@ -236,8 +239,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::delete('/etiquetas/{id}','DataViews\DataViewsController@deleteEtiquetas');
         Route::delete('/servicios/{id}','DataViews\DataViewsController@deleteServicios');
 
-        //WhatsApp
-        Route::get('/whatsapp','Whatsapp\whatsappController@getChats');
+       
 
     });
 
