@@ -65,8 +65,8 @@ Route::prefix('/v1/colaboradores')->group(function(){
             Route::post('/delete','Colaboradores\ColaboradoresController@deleteColaborador');
             Route::post('/foto/{id}', 'Colaboradores\ColaboradoresController@addFoto');
             Route::delete('/foto/{id}', 'Colaboradores\ColaboradoresController@deleteFoto');
-
-
+            // whats
+            Route::get('/whats', 'Colaboradores\ColaboradoresController@getChats');
         });
 });
 
@@ -182,7 +182,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/prospectosPrueba/{status}','Prospectos\ProspectosListNotContactedController@findProspectosNotContacted');
         
          //WhatsApp
-        Route::get('/whatsapp','Whatsapp\whatsappController@getChats');
+        // Route::get('/whatsapp','Whatsapp\whatsappController@getChats');
 
         Route::get('/dashboard','DataViews\DataViewsController@dashboard');
         Route::get('/dashboard/semanal','DataViews\DataViewsController@dashboardSemanal');
