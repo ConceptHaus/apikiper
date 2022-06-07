@@ -553,7 +553,7 @@ class ColaboradoresController extends Controller
 
     }
 
-    public function getChats($method, $url, $data){
+    public function getChats(){
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
