@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Prospectos;
+namespace App\Http\Controllers\Whatsapp;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -12,25 +12,6 @@ use Illuminate\Support\Facades\Storage;
 use Spatie\CalendarLinks\Link;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use RuntimeException;
-
-use App\Modelos\User;
-use App\Modelos\Prospecto\Prospecto;
-use App\Modelos\Prospecto\DetalleProspecto;
-use App\Modelos\Prospecto\EtiquetasProspecto;
-use App\Modelos\Prospecto\ArchivosProspectoColaborador;
-use App\Modelos\Prospecto\ColaboradorProspecto;
-
-use App\Modelos\Oportunidad\Oportunidad;
-use App\Modelos\Oportunidad\DetalleOportunidad;
-use App\Modelos\Oportunidad\EtiquetasOportunidad;
-use App\Modelos\Oportunidad\ColaboradorOportunidad;
-use App\Modelos\Oportunidad\ServicioOportunidad;
-use App\Modelos\Oportunidad\ProspectoOportunidad;
-
-use App\Modelos\Empresa\Empresa;
-use App\Modelos\Empresa\EmpresaProspecto;
-use App\Http\Services\Auth\AuthService;
-
 
 use App\Http\Enums\OldRole;
 use App\Http\Services\Users\UserService;

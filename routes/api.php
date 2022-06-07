@@ -364,6 +364,6 @@ Route::prefix('/v1/recordatorios')->group(function(){
 Route::prefix('/v1/whatsapp')->group(function(){
     Route::middleware(['auth','cors'])->group(function(){
     // whats
-        Route::get('/whatsapp', 'Whatsapp\whatsappController@getMensajes');
+        Route::get('/', 'Whatsapp\whatsappController@getMensajes');
     });
 });
