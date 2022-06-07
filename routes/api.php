@@ -182,7 +182,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/prospectosPrueba/{status}','Prospectos\ProspectosListNotContactedController@findProspectosNotContacted');
         
          //WhatsApp
-         Route::get('/whatsapp','Whatsapp\whatsappController@getChats');
+        Route::get('/whatsapp','Whatsapp\whatsappController@getChats');
 
         Route::get('/dashboard','DataViews\DataViewsController@dashboard');
         Route::get('/dashboard/semanal','DataViews\DataViewsController@dashboardSemanal');

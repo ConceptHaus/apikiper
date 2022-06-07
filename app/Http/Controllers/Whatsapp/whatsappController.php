@@ -41,7 +41,8 @@ use DB;
 use Mail;
 use Mailgun;
 use Carbon\Carbon;
-class ProspectosController extends Controller
+
+class whatsappController extends Controller
 {
 
     private $userServ;
