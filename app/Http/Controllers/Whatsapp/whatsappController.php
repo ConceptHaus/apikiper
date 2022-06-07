@@ -51,7 +51,7 @@ class whatsappController extends Controller
     public function __construct(){
     }
 
-    public function getChats($method, $url, $data){
+    public function getMensajes(){
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
