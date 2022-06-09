@@ -361,9 +361,9 @@ Route::prefix('/v1/recordatorios')->group(function(){
 });
 
 // whatsapp
-Route::prefix('/v1/whatsapp')->group(function(){
-    Route::middleware(['auth','cors'])->group(function(){
-    // whats
-        Route::get('/', 'Whatsapp\whatsappController@getMensajes');
-    });
-});
+// Route::prefix('/v1/whatsapp')->group(function(){
+//     Route::middleware(['auth','cors'])->group(function(){
+//     // whats
+//         Route::get('/', 'Whatsapp\whatsappController@getMensajes');
+//     });
+// });
