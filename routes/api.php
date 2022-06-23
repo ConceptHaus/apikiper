@@ -277,7 +277,7 @@ Route::prefix('/v1/mailing')->group(function(){
 
 Route::prefix('/v1/password')->group(function(){
     Route::middleware(['auth','cors'])->group(function(){
-        Route::post('/','recuperarpassword\recuperarpasswordController@mailforgot');
+        Route::post('/','recuperarpassword\recuperarpasswordController@mailforget');
     });
 });
 
