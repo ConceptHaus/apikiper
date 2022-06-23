@@ -19,15 +19,16 @@ use App\Modelos\Prospecto\StatusProspecto;
 use Mailgun;
 use DB;
 
-class recuperarPasswordController extends Controller
-{
+class recuperarPasswordController extends Controller {
     public function mailforgot(Request $request){
         $queryusuario = mysqli_query("SELECT * FROM users WHERE email = '$email'");
-        $numregistro 			= mysqli_num_rows($queryusuario); 
+        $numregistro = mysqli_num_rows($queryusuario); 
+
     if ($numregistro == 1)
-    {
-        $mostrar = mysqli_fetch_array($queryusuario);
-    }  else {
-        echo "error";
+        {
+            $mostrar = mysqli_fetch_array($queryusuario);
+        }  else {
+         echo "error";
+        }
     }
 }
