@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\File;
 use Mailgun;
 use DB;
 
-class recuperarPasswordController extends Controller 
+class recuperarpasswordController extends Controller 
 {
 
     public function mailforgot(Request $request){
