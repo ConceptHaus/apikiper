@@ -25,7 +25,17 @@ class DetalleProspecto extends Model
         'extension',
         'nombre_campana',
         'desarrollo',
-        'ciudad'
+        'ciudad',
+        'campo_adicional_1',
+        'campo_adicional_2',
+        'campo_adicional_3',
+        'campo_adicional_4',
+        'campo_adicional_5',
+        'campo_adicional_6',
+        'campo_adicional_7',
+        'campo_adicional_8',
+        'campo_adicional_9',
+        'campo_adicional_10'
         
     ];
 
