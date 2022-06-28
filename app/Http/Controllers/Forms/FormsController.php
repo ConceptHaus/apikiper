@@ -369,16 +369,16 @@ class FormsController extends Controller
           $detalleProspecto->whatsapp = (isset($data['whatsapp']) ? preg_replace('/[^0-9]+/','',$data['whatsapp']) : '');
           $detalleProspecto->nota = (isset($data['mensaje']) ? $data['mensaje'] : '');
           //Campos personalizados
-          $detalleProspecto->camdo_adicional_1      = (isset($data['campo_adicional_1'])      ? $data['campo_adicional_1'] : '');
-          $detalleProspecto->camdo_adicional_2      = (isset($data['campo_adicional_2'])      ? $data['campo_adicional_2'] : '');
-          $detalleProspecto->camdo_adicional_3      = (isset($data['campo_adicional_3'])      ? $data['campo_adicional_3'] : '');
-          $detalleProspecto->camdo_adicional_4      = (isset($data['campo_adicional_4'])      ? $data['campo_adicional_4'] : '');
-          $detalleProspecto->camdo_adicional_5      = (isset($data['campo_adicional_5'])      ? $data['campo_adicional_5'] : '');
-          $detalleProspecto->camdo_adicional_6      = (isset($data['campo_adicional_6'])      ? $data['campo_adicional_6'] : '');
-          $detalleProspecto->camdo_adicional_7      = (isset($data['campo_adicional_7'])      ? $data['campo_adicional_7'] : '');
-          $detalleProspecto->camdo_adicional_8      = (isset($data['campo_adicional_8'])      ? $data['campo_adicional_8'] : '');
-          $detalleProspecto->camdo_adicional_9      = (isset($data['campo_adicional_9'])      ? $data['campo_adicional_9'] : '');
-          $detalleProspecto->camdo_adicional_10      = (isset($data['campo_adicional_10'])      ? $data['campo_adicional_10'] : '');
+          $detalleProspecto->campo_adicional_1      = (isset($data['campo_adicional_1'])      ? $data['campo_adicional_1'] : '');
+          $detalleProspecto->campo_adicional_2      = (isset($data['campo_adicional_2'])      ? $data['campo_adicional_2'] : '');
+          $detalleProspecto->campo_adicional_3      = (isset($data['campo_adicional_3'])      ? $data['campo_adicional_3'] : '');
+          $detalleProspecto->campo_adicional_4      = (isset($data['campo_adicional_4'])      ? $data['campo_adicional_4'] : '');
+          $detalleProspecto->campo_adicional_5      = (isset($data['campo_adicional_5'])      ? $data['campo_adicional_5'] : '');
+          $detalleProspecto->campo_adicional_6      = (isset($data['campo_adicional_6'])      ? $data['campo_adicional_6'] : '');
+          $detalleProspecto->campo_adicional_7      = (isset($data['campo_adicional_7'])      ? $data['campo_adicional_7'] : '');
+          $detalleProspecto->campo_adicional_8      = (isset($data['campo_adicional_8'])      ? $data['campo_adicional_8'] : '');
+          $detalleProspecto->campo_adicional_9      = (isset($data['campo_adicional_9'])      ? $data['campo_adicional_9'] : '');
+          $detalleProspecto->campo_adicional_10      = (isset($data['campo_adicional_10'])      ? $data['campo_adicional_10'] : '');
           
 
 
