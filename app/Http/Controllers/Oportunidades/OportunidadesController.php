@@ -211,7 +211,7 @@ class OportunidadesController extends Controller
     }*/
     
         public function oportunidades_por_status($status){
-        if(isset($status) && !empty($status)){
+        if(isset($status) && $status > 0){
         return DB::table('oportunidades')
             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
             ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
