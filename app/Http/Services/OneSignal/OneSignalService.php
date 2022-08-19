@@ -63,7 +63,7 @@ class OneSignalService
     {
         $one_signal_user = UserOneSignal::where('user_id', $user_id)->get();
         
-        if (count($one_signal_user) > 0) {
+        #if (count($one_signal_user) > 0) {
             
             $player_ids  = array();
 
@@ -108,6 +108,6 @@ class OneSignalService
             curl_close($ch);
             
             return $response;
-        }
+        #}
     }
 }
