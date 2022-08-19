@@ -83,7 +83,7 @@ class OneSignalService
             
                 //TODO msepulveda - poner datos en enviroment
             $fields = array(
-                'app_id' => "7eaa665b-101e-40b1-9594-2fc40887c776",
+                'app_id' => "73467949-e681-4532-9979-ac7e8cbd8443",
                 // 'app_id' => env("ONE_SIGNAL_APP_ID"),
                 'include_player_ids' => $player_ids,
                 'headings' => $heading,
