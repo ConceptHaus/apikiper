@@ -202,12 +202,29 @@ class OportunidadesController extends Controller
             ],200);
     }
     
-    public function oportunidades_por_status($status){
+    /*public function oportunidades_por_status($status){
         return DB::table('oportunidades')
             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
             ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
             ->whereNull('oportunidades.deleted_at')
             ->where('status_oportunidad.id_cat_status_oportunidad','=',$status)->count();
+    }*/
+    
+        public function oportunidades_por_status($status){
+        if(isset($status) && !empty($status)){
+        return DB::table('oportunidades')
+            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+            ->whereNull('oportunidades.deleted_at')
+            ->where('status_oportunidad.id_cat_status_oportunidad','=',$status)->count();
+        }
+        else{
+            return DB::table('oportunidades')
+            ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
+            ->join('status_oportunidad','colaborador_oportunidad.id_oportunidad','status_oportunidad.id_oportunidad')
+            ->whereNull('oportunidades.deleted_at')
+            ->count();
+        }
     }
 
     public function getAllOportunidadesStatus($status){
