@@ -17,7 +17,8 @@ class DetalleRecordatorioProspecto extends Model
         'id_recordatorio_prospecto',
         'fecha_recordatorio',
         'hora_recordatorio',
-        'nota_recordatorio'
+        'nota_recordatorio',
+        'aquien_enviar'
     ];
 
     public function recordatorio(){
