@@ -5,6 +5,7 @@ namespace App\Http\Repositories\Recordatorios;
 use App\Modelos\Recordatorios\RecordatoriosOportunidades;
 use App\Modelos\Recordatorios\RecordatoriosProspectos;
 use App\Modelos\Recordatorios\RecordatoriosUsuarios;
+use DB;
 
 class RecordatoriosRep
 {
