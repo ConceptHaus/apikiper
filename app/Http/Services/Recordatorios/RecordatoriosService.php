@@ -3,9 +3,21 @@ namespace App\Http\Services\Recordatorios;
 use App\Http\Repositories\Recordatorios\RecordatoriosRep;
 use App\Modelos\Recordatorios\Recordatorios;
 use App\Http\Services\OneSignal\OneSignalService;
+use Twilio\Rest\Client;
 
 class RecordatoriosService
 {
+
+    function __construct()
+    { 
+
+        $accountSid = env('TWILIO_ACCOUNT_SID');
+        $authToken = env('TWILIO_AUTH_TOKEN');
+        $sendingNumber = env('TWILIO_NUMBER');
+        $twilioClient = new Client($accountSid, $authToken);
+    
+    }
+
     public static function getRecordatoriosOportunidades(){
         $recordatorios = RecordatoriosRep::getRecordatoriosOportunidades();
         
@@ -29,15 +41,29 @@ class RecordatoriosService
          
         if (count($recordatorios)>0) {
             foreach ($recordatorios as $key => $recordatorio) {
-                OneSignalService::sendNotification(
-                    $recordatorio['user_id'],
-                    'Alerta Prospecto '. $recordatorio['nombre'].' '. $recordatorio['apellido'],
-                    $recordatorio['nota_recordatorio'],
-                    'alerta_prospecto',
-                    $recordatorio['id_recordatorio_prospecto']
-                );
+
+                // OneSignalService::sendNotification(
+                //     $recordatorio['user_id'],
+                //     'Alerta Prospecto '. $recordatorio['nombre'].' '. $recordatorio['apellido'],
+                //     $recordatorio['nota_recordatorio'],
+                //     'alerta_prospecto',
+                //     $recordatorio['id_recordatorio_prospecto']
+                // );
                 
-                RecordatoriosRep::updateRecordatorioProspectoStatus($recordatorio['id_recordatorio_prospecto']);
+                if ( strlen( $recordatorio['dp.telefono'] ) == 10 ) {
+
+                    $sms = $this->twilioClient->messages->create(
+                        '+52'.$recordatorio['dp.telefono'],
+                        array(
+                            "from" => $this->sendingNumber,
+                            "body" => 'Kiper reminder: '.$recordatorio['drp.nota_recordatorio']
+                        )
+                    );
+                    if ( $sms ) {
+                        RecordatoriosRep::updateRecordatorioProspectoStatus( $recordatorio['id_recordatorio_prospecto'] );
+                    }
+                }
+
             }
         }
     }

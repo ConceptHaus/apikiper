@@ -26,14 +26,16 @@ class RecordatoriosRep
     public static function getRecordatoriosProspectos()
     {
         $now           = date('Y-m-d H:i:s');
-        $recordatorios = RecordatoriosProspectos::join('detalle_recordatorio_prospecto', 'detalle_recordatorio_prospecto.id_recordatorio_prospecto', 'recordatorios_prospecto.id_recordatorio_prospecto')
-                                                ->join('users', 'users.id', 'recordatorios_prospecto.id_colaborador')
-                                                ->join('prospectos', 'prospectos.id_prospecto', 'recordatorios_prospecto.id_prospecto')
-                                                ->join('users_one_signal', 'users_one_signal.user_id', 'users.id')                                       
-                                                ->where('recordatorios_prospecto.status', 0)
-                                                ->where('fecha_recordatorio', '<=', $now)
-                                                ->groupBy('recordatorios_prospecto.id_recordatorio_prospecto')
-                                                ->get();
+        $recordatorios = DB::table('recordatorios_prospecto as rp')
+                ->join('detalle_recordatorio_prospecto as drp', 'drp.id_recordatorio_prospecto', 'rp.id_recordatorio_prospecto')
+                ->join('users as a', 'a.id', 'rp.id_colaborador')
+                ->join('prospectos as p', 'p.id_prospecto', 'rp.id_prospecto')
+                ->join('detalle_prospecto as dp', 'p.id_prospecto', 'dp.id_prospecto')
+                ->join('detalle_colaborador as dc', 'dc.id_prospecto', 'u.id')
+                ->where('rp.status', 0)
+                ->where('fecha_recordatorio', '<=', $now)
+                ->groupBy('rp.id_recordatorio_prospecto')
+                ->get();
         return $recordatorios;
     }
 
