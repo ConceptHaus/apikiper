@@ -49,14 +49,14 @@ class RecordatoriosService
                 //     'alerta_prospecto',
                 //     $recordatorio['id_recordatorio_prospecto']
                 // );
-                
-                if ( strlen( $recordatorio['dp.telefono'] ) == 10 ) {
+
+                if ( strlen( $recordatorio['telefono_1'] ) == 10 ) {
 
                     $sms = $this->twilioClient->messages->create(
-                        '+52'.$recordatorio['dp.telefono'],
+                        '+52'.$recordatorio['telefono_1'],
                         array(
                             "from" => $this->sendingNumber,
-                            "body" => 'Kiper reminder: '.$recordatorio['drp.nota_recordatorio']
+                            "body" => 'Kiper reminder: '.$recordatorio['nota_recordatorio']
                         )
                     );
                     if ( $sms ) {
