@@ -709,7 +709,7 @@ class ProspectosController extends Controller
 
                     $wholist = json_decode($prospecto_recordatorio->detalle['aquien_enviar']);
                     $recordatorios = $recordatorios . '<div class="who-send"><span> Enviado a: ';
-                    ' A mi, Colaborador Asignado, Cliente'
+                    
                     $list = "";
                     foreach ($wholist as $key => $who) {
                        if($wholist->$key){
@@ -763,7 +763,7 @@ class ProspectosController extends Controller
                 $detalle_recordatorio->fecha_recordatorio = $request->fecha_recordatorio;
                 $detalle_recordatorio->hora_recordatorio = $request->hora_recordatorio;
                 $detalle_recordatorio->nota_recordatorio = $request->nota_recordatorio;
-                $detalle_recordatorio->aquien_enviar = $request->whosend;
+                $detalle_recordatorio->aquien_enviar = json_encode( $request->whosend );
                 $recordatorio->detalle()->save($detalle_recordatorio);
                 DB::commit();
                 return response()->json([
