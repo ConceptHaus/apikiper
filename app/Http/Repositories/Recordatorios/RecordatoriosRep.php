@@ -32,7 +32,7 @@ class RecordatoriosRep
                 ->join('users as a', 'a.id', 'rp.id_colaborador')
                 ->join('prospectos as p', 'p.id_prospecto', 'rp.id_prospecto')
                 ->join('detalle_prospecto as dp', 'p.id_prospecto', 'dp.id_prospecto')
-                ->join('detalle_colaborador as dc', 'dc.id_colaborador', 'u.id')
+                ->join('detalle_colaborador as dc', 'dc.id_colaborador', 'a.id')
                 ->where('rp.status', 0)
                 ->where('fecha_recordatorio', '<=', $now)
                 ->groupBy('rp.id_recordatorio_prospecto')
