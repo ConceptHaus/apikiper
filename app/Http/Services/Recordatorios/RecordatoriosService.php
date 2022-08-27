@@ -8,13 +8,18 @@ use Twilio\Rest\Client;
 class RecordatoriosService
 {
 
+    protected $accountSid = "";
+    protected $authToken = "";
+    protected $sendingNumber = "";
+    protected $twilioClient = "";
+
     function __construct()
     { 
 
         $accountSid = env('TWILIO_ACCOUNT_SID');
         $authToken = env('TWILIO_AUTH_TOKEN');
-        $sendingNumber = env('TWILIO_NUMBER');
-        $twilioClient = new Client($accountSid, $authToken);
+        $this->sendingNumber = env('TWILIO_NUMBER');
+        $this->twilioClient = new Client($accountSid, $authToken);
     
     }
 
