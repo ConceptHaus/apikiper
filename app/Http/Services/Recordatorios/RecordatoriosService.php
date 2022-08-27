@@ -49,12 +49,11 @@ class RecordatoriosService
                 //     'alerta_prospecto',
                 //     $recordatorio['id_recordatorio_prospecto']
                 // );
-var_dump($recordatorio);
-die();
-                if ( strlen( $recordatorio->telefono_1 ) == 10 ) {
+
+                if ( strlen( $recordatorio->telefono ) == 10 ) {
 
                     $sms = $this->twilioClient->messages->create(
-                        '+52'.$recordatorio->telefono_1,
+                        '+52'.$recordatorio->telefono,
                         array(
                             "from" => $this->sendingNumber,
                             "body" => 'Kiper reminder: '.$recordatorio->nota_recordatorio
