@@ -8,24 +8,14 @@ use Twilio\Rest\Client;
 class RecordatoriosService
 {
 
-    public $accountSid = "";
-    public $authToken = "";
-    public $sendingNumber = "";
-    public $twilioClient = "";
-
-    function __construct()
-    { 
+    public function enviarRecodatorioSMS($telefono, $mensaje){
 
         $accountSid = env('TWILIO_ACCOUNT_SID');
         $authToken = env('TWILIO_AUTH_TOKEN');
-        $this->sendingNumber = env('TWILIO_NUMBER');
-        $this->twilioClient = new Client($accountSid, $authToken);
-    
-    }
+        $sendingNumber = env('TWILIO_NUMBER');
+        $twilioClient = new Client($accountSid, $authToken);
 
-    public function enviarRecodatorioSMS($telefono, $mensaje){
-
-       return $this->twilioClient->messages->create(
+       return $twilioClient->messages->create(
             '+52'.$telefono,
             array(
                 "from" => $this->sendingNumber,
