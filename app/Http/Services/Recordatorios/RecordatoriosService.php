@@ -57,7 +57,7 @@ class RecordatoriosService
                 //     $recordatorio['id_recordatorio_prospecto']
                 // );
 
-                if ( strlen( $recordatorio->telefono ) == 10 ) {
+                if ( strlen( $recordatorio->telefono_prospecto ) == 10 ) {
                     
                     $sms = RecordatoriosService::enviarRecodatorioSMS($recordatorio->telefono_prospecto, $recordatorio->nota_recordatorio );
                     if ( $sms ) {
