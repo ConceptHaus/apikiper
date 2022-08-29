@@ -58,8 +58,8 @@ class RecordatoriosService
                 // );
 
                 if ( strlen( $recordatorio->telefono ) == 10 ) {
-
-                    $sms = RecordatoriosService::enviarRecodatorioSMS($recordatorio->telefono, $recordatorio->nota_recordatorio );
+                    
+                    $sms = RecordatoriosService::enviarRecodatorioSMS($recordatorio->telefono_prospecto, $recordatorio->nota_recordatorio );
                     if ( $sms ) {
                         RecordatoriosRep::updateRecordatorioProspectoStatus( $recordatorio->id_recordatorio_prospecto );
                     }
