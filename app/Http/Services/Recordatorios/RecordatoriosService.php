@@ -8,7 +8,7 @@ use Twilio\Rest\Client;
 class RecordatoriosService
 {
 
-    public function enviarRecodatorioSMS($telefono, $mensaje){
+    public static function enviarRecodatorioSMS($telefono, $mensaje){
 
         $accountSid = env('TWILIO_ACCOUNT_SID');
         $authToken = env('TWILIO_AUTH_TOKEN');
@@ -58,7 +58,7 @@ class RecordatoriosService
                 // );
 
                 if ( strlen( $recordatorio->telefono_prospecto ) == 10 ) {
-                    
+
                     $sms = RecordatoriosService::enviarRecodatorioSMS($recordatorio->telefono_prospecto, $recordatorio->nota_recordatorio );
                     if ( $sms ) {
                         RecordatoriosRep::updateRecordatorioProspectoStatus( $recordatorio->id_recordatorio_prospecto );
