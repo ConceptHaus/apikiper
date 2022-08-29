@@ -56,12 +56,28 @@ class RecordatoriosService
                 //     'alerta_prospecto',
                 //     $recordatorio['id_recordatorio_prospecto']
                 // );
+                $enviarList = json_decode( $recordatorio->aquien_enviar );
+                foreach ($enviarList as $key => $envia) {
+                    if($enviarList->$key){
+                       
+                       $telefono = $recordatorio->telefono_prospecto;
 
-                if ( strlen( $recordatorio->telefono_prospecto ) == 10 ) {
+                       if ($key == 'cliente') {
+                            $telefono = $recordatorio->telefono_prospecto;
+                       }
 
-                    $sms = RecordatoriosService::enviarRecodatorioSMS($recordatorio->telefono_prospecto, $recordatorio->nota_recordatorio );
-                    if ( $sms ) {
-                        RecordatoriosRep::updateRecordatorioProspectoStatus( $recordatorio->id_recordatorio_prospecto );
+                       if ($key == 'colaborador') {
+                            $telefono = $recordatorio->telefono_colaborador;
+                       }
+
+                        if ( strlen( $telefono ) == 10 ) {
+
+                            $sms = RecordatoriosService::enviarRecodatorioSMS( $telefono, $recordatorio->nota_recordatorio );
+                            if ( $sms ) {
+                                RecordatoriosRep::updateRecordatorioProspectoStatus( $recordatorio->id_recordatorio_prospecto );
+                            }
+                        }
+
                     }
                 }
 
