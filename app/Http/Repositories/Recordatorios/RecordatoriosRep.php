@@ -30,7 +30,7 @@ class RecordatoriosRep
         $recordatorios = DB::table('recordatorios_prospecto as rp')->select('dc.telefono as telefono_colaborador',' dc.celular as celular_colaborador',' dc.whatsapp as whatsapp_colaborador',' dp.telefono as telefono_prospecto',' dp.celular as celular_prospecto',' dp.whatsapp as whatsapp_prospecto',' drp.nota_recordatorio',' drp.aquien_enviar')
                 ->join('detalle_recordatorio_prospecto as drp', 'drp.id_recordatorio_prospecto', 'rp.id_recordatorio_prospecto')
                 ->join('users as a', 'a.id', 'rp.id_colaborador')
-                ->join('detalle_colaborador as dc', 'dc.id_colaborador', 'a.id')
+                ->leftjoin('detalle_colaborador as dc', 'dc.id_colaborador', 'a.id')
                 ->join('prospectos as p', 'p.id_prospecto', 'rp.id_prospecto')
                 ->join('detalle_prospecto as dp', 'p.id_prospecto', 'dp.id_prospecto')
                 ->where('rp.status', 0)
