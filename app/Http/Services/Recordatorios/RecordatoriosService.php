@@ -18,7 +18,7 @@ class RecordatoriosService
        return $twilioClient->messages->create(
             '+52'.$telefono,
             array(
-                "from" => $this->sendingNumber,
+                "from" => $sendingNumber,
                 "body" => 'Kiper reminder: '.$mensaje
             )
         );
