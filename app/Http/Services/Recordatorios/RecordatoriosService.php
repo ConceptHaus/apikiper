@@ -8,10 +8,10 @@ use Twilio\Rest\Client;
 class RecordatoriosService
 {
 
-    protected $accountSid = "";
-    protected $authToken = "";
-    protected $sendingNumber = "";
-    protected $twilioClient = "";
+    public $accountSid = "";
+    public $authToken = "";
+    public $sendingNumber = "";
+    public $twilioClient = "";
 
     function __construct()
     { 
@@ -21,6 +21,18 @@ class RecordatoriosService
         $this->sendingNumber = env('TWILIO_NUMBER');
         $this->twilioClient = new Client($accountSid, $authToken);
     
+    }
+
+    public function enviarRecodatorioSMS($telefono, $mensaje){
+
+       return $this->twilioClient->messages->create(
+            '+52'.$telefono,
+            array(
+                "from" => $this->sendingNumber,
+                "body" => 'Kiper reminder: '.$mensaje
+            )
+        );
+
     }
 
     public static function getRecordatoriosOportunidades(){
@@ -57,13 +69,7 @@ class RecordatoriosService
 
                 if ( strlen( $recordatorio->telefono ) == 10 ) {
 
-                    $sms = $this->twilioClient->messages->create(
-                        '+52'.$recordatorio->telefono,
-                        array(
-                            "from" => $this->sendingNumber,
-                            "body" => 'Kiper reminder: '.$recordatorio->nota_recordatorio
-                        )
-                    );
+                    $sms = RecordatoriosService::enviarRecodatorioSMS($recordatorio->telefono, $recordatorio->nota_recordatorio );
                     if ( $sms ) {
                         RecordatoriosRep::updateRecordatorioProspectoStatus( $recordatorio->id_recordatorio_prospecto );
                     }
