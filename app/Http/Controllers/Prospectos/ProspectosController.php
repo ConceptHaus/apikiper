@@ -750,6 +750,21 @@ class ProspectosController extends Controller
                 $recordatorios = $recordatorios . '<span>'.strftime("%d de %B de %Y", strtotime($prospecto_recordatorio->detalle['fecha_recordatorio'])).'</span>';
                 $recordatorios = $recordatorios . '<span>'.date( 'H:i', strtotime($prospecto_recordatorio->detalle['fecha_recordatorio'])).'</span></div>';
                 $recordatorios = $recordatorios . '<div class="notas-textos"><p>'.$prospecto_recordatorio->detalle['nota_recordatorio'].'</p></div>';
+                if (!empty($prospecto_recordatorio->detalle['aquien_enviar'])) {
+
+                    $wholist = json_decode($prospecto_recordatorio->detalle['aquien_enviar']);
+                    $recordatorios = $recordatorios . '<div class="who-send"><span> Enviado a: ';
+                    
+                    $list = "";
+                    foreach ($wholist as $key => $who) {
+                       if($wholist->$key){
+                        $list .= $key.', ';
+                       }
+                    }
+                    
+                    $recordatorios = $recordatorios . trim($list,', ') .'</span></div>';
+                }
+                $recordatorios = $recordatorios . '</div>';
             }
 
             $recordatorios = $recordatorios . '</div>';
@@ -793,6 +808,7 @@ class ProspectosController extends Controller
                 $detalle_recordatorio->fecha_recordatorio = $request->fecha_recordatorio;
                 $detalle_recordatorio->hora_recordatorio = $request->hora_recordatorio;
                 $detalle_recordatorio->nota_recordatorio = $request->nota_recordatorio;
+                $detalle_recordatorio->aquien_enviar = json_encode( $request->whosend );
                 $recordatorio->detalle()->save($detalle_recordatorio);
                 DB::commit();
                 return response()->json([

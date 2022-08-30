@@ -11,9 +11,9 @@ class RecordatoriosController extends Controller
 {
     public function sendAlerts()
     {
-        $this->getRecordatoriosOportunidades();
+        //$this->getRecordatoriosOportunidades();
         $this->getRecordatoriosProspectos();
-        $this->getRecordatoriosUsuarios();
+        //$this->getRecordatoriosUsuarios();
     }
 
     public function getRecordatoriosOportunidades(){
