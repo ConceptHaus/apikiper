@@ -66,7 +66,7 @@ class RecordatoriosService
                             $telefono = $recordatorio->telefono_prospecto;
                        }
 
-                       if ($key == 'colaborador') {
+                       if ($key == 'colaborador' or $key == "a_mi") {
                             $telefono = $recordatorio->telefono_colaborador;
                        }
 
