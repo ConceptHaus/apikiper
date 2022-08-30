@@ -35,7 +35,7 @@ class RecordatoriosRep
                 ->join('detalle_prospecto as dp', 'p.id_prospecto', 'dp.id_prospecto')
                 ->where('rp.status', 0)
                 ->where('fecha_recordatorio', '<=', $now)
-                ->where('p.id_prospecto', '=', 'f270cb37-9e2f-455e-976f-25d785fb2c50')
+                //->where('p.id_prospecto', '=', 'f270cb37-9e2f-455e-976f-25d785fb2c50')
                 ->groupBy('rp.id_recordatorio_prospecto')
                 ->get();
         return $recordatorios;
