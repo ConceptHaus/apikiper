@@ -54,30 +54,45 @@ class RecordatoriosService
                 //     'alerta_prospecto',
                 //     $recordatorio['id_recordatorio_prospecto']
                 // );
+                $aquien_enviar = $recordatorio->aquien_enviar;
+                if ( !$aquien_enviar ) {
+                    $aquien_enviar = '{"a_mi":false,"colaborador":true,"cliente":false}';
+                }
 
-                $enviarList = json_decode( $recordatorio->aquien_enviar );
+                $enviarList = json_decode( $aquien_enviar );
                 foreach ($enviarList as $key => $envia) {
-                    if($enviarList->$key){
-                       
-                       $telefono = $recordatorio->telefono_prospecto;
+                    try {
+                        if($enviarList->$key){
+                           
+                            $mensaje = "";
+                            $telefono = $recordatorio->celular_prospecto;
 
-                       if ($key == 'cliente') {
-                            $telefono = $recordatorio->telefono_prospecto;
-                       }
+                           if ($key == 'cliente') {
+                                $telefono = $recordatorio->celular_prospecto;
+                                $mensaje = $recordatorio->nota_recordatorio;
+                           }
 
-                       if ($key == 'colaborador' or $key == "a_mi") {
-                            $telefono = $recordatorio->telefono_colaborador;
-                       }
+                           if ($key == 'colaborador' or $key == "a_mi") {
+                                $telefono = $recordatorio->celular_colaborador;
+                                $mensaje .= "Nombre Cliente: ". $recordatorio->prospecto_name;
+                                $mensaje .= "Email Cliente: ". $recordatorio->prospecto_email;
+                                $mensaje .= "Mensaje: ". $recordatorio->nota_recordatorio;
 
-                        if ( strlen( $telefono ) == 10 ) {
+                           }
 
-                            $sms = RecordatoriosService::enviarRecodatorioSMS( $telefono, $recordatorio->nota_recordatorio );
-                            if ( $sms ) {
-                                RecordatoriosRep::updateRecordatorioProspectoStatus( $recordatorio->id_recordatorio_prospecto );
+                            if ( strlen( $telefono ) == 10 ) {
+
+                                $sms = RecordatoriosService::enviarRecodatorioSMS( $telefono, $mensaje );
+                                if ( $sms ) {
+                                    RecordatoriosRep::updateRecordatorioProspectoStatus( $recordatorio->id_recordatorio_prospecto );
+                                }
                             }
-                        }
 
+                        }
+                    } catch (Exception $e) {
+                        // write to logs error
                     }
+
                 }
                 
                 #RecordatoriosRep::updateRecordatorioProspectoStatus($recordatorio['id_recordatorio_prospecto']);
