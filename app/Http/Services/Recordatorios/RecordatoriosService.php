@@ -18,7 +18,7 @@ class RecordatoriosService
             '+52'.$telefono,
             array(
                 "from" => $sendingNumber,
-                "body" => 'Kiper reminder: '.$mensaje
+                "body" => 'Kiper reminder '.$mensaje
             )
         );
 
@@ -74,9 +74,9 @@ class RecordatoriosService
 
                            if ($key == 'colaborador' or $key == "a_mi") {
                                 $telefono = $recordatorio->celular_colaborador;
-                                $mensaje .= "Nombre Cliente: ". $recordatorio->prospecto_name;
-                                $mensaje .= "Email Cliente: ". $recordatorio->prospecto_email;
-                                $mensaje .= "Mensaje: ". $recordatorio->nota_recordatorio;
+                                $mensaje .= "Nombre Prospecto: ". $recordatorio->prospecto_name;
+                                $mensaje .= " Email Prospecto: ". $recordatorio->prospecto_email;
+                                $mensaje .= " Mensaje: ". $recordatorio->nota_recordatorio;
 
                            }
 
