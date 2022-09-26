@@ -20,6 +20,7 @@ use App\Http\DTOs\Datatable\PagingInfoDTO;
 
 use App\Modelos\User;
 use \App\Http\Enums\Permissions;
+use Illuminate\Support\Facades\DB;
 
 class ProspectosListController extends Controller
 {   
