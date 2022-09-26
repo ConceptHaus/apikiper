@@ -55,6 +55,40 @@ class ProspectosListController extends Controller
                 $response = [];    
             }
 
+            foreach ($response->data as $pKey => $prospecto) {
+                $contactoProspecto = DB::table('medio_contacto_prospectos')
+                ->where('id_prospecto','=',$prospecto->id_prospecto)
+                ->orderBy('fecha', 'desc')
+                ->orderBy('hora', 'desc')
+                ->first();
+                $notificationDetail = [];
+
+                $notificationDetail['text']  = 'Sin primer contacto.';
+                $notificationDetail['color'] = 'black';
+
+                if ($contactoProspecto) {
+                    $date1 = $contactoProspecto->fecha;
+                    $dateDiff = dateDiffInDays($date1, date("Y-m-d H:i:s"));
+
+                    if ($dateDiff == 1) {
+                        $notificationDetail['text']  = 'Ultimo Seguimiento: 1 día.';
+                        $notificationDetail['color'] = 'black';
+                    }
+
+                    if ($dateDiff >= 2 && $dateDiff <= 5) {
+                        $notificationDetail['text']  = 'Ultimo Seguimiento: '.$dateDiff.' días.';
+                        $notificationDetail['color'] = 'orange';
+                    }
+
+                    if ($dateDiff >= 6) {
+                        $notificationDetail['text']  = 'Ultimo Seguimiento: '.$dateDiff.' días.';
+                        $notificationDetail['color'] = 'red';
+                    }
+                }
+
+                $prospecto->notificationDetail = $notificationDetail;
+            }
+
             return response()->json($response, 200);
 
         }catch(Exception $e){
