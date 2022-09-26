@@ -68,20 +68,22 @@ class ProspectosListController extends Controller
                 $notificationDetail['color'] = 'black';
 
                 if ($contactoProspecto) {
-                    $date1 = $contactoProspecto->fecha;
-                    $dateDiff = dateDiffInDays($date1, date("Y-m-d H:i:s"));
+                    $date1 = date_create($contactoProspecto->fecha);
+                    $date2 = date_create(date("Y-m-d H:i:s"));
+                    $dateDiff = date_diff($date1, $date2);
+                    $days = $diff->format("%a");
 
-                    if ($dateDiff == 1) {
+                    if ($days == 1) {
                         $notificationDetail['text']  = 'Ultimo Seguimiento: 1 día.';
                         $notificationDetail['color'] = 'black';
                     }
 
-                    if ($dateDiff >= 2 && $dateDiff <= 5) {
+                    if ($days >= 2 && $days <= 5) {
                         $notificationDetail['text']  = 'Ultimo Seguimiento: '.$dateDiff.' días.';
                         $notificationDetail['color'] = 'orange';
                     }
 
-                    if ($dateDiff >= 6) {
+                    if ($days >= 6) {
                         $notificationDetail['text']  = 'Ultimo Seguimiento: '.$dateDiff.' días.';
                         $notificationDetail['color'] = 'red';
                     }
