@@ -278,6 +278,36 @@ class FormsController extends Controller
 
     }
 
+    public function nuevaOportunidad( array $data, array $prospecto, $id_integracion_forms = 0){
+
+      //Datos generales oportunidad
+      $nueva_oportunidad = new Oportunidad;
+      $nueva_oportunidad->nombre_oportunidad = $data['nombre'].' '.$data['apellido'];
+      $nueva_oportunidad->save();
+     
+      $statusOportunidad = new StatusOportunidad;
+      $statusOportunidad->id_oportunidad = $nueva_oportunidad->id;
+      $statusOportunidad->id_cat_status_oportunidad = 1;
+      $nueva_oportunidad->status_oportunidad()->save($statusOportunidad);
+
+      //Detalle de oportunidades
+      $detalle_oportunidad = new DetalleOportunidad;
+      $detalle_oportunidad->id_oportunidad = $nueva_oportunidad->id;
+      $detalle_oportunidad->descripcion = "Oportunidad creada automaticamente por creacion de prospecto";
+      $detalle_oportunidad->valor = 0;
+      $detalle_oportunidad->meses = 1;
+      $detalle_oportunidad->id_integracion_forms = $id_integracion_forms;
+
+      $nueva_oportunidad->detalle_oportunidad()->save($detalle_oportunidad);
+
+      //Asignación a prospecto
+      $prospecto_oportunidad = new ProspectoOportunidad;
+      $prospecto_oportunidad->id_prospecto = $prospecto->id_prospecto;
+      $prospecto_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
+      $prospecto_oportunidad->save();
+
+    }
+
     public function addProspecto(array $data, $verify){
         
         DB::beginTransaction();
@@ -291,6 +321,9 @@ class FormsController extends Controller
           $prospecto->fuente = $data['fuente'] ?? 4;
           $prospecto->save();
           
+          if ( isset($prospecto->id) ) {
+            $this->nuevaOportunidad($data, $prospectos, $verify);
+          }
 
           //Call
           $llamadaProspecto = New CallsProstecto();

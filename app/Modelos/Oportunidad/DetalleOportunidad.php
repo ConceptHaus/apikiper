@@ -17,7 +17,8 @@ class DetalleOportunidad extends Model
         'id_oportunidad',
         'descripcion',
         'valor',
-        'meses'
+        'meses',
+        'id_integracion_forms'
     ];
 
     public function oportunidad(){
