@@ -286,7 +286,7 @@ class FormsController extends Controller
 
     }
 
-    public function nuevaOportunidad( array $data, array $prospecto, $id_integracion_forms = 0){
+    public function nuevaOportunidad( array $data, $prospecto, $id_integracion_forms = 0){
 
       //Datos generales oportunidad
       $nueva_oportunidad = new Oportunidad;
