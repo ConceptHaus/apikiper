@@ -23,6 +23,14 @@ use App\Modelos\Prospecto\EtiquetasProspecto;
 use App\Modelos\Colaborador\EtiquetaColaborador;
 use App\Modelos\Prospecto\ColaboradorProspecto;
 
+use App\Modelos\Oportunidad\Oportunidad;
+use App\Modelos\Oportunidad\DetalleOportunidad;
+use App\Modelos\Oportunidad\EtiquetasOportunidad;
+use App\Modelos\Oportunidad\ColaboradorOportunidad;
+use App\Modelos\Oportunidad\ServicioOportunidad;
+use App\Modelos\Oportunidad\ProspectoOportunidad;
+use App\Modelos\Oportunidad\StatusOportunidad;
+
 use Mailgun;
 use DB;
 use Mail;
@@ -286,13 +294,13 @@ class FormsController extends Controller
       $nueva_oportunidad->save();
      
       $statusOportunidad = new StatusOportunidad;
-      $statusOportunidad->id_oportunidad = $nueva_oportunidad->id;
+      #$statusOportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
       $statusOportunidad->id_cat_status_oportunidad = 1;
       $nueva_oportunidad->status_oportunidad()->save($statusOportunidad);
 
       //Detalle de oportunidades
       $detalle_oportunidad = new DetalleOportunidad;
-      $detalle_oportunidad->id_oportunidad = $nueva_oportunidad->id;
+      #$detalle_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
       $detalle_oportunidad->descripcion = "Oportunidad creada automaticamente por creacion de prospecto";
       $detalle_oportunidad->valor = 0;
       $detalle_oportunidad->meses = 1;
@@ -321,8 +329,8 @@ class FormsController extends Controller
           $prospecto->fuente = $data['fuente'] ?? 4;
           $prospecto->save();
           
-          if ( isset($prospecto->id) ) {
-            $this->nuevaOportunidad($data, $prospectos, $verify);
+          if ( isset($prospecto->id_prospecto) ) {
+            $this->nuevaOportunidad($data, $prospecto, $verify);
           }
 
           //Call
@@ -388,7 +396,10 @@ class FormsController extends Controller
           $prospecto->fuente = (isset($data['fuente']) ? $data['fuente'] : 2) ;
           $prospecto->save();
 
-          
+          if ( isset($prospecto->id_prospecto) ) {
+            $this->nuevaOportunidad($data, $prospecto, $verify);
+          }
+
           $detalleProspecto = new DetalleProspecto();
           $detalleProspecto->empresa = (isset($data['empresa']) ? $data['empresa'] : '');
           $detalleProspecto->telefono = (isset($data['telefono']) ? preg_replace('/[^0-9]+/','',$data['telefono']) : '');
