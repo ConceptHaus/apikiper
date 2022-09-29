@@ -113,16 +113,19 @@ class OportunidadesController extends Controller
             foreach ($oportunidades as $oKey => $oportunidad) {
                
                 if( $oportunidad->id_oportunidad ){
+
                     $contactoOportunidad = DB::table('oportunidad_prospecto as op')
                     ->join('prospectos as p', 'p.id_prospecto', 'op.id_prospecto')
                     ->join('medio_contacto_prospectos as mcp', 'mcp.id_prospecto', 'p.id_prospecto')
                     ->where('op.id_oportunidad', '=', $oportunidad->id_oportunidad)
-                    ->orderBy('fecha', 'desc')
-                    ->orderBy('fecha', 'desc')
+                    ->orderBy('mcp.fecha', 'desc')
+                    ->orderBy('mcp.hora', 'desc')
                     ->first();
 
                     $notificationDetail = [];
-                   
+                    $notificationDetail['text']  = 'Ultimo Seguimiento: 1 día.';
+                    $notificationDetail['color'] = 'black';
+                    
                     if ($contactoOportunidad) {
                         $date1 = date_create($contactoOportunidad->fecha ? $contactoOportunidad->fecha : date("Y-m-d H:i:s") );
                         $date2 = date_create(date("Y-m-d H:i:s"));
