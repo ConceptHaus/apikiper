@@ -109,6 +109,46 @@ class OportunidadesController extends Controller
                             ->select('oportunidades.id_oportunidad','oportunidades.nombre_oportunidad','detalle_oportunidad.valor','detalle_oportunidad.meses','cat_status_oportunidad.id_cat_status_oportunidad  as status_id','cat_status_oportunidad.status','cat_status_oportunidad.color','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','users.id as id_colaborador','users.nombre as asigando_nombre','users.apellido as asigando_apellido','oportunidades.created_at')
                             ->orderBy('oportunidades.created_at', 'desc')
                             ->get();
+
+            foreach ($oportunidades as $oKey => $oportunidad) {
+               
+                if( $oportunidad->id_oportunidad ){
+                    $contactoOportunidad = DB::table('oportunidad_prospecto as op')
+                    ->join('prospectos as p', 'p.id_prospecto', 'op.id_prospecto')
+                    ->join('medio_contacto_prospectos as mcp', 'mcp.id_prospecto', 'p.id_prospecto')
+                    ->where('op.id_oportunidad', '=', $oportunidad->id_oportunidad)
+                    ->orderBy('fecha', 'desc')
+                    ->orderBy('fecha', 'desc')
+                    ->first();
+
+                    $notificationDetail = [];
+                   
+                    if ($contactoOportunidad) {
+                        $date1 = date_create($contactoOportunidad->fecha ? $contactoOportunidad->fecha : date("Y-m-d H:i:s") );
+                        $date2 = date_create(date("Y-m-d H:i:s"));
+                        $dateDiff = date_diff($date1, $date2);
+                        $days = (int)$dateDiff->format("%a");
+
+                        if ($days == 1) {
+                            $notificationDetail['text']  = 'Ultimo Seguimiento: 1 día.';
+                            $notificationDetail['color'] = 'black';
+                        }
+
+                        if ($days >= 2 && $days <= 5) {
+                            $notificationDetail['text']  = 'Ultimo Seguimiento: '.$days.' días.';
+                            $notificationDetail['color'] = 'orange';
+                        }
+
+                        if ($days >= 6) {
+                            $notificationDetail['text']  = 'Ultimo Seguimiento: '.$days.' días.';
+                            $notificationDetail['color'] = 'red';
+                        }
+
+                    }
+
+                    $prospecto->notificationDetail = $notificationDetail;
+                }
+            }
             
             $s_o = CatStatusOportunidad::all(); 
             $oportunidades_status = Array();
