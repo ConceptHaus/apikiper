@@ -275,6 +275,47 @@ class FunnelRep
         if(!empty($oportunidades)){
             //Drag & Drop Properties for plugin
             foreach($oportunidades as $key => $oportunidad){
+               
+                if( $oportunidad->id_oportunidad ){
+
+                    $contactoOportunidad = DB::table('oportunidad_prospecto as op')
+                    ->join('prospectos as p', 'p.id_prospecto', 'op.id_prospecto')
+                    ->join('medio_contacto_prospectos as mcp', 'mcp.id_prospecto', 'p.id_prospecto')
+                    ->where('op.id_oportunidad', '=', $oportunidad->id_oportunidad)
+                    ->orderBy('mcp.fecha', 'desc')
+                    ->orderBy('mcp.hora', 'desc')
+                    ->first();
+
+                    $notificationDetail = [];
+                    $notificationDetail['text']  = 'Ultimo Seguimiento: 1 día.';
+                    $notificationDetail['color'] = 'black';
+                    
+                    if ($contactoOportunidad) {
+                        $date1 = date_create($contactoOportunidad->fecha ? $contactoOportunidad->fecha : date("Y-m-d H:i:s") );
+                        $date2 = date_create(date("Y-m-d H:i:s"));
+                        $dateDiff = date_diff($date1, $date2);
+                        $days = (int)$dateDiff->format("%a");
+
+                        if ($days == 1) {
+                            $notificationDetail['text']  = 'Ultimo Seguimiento: 1 día.';
+                            $notificationDetail['color'] = 'black';
+                        }
+
+                        if ($days >= 2 && $days <= 5) {
+                            $notificationDetail['text']  = 'Ultimo Seguimiento: '.$days.' días.';
+                            $notificationDetail['color'] = 'orange';
+                        }
+
+                        if ($days >= 6) {
+                            $notificationDetail['text']  = 'Ultimo Seguimiento: '.$days.' días.';
+                            $notificationDetail['color'] = 'red';
+                        }
+
+                    }
+
+                    $oportunidad->notificationDetail = $notificationDetail;
+                }
+
                 $oportunidades[$key]->effectAllowed = "move";
                 $oportunidades[$key]->disable = false;
                 $oportunidades[$key]->value = "$ ".number_format($oportunidades[$key]->valor * $oportunidades[$key]->meses, 2);
