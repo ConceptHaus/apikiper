@@ -149,7 +149,7 @@ class OportunidadesController extends Controller
 
                     }
 
-                    $prospecto->notificationDetail = $notificationDetail;
+                    $oportunidad->notificationDetail = $notificationDetail;
                 }
             }
             
