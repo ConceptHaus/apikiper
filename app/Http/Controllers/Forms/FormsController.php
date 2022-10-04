@@ -329,9 +329,9 @@ class FormsController extends Controller
           $prospecto->fuente = $data['fuente'] ?? 4;
           $prospecto->save();
           
-          if ( isset($prospecto->id_prospecto) ) {
-            $this->nuevaOportunidad($data, $prospecto, $verify);
-          }
+          // if ( isset($prospecto->id_prospecto) ) {
+          //   $this->nuevaOportunidad($data, $prospecto, $verify);
+          // }
 
           //Call
           $llamadaProspecto = New CallsProstecto();
