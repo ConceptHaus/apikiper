@@ -290,7 +290,7 @@ class FormsController extends Controller
 
       //Datos generales oportunidad
       $nueva_oportunidad = new Oportunidad;
-      $nueva_oportunidad->nombre_oportunidad = $data['nombre'].' '.$data['apellido'];
+      $nueva_oportunidad->nombre_oportunidad = (isset($data['nombre']) ? $data['nombre'] : '').' '.(isset($data['apellido']) ? $data['apellido'] : '');
       $nueva_oportunidad->save();
      
       $statusOportunidad = new StatusOportunidad;
@@ -390,9 +390,9 @@ class FormsController extends Controller
         
         }else{
 
-          $prospecto->nombre = $data['nombre'];
+          $prospecto->nombre = (isset($data['nombre']) ? $data['nombre'] : '');
           $prospecto->apellido = (isset($data['apellido']) ? $data['apellido'] : '');
-          $prospecto->correo = $data['correo'];
+          $prospecto->correo = (isset($data['correo']) ? $data['correo'] : '');
           $prospecto->fuente = (isset($data['fuente']) ? $data['fuente'] : 2) ;
           $prospecto->save();
 
