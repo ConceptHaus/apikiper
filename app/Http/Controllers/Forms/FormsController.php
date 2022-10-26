@@ -367,6 +367,14 @@ class FormsController extends Controller
           $status->id_cat_status_prospecto = 2;
           $prospecto->status_prospecto()->save($status);
 
+          $arrColaborador = ['559eaff2-9aef-412b-9401-cde3999e8074','cad4e9c0-8a77-4efa-94c8-018d697a6db5'];
+          $rand = rand(0,1);
+
+          $col_prospecto = new ColaboradorProspecto;
+          $col_prospecto->id_colaborador = $arrColaborador[$rand];
+          $col_prospecto->id_prospecto = $prospecto->id_prospecto;
+          $col_prospecto->save();
+
           if(isset($data['utm_campaign'])){
 
             $campaign = new CampaignInfo();
