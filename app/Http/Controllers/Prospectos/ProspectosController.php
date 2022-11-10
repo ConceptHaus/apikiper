@@ -186,6 +186,25 @@ class ProspectosController extends Controller
                         }
                         if(isset($oportunidad['meses']))
                             $detalle_oportunidad->meses = $oportunidad['meses'];
+
+                        if(isset($oportunidad['porcentaje'])){
+                            $porcentaje = str_replace('$ ', '',$oportunidad['porcentaje']);
+                            $porcentaje = str_replace(',', '', $porcentaje);
+                            $detalle_oportunidad->porcentaje = $porcentaje;
+                        }
+                        else{
+                            $detalle_oportunidad->porcentaje = 0;
+                        }
+
+                        if(isset($oportunidad['costo_final'])){
+                            $costo_final = str_replace('$ ', '',$oportunidad['costo_final']);
+                            $costo_final = str_replace(',', '', $costo_final);
+                            $detalle_oportunidad->costo_final = $costo_final;
+                        }
+                        else{
+                            $detalle_oportunidad->porcentaje = 0;
+                        }
+
                         $nueva_oportunidad->detalle_oportunidad()->save($detalle_oportunidad);
 
 
