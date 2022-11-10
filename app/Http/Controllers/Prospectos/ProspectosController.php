@@ -616,6 +616,8 @@ class ProspectosController extends Controller
                 $valor = str_replace(',', '', $valor);
                 $detalle_oportunidad->valor = $valor;
                 $detalle_oportunidad->meses = $request->meses;
+                $detalle_oportunidad->porcentaje = $request->porcentaje;
+                $detalle_oportunidad->valor_final = $request->valor_final;
                 $detalle_oportunidad->save();
 
                 //Cambio de Status Prospecto
