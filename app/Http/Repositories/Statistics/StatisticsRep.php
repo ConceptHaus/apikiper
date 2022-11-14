@@ -263,7 +263,7 @@ class StatisticsRep
                                         ->where('oportunidades.created_at', '<=', $end_date);
         
         if(!is_null($user_id)){
-            $oportunidades  =  $oportunidades->where('colaborador_oportunidad.id_colaborador', $user_id);
+            $oportunidades  =  $oportunidades->where('oportunidades.id_colaborador', $user_id);
         }
 
         if ($action == 'count') {
