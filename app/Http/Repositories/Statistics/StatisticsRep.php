@@ -270,7 +270,7 @@ class StatisticsRep
         if ($action == 'count') {
             $oportunidades =  $oportunidades->count();
         }else{
-            $oportunidades =  $oportunidades->groupBy('date')->get();
+            $oportunidades =  $oportunidades->groupBy('oportunidades.created_at')->get();
         }
 
         return $oportunidades;
