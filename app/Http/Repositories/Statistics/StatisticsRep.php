@@ -21,6 +21,22 @@ class StatisticsRep
     {
         $response = array();
         
+        $oportunidades              = StatisticsRep::getOportunidades($start_date, $end_date, $user_id, 'get');
+        $oportunidades_total        = StatisticsRep::getOportunidades($start_date, $end_date, $user_id, 'count');
+        $oportunidades_by_fuente    = StatisticsRep::getOportunidadesByFuente($start_date, $end_date, $user_id);
+        $oportunidades_cerradas     = StatisticsRep::getOportunidadesCerradas($start_date, $end_date, $user_id, 'count');
+
+        $response['oportunidades_filter_dates']     = StatisticsService::makeDatesRangeArray($oportunidades, $start_date, $end_date);
+        $response['oportunidades_total']            = $oportunidades_total;
+        $response['porcentaje_exito']               = ($oportunidades_total > 0) ? number_format(($oportunidades_cerradas * 100) / $oportunidades_total, 2) : 0;
+
+        return $response;
+    }
+
+    public static function ProspectosOportunidadesCostos($start_date, $end_date, $user_id=NULL)
+    {
+        $response = array();
+        
         $prospectos                 = StatisticsRep::getProspectos($start_date, $end_date, $user_id, 'get');
         $prospectos_total           = StatisticsRep::getProspectos($start_date, $end_date, $user_id, 'count');
         $oportunidades              = StatisticsRep::getOportunidades($start_date, $end_date, $user_id, 'get');

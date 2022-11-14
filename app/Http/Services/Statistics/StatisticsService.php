@@ -14,6 +14,11 @@ class StatisticsService
         return StatisticsRep::ProspectosVsOportunidades($start_date, $end_date, $user_id);
     }
 
+    public static function ProspectosOportunidadesCostos($start_date, $end_date, $user_id)
+    {
+        return StatisticsRep::ProspectosOportunidadesCostos($start_date, $end_date, $user_id);
+    }
+
     public static function makeDatesRangeArray($array, $start_date, $end_date)
     {
         $array_by_date = UtilService::arrayGroupByKey($array, 'date');

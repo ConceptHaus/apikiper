@@ -19,6 +19,13 @@ class StatisticsController extends Controller
         return StatisticsService::ProspectosVsOportunidades($request->start_date, $request->end_date, $user_id);
     }
 
+    public function ProspectosOportunidadesCostos(Request $request)
+    {
+        $user_id = (is_null($request->user_id)) ? NULL : $request->user_id;
+        
+        return StatisticsService::ProspectosOportunidadesCostos($request->start_date, $request->end_date, $user_id);
+    }
+
     public function SalesHistoryByColaborador(Request $request) {
         
         $user_id = (is_null($request->user_id)) ? NULL : $request->user_id;
