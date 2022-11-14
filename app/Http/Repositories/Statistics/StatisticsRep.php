@@ -264,14 +264,15 @@ class StatisticsRep
                                                 'do.meses', 
                                                 'do.porcentaje', 
                                                 'do.valor_final')
-                                        ->join('detalle_oportunidad as do', 'do.id_oportunidad', 'oportunidades.id_oportunidad')                       
+                                        ->join('detalle_oportunidad as do', 'do.id_oportunidad', 'oportunidades.id_oportunidad')
+                                        ->join('colaborador_oportunidad as co', 'co.id_oportunidad', 'do.id_oportunidad')
                                         ->where('oportunidades.created_at', '>=', $start_date)
                                         ->where('oportunidades.created_at', '<=', $end_date)
                                         ->where('do.valor', '>=', '0')
                                         ->where('do.valor_final', '>=', '0');
         
         if(!is_null($user_id)){
-            $oportunidades  =  $oportunidades->where('oportunidades.id_colaborador', $user_id);
+            $oportunidades  =  $oportunidades->where('co.id_colaborador', $user_id);
         }
 
         if ($action == 'count') {
