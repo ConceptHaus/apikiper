@@ -259,14 +259,16 @@ class StatisticsRep
         $end_date   = $end_date ." 23:59:59";
 
         $oportunidades   =   Oportunidad::select('oportunidades.nombre_oportunidad', 
-                                                    'do.descripcion', 
-                                                    'do.valor', 
-                                                    'do.meses', 
-                                                    'do.porcentaje', 
-                                                    'do.valor_final')
+                                                'do.descripcion', 
+                                                'do.valor', 
+                                                'do.meses', 
+                                                'do.porcentaje', 
+                                                'do.valor_final')
                                         ->join('detalle_oportunidad as do', 'do.id_oportunidad', 'oportunidades.id_oportunidad')                       
                                         ->where('oportunidades.created_at', '>=', $start_date)
-                                        ->where('oportunidades.created_at', '<=', $end_date);
+                                        ->where('oportunidades.created_at', '<=', $end_date)
+                                        ->where('do.valor', '>=', '0')
+                                        ->where('do.valor_final', '>=', '0');
         
         if(!is_null($user_id)){
             $oportunidades  =  $oportunidades->where('oportunidades.id_colaborador', $user_id);
