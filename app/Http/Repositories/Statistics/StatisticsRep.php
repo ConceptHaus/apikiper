@@ -45,7 +45,8 @@ class StatisticsRep
         $oportunidades              = StatisticsRep::getOportunidadesCostos($start_date, $end_date, $user_id, 'get');
         $oportunidades_total        = StatisticsRep::getOportunidadesCostos($start_date, $end_date, $user_id, 'count');
         
-        $response['oportunidades_filter_dates']     = StatisticsService::makeDatesRangeArray($oportunidades, $start_date, $end_date);
+        $response['oportunidades_filter_dates']     = $oportunidades;
+        //StatisticsService::makeDatesRangeArray($oportunidades, $start_date, $end_date);
         $response['oportunidades_total']            = $oportunidades_total;
         
         //$response['porcentaje_exito']          = ($oportunidades_total > 0) ? number_format(($oportunidades_cerradas * 100) / $oportunidades_total, 2) : 0;
