@@ -704,6 +704,13 @@ class OportunidadesController extends Controller
             $meses = intval($request->meses);
             $detalle->valor = $valor;
             $detalle->meses = $meses;
+
+
+            $detalle->porcentaje = $request->porcentaje ? $request->porcentaje : 0;
+
+            $valor_final = str_replace('$ ', '', $request->valor_final);
+            $valor_final = str_replace(',', '', $valor_final);
+            $detalle->valor_final = $valor_final;
             $detalle->save();
             DB::commit();
             $actividad = activity('oportunidad')
