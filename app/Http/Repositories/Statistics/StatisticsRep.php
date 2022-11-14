@@ -21,22 +21,6 @@ class StatisticsRep
     {
         $response = array();
         
-        $oportunidades              = StatisticsRep::getOportunidades($start_date, $end_date, $user_id, 'get');
-        $oportunidades_total        = StatisticsRep::getOportunidades($start_date, $end_date, $user_id, 'count');
-        $oportunidades_by_fuente    = StatisticsRep::getOportunidadesByFuente($start_date, $end_date, $user_id);
-        $oportunidades_cerradas     = StatisticsRep::getOportunidadesCerradas($start_date, $end_date, $user_id, 'count');
-
-        $response['oportunidades_filter_dates']     = StatisticsService::makeDatesRangeArray($oportunidades, $start_date, $end_date);
-        $response['oportunidades_total']            = $oportunidades_total;
-        $response['porcentaje_exito']               = ($oportunidades_total > 0) ? number_format(($oportunidades_cerradas * 100) / $oportunidades_total, 2) : 0;
-
-        return $response;
-    }
-
-    public static function ProspectosOportunidadesCostos($start_date, $end_date, $user_id=NULL)
-    {
-        $response = array();
-        
         $prospectos                 = StatisticsRep::getProspectos($start_date, $end_date, $user_id, 'get');
         $prospectos_total           = StatisticsRep::getProspectos($start_date, $end_date, $user_id, 'count');
         $oportunidades              = StatisticsRep::getOportunidades($start_date, $end_date, $user_id, 'get');
@@ -50,6 +34,21 @@ class StatisticsRep
         $response['prospectos_total']               = $prospectos_total;
         $response['oportunidades_by_fuente']        = $oportunidades_by_fuente;
         $response['porcentaje_exito']               = ($oportunidades_total > 0) ? number_format(($oportunidades_cerradas * 100) / $oportunidades_total, 2) : 0;
+
+        return $response;
+    }
+
+    public static function ProspectosOportunidadesCostos($start_date, $end_date, $user_id=NULL)
+    {
+        $response = array();
+        
+        $oportunidades              = StatisticsRep::getOportunidadesCostos($start_date, $end_date, $user_id, 'get');
+        $oportunidades_total        = StatisticsRep::getOportunidadesCostos($start_date, $end_date, $user_id, 'count');
+        
+        $response['oportunidades_filter_dates']     = StatisticsService::makeDatesRangeArray($oportunidades, $start_date, $end_date);
+        $response['oportunidades_total']            = $oportunidades_total;
+        
+        //$response['porcentaje_exito']          = ($oportunidades_total > 0) ? number_format(($oportunidades_cerradas * 100) / $oportunidades_total, 2) : 0;
 
         return $response;
     }
@@ -237,6 +236,29 @@ class StatisticsRep
 
         $oportunidades   =   Oportunidad::select(DB::raw('DATE(oportunidades.created_at) as date'), DB::raw('count(*) as total'))
                                         ->join('colaborador_oportunidad', 'colaborador_oportunidad.id_oportunidad', 'oportunidades.id_oportunidad')                       
+                                        ->where('oportunidades.created_at', '>=', $start_date)
+                                        ->where('oportunidades.created_at', '<=', $end_date);
+        
+        if(!is_null($user_id)){
+            $oportunidades  =  $oportunidades->where('colaborador_oportunidad.id_colaborador', $user_id);
+        }
+
+        if ($action == 'count') {
+            $oportunidades =  $oportunidades->count();
+        }else{
+            $oportunidades =  $oportunidades->groupBy('date')->get();
+        }
+
+        return $oportunidades;
+    }
+
+    public static function getOportunidadesCostos($start_date, $end_date, $user_id, $action='get')
+    {
+        $start_date = $start_date ." 00:00:00";
+        $end_date   = $end_date ." 23:59:59";
+
+        $oportunidades   =   Oportunidad::select('oportunidades.nombre_oportunidad, do.descripcion, do.valor, do.meses, do.porcentaje, do.valor_final')
+                                        ->join('detalle_oportunidad as do', 'do .id_oportunidad', 'oportunidades.id_oportunidad')                       
                                         ->where('oportunidades.created_at', '>=', $start_date)
                                         ->where('oportunidades.created_at', '<=', $end_date);
         
