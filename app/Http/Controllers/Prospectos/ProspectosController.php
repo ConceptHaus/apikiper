@@ -1102,8 +1102,8 @@ class ProspectosController extends Controller
         return Validator::make($data,[
             'nombre'    => 'nullable|string|max:30',
             'apellido'  => 'nullable|string|max:30',
-            'correo'    => 'required|email|max:50|unique:prospectos,correo',
-            'telefono'  => 'required|max:9999999999',
+            'correo'    => 'email|max:50|unique:prospectos,correo',
+            'telefono'  => 'max:9999999999',
             'celular'   => 'max:9999999999',
             'extension' => 'max:999999',
             'empresa'   => 'nullable|string|max:50',
