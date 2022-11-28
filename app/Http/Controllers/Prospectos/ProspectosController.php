@@ -357,15 +357,23 @@ class ProspectosController extends Controller
         try{
 
             DB::beginTransaction();
-            $prospecto->nombre = $request->nombre;
-            $prospecto->apellido = $request->apellido;
+            if($request->nombre)
+                $prospecto->nombre = $request->nombre;
+            if($request->apellido)
+                $prospecto->apellido = $request->apellido;
             $prospecto->fuente = $request->fuente;
-            $prospecto->correo = $request->correo;
-            $detalle->telefono = $request->telefono;
-            $detalle->celular = $request->celular;
-            $detalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
-            $detalle->nota = $request->nota;
-            $detalle->puesto = $request->puesto;
+            if($request->correo)
+                $prospecto->correo = $request->correo;
+            if($request->telefono)
+                $detalle->telefono = $request->telefono;
+            if($request->celular){
+                $detalle->celular = $request->celular;
+                $detalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
+            }
+            if($request->nota)
+                $detalle->nota = $request->nota;
+            if($request->puesto)
+                $detalle->puesto = $request->puesto;
             //$detalle->empresa = $request->empresa;
             $prospecto->save();
             $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto', $id)->first();
