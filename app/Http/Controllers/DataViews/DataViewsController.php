@@ -1830,8 +1830,8 @@ class DataViewsController extends Controller
     //AUX
     public function validadorEtiqueta(array $data){
         return Validator::make($data,[
-            'nombre' => 'required|string|max:20|unique:etiquetas,nombre,NULL,id_etiqueta,deleted_at,NULL',
-            'descripcion'=>'string|max:150',
+            'nombre' => 'required|string|max:200|unique:etiquetas,nombre,NULL,id_etiqueta,deleted_at,NULL',
+            'descripcion'=>'string|max:500',
 
         ]);
     }
