@@ -525,7 +525,6 @@ class ProspectosController extends Controller
                             $prospecto_empresa->id_empresa = $empresa->id_empresa;
                             $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
                             $prospecto_empresa->save();
-                            $prospectoDetalle->empresa = $request->empresa;
                         }else{
                             $empresa_new = new Empresa;
                             $empresa_new->nombre = $request->empresa;
@@ -537,7 +536,6 @@ class ProspectosController extends Controller
                                 $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
                                 $prospecto_empresa->save();
                             }
-                            $prospectoDetalle->empresa = $request->empresa;
                             
                         }
             }
