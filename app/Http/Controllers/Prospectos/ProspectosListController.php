@@ -20,6 +20,7 @@ use App\Http\DTOs\Datatable\PagingInfoDTO;
 
 use App\Modelos\User;
 use \App\Http\Enums\Permissions;
+use Illuminate\Support\Facades\DB;
 
 class ProspectosListController extends Controller
 {   
@@ -53,6 +54,43 @@ class ProspectosListController extends Controller
 
             }else{
                 $response = [];    
+            }
+
+            foreach ($response->data as $pKey => $prospecto) {
+                $contactoProspecto = DB::table('medio_contacto_prospectos')
+                ->where('id_prospecto','=',$prospecto->id_prospecto)
+                ->orderBy('fecha', 'desc')
+                ->orderBy('hora', 'desc')
+                ->first();
+                $notificationDetail = [];
+
+                $notificationDetail['text']  = 'Sin primer contacto.';
+                $notificationDetail['color'] = 'black';
+
+                if ($contactoProspecto) {
+                    $date1 = date_create($contactoProspecto->fecha ? $contactoProspecto->fecha : date("Y-m-d H:i:s") );
+                    $date2 = date_create(date("Y-m-d H:i:s"));
+                    $dateDiff = date_diff($date1, $date2);
+                    $days = (int)$dateDiff->format("%a");
+
+                    if ($days == 1) {
+                        $notificationDetail['text']  = 'Ultimo Seguimiento: 1 día.';
+                        $notificationDetail['color'] = 'black';
+                    }
+
+                    if ($days >= 2 && $days <= 5) {
+                        $notificationDetail['text']  = 'Ultimo Seguimiento: '.$days.' días.';
+                        $notificationDetail['color'] = 'orange';
+                    }
+
+                    if ($days >= 6) {
+                        $notificationDetail['text']  = 'Ultimo Seguimiento: '.$days.' días.';
+                        $notificationDetail['color'] = 'red';
+                    }
+
+                }
+
+                $prospecto->notificationDetail = $notificationDetail;
             }
 
             return response()->json($response, 200);
