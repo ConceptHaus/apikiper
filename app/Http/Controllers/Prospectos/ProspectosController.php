@@ -375,6 +375,7 @@ class ProspectosController extends Controller
             if($request->puesto)
                 $detalle->puesto = $request->puesto;
             //$detalle->empresa = $request->empresa;
+            
             $prospecto->save();
             $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto', $id)->first();
             if($colaborador_prospecto)
@@ -394,7 +395,7 @@ class ProspectosController extends Controller
             }
             if(!$request->hsh){
                 if(isset($request->empresa)){
-                    /*
+                    
                     $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $id)->wherenull('deleted_at')->get();
                     foreach($prospecto_empresa as $pe){
                         $pe->delete();
@@ -413,7 +414,7 @@ class ProspectosController extends Controller
                     $prospecto_empresa->id_empresa = $empresa->id_empresa;
                     $prospecto_empresa->id_prospecto = $id;
                     $prospecto_empresa->save();
-                    */
+                    /*
                     $empresa = Empresa::where('nombre', '=', $request->empresa)->wherenull('deleted_at')->first();
                     
                     if($empresa){
@@ -442,7 +443,7 @@ class ProspectosController extends Controller
                                             ->first();
                         $prospecto_empresa->id_empresa = $empresa->id_empresa;
                         $prospecto_empresa->save();
-                    }
+                    }*/
                 }
             }else {
                 $detalle->empresa = $request->empresa;
