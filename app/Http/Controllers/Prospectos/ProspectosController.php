@@ -146,6 +146,7 @@ class ProspectosController extends Controller
                 }else {
                     $prospectoDetalle->empresa = $request->empresa;
                     $empresa = Empresa::where('nombre', '=', $request->empresa)->wherenull('deleted_at')->first();
+                    print_r($empresa); exit;
                         if($empresa){
                             $prospecto_empresa = new EmpresaProspecto;
                             $prospecto_empresa->id_empresa = $empresa->id_empresa;
