@@ -169,6 +169,28 @@ class ProspectosController extends Controller
                         }
                 }
                 $prospecto->detalle_prospecto()->save($prospectoDetalle);
+                $empresa = Empresa::where('nombre', '=', $request->empresa)->wherenull('deleted_at')->first();
+                    print_r($empresa); exit;
+                        if($empresa){
+                            $prospecto_empresa = new EmpresaProspecto;
+                            $prospecto_empresa->id_empresa = $empresa->id_empresa;
+                            $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
+                            $prospecto_empresa->save();
+                            $prospectoDetalle->empresa = $request->empresa;
+                        }else{
+                            $empresa_new = new Empresa;
+                            $empresa_new->nombre = $request->empresa;
+                            //$empresa_new->save();
+                            
+                            if($empresa_new->save()){
+                                $prospecto_empresa = new EmpresaProspecto;
+                                $prospecto_empresa->id_empresa = $empresa_new->id_empresa;
+                                $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
+                                $prospecto_empresa->save();
+                            }
+                            $prospectoDetalle->empresa = $request->empresa;
+                            
+                        }
                 
                 if($etiquetas != null){
                     //Crear etiquetas
@@ -497,6 +519,28 @@ class ProspectosController extends Controller
                 }
             }else {
                 $detalle->empresa = $request->empresa;
+                $empresa = Empresa::where('nombre', '=', $request->empresa)->wherenull('deleted_at')->first();
+                    print_r($empresa); exit;
+                        if($empresa){
+                            $prospecto_empresa = new EmpresaProspecto;
+                            $prospecto_empresa->id_empresa = $empresa->id_empresa;
+                            $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
+                            $prospecto_empresa->save();
+                            $prospectoDetalle->empresa = $request->empresa;
+                        }else{
+                            $empresa_new = new Empresa;
+                            $empresa_new->nombre = $request->empresa;
+                            //$empresa_new->save();
+                            
+                            if($empresa_new->save()){
+                                $prospecto_empresa = new EmpresaProspecto;
+                                $prospecto_empresa->id_empresa = $empresa_new->id_empresa;
+                                $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
+                                $prospecto_empresa->save();
+                            }
+                            $prospectoDetalle->empresa = $request->empresa;
+                            
+                        }
             }
             $detalle->save();            
             DB::commit();
