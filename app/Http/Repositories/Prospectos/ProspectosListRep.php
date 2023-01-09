@@ -588,7 +588,7 @@ class ProspectosListRep
         ->get();
     }
 
-    public function createPageForProspectosForAdmin($paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $estatus=null){
+    public function createPageForProspectosForAdmin($paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $estatus=null, $rama = null){
         $search = $paginacion->search;
         $orderBy = ProspectosListRep::getOrderBy($paginacion->nColumn);
         $array = array();
@@ -617,7 +617,7 @@ class ProspectosListRep
                         ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%')
                         ->orWhere('empresas.nombre', 'like', '%'.$search.'%');
             })
-            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus) {
+            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus, $rama) {
                 $query->when($telefonos,  function ($query) use ($telefonos) {
                     $query->where(function ($query) use ($telefonos) {
                         $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
@@ -641,6 +641,11 @@ class ProspectosListRep
                 $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
                     $query->where(function ($query) use ($fechaInicio, $fechaFin) {
                         $query->whereBetween('prospectos.created_at', [$fechaInicio." 00:00:00", $fechaFin." 23:59:59"]);
+                    });
+                });
+                $query->when($rama, function($query) use ($rama){
+                    $query->where(function ($query) use ($rama){
+                        $query->where('detalle_prospecto.rama', '=', $rama);
                     });
                 });
             })

@@ -8,7 +8,7 @@ use App\Http\DTOs\Datatable\DatatableResponseDTO;
  class ProspectosListService
 {    
     /*----------------------- LISTA DE PROSPECTOS --------------------------*/
-    public function getProspectosPageByRol($id_colaborador, $rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus) {
+    public function getProspectosPageByRol($id_colaborador, $rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus, $rama) {
         $response = new DatatableResponseDTO();
         $object = new ProspectosListRep;
 
@@ -29,7 +29,7 @@ use App\Http\DTOs\Datatable\DatatableResponseDTO;
         return $response;
     }
 
-    public function getProspectosPageForAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus){
+    public function getProspectosPageForAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus, $rama){
         $response = new DatatableResponseDTO();
         $object = new ProspectosListRep;
 
@@ -38,7 +38,7 @@ use App\Http\DTOs\Datatable\DatatableResponseDTO;
         $response->message = "Correcto";
         $response->error = false;
 
-        $datos =  $object->createPageForProspectosForAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus);
+        $datos =  $object->createPageForProspectosForAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus, $rama);
         $response->data = $datos->items("data");
 
         $response->noContacted = $object->createCountForProspectosForAdminNotContacted($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus)->count();
@@ -50,7 +50,7 @@ use App\Http\DTOs\Datatable\DatatableResponseDTO;
         return $response;
     }
 
-    public function getAllProspectosPageByColaborador($id_colaborador, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus){
+    public function getAllProspectosPageByColaborador($id_colaborador, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus, $rama){
         $response = new DatatableResponseDTO;
         $object = new ProspectosListRep;
 
