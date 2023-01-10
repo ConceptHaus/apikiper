@@ -19,6 +19,7 @@ use App\Http\DTOs\Datatable\DatatableResponseDTO;
 use App\Http\DTOs\Datatable\PagingInfoDTO;
 
 use App\Modelos\User;
+use App\Modelos\Ramas;
 use \App\Http\Enums\Permissions;
 
 class ProspectosListController extends Controller
@@ -357,5 +358,8 @@ class ProspectosListController extends Controller
         }
     }
 
+    public function getListRama(){
+        return $Ramas = Ramas::all();
+    }
 
 }

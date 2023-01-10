@@ -226,6 +226,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/medios-contacto-oportunidad/{id}', 'DataViews\DataViewsController@getMedioContactoOportunidad');
         Route::get('/fuentes','DataViews\DataViewsController@getFuentes');
         Route::get('/etiquetas/ajustes', 'DataViews\DataViewsController@getEtiquetasAjustes');
+        Route::get('/getRamas', 'Prospectos\ProspectosListController@getListRama');
 
         //POST
         Route::post('/estadisticas/oportunidades','DataViews\DataViewsController@estadisticas_oportunidad_grafica');
