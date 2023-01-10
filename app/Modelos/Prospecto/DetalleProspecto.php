@@ -90,6 +90,7 @@ class DetalleProspecto extends Model
         'anio_2020',
         'anio_2021',
         'anio_2022',
+        'anio_2023',
         'paginaweb',
         'ciudad',
         'num_empleados',
