@@ -119,7 +119,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                     });
                     $query->when($rama,  function ($query) use ($rama) {
                         $query->where(function ($query) use ($rama) {
-                            $query->whereIn('detalle_prospecto.rama', $rama);
+                            $query->where('detalle_prospecto.rama','=', $rama);
                         });
                     });
                     $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
@@ -282,7 +282,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                     });
                     $query->when($rama,  function ($query) use ($rama) {
                         $query->where(function ($query) use ($rama) {
-                            $query->whereIn('detalle_prospecto.rama', $rama);
+                            $query->where('detalle_prospecto.rama','=', $rama);
                         });
                     });
                     $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
@@ -442,7 +442,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                     });
                     $query->when($rama,  function ($query) use ($rama) {
                         $query->where(function ($query) use ($rama) {
-                            $query->whereIn('detalle_prospecto.rama', $rama);
+                            $query->where('detalle_prospecto.rama','=', $rama);
                         });
                     });
                     $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
