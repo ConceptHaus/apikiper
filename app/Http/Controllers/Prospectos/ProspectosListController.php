@@ -20,6 +20,7 @@ use App\Http\DTOs\Datatable\PagingInfoDTO;
 
 use App\Modelos\User;
 use App\Modelos\Ramas;
+use App\Modelos\Prospecto\CatFuente;
 use \App\Http\Enums\Permissions;
 
 class ProspectosListController extends Controller
@@ -360,6 +361,10 @@ class ProspectosListController extends Controller
 
     public function getListRama(){
         return $Ramas = Ramas::all();
+    }
+
+    public function getFontList(){
+        return $Ramas = CatFuente::all();
     }
 
 }

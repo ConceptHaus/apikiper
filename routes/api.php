@@ -227,7 +227,7 @@ Route::prefix('/v1/generales')->group(function(){
         Route::get('/fuentes','DataViews\DataViewsController@getFuentes');
         Route::get('/etiquetas/ajustes', 'DataViews\DataViewsController@getEtiquetasAjustes');
         Route::get('/getRamas', 'Prospectos\ProspectosListController@getListRama');
-
+        Route::get('/getFontList', 'Prospectos\ProspectosListController@getFontList');
         //POST
         Route::post('/estadisticas/oportunidades','DataViews\DataViewsController@estadisticas_oportunidad_grafica');
         Route::post('/etiquetas','DataViews\DataViewsController@addEtiquetas');
