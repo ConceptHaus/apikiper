@@ -243,7 +243,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                             ->orWhere('empresas.nombre', 'like', '%'.$busqueda.'%')
                             ;
                 })
-                ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores) {
+                ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $rama) {
                     $query->when($correos,  function ($query) use ($correos) {
                         $query->where(function ($query) use ($correos) {
                             $query->whereIn('prospectos.correo', $correos);
@@ -277,6 +277,11 @@ class ProspectosReports implements WithHeadings,FromCollection{
                     $query->when($colaboradores,  function ($query) use ($colaboradores) {
                         $query->where(function ($query) use ($colaboradores) {
                             $query->whereIn('colaborador_prospecto.id_colaborador', $colaboradores);
+                        });
+                    });
+                    $query->when($rama,  function ($query) use ($rama) {
+                        $query->where(function ($query) use ($rama) {
+                            $query->whereIn('detalle_prospecto.rama', $rama);
                         });
                     });
                     $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
@@ -432,6 +437,11 @@ class ProspectosReports implements WithHeadings,FromCollection{
                     $query->when($etiqueta,  function ($query) use ($etiqueta) {
                         $query->where(function ($query) use ($etiqueta) {
                             $query->whereIn('etiquetas.id_etiqueta', $etiqueta);
+                        });
+                    });
+                    $query->when($rama,  function ($query) use ($rama) {
+                        $query->where(function ($query) use ($rama) {
+                            $query->whereIn('detalle_prospecto.rama', $rama);
                         });
                     });
                     $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
