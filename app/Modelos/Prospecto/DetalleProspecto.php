@@ -94,7 +94,9 @@ class DetalleProspecto extends Model
         'paginaweb',
         'ciudad',
         'num_empleados',
-        'mas_anio_operando'
+        'mas_anio_operando',
+        'genero',
+        'estatus_socio'
     ];
 
     public function prospecto(){
