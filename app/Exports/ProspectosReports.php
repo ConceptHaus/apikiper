@@ -49,7 +49,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
 
         
     }
-    public function getProspectos($desarrollo, $id_user, $correos=null, $nombres=null, $telefonos=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null){
+    public function getProspectos($desarrollo, $id_user, $correos=null, $nombres=null, $telefonos=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null, $rama = null){
         $user = User::find($id_user);
         if($desarrollo == 'all'){
 
@@ -114,6 +114,11 @@ class ProspectosReports implements WithHeadings,FromCollection{
                     $query->when($colaboradores,  function ($query) use ($colaboradores) {
                         $query->where(function ($query) use ($colaboradores) {
                             $query->whereIn('colaborador_prospecto.id_colaborador', $colaboradores);
+                        });
+                    });
+                    $query->when($rama,  function ($query) use ($rama) {
+                        $query->where(function ($query) use ($rama) {
+                            $query->whereIn('detalle_prospecto.rama', $rama);
                         });
                     });
                     $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
