@@ -24,7 +24,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
     protected $desarrollo;
     protected $id_user;
     
-    public function __construct($headings, $desarrollo,$id_user, $correos=null, $nombre=null, $telefono=null, $status=null, $grupo=null, $etiquetas=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null)
+    public function __construct($headings, $desarrollo,$id_user, $correos=null, $nombre=null, $telefono=null, $status=null, $grupo=null, $etiquetas=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null, $rama=null)
     {
         $this->headings = $headings;
         $this->desarrollo = $desarrollo;
@@ -39,13 +39,14 @@ class ProspectosReports implements WithHeadings,FromCollection{
         $this->fechaFin = $fechaFin;
         $this->colaboradores = $colaboradores;
         $this->busqueda = $busqueda;
+        $this->rama = $rama;
     }
     
     public function collection()
     {
             
         return $this->getProspectos($this->desarrollo,$this->id_user,$this->correos,$this->nombre,$this->telefono,$this->status,
-                                    $this->grupo,$this->etiquetas,$this->fechaInicio,$this->fechaFin,$this->colaboradores, $this->busqueda);
+                                    $this->grupo,$this->etiquetas,$this->fechaInicio,$this->fechaFin,$this->colaboradores, $this->busqueda, $this->rama);
 
         
     }
@@ -408,7 +409,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                             ->orWhere('empresas.nombre', 'like', '%'.$busqueda.'%')
                             ;
                 })
-                ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin) {
+                ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $rama) {
                     $query->when($correos,  function ($query) use ($correos) {
                         $query->where(function ($query) use ($correos) {
                             $query->whereIn('prospectos.correo', $correos);
