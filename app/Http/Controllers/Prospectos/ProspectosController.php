@@ -475,6 +475,7 @@ class ProspectosController extends Controller
             $detalle->anio_2020=$request->anio_2020;
             $detalle->anio_2021=$request->anio_2021;
             $detalle->anio_2022=$request->anio_2022;
+            $detalle->anio_2023=$request->anio_2023;
             $detalle->ciudad=$request->ciudad;
             $detalle->num_empleados=$request->num_empleados;
             $detalle->mas_anio_operando=$request->mas_anio_operando;
@@ -482,6 +483,8 @@ class ProspectosController extends Controller
             $detalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
             $detalle->nota = $request->nota;
             $detalle->puesto = $request->puesto;
+            $detalle->genero=$request->Genero;
+            $detalle->estatus_socio=$request->estatusSocio;
             //$detalle->empresa = $request->empresa;
             $prospecto->save();
             $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto', $id)->first();

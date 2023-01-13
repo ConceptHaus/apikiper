@@ -97,6 +97,7 @@ class DetalleProspecto extends Model
         'mas_anio_operando',
         'genero',
         'estatus_socio'
+        
     ];
 
     public function prospecto(){
