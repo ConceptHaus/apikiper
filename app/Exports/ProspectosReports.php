@@ -291,6 +291,11 @@ class ProspectosReports implements WithHeadings,FromCollection{
                             $query->where('detalle_prospecto.rama','=', $rama);
                         });
                     });
+                    $query->when($estatussocio,  function ($query) use ($estatussocio) {
+                        $query->where(function ($query) use ($estatussocio) {
+                            $query->where('detalle_prospecto.estatus_socio','=', $estatussocio);
+                        });
+                    });
                     $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
                         $query->where(function ($query) use ($fechaInicio, $fechaFin) {
                             $query->whereBetween('prospectos.created_at', [$fechaInicio." 00:00:00", $fechaFin." 23:59:59"]);
@@ -449,6 +454,11 @@ class ProspectosReports implements WithHeadings,FromCollection{
                     $query->when($rama,  function ($query) use ($rama) {
                         $query->where(function ($query) use ($rama) {
                             $query->where('detalle_prospecto.rama','=', $rama);
+                        });
+                    });
+                    $query->when($estatussocio,  function ($query) use ($estatussocio) {
+                        $query->where(function ($query) use ($estatussocio) {
+                            $query->where('detalle_prospecto.estatus_socio','=', $estatussocio);
                         });
                     });
                     $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
