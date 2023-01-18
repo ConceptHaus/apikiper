@@ -39,8 +39,9 @@ class ProspectosReports implements WithHeadings,FromCollection{
         $this->fechaFin = $fechaFin;
         $this->colaboradores = $colaboradores;
         $this->busqueda = $busqueda;
-        $this->rama = $rama;
-        $this->estatussocio = $estatussocio;
+        $this->rama = $rama !== '""' ? $rama : NULL;
+        $this->estatussocio = $estatussocio !== '""' ? $estatussocio : NULL;
+
     }
     
     public function collection()
