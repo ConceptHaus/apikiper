@@ -24,7 +24,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
     protected $desarrollo;
     protected $id_user;
     
-    public function __construct($headings, $desarrollo,$id_user, $correos=null, $nombre=null, $telefono=null, $status=null, $grupo=null, $etiquetas=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null, $rama=null)
+    public function __construct($headings, $desarrollo,$id_user, $correos=null, $nombre=null, $telefono=null, $status=null, $grupo=null, $etiquetas=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null, $rama=null, $estatussocio=null)
     {
         $this->headings = $headings;
         $this->desarrollo = $desarrollo;
@@ -40,17 +40,18 @@ class ProspectosReports implements WithHeadings,FromCollection{
         $this->colaboradores = $colaboradores;
         $this->busqueda = $busqueda;
         $this->rama = $rama;
+        $this->estatussocio = $estatussocio;
     }
     
     public function collection()
     {
             
         return $this->getProspectos($this->desarrollo,$this->id_user,$this->correos,$this->nombre,$this->telefono,$this->status,
-                                    $this->grupo,$this->etiquetas,$this->fechaInicio,$this->fechaFin,$this->colaboradores, $this->busqueda, $this->rama);
+                                    $this->grupo,$this->etiquetas,$this->fechaInicio,$this->fechaFin,$this->colaboradores, $this->busqueda, $this->rama, $this->estatussocio);
 
         
     }
-    public function getProspectos($desarrollo, $id_user, $correos=null, $nombres=null, $telefonos=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null, $rama = null){
+    public function getProspectos($desarrollo, $id_user, $correos=null, $nombres=null, $telefonos=null, $estatus=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $colaboradores=null, $busqueda=null, $rama = null, $estatussocio= null){
         $user = User::find($id_user);
         if($desarrollo == 'all'){
 
@@ -120,6 +121,11 @@ class ProspectosReports implements WithHeadings,FromCollection{
                     $query->when($rama,  function ($query) use ($rama) {
                         $query->where(function ($query) use ($rama) {
                             $query->where('detalle_prospecto.rama','=', $rama);
+                        });
+                    });
+                    $query->when($estatussocio,  function ($query) use ($estatussocio) {
+                        $query->where(function ($query) use ($estatussocio) {
+                            $query->where('detalle_prospecto.estatus_socio','=', $estatussocio);
                         });
                     });
                     $query->when($fechaInicio,  function ($query) use ($fechaInicio, $fechaFin) {
