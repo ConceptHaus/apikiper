@@ -77,7 +77,8 @@ class ProspectosListRep
                 'cat_fuentes.nombre as fuente', 
                 'cat_fuentes.url', 
                 'detalle_prospecto.whatsapp',
-                'empresas.nombre AS nombre_empresa'
+                'empresas.nombre AS nombre_empresa',
+                'detalle_prospecto.estatus_socio'
             )
             ->groupby('prospectos.id_prospecto')
             ->orderBy($orderBy, $paginacion->order)
@@ -662,7 +663,8 @@ class ProspectosListRep
                 'cat_fuentes.url', 
                 'detalle_prospecto.whatsapp',
                 'etiquetas.nombre',
-                'empresas.nombre AS nombre_empresa'
+                'empresas.nombre AS nombre_empresa',
+                'detalle_prospecto.estatus_socio'
             )
             ->orderBy($orderBy, $paginacion->order)
             ->groupby('prospectos.id_prospecto')
@@ -919,9 +921,9 @@ class ProspectosListRep
                 'cat_status_prospecto.status', 
                 'cat_fuentes.nombre as fuente', 
                 'cat_fuentes.url', 
-                'detalle_prospecto.whatsapp'
-                ,
-                'empresas.nombre AS nombre_empresa'
+                'detalle_prospecto.whatsapp',
+                'empresas.nombre AS nombre_empresa',
+                'detalle_prospecto.estatus_socio'
             )
             ->orderBy($orderBy, $paginacion->order)
             ->groupby('prospectos.id_prospecto')
