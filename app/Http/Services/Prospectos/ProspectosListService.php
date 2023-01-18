@@ -29,7 +29,7 @@ use App\Http\DTOs\Datatable\DatatableResponseDTO;
         return $response;
     }
 
-    public function getProspectosPageForAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus, $rama){
+    public function getProspectosPageForAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus, $rama, $estatussocio){
         $response = new DatatableResponseDTO();
         $object = new ProspectosListRep;
 
@@ -38,7 +38,7 @@ use App\Http\DTOs\Datatable\DatatableResponseDTO;
         $response->message = "Correcto";
         $response->error = false;
 
-        $datos =  $object->createPageForProspectosForAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus, $rama);
+        $datos =  $object->createPageForProspectosForAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus, $rama, $estatussocio);
         $response->data = $datos->items("data");
 
         $response->noContacted = $object->createCountForProspectosForAdminNotContacted($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus)->count();

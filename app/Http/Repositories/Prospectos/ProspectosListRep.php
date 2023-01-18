@@ -589,7 +589,7 @@ class ProspectosListRep
         ->get();
     }
 
-    public function createPageForProspectosForAdmin($paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $estatus=null, $rama = null){
+    public function createPageForProspectosForAdmin($paginacion, $telefonos=null, $fuente=null, $etiqueta=null, $fechaInicio=null, $fechaFin=null, $estatus=null, $rama = null, $estatussocio = null){
         $search = $paginacion->search;
         $orderBy = ProspectosListRep::getOrderBy($paginacion->nColumn);
         $array = array();
@@ -618,7 +618,7 @@ class ProspectosListRep
                         ->orWhere('cat_fuentes.nombre', 'like', '%'.$search.'%')
                         ->orWhere('empresas.nombre', 'like', '%'.$search.'%');
             })
-            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus, $rama) {
+            ->where(function ($query) use ($telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus, $rama, $estatussocio) {
                 $query->when($telefonos,  function ($query) use ($telefonos) {
                     $query->where(function ($query) use ($telefonos) {
                         $query->where('detalle_prospecto.telefono', 'LIKE',  "%$telefonos%");
@@ -644,9 +644,15 @@ class ProspectosListRep
                         $query->whereBetween('prospectos.created_at', [$fechaInicio." 00:00:00", $fechaFin." 23:59:59"]);
                     });
                 });
+                
                 $query->when($rama, function($query) use ($rama){
                     $query->where(function ($query) use ($rama){
                         $query->where('detalle_prospecto.rama', '=', $rama);
+                    });
+                });
+                $query->when($estatussocio, function($query) use ($estatussocio){
+                    $query->where(function ($query) use ($estatussocio){
+                        $query->where('detalle_prospecto.estatus_socio', '=', $estatussocio);
                     });
                 });
             })

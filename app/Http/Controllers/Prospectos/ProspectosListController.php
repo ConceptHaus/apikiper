@@ -41,18 +41,19 @@ class ProspectosListController extends Controller
         $fechaFin = json_decode($request->fechaFin);
         $estatus = json_decode($request->estatus);
         $rama = $request->rama;
+        $estatussocio = $request->estatussocio;
         
         $permisos = User::getAuthenticatedUserPermissions();
         
         try{
             if($auth->rol == OldRole::POLANCO || $auth->rol == OldRole::NAPOLES){
-                $response = $proListServ->getProspectosPageByRol($auth->id, $auth->rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus, $rama);
+                $response = $proListServ->getProspectosPageByRol($auth->id, $auth->rol, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus, $rama, $estatussocio);
     
             }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
-                $response = $proListServ->getProspectosPageForAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus, $rama);
+                $response = $proListServ->getProspectosPageForAdmin($paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus, $rama, $estatussocio);
     
             }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
-                $response = $proListServ->getAllProspectosPageByColaborador($auth->id, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus, $rama);
+                $response = $proListServ->getAllProspectosPageByColaborador($auth->id, $paginacion, $telefonos, $fuente, $etiqueta, $fechaInicio, $fechaFin, $estatus, $rama, $estatussocio);
 
             }else{
                 $response = [];    
