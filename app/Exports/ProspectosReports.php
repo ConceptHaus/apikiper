@@ -82,7 +82,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                             ->orWhere('empresas.nombre', 'like', '%'.$busqueda.'%')
                             ;
                 })
-                ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $rama) {
+                ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $rama, $estatussocio) {
                     $query->when($correos,  function ($query) use ($correos) {
                         $query->where(function ($query) use ($correos) {
                             $query->whereIn('prospectos.correo', $correos);
@@ -250,7 +250,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                             ->orWhere('empresas.nombre', 'like', '%'.$busqueda.'%')
                             ;
                 })
-                ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $rama) {
+                ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $rama, $estatussocio) {
                     $query->when($correos,  function ($query) use ($correos) {
                         $query->where(function ($query) use ($correos) {
                             $query->whereIn('prospectos.correo', $correos);
@@ -420,7 +420,7 @@ class ProspectosReports implements WithHeadings,FromCollection{
                             ->orWhere('empresas.nombre', 'like', '%'.$busqueda.'%')
                             ;
                 })
-                ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $rama) {
+                ->where(function ($query) use ($correos, $nombres, $telefonos, $estatus, $fuente, $etiqueta, $fechaInicio, $fechaFin, $rama, $estatussocio) {
                     $query->when($correos,  function ($query) use ($correos) {
                         $query->where(function ($query) use ($correos) {
                             $query->whereIn('prospectos.correo', $correos);
