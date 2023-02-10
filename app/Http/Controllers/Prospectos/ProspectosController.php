@@ -196,6 +196,24 @@ class ProspectosController extends Controller
                             $detalle_oportunidad->porcentaje = 0;
                         }
 
+                        if(isset($oportunidad['utilidad'])){
+                            $utilidad = str_replace('$ ', '',$oportunidad['utilidad']);
+                            $utilidad = str_replace(',', '', $utilidad);
+                            $detalle_oportunidad->utilidad = $utilidad;
+                        }
+                        else{
+                            $detalle_oportunidad->utilidad = 0;
+                        }
+
+                        if(isset($oportunidad['valor_produccion'])){
+                            $valor_produccion = str_replace('$ ', '',$oportunidad['valor_produccion']);
+                            $valor_produccion = str_replace(',', '', $valor_produccion);
+                            $detalle_oportunidad->valor_produccion = $valor_produccion;
+                        }
+                        else{
+                            $detalle_oportunidad->valor_produccion = 0;
+                        }
+
                         if(isset($oportunidad['valor_final'])){
                             $valor_final = str_replace('$ ', '',$oportunidad['valor_final']);
                             $valor_final = str_replace(',', '', $valor_final);
