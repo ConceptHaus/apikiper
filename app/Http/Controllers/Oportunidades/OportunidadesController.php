@@ -705,8 +705,9 @@ class OportunidadesController extends Controller
             $detalle->valor = $valor;
             $detalle->meses = $meses;
 
-
             $detalle->porcentaje = $request->porcentaje ? $request->porcentaje : 0;
+            $detalle->utilidad = $request->utilidad ?  $request->utilidad : 0;
+            $detalle->valor_produccion = $request->valor_produccion ? $request->valor_produccion : 0;
 
             $valor_final = str_replace('$ ', '', $request->valor_final);
             $valor_final = str_replace(',', '', $valor_final);
