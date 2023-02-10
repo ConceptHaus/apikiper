@@ -636,6 +636,8 @@ class ProspectosController extends Controller
                 $detalle_oportunidad->valor = $valor;
                 $detalle_oportunidad->meses = $request->meses;
                 $detalle_oportunidad->porcentaje = $request->porcentaje;
+                $detalle_oportunidad->utilidad = $request->utilidad >= 0 ? $request->utilidad : 0;
+                $detalle_oportunidad->valor_produccion = $request->valor_produccion >= 0 ? $request->valor_produccion : 0;
                 $detalle_oportunidad->valor_final = $request->valor_final;
                 $detalle_oportunidad->save();
 
