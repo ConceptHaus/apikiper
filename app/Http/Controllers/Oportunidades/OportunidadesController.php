@@ -41,7 +41,11 @@ class OportunidadesController extends Controller
 {
 
 
-    public function getAllOportunidades(){
+    public function getAllOportunidades(Request $request){
+
+        $length = isset($request->length) ?  $request->length : 10 ;
+        $start = isset($request->start) ?  $request->start : 0 ;
+
         // $oportunidades_total = DB::table('oportunidades')->whereNull('deleted_at')->count();
 
         $oportunidades_total =  DB::table('oportunidades')
@@ -108,6 +112,7 @@ class OportunidadesController extends Controller
                             ->whereNull('servicio_oportunidad.deleted_at')
                             ->select('oportunidades.id_oportunidad','oportunidades.nombre_oportunidad','detalle_oportunidad.valor','detalle_oportunidad.meses','cat_status_oportunidad.id_cat_status_oportunidad  as status_id','cat_status_oportunidad.status','cat_status_oportunidad.color','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','users.id as id_colaborador','users.nombre as asigando_nombre','users.apellido as asigando_apellido','oportunidades.created_at')
                             ->orderBy('oportunidades.created_at', 'desc')
+                            ->paginate($length, ['*'], null, $start)
                             ->get();
             
             $s_o = CatStatusOportunidad::all(); 
