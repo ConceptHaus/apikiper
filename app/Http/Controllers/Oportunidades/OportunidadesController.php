@@ -43,8 +43,13 @@ class OportunidadesController extends Controller
 
     public function getAllOportunidades(Request $request){
 
+        if ($request->start == 0) {
+            $start = 1;
+        } else {
+            $start = ($request->start / $request->length) + 1;   
+        }
+
         $length = isset($request->length) ?  $request->length : 10 ;
-        $start = isset($request->start) ?  $request->start : 0 ;
 
         // $oportunidades_total = DB::table('oportunidades')->whereNull('deleted_at')->count();
 
