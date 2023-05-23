@@ -118,6 +118,7 @@ class OportunidadesController extends Controller
                             ->whereNull('servicio_oportunidad.deleted_at')
                             ->where(function ($query) use ($search) {
                                 $query->orWhere('prospectos.nombre', 'like', '%'.$search.'%')
+                                        ->orWhere('oportunidades.nombre_oportunidad', 'like', '%'.$search.'%')        
                                         ->orWhere('prospectos.apellido', 'like', '%'.$search.'%')
                                         ->orWhere('prospectos.correo', 'like', '%'.$search.'%')
                                         ->orWhere('users.nombre', 'like', '%'.$search.'%')
