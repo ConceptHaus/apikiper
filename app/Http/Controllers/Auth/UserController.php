@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Modelos\User;
 use App\Modelos\Colaborador\DetalleColaborador;
 use App\Modelos\Colaborador\FotoColaborador;
+use App\Modelos\Oportunidad\CatStatusOportunidad;
 use App\Events\Historial;
 use App\Events\Event;
 use DB;
@@ -65,6 +66,7 @@ class UserController extends Controller
 
 
     public function getAuthUser(Request $request){
+       // echo "Hola mundo";
         $id_user = $this->guard()->user()->id;
         $oportunidades = DB::table('oportunidades')
                             ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
@@ -113,35 +115,54 @@ class UserController extends Controller
                                     ->where('colaborador_oportunidad.id_colaborador',$id_user)
                                     ->select('cat_status_oportunidad.id_cat_status_oportunidad','cat_status_oportunidad.color',DB::raw('count(*) as total, cat_status_oportunidad.status'))->groupBy('cat_status_oportunidad.status')
                                     ->get();
-        $catalogo_status = DB::table('cat_status_oportunidad')
-                    ->select('id_cat_status_oportunidad','status','color')
-                    ->get();
+        
+        $catalogo_status = CatStatusOportunidad::all();
+        
+        $recordatorios = array();
 
-        $recordatorios = DB::table('recordatorios_prospecto')
-                        ->join('detalle_recordatorio_prospecto','detalle_recordatorio_prospecto.id_recordatorio_prospecto','recordatorios_prospecto.id_recordatorio_prospecto')
-                        ->where('recordatorios_prospecto.id_colaborador',$id_user)
-                        ->orderBy('detalle_recordatorio_prospecto.fecha_recordatorio', 'desc')
-                        ->get();
+        $recordatorios_prospecto = DB::table('recordatorios_prospecto')
+                                    ->join('detalle_recordatorio_prospecto','detalle_recordatorio_prospecto.id_recordatorio_prospecto','recordatorios_prospecto.id_recordatorio_prospecto')
+                                    ->where('recordatorios_prospecto.id_colaborador',$id_user)
+                                    ->orderBy('detalle_recordatorio_prospecto.fecha_recordatorio', 'desc')
+                                    ->get()->toArray();
+        $recordatorios_oportunidad = DB::table('recordatorios_oportunidad')
+                                    ->join('detalle_recordatorio_op','detalle_recordatorio_op.id_detalle_recordatorio','recordatorios_oportunidad.id_recordatorio_oportunidad')
+                                    ->where('recordatorios_oportunidad.id_colaborador',$id_user)
+                                    ->orderBy('detalle_recordatorio_op.fecha_recordatorio', 'desc')
+                                    ->get()->toArray();
+        $recordatorios_colaborador = DB::table('recordatorio_colaborador')
+                                    ->where('recordatorio_colaborador.id_colaborador',$id_user)
+                                    ->orderBy('recordatorio_colaborador.fecha', 'desc')
+                                    ->get()->toArray();
+        if(count( $recordatorios_colaborador) > 0){
+            foreach ($recordatorios_colaborador as $key => $recordatorio_colaborador) {
+                $recordatorios_colaborador[$key]->nota_recordatorio =  $recordatorios_colaborador[$key]->nota;
+            }
+        }
+        $recordatorios = array_merge($recordatorios_prospecto, $recordatorios_oportunidad, $recordatorios_colaborador);
+
         $detalle = DetalleColaborador::where('id_colaborador',$this->guard()->user()->id)
                         ->first();
         $img = FotoColaborador::where('id_colaborador', $this->guard()->user()->id)
                         ->select('url_foto')
                         ->first();
-
-
+        $permisos = json_decode(Auth::user()->role->acciones);
+        
         return response()->json([
             'error'=>false,
             'user'=>$this->guard()->user(),
             'detalle'=>$detalle,
             'img_perfil'=>$img,
             'status'=>$this->StatusChecker($catalogo_status,$status_genericos),
+            'status_genericos'=>$status_genericos,
             'oportunidades'=>[
                 'status_1'=>$this->statusEmpty($status_1,1),
                 'status_2'=>$this->statusEmpty($status_2,2),
                 'status_3'=>$this->statusEmpty($status_3,3),
             ],
             'recordatorios'=>$recordatorios,
-            'activity'=>$this->guard()->user()->actions
+            'activity'=>$this->guard()->user()->actions,
+            'permisos'=>$permisos
         ],200);
 
     }

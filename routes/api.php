@@ -24,7 +24,7 @@ Route::prefix('/v1')->group(function(){
         Route::post('/google','Integraciones\GoogleController@googleApi');
         Route::post('/google/callback','Integraciones\GoogleController@googleApiCallback');
         Route::get('/template',function(){return view('mailing.template_one');});
-        Route::get('/download/prospectos/{admin}/{rol}/{id_user}','Prospectos\ProspectosController@downloadProspectos');
+        Route::get('/download/prospectos/{role_id}/{rol}/{id_user}/{correos}/{nombre}/{telefono}/{status}/{grupo}/{etiquetas}/{fechaInicio}/{fechaFin}/{colaboradores}/{busqueda}','Prospectos\ProspectosController@downloadProspectos');
     });
 });
 
@@ -33,9 +33,10 @@ Route::prefix('/v1/users')->group(function(){
         Route::middleware(['api','cors'])->group(function(){
             Route::post('/login', 'Auth\LoginController@login');
             Route::get('/activate/{token}','Auth\UserController@activateUser');
-            Route::post('/password','Auth\UserController@setPassword');
             Route::get('/onboarding','Auth\UserController@onBoarding');
             Route::post('/create','Auth\UserController@createUser');
+            Route::post('/password/forget', 'Auth\ForgotPasswordController@generatePasswordRecoveryToken');
+            Route::post('/password/recover', 'Auth\ForgotPasswordController@changePasswordByToken');
         });
 
         Route::middleware(['auth','cors'])->group(function(){
@@ -54,6 +55,7 @@ Route::prefix('/v1/colaboradores')->group(function(){
         Route::middleware(['auth','cors'])->group(function(){
             Route::post('/', 'Colaboradores\ColaboradoresController@registerColaborador');
             Route::get('/', 'Colaboradores\ColaboradoresController@getAllColaboradores');
+            Route::post('/excpet-user-to-be-deleted', 'Colaboradores\ColaboradoresController@getAllColaboradoresExceptUserToBeDeleted');
             Route::get('/{id}','Colaboradores\ColaboradoresController@getOneColaborador');
             Route::get('/etiquetas/{id_etiqueta}','Forms\FormsController@assigment_colaborador');
             Route::put('/{id}','Colaboradores\ColaboradoresController@updateColaborador');
@@ -63,8 +65,8 @@ Route::prefix('/v1/colaboradores')->group(function(){
             Route::post('/delete','Colaboradores\ColaboradoresController@deleteColaborador');
             Route::post('/foto/{id}', 'Colaboradores\ColaboradoresController@addFoto');
             Route::delete('/foto/{id}', 'Colaboradores\ColaboradoresController@deleteFoto');
-
-
+            // whats
+            Route::get('/whats', 'Colaboradores\ColaboradoresController@getChats');
         });
 });
 
@@ -86,6 +88,7 @@ Route::prefix('/v1/prospectos')->group(function(){
 
             Route::get('/{id}/recordatorios','Prospectos\ProspectosController@getRecordatorios');
             Route::post('/{id}/recordatorios','Prospectos\ProspectosController@addRecordatorios');
+            Route::get('/{id}/recordatorios-as-html','Prospectos\ProspectosController@getRecordatoriosAsHTML');
 
             Route::get('/{id}/eventos','Prospectos\ProspectosController@getEventos');
             Route::post('/{id}/eventos','Prospectos\ProspectosController@addEventos');
@@ -167,6 +170,20 @@ Route::prefix('/v1/oportunidades')->group(function(){
 Route::prefix('/v1/generales')->group(function(){
     Route::middleware(['auth','cors'])->group(function(){
         Route::get('/industrias', 'DataViews\DataViewsController@getIndustrias');
+        Route::get('/correos', 'Prospectos\ProspectosListController@findProspectosCorreos');
+        Route::get('/prospectosNombres', 'Prospectos\ProspectosListController@findProspectosNombres');
+        Route::get('/prospectosTelefono', 'Prospectos\ProspectosListController@findProspectosTelefono');
+        Route::get('/count', 'Prospectos\ProspectosListController@findCountProspectos');
+        Route::get('/countNT', 'Prospectos\ProspectosListController@findCountProspectosNotContacted');
+        Route::get('/prospectosFuente', 'Prospectos\ProspectosListController@findProspectosFuentes');
+        Route::get('/prospectosStatus', 'Prospectos\ProspectosListController@findProspectosStatus');
+        Route::get('/prospectosColaborador', 'Prospectos\ProspectosListController@findProspectosColaborador');
+        Route::get('/prospectosEtiquetas', 'Prospectos\ProspectosListController@findProspectosEtiquetas');
+        Route::get('/prospectosPrueba/{status}','Prospectos\ProspectosListNotContactedController@findProspectosNotContacted');
+        
+         //WhatsApp
+        // Route::get('/whatsapp','Whatsapp\whatsappController@getChats');
+
         Route::get('/dashboard','DataViews\DataViewsController@dashboard');
         Route::get('/dashboard/semanal','DataViews\DataViewsController@dashboardSemanal');
         Route::get('/dashboard/mensual','DataViews\DataViewsController@dashboardMensual');
@@ -210,16 +227,19 @@ Route::prefix('/v1/generales')->group(function(){
         Route::post('/status-prospecto/{id}', 'DataViews\DataViewsController@cambioStatusProspecto');
         Route::post('/medios-contacto', 'DataViews\DataViewsController@addMedioContactoProspecto');
         Route::post('/medios-contacto-oportunidad', 'DataViews\DataViewsController@addMedioContactoOportunidad');
+        Route::post('/table', 'Prospectos\ProspectosListController@findProspectos')->middleware('auth:api');
 
         //PUT
         Route::put('/etiquetas','DataViews\DataViewsController@updateEtiquetas');
         Route::put('/servicios','DataViews\DataViewsController@updateServicios');
-        Route::put('/status','DataViews\DataViewsController@updateStatus');
+// Route::put('/status','DataViews\DataViewsController@updateStatus');
         Route::put('/prospectos/colaborador','DataViews\DataViewsController@updateColaborador');
 
         //DELETE
         Route::delete('/etiquetas/{id}','DataViews\DataViewsController@deleteEtiquetas');
         Route::delete('/servicios/{id}','DataViews\DataViewsController@deleteServicios');
+
+       
 
     });
 
@@ -252,5 +272,103 @@ Route::prefix('/v1/mailing')->group(function(){
         Route::get('/{id}','Mailing\MailingController@getOne');
         Route::put('/update','Mailing\MailingController@updateMailing');
         Route::delete('/{id}','Mailing\MailingController@deleteMailing');
+    });
+});
+
+Route::prefix('/v1/password')->group(function(){
+    Route::middleware(['auth','cors'])->group(function(){
+        Route::post('/','recuperarpassword\recuperarpasswordController@mailforget');
+    });
+});
+
+Route::prefix('/v1/roles')->group(function(){
+    Route::middleware(['auth','cors'])->group(function(){
+        Route::get('/','Roles\RolesController@getAll');
+    });
+});
+
+Route::prefix('/v1/funnel')->group(function(){
+    Route::middleware(['auth','cors'])->group(function(){
+        Route::get('/stages','Funnel\FunnelController@getFunnelStages');
+        Route::post('/createStage','Funnel\FunnelController@createFunnelStage');
+        Route::get('/mis-oportunidades','Funnel\FunnelController@getMisOportunidades');
+        Route::post('/update-status-oportunidad','Funnel\FunnelController@updateOportunidadStatus');
+        Route::post('/{colaborador_id}','Funnel\FunnelController@getColaboradorOportunidades');
+    });
+});
+
+Route::prefix('/v1/status_oportunidades')->group(function(){
+    Route::middleware(['auth','cors'])->group(function(){
+        Route::delete('/{id}','Funnel\FunnelController@deleteStatus');
+        Route::put('/updateStatus','Funnel\FunnelController@updateStatus');
+        Route::get('/','Funnel\FunnelController@getCatStatusOportunidades');
+        Route::get('/get_max_count','Funnel\FunnelController@getMaxEstatusOportunidadMaxCount');
+        Route::post('/update-status-oportunidad-visibles','Funnel\FunnelController@updateOportunidadStatusVisibles');
+    });
+});
+
+Route::prefix('/v1/notifcations')->group(function(){
+    Route::middleware(['auth','cors'])->group(function(){
+        Route::get('/countNotifications','Notifications\NotificationsController@countNotifications');
+        Route::post('/updateNotification','Notifications\NotificationsController@updateStatusNotification');
+        
+        // Oportunidades
+        Route::get('/oportunidades','Notifications\NotificationsController@getOportunidadesToSendNotifications');
+        Route::get('/oportunidades-to-be-escalated','Notifications\NotificationsController@getOportunidadesToEscalateForAdmin');
+        Route::get('/getOportunidades','Notifications\NotificationsController@getOportunidadesNotifications');
+        // Prospectos
+        Route::get('/prospectos','Notifications\NotificationsController@getProspectosToSendNotifications');
+        Route::get('/prospectos-to-be-escalated','Notifications\NotificationsController@getProspectosToEscalateForAdmin');
+        Route::get('/getProspectos','Notifications\NotificationsController@getProspectosNotifications');
+        Route::get('/getCountProspectos','Notifications\NotificationsController@getCountProspectosNotifications');
+        Route::get('/getCountOportunidades','Notifications\NotificationsController@getCountOportunidadesNotifications');
+
+        // Admin Settings
+        Route::post('/postSettingNotificationAdmin','SettingsUserNotifications\SettingsUserNotificationsController@postSettingNotificationAdmin');
+        Route::get('/getSettingNotificationAdministrador','SettingsUserNotifications\SettingsUserNotificationsController@getSettingNotificationAdministrador');
+
+        // Personal Settings
+        Route::post('/postSettingNotificationColaborador','SettingsUserNotifications\SettingsUserNotificationsController@postSettingNotificationColaborador');
+        Route::get('/getSettingNotificationColaborador','SettingsUserNotifications\SettingsUserNotificationsController@getSettingNotificationColaborador');
+        
+    });
+});
+
+Route::prefix('/v1/estadisticas')->group(function(){
+    Route::middleware(['auth','cors'])->group(function(){
+        Route::post('/prospectos-vs-oportunidades','Statistics\StatisticsController@ProspectosVsOportunidades');
+        Route::post('/SalesHistoryByColaborador','Statistics\StatisticsController@SalesHistoryByColaborador');
+        Route::post('/funnel-oportunidades','Statistics\StatisticsController@FunnelOportunidades');
+        Route::post('/monthlySalesHistory','Statistics\StatisticsController@monthlySalesHistory');
+        Route::post('/prospectos-cerrados','Statistics\StatisticsController@ProspectosCerradosByColaborador');
+        Route::post('/prospectos-eficiencia','Statistics\StatisticsController@getProspectosTotal');
+        Route::post('/prospectos-origen','Statistics\StatisticsController@getProspectosByFuente');
+        Route::post('/mostEffectiveProspects','Statistics\StatisticsController@mostEffectiveProspects');   
+    });
+});
+
+Route::prefix('/v1/one-signal')->group(function(){
+    Route::middleware(['auth','cors'])->group(function(){
+        Route::post('/sign-up','OneSignal\OneSignalController@signUp');
+        Route::post('/sign-off','OneSignal\OneSignalController@signOff');
+        Route::post('/send-notification','OneSignal\OneSignalController@sendNotification');
+    });
+});
+
+
+Route::prefix('/v1/recordatorios')->group(function(){
+    Route::middleware(['auth','cors'])->group(function(){
+        //Routes to test or trigger the alerts console command
+        Route::get('/oportunidades','Recordatorios\RecordatoriosController@getRecordatoriosOportunidades');
+        Route::get('/prospectos','Recordatorios\RecordatoriosController@getRecordatoriosProspectos');
+        Route::get('/usuarios','Recordatorios\RecordatoriosController@getRecordatoriosUsuarios');
+    });
+});
+
+// whatsapp
+Route::prefix('/v1/whatsapp')->group(function(){
+    Route::middleware(['auth','cors'])->group(function(){
+    // whats
+        Route::get('/', 'Whatsapp\whatsappController@getMensajes');
     });
 });

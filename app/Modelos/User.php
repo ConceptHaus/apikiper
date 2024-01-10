@@ -11,7 +11,7 @@ use Spatie\Activitylog\Traits\CausesActivity;
 
 
 use Alsofronie\Uuid\UuidModelTrait;
-
+use Auth;
 
 
 class User extends Authenticatable implements JWTSubject
@@ -41,7 +41,9 @@ class User extends Authenticatable implements JWTSubject
         'password', 'remember_token'
     ];
 
-     protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at'];
+
+    public $incrementing = false;
 
     public function detalle(){
         return $this->hasOne('App\Modelos\Colaborador\DetalleColaborador','id_colaborador','id');
@@ -119,5 +121,44 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function role()
+    {
+        return $this->hasOne('App\Modelos\Role', 'id', 'role_id');
+    }
+
+    public static function getAuthenticatedUserPermissions()
+    {
+        return json_decode(Auth::user()->role->acciones, true);
+    }
+
+    public static function getUsersWithPermission($permission_string)
+    {
+        $users = User::select(  'users.id',
+                                'users.nombre',
+                                'users.apellido',
+                                'users.email',
+                                'users.role_id')
+                ->where('roles.acciones', 'like', '%'.$permission_string.'%')
+                ->join('roles', 'users.role_id', '=', 'roles.id')
+                ->get();
+
+        return $users;
+    }
+
+    public function  scopeGetUsersWithVisibleRole($query){
+        return $query->with('detalle','foto')
+                     ->where('role_id', '<', 4)
+                     ->orderBy('created_at','desc')
+                     ->get();
+    }
+
+    public function  scopeGetUsersWithVisibleRoleExceptUserToBeDeleted($query, $colaborador_id){
+        return $query->with('detalle','foto')
+                     ->where('role_id', '<', 4)
+                     ->where('id', '!=', $colaborador_id)
+                     ->orderBy('created_at','desc')
+                     ->get();
     }
 }

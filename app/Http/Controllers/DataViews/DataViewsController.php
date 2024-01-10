@@ -39,16 +39,19 @@ use App\Events\Historial;
 use App\Events\Event;
 use App\Events\AssignProspecto;
 use App\Modelos\Empresa\EmpresaProspecto;
+use App\Http\Enums\Permissions;
 use Mailgun;
 use DB;
 use Mail;
 
+use App\Http\Services\Roles\RolesService;
+
 
 class DataViewsController extends Controller
 {
-  
+
     public function dashboardPorFecha($inicio, $fin){
-        $auth = $this->guard()->user();  
+        $auth = $this->guard()->user();
         //return $inicio.' '.$fin;
         //Oportunidades Cotizadas
         //Oportunidades Cerradas
@@ -62,7 +65,7 @@ class DataViewsController extends Controller
         
         $oportuniades_cerradas = $this->oportunidades_por_periodo_por_status($inicioSemana,$finSemana,2,$auth);
         $oportunidades_cotizadas = $this->oportunidades_por_periodo_por_status($inicioSemana,$finSemana,1,$auth);
-        $colaboradores = $this->dashboard_colaboradores_periodo($inicioSemana,$finSemana);
+        $colaboradores = $this->dashboard_colaboradores_periodo($inicioSemana,$finSemana); //
         $prospectos_sin_contactar = $this->prospectos_sin_contactar($auth);
         $ingresos = $this->ingresos_por_periodo_por_status($inicioSemana,$finSemana,2, $auth);
         $origen = $this->origen_por_periodo($inicioSemana, $finSemana, $auth);
@@ -74,7 +77,7 @@ class DataViewsController extends Controller
             
             $activity = null;
         }
-        
+
         return response()->json([
             'message'=>'Success',
             'error'=>false,
@@ -94,10 +97,11 @@ class DataViewsController extends Controller
 
 
     public function prospectos(){
-
-
+        
+        $permisos = User::getAuthenticatedUserPermissions();
+        
         $total_prospectos = Prospecto::all()->count();
-
+        
         $nocontactados_prospectos = DB::table('prospectos')
                                     ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
                                     ->wherenull('prospectos.deleted_at')
@@ -182,7 +186,7 @@ class DataViewsController extends Controller
                     ->where('etiquetas.nombre','like','%napoles%')
                     ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
         }
-        else if($auth->is_admin){
+        else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
                 $prospectos = Prospecto::with('detalle_prospecto')
                                 ->with('colaborador_prospecto.colaborador.detalle')
                                 ->with('fuente')
@@ -198,7 +202,7 @@ class DataViewsController extends Controller
                                 ->orderBy('prospectos.created_at','desc')
                                 //->groupBy('prospectos.id_prospecto')
                                 ->get();
-        }else{
+        }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
                 $prospectos = Prospecto::with('detalle_prospecto')
                                 ->with('colaborador_prospecto.colaborador.detalle')
                                 ->with('fuente')
@@ -232,6 +236,11 @@ class DataViewsController extends Controller
                                 ->wherenull('prospectos.deleted_at')
                                 ->wherenull('prospectos.deleted_at')
                                 ->where('status_prospecto.id_cat_status_prospecto','=',2)->count();
+        }else{
+            $prospectos                 = [];
+            $total_prospectos           = [];
+            $origen                     = [];
+            $nocontactados_prospectos   = [];    
         }
         
         $colaboradores = User::all();
@@ -255,8 +264,10 @@ class DataViewsController extends Controller
             ],200);
     }
     
-    
     public function prospectosstatus($status){
+        
+        $permisos = User::getAuthenticatedUserPermissions();
+        
         $auth = $this->guard()->user();
         $prospectos_status = CatStatusProspecto::get();
         $colaboradores = User::all();
@@ -307,7 +318,7 @@ class DataViewsController extends Controller
                         ->groupBy('prospectos.id_prospecto')
                         ->get();
         }
-        else if($auth->is_admin){
+        else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
             
             $prospectos = Prospecto::with('detalle_prospecto')
                                 ->with('colaborador_prospecto.colaborador.detalle')
@@ -326,8 +337,7 @@ class DataViewsController extends Controller
                                 ->orderBy('prospectos.created_at','desc')
                                 //->groupBy('prospectos.id_prospecto')
                                 ->get();
-        }
-        else{
+        }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
             $prospectos = DB::table('prospectos')
                         ->join('detalle_prospecto','detalle_prospecto.id_prospecto','prospectos.id_prospecto')
                         ->join('status_prospecto','status_prospecto.id_prospecto','prospectos.id_prospecto')
@@ -346,6 +356,11 @@ class DataViewsController extends Controller
                         ->orderBy('status_prospecto.updated_at','desc')
                         ->groupBy('prospectos.id_prospecto')
                         ->get();
+        }else{
+            $prospectos                 = [];
+            $total_prospectos           = [];
+            $origen                     = [];
+            $nocontactados_prospectos   = [];    
         }
         
         foreach($prospectos as $p){
@@ -374,6 +389,7 @@ class DataViewsController extends Controller
             ]
             ],200);
     }
+    
     public function oportunidadesByUser($id){
         $oportunidades_total = DB::table('oportunidades')
                             ->whereNull('oportunidades.deleted_at')
@@ -464,7 +480,7 @@ class DataViewsController extends Controller
                             ->whereNull('status_oportunidad.deleted_at')
                             ->whereNull('servicio_oportunidad.deleted_at')
                             ->whereNull('users.deleted_at')
-                            ->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','detalle_oportunidad.valor','cat_status_oportunidad.status','cat_status_oportunidad.color as color_status','cat_status_oportunidad.id_cat_status_oportunidad as id_status','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.nombre as fuente_url','oportunidades.created_at','users.id as id_colaborador', 'users.nombre as asignado_nombre', 'users.apellido as asignado_apellido')
+                            ->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','detalle_oportunidad.valor','detalle_oportunidad.meses','cat_status_oportunidad.status','cat_status_oportunidad.color as color_status','cat_status_oportunidad.id_cat_status_oportunidad as id_status','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.nombre as fuente_url','oportunidades.created_at','users.id as id_colaborador', 'users.nombre as asignado_nombre', 'users.apellido as asignado_apellido')
                             ->orderBy('status_oportunidad.updated_at','desc')
                             ->get();
 
@@ -504,7 +520,6 @@ class DataViewsController extends Controller
             ]
             ],200);
     }
-
 
     public function mis_oportunidades_status($status){
 
@@ -563,7 +578,7 @@ class DataViewsController extends Controller
                             ->wherenull('oportunidad_prospecto.deleted_at')
                             ->wherenull('prospectos.deleted_at')
                             ->wherenull('status_oportunidad.deleted_at')
-                            ->wherenull('servicio_oportunidad.deleted_at')->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','detalle_oportunidad.valor','cat_status_oportunidad.status','cat_status_oportunidad.id_cat_status_oportunidad as id_status','cat_status_oportunidad.color as color_status','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','users.id as id_colaborador','users.nombre as asignado_nombre', 'users.apellido as asignado_apellido','oportunidades.created_at')
+                            ->wherenull('servicio_oportunidad.deleted_at')->select('colaborador_oportunidad.id_oportunidad','oportunidades.nombre_oportunidad','detalle_oportunidad.valor','detalle_oportunidad.meses','cat_status_oportunidad.status','cat_status_oportunidad.id_cat_status_oportunidad as id_status','cat_status_oportunidad.color as color_status','cat_servicios.nombre as servicio','prospectos.id_prospecto','prospectos.nombre as nombre_prospecto','prospectos.apellido as apellido_prospecto','cat_fuentes.nombre as fuente','cat_fuentes.url as fuente_url','users.id as id_colaborador','users.nombre as asignado_nombre', 'users.apellido as asignado_apellido','oportunidades.created_at')
                             ->where('colaborador_oportunidad.id_colaborador','=',$id)
                             ->where('status_oportunidad.id_cat_status_oportunidad','=',intval($status))
                             ->get();
@@ -638,9 +653,7 @@ class DataViewsController extends Controller
                             ->whereBetween('colaborador_oportunidad.updated_at', array($inicioPeriodo ,$finPeriodo))
                             ->select(DB::raw('count(*) as total, cat_fuentes.nombre'),'cat_fuentes.url','cat_fuentes.status')->groupBy('cat_fuentes.nombre')->get();    
 
-        $catalogo_status = DB::table('cat_status_oportunidad')
-                    ->select('id_cat_status_oportunidad as id','status','color')
-                    ->get();
+                            $catalogo_status = CatStatusOportunidad::all();
 
         $status = DB::table('cat_status_oportunidad')
                       ->select('id_cat_status_oportunidad as id','status','color')->get();
@@ -1276,7 +1289,7 @@ class DataViewsController extends Controller
               ]
   
               ],200);
-      }
+    }
 
     public function estadisticas_finanzas_semanal(){
       $inicioSemana = Carbon::now()->startOfWeek();
@@ -1465,6 +1478,7 @@ class DataViewsController extends Controller
         
         $catalogo_status = DB::table('cat_status_oportunidad')
                     ->select('id_cat_status_oportunidad as id','status as nombre','color')
+                    ->wherenull('cat_status_oportunidad.deleted_at')
                     ->get();
         $catalogo_status_select = DB::table('cat_status_oportunidad')
                     ->join('status_oportunidad', 'status_oportunidad.id_cat_status_oportunidad', 'cat_status_oportunidad.id_cat_status_oportunidad')
@@ -1511,6 +1525,7 @@ class DataViewsController extends Controller
             'error'=>false
             ],200);
     }
+
     public function serviciosAjustes(){
         $servicios = DB::table('cat_servicios')
         // ->where('status', 1)
@@ -1573,34 +1588,42 @@ class DataViewsController extends Controller
 
     //PUT
     public function updateEtiquetas(Request $request){
+        $validador = $this->validateUpdateEtiqueta($request->all());
 
         $id = $request->id_etiqueta;
 
-        try{
-            DB::beginTransaction();
+        if($validador->passes()){
+            try{
+                DB::beginTransaction();
 
-            $etiqueta = Etiqueta::where('id_etiqueta',$id)->first();
-            $etiqueta->nombre = $request->nombre;
-            $etiqueta->descripcion = $request->descripcion;
-            $etiqueta->status = $request->status;
-            $etiqueta->save();
+                $etiqueta = Etiqueta::where('id_etiqueta',$id)->first();
+                $etiqueta->nombre = $request->nombre;
+                $etiqueta->descripcion = $request->descripcion;
+                $etiqueta->status = $request->status;
+                $etiqueta->save();
 
-            DB::commit();
+                DB::commit();
 
-            return response()->json([
-                    'error'=>false,
-                    'message'=>'Registo Correcto',
-                    'data'=>$etiqueta
-                ],200);
+                return response()->json([
+                        'error'=>false,
+                        'message'=>'Registo Correcto',
+                        'data'=>$etiqueta
+                    ],200);
 
-        }catch(Exception $e){
-            DB::rollBack();
-            Bugsnag::notifyException(new RuntimeException("No se pudo editar una etiqueta"));
-            return response()->json([
-                'error'=>true,
-                'message'=>$e
-            ],400);
+            }catch(Exception $e){
+                DB::rollBack();
+                Bugsnag::notifyException(new RuntimeException("No se pudo editar una etiqueta"));
+                return response()->json([
+                    'error'=>true,
+                    'message'=>$e
+                ],400);
+            }
         }
+        $errores = $validador->errors()->toArray();
+        return response()->json([
+            'error'=>true,
+            'message'=>$errores
+        ],400);
 
     }
 
@@ -1638,7 +1661,7 @@ class DataViewsController extends Controller
 
     //POST
     public function addServicios(Request $request){
-        $validador = $this->validadorEtiqueta($request->all());
+        $validador = $this->validadorServicio($request->all());
 
         if($validador->passes()){
             try{
@@ -1674,32 +1697,41 @@ class DataViewsController extends Controller
 
     //PUT
     public function updateServicios(Request $request){
+        $validador = $this->validadorServicio($request->all());
+        
         $id = $request->id_servicio;
 
-        try{
-            DB::beginTransaction();
-            $servicio = CatServicios::where('id_servicio_cat',$id)->first();
-            $servicio->nombre = $request->nombre;
-            $servicio->descripcion = $request->descripcion;
-            $servicio->status = $request->status;
-            $servicio->save();
-            DB::commit();
+        if($validador->passes()){
+            try{
+                DB::beginTransaction();
+                $servicio = CatServicios::where('id_servicio_cat',$id)->first();
+                $servicio->nombre = $request->nombre;
+                $servicio->descripcion = $request->descripcion;
+                $servicio->status = $request->status;
+                $servicio->save();
+                DB::commit();
 
-            return response()->json([
-                'error'=>false,
-                'message'=>'Registro Correcto',
-                'data'=>$servicio
-            ]);
+                return response()->json([
+                    'error'=>false,
+                    'message'=>'Registro Correcto',
+                    'data'=>$servicio
+                ]);
 
-        }catch(Exception $e){
-            DB::rollBack();
-            Bugsnag::notifyException(new RuntimeException("No se pudo editar un servicio"));
-            return response()->json([
-                'error'=>true,
-                'message'=>$e
+            }catch(Exception $e){
+                DB::rollBack();
+                Bugsnag::notifyException(new RuntimeException("No se pudo editar un servicio"));
+                return response()->json([
+                    'error'=>true,
+                    'message'=>$e
 
-            ],400);
+                ],400);
+            }
         }
+        $errores = $validador->errors()->toArray();
+        return response()->json([
+            'error'=>true,
+            'message'=>$errores
+        ],400);
     }
 
     public function deleteServicios($id){
@@ -1798,8 +1830,31 @@ class DataViewsController extends Controller
     //AUX
     public function validadorEtiqueta(array $data){
         return Validator::make($data,[
-            'nombre'=>'required|string',
+            'nombre' => 'required|string|max:20|unique:etiquetas,nombre,NULL,id_etiqueta,deleted_at,NULL',
+            'descripcion'=>'string|max:150',
 
+        ]);
+    }
+
+    public function validateUpdateEtiqueta(array $data){
+        return Validator::make($data,[
+            'nombre' => 'required|string|max:20|unique:etiquetas,nombre,'.$data['id_etiqueta'].',id_etiqueta,deleted_at,NULL',
+            'descripcion'=>'string|max:150',
+
+        ]);
+    }
+
+    public function validadorServicio(array $data){
+        return Validator::make($data,[
+            'nombre' => 'required|string|max:20|unique:cat_servicios,nombre,NULL,id_servicio_cat,deleted_at,NULL',
+            'descripcion'=>'string|max:150',
+        ]);
+    }
+
+    public function validateUpdateServicio(array $data){
+        return Validator::make($data,[
+            'nombre' => 'required|string|max:20|unique:cat_servicios,nombre,'.$data['id_servicio_cat'].',id_servicio_cat,deleted_at,NULL',
+            'descripcion'=>'string|max:150',
         ]);
     }
 
@@ -2487,7 +2542,7 @@ class DataViewsController extends Controller
 
     public function oportunidades_por_periodo_por_status($inicio, $fin, $status, $auth)
     {
-        if($auth->is_admin){
+        if($auth->role_id >= 2){
             return DB::table('oportunidades')
             ->join('status_oportunidad','oportunidades.id_oportunidad','status_oportunidad.id_oportunidad')
             ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
@@ -2518,8 +2573,8 @@ class DataViewsController extends Controller
 
     public function ingresos_por_periodo_por_status($inicio, $fin, $status,$auth)
     {   
-        if($auth->is_admin){
-            return DB::table('oportunidades')
+        if($auth->role_id >= 2){
+            $ingresos = DB::table('oportunidades')
                 ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
                 ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                 ->wherenull('oportunidades.deleted_at')
@@ -2527,9 +2582,15 @@ class DataViewsController extends Controller
                 ->wherenull('status_oportunidad.deleted_at')
                 ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
                 ->where('status_oportunidad.id_cat_status_oportunidad',$status)
-                ->sum('detalle_oportunidad.valor');   
+                ->select(DB::raw('sum(detalle_oportunidad.valor * detalle_oportunidad.meses) as valor'))
+                ->get();
+            
+            foreach ($ingresos as $ingreso) {
+                $ingresos = $ingreso->valor;
+            }
+            return $ingresos;
         }
-            return DB::table('oportunidades')
+            $ingresos = DB::table('oportunidades')
                 ->join('detalle_oportunidad','oportunidades.id_oportunidad','detalle_oportunidad.id_oportunidad')
                 ->join('status_oportunidad','status_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
                 ->join('colaborador_oportunidad','colaborador_oportunidad.id_oportunidad','oportunidades.id_oportunidad')
@@ -2538,14 +2599,19 @@ class DataViewsController extends Controller
                 ->wherenull('detalle_oportunidad.deleted_at')
                 ->wherenull('status_oportunidad.deleted_at')
                 ->whereBetween('status_oportunidad.updated_at', array($inicio ,$fin))
-                ->where('status_oportunidad.id_cat_status_oportunidad',$status)
-                ->sum('detalle_oportunidad.valor');
+                ->select(DB::raw('sum(detalle_oportunidad.valor * detalle_oportunidad.meses) as valor'))
+                ->get();
+            
+            foreach ($ingresos as $ingreso) {
+                $ingresos = $ingreso->valor;
+            }
+            return $ingresos;
             
     }
 
     public function origen_por_periodo($inicio, $fin,$auth)
     {
-        if($auth->is_admin){
+        if($auth->role_id >= 2){
             return DB::table('prospectos')
                 ->join('cat_fuentes','cat_fuentes.id_fuente','prospectos.fuente')
                 ->wherenull('prospectos.deleted_at')
@@ -2678,7 +2744,7 @@ class DataViewsController extends Controller
             ->get();
     }
     public function prospectos_sin_contactar($auth){
-        if($auth->is_admin){
+        if($auth->role_id >= 2){
             return DB::table('prospectos')
             ->join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
             ->wherenull('prospectos.deleted_at')

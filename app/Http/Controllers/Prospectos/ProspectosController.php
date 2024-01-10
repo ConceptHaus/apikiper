@@ -29,7 +29,7 @@ use App\Modelos\Oportunidad\ProspectoOportunidad;
 
 use App\Modelos\Empresa\Empresa;
 use App\Modelos\Empresa\EmpresaProspecto;
-
+use App\Http\Services\Auth\AuthService;
 
 use App\Evento;
 use App\Modelos\Extras\RecordatorioProspecto;
@@ -40,11 +40,15 @@ use App\Modelos\Prospecto\StatusProspecto;
 use App\Modelos\Prospecto\CatStatusProspecto;
 use App\Events\Historial;
 use App\Events\Event;
-
+use \App\Http\Enums\Permissions;
 use App\Imports\ProspectosImport;
 use App\Exports\ProspectosReports;
 use Excel;
 
+use App\Http\Enums\OldRole;
+use App\Http\Services\Users\UserService;
+use App\Http\Services\Roles\RolesService;
+use App\Modelos\Role;
 
 use DB;
 use Mail;
@@ -52,14 +56,25 @@ use Mailgun;
 use Carbon\Carbon;
 class ProspectosController extends Controller
 {
-    public function registerProspecto(Request $request){
-        //return $request;
-        $auth = $this->guard()->user();
 
+    private $userServ;
+    private $roleServ;
+
+    public function __construct(
+            UserService $userService,
+            RolesService $roleService
+        ){
+        $this->userServ = $userService;
+        $this->roleServ = $roleService;
+    }
+
+    public function registerProspecto(Request $request){
+        
+        $auth = $this->guard()->user();
         $validator = $this->validadorProspectos($request->all());
         $oportunidades = $request->oportunidades;
         $etiquetas = $request->etiquetas;
-
+        
         if($validator->passes()){
 
             try{
@@ -68,11 +83,12 @@ class ProspectosController extends Controller
                 $prospecto = new Prospecto;
                 $prospectoDetalle = new DetalleProspecto;
                 $statusProspecto = new StatusProspecto;
-                $colaborador_prospecto = new ColaboradorProspecto;
+                
                 $statusProspecto->id_cat_status_prospecto = 2;
                 $prospecto->nombre = $request->nombre;
                 $prospecto->apellido = $request->apellido;
                 $prospecto->correo = $request->correo;
+                $prospectoDetalle->extension = $request->extension;
                 $prospectoDetalle->telefono = $request->telefono;
                 $prospectoDetalle->celular = intval(preg_replace('/[^0-9]+/', '', $request->celular),10);
                 $prospectoDetalle->whatsapp = '521'.intval(preg_replace('/[^0-9]+/', '', $request->celular), 10);
@@ -81,8 +97,26 @@ class ProspectosController extends Controller
                 $prospecto->fuente = 3;
                 $prospecto->save();
                 $prospecto->status_prospecto()->save($statusProspecto);
-                $colaborador_prospecto->id_colaborador = $auth->id;
-                $prospecto->colaborador_prospecto()->save($colaborador_prospecto);
+                
+                
+                
+                // $prospecto->colaborador_prospecto()->save($colaborador_prospecto);
+                // $prospecto->save($colaborador_prospecto);
+
+                $colaborador_prospecto = new ColaboradorProspecto;
+                
+                if( isset($request->colaborador['id'])){
+                    $colaborador_prospecto->id_colaborador = $request->colaborador['id'];
+                }else{
+                    $colaborador_prospecto->id_colaborador = $auth->id;
+                }
+                $colaborador_prospecto->id_prospecto = $prospecto->id_prospecto;
+                
+                $colaborador_prospecto->save();
+                
+
+
+                
                 if(!$request->hsh){
                     if( isset($request->empresa))
                     {
@@ -122,7 +156,6 @@ class ProspectosController extends Controller
                        $etiqueta_prospecto->id_etiqueta = $etiqueta['id_etiqueta'];
                        $etiqueta_prospecto->id_prospecto = $prospecto->id_prospecto;
                        $prospecto->etiquetas_prospecto()->save($etiqueta_prospecto);
-
                     }
                 }
                 if($oportunidades != null){
@@ -143,10 +176,16 @@ class ProspectosController extends Controller
 
                         //Detalle de oportunidades
                         $detalle_oportunidad = new DetalleOportunidad;
-                        if(isset($oportunidad['valor']))
-                            $detalle_oportunidad->valor = $oportunidad['valor'];
-                        else
+                        if(isset($oportunidad['valor'])){
+                            $valor = str_replace('$ ', '',$oportunidad['valor']);
+                            $valor = str_replace(',', '', $valor);
+                            $detalle_oportunidad->valor = $valor;
+                        }
+                        else{
                             $detalle_oportunidad->valor = 0;
+                        }
+                        if(isset($oportunidad['meses']))
+                            $detalle_oportunidad->meses = $oportunidad['meses'];
                         $nueva_oportunidad->detalle_oportunidad()->save($detalle_oportunidad);
 
 
@@ -161,12 +200,20 @@ class ProspectosController extends Controller
 
                         //Asignación a colaborador
 
-                            foreach($oportunidad['id_colaborador'] as $col_op){
+                            if(count($oportunidad['id_colaborador']) > 0){
+                                foreach($oportunidad['id_colaborador'] as $col_op){
+                                    $colaborador_oportunidad = new ColaboradorOportunidad;
+                                    $colaborador_oportunidad->id_colaborador = $col_op;
+                                    $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
+                                    $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
+                                }
+                            }else{
                                 $colaborador_oportunidad = new ColaboradorOportunidad;
-                                $colaborador_oportunidad->id_colaborador = $col_op;
+                                $colaborador_oportunidad->id_colaborador = $auth->id;
                                 $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
-                                $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
+                                $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);    
                             }
+                            
                             
 
 
@@ -220,9 +267,19 @@ class ProspectosController extends Controller
         }
 
         $errores = $validator->errors()->toArray();
+
+        $errores_msg = array();
+
+        if (!empty($errores)) {
+            foreach ($errores as $key => $error_m) {
+                $errores_msg[] = $error_m[0];
+                break;
+            }
+        }
+
         return response()->json([
                 'error'=>true,
-                'messages'=> $errores
+                'message'=> $errores_msg
         ],400);
     }
 
@@ -251,20 +308,26 @@ class ProspectosController extends Controller
     }
 
     public function getAllProspectos(){
+
+        $permisos = User::getAuthenticatedUserPermissions();
         $auth = $this->guard()->user();
-        if($auth->is_admin){
+        if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
             $prospectos = Prospecto::GetAllProspectos();
             $prospectos_total = Prospecto::count();
             $prospectos_sin_contactar = Prospecto::join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
                                     ->where('status_prospecto.id_cat_status_prospecto','=',1)->count(); 
-        }
-        else{
+        }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
             $prospectos = Prospecto::join('colaborador_prospecto','colaborador_prospecto.id_prospecto','prospectos.id_prospecto')
                                     ->where('colaborador_prospecto.id_colaborador',$auth->id)->get();
             $prospectos_total = Prospecto::join('colaborador_prospecto','colaborador_prospecto.id_prospecto','prospectos.id_prospecto')
-                                    ->where('colaborador_prospecto.id_colaborador',$auth->id)->count();
+                                        ->where('colaborador_prospecto.id_colaborador',$auth->id)->count();
             $prospectos_sin_contactar = Prospecto::join('status_prospecto','prospectos.id_prospecto','status_prospecto.id_prospecto')
-                                    ->where('status_prospecto.id_cat_status_prospecto','=',1)->count(); 
+                                                ->where('status_prospecto.id_cat_status_prospecto','=',1)->count();
+        }
+        else{
+            $prospectos                 = [];
+            $prospectos_total           = [];
+            $prospectos_sin_contactar   = [];    
         }
         
         return response()->json([
@@ -337,31 +400,38 @@ class ProspectosController extends Controller
                         $empresa->save();
                     }
                     
-
                     $prospecto_empresa = new EmpresaProspecto;
                     $prospecto_empresa->id_empresa = $empresa->id_empresa;
                     $prospecto_empresa->id_prospecto = $id;
                     $prospecto_empresa->save();
                     */
                     $empresa = Empresa::where('nombre', '=', $request->empresa)->wherenull('deleted_at')->first();
+                    
                     if($empresa){
                         $empresa_prospecto = EmpresaProspecto::where('id_prospecto', '=', $prospecto->id_prospecto)
-                                            ->where('id_empresa', '=', $empresa->id_empresa)
                                             ->wherenull('deleted_at')
                                             ->first();
-                        if(!$empresa_prospecto){
-                            $prospecto_empresa = new EmpresaProspecto;
+                        if($empresa_prospecto){
+                            $prospecto_empresa = EmpresaProspecto::find($empresa_prospecto->id_prospecto_empresa);
                             $prospecto_empresa->id_empresa = $empresa->id_empresa;
-                            $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
                             $prospecto_empresa->save();
+                        } else {
+                            
+                            return response()->json([
+                                'error'=>true,
+                                'messages'=> "El prospecto no existe"
+                            ],500);
                         }
                     }else{
+                        
                         $empresa = new Empresa;
                         $empresa->nombre = $request->empresa;
                         $empresa->save();
-                        $prospecto_empresa = new EmpresaProspecto;
+
+                        $prospecto_empresa = EmpresaProspecto::where('id_prospecto', '=', $prospecto->id_prospecto)
+                                            ->wherenull('deleted_at')
+                                            ->first();
                         $prospecto_empresa->id_empresa = $empresa->id_empresa;
-                        $prospecto_empresa->id_prospecto = $prospecto->id_prospecto;
                         $prospecto_empresa->save();
                     }
                 }
@@ -487,11 +557,12 @@ class ProspectosController extends Controller
     }
 
     public function addOportunidades(Request $request, $id){
+        
         $auth = $this->guard()->user();
         $validator = $this->validadorOportunidad($request->all());
         $prospecto = Prospecto::where('id_prospecto',$id)->first();
         $status_prospecto = StatusProspecto::where('id_prospecto',$id)->first();
-
+        
         if (!$prospecto) {
           return response()->json([
             'error'=>false,
@@ -514,13 +585,13 @@ class ProspectosController extends Controller
                 $nueva_oportunidad->servicio_oportunidad()->save($servicio_oportunidad);
 
                 //Asignación a colaborador
-                $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto',$id)->first();
-                
-                //$colaboradores = $request->id_colaborador;
-                $colaborador = $colaborador_prospecto->id_colaborador ?? $auth->id;
+                // $colaborador_prospecto = ColaboradorProspecto::where('id_prospecto',$id)->first();
+                // $colaborador = $colaborador_prospecto->id_colaborador ?? $auth->id;
+               
+                $colaborador_prospecto_id = (!is_null($request->id_colaborador)) ? $request->id_colaborador : $auth->id;
                 
                 $colaborador_oportunidad = new ColaboradorOportunidad;
-                $colaborador_oportunidad->id_colaborador = $colaborador;
+                $colaborador_oportunidad->id_colaborador = $colaborador_prospecto_id;
                 $colaborador_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
                 $nueva_oportunidad->colaborador_oportunidad()->save($colaborador_oportunidad);
 
@@ -540,7 +611,10 @@ class ProspectosController extends Controller
                 //Guarda detalle oportunidad
                 $detalle_oportunidad = new DetalleOportunidad;
                 $detalle_oportunidad->id_oportunidad = $nueva_oportunidad->id_oportunidad;
-                $detalle_oportunidad->valor = $request->valor;
+                $valor = str_replace('$ ', '', $request->valor);
+                $valor = str_replace(',', '', $valor);
+                $detalle_oportunidad->valor = $valor;
+                $detalle_oportunidad->meses = $request->meses;
                 $detalle_oportunidad->save();
 
                 //Cambio de Status Prospecto
@@ -616,6 +690,62 @@ class ProspectosController extends Controller
         ],200);
     }
 
+    public function getRecordatoriosAsHTML($id){
+        // setlocale(LC_TIME, 'es_ES.UTF-8');
+        setlocale(LC_TIME, 'en_EN.UTF-8');
+        
+        $prospecto_recordatorios = Prospecto::GetProspectoRecordatorios($id);
+        $recordatorios = "";
+
+        if(isset($prospecto_recordatorios['recordatorios']) AND count($prospecto_recordatorios['recordatorios']) > 0){
+            $recordatorios = $recordatorios . '<div class="scroller" data-height="280px">';
+
+            foreach ($prospecto_recordatorios['recordatorios'] as $key => $prospecto_recordatorio) {
+                $recordatorios = $recordatorios . '<div class="time-line-notas"><div class="d-flex justify-content-between">';
+                $recordatorios = $recordatorios . '<span>'.strftime("%d de %B de %Y", strtotime($prospecto_recordatorio->detalle['fecha_recordatorio'])).'</span>';
+                $recordatorios = $recordatorios . '<span>'.date( 'H:i', strtotime($prospecto_recordatorio->detalle['fecha_recordatorio'])).'</span></div>';
+                $recordatorios = $recordatorios . '<div class="notas-textos"><p>'.$prospecto_recordatorio->detalle['nota_recordatorio'].'</p></div>';
+                if (!empty($prospecto_recordatorio->detalle['aquien_enviar'])) {
+
+                    $wholist = json_decode($prospecto_recordatorio->detalle['aquien_enviar']);
+                    $recordatorios = $recordatorios . '<div class="who-send"><span> Enviado a: ';
+                    
+                    $list = "";
+                    foreach ($wholist as $key => $who) {
+                       if($wholist->$key){
+                        $list .= $key.', ';
+                       }
+                    }
+                    
+                    $recordatorios = $recordatorios . trim($list,', ') .'</span></div>';
+                }
+                $recordatorios = $recordatorios . '</div>';
+            }
+
+            $recordatorios = $recordatorios . '</div>';
+
+            $recordatorios = str_replace('January de', 'Enero de', $recordatorios);
+            $recordatorios = str_replace('February de', 'Febrero de', $recordatorios);
+            $recordatorios = str_replace('March de', 'Marzo de', $recordatorios);
+            $recordatorios = str_replace('April de', 'Abril de', $recordatorios);
+            $recordatorios = str_replace('May de', 'Mayo de', $recordatorios);
+            $recordatorios = str_replace('June de', 'Junio de', $recordatorios);
+            $recordatorios = str_replace('July de', 'Julio de', $recordatorios);
+            $recordatorios = str_replace('August de ', 'Agosto de', $recordatorios);
+            $recordatorios = str_replace('September de', 'Septiembre de', $recordatorios);
+            $recordatorios = str_replace('October de', 'Octubre de', $recordatorios);
+            $recordatorios = str_replace('November de', 'Noviembre de', $recordatorios);
+            $recordatorios = str_replace('December de', 'Diciembre de', $recordatorios);
+        }else{
+            $recordatorios = '<p class="list-group-item font-400 text-muted text-center">No hay recordatorios</p>';
+        }
+        return response()->json([
+            'message'   =>  mb_convert_encoding($recordatorios, 'UTF-8', 'UTF-8'),
+            'error'     => false,
+            'data'      => $prospecto_recordatorios
+        ],200);
+    }
+
     public function addRecordatorios(Request $request, $id){
         $validator = $this->validadorRecordatorio($request->all());
         $prospecto = Prospecto::where('id_prospecto',$id)->first();
@@ -633,6 +763,7 @@ class ProspectosController extends Controller
                 $detalle_recordatorio->fecha_recordatorio = $request->fecha_recordatorio;
                 $detalle_recordatorio->hora_recordatorio = $request->hora_recordatorio;
                 $detalle_recordatorio->nota_recordatorio = $request->nota_recordatorio;
+                $detalle_recordatorio->aquien_enviar = json_encode( $request->whosend );
                 $recordatorio->detalle()->save($detalle_recordatorio);
                 DB::commit();
                 return response()->json([
@@ -747,17 +878,17 @@ class ProspectosController extends Controller
 
           try {
             foreach($request->etiquetas as $etiqueta){
-
-              $etiquetas = EtiquetasProspecto::where('id_prospecto',$prospecto->id_prospecto)->where('id_etiqueta',$etiqueta['id_etiqueta'])->get();
-              if ($etiquetas->isEmpty()) {
-                DB::beginTransaction();
-                  $etiqueta_prospecto = new EtiquetasProspecto;
-                  $etiqueta_prospecto->id_prospecto = $prospecto->id_prospecto;
-                  $etiqueta_prospecto->id_etiqueta = $etiqueta['id_etiqueta'];
-                  $etiqueta_prospecto->save();
-                DB::commit();
+                $etiquetas = EtiquetasProspecto::where('id_prospecto',$prospecto->id_prospecto)->where('id_etiqueta',$etiqueta['id_etiqueta'])->get();
+                if ($etiquetas->isEmpty()) {
+                  DB::beginTransaction();
+                    $etiqueta_prospecto = new EtiquetasProspecto;
+                    $etiqueta_prospecto->id_prospecto = $prospecto->id_prospecto;
+                    $etiqueta_prospecto->id_etiqueta = $etiqueta['id_etiqueta'];
+                    $etiqueta_prospecto->save();
+                  DB::commit();
+                }
               }
-            }
+            
 
             return response()->json([
                         'error'=>false,
@@ -927,7 +1058,23 @@ class ProspectosController extends Controller
         ]);
     }
 
-    public function downloadProspectos($admin,$rol,$id_user){
+    public function downloadProspectos($role_id, $rol, $id_user, $correos, $nombre, $telefono, $status, $grupo, $etiquetas, $fechaInicio, $fechaFin, $colaboradores, $busqueda){
+        $correos = json_decode($correos);
+        $nombre = json_decode($nombre);
+        $telefono = json_decode($telefono);
+        $status = json_decode($status);
+        $fuente = json_decode($grupo);
+        $etiqueta = json_decode($etiquetas);
+        $fechaInicio = json_decode($fechaInicio);
+        $fechaFin = json_decode($fechaFin);
+        $colaboradores = json_decode($colaboradores);
+        $busqueda = json_decode($busqueda);
+
+        $usuario = $this->userServ->findById($id_user);
+        $roles = $this->roleServ->findById($usuario->role_id);
+
+        $permisos = json_decode($roles->acciones);
+      
         
         $date = Carbon::now();
         $headings = [
@@ -940,31 +1087,44 @@ class ProspectosController extends Controller
             'Mail',
             'Comentarios',
             'Seguimiento',
-            'Etiquetas'
+            'Etiquetas',
+            'Empresa'
         ];
-        if($admin && $rol == 0){
-             $desarrollo = 'all';
-        }
-        else if($rol == 1){
-             $desarrollo='polanco';
-        }
-        else if($rol == 2){
-             $desarrollo='napoles';
-        }
-        else if(!$admin && $rol == 0){
+
+        if($rol == OldRole::POLANCO){
+            $desarrollo='polanco';
+
+        }else if($rol == OldRole::NAPOLES){
+            $desarrollo='napoles';
+
+        }else if(in_array(Permissions::PROSPECTS_READ_ALL, $permisos)){
+            $desarrollo = 'all';
+
+        }else if(in_array(Permissions::PROSPECTS_READ_OWN, $permisos)){
             $desarrollo = 'user';
+            
+        } else {
+            return response()->json([
+                'message'=>'No tienes permiso',
+                'error'=>true],401);
         }
-        return (new ProspectosReports($headings,$desarrollo,$id_user))->download("{$date}_{$desarrollo}_reporte.xlsx");
+        return (new ProspectosReports($headings,$desarrollo,$id_user, $correos, $nombre, $telefono, $status, $fuente, $etiqueta, $fechaInicio, $fechaFin, $colaboradores, $busqueda))->download("{$date}_{$desarrollo}_reporte.xlsx");
     }
 
     //Functiones auxiliares
     public function validadorProspectos(array $data){
 
         return Validator::make($data,[
-            'nombre'=>'required|string|max:255',
-            //'apellido'=>'required|string|max:255',
-            'correo'=>'required|email|max:255|unique:prospectos,correo',
-            'telefono'=>'required|unique:detalle_prospecto,telefono|'
+            'nombre'    => 'nullable|string|max:30',
+            'apellido'  => 'nullable|string|max:30',
+            'correo'    => 'required|email|max:50|unique:prospectos,correo',
+            'telefono'  => 'required|max:9999999999',
+            'celular'   => 'max:9999999999',
+            'extension' => 'max:999999',
+            'empresa'   => 'nullable|string|max:50',
+            'puesto'    => 'nullable|string|max:35',
+            'nota'      => 'nullable|string|max:250',
+
 
         ]);
 
@@ -973,7 +1133,7 @@ class ProspectosController extends Controller
     public function validadorOportunidad(array $data){
 
         return Validator::make($data,[
-            'nombre_oportunidad'=>'required|string|max:255',
+            'nombre_oportunidad'=>'required|string|max:40',
             //'id_servicio_cat'=>'required|numeric',
             //'id_colaborador'=>'required|string|max:255'
         ]);

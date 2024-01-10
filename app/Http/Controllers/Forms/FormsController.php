@@ -351,17 +351,37 @@ class FormsController extends Controller
 
           $prospecto->nombre = $data['nombre'];
           $prospecto->apellido = (isset($data['apellido']) ? $data['apellido'] : '');
-          $prospecto->correo = $data['correo'];
+          $prospecto->correo =  (isset($data['correo']) ? $data['correo'] : '');
           $prospecto->fuente = (isset($data['fuente']) ? $data['fuente'] : 2) ;
           $prospecto->save();
 
           
           $detalleProspecto = new DetalleProspecto();
           $detalleProspecto->empresa = (isset($data['empresa']) ? $data['empresa'] : '');
+          $detalleProspecto->nombre_campana = (isset($data['nombre_campana']) ? $data['nombre_campana'] : '');
+          $detalleProspecto->desarrollo = (isset($data['desarrollo']) ? $data['desarrollo'] : ' ');
+          $detalleProspecto->ciudad = (isset($data['ciudad']) ? $data['ciudad'] : '');
+          $detalleProspecto->puesto = (isset($data['puesto']) ? $data['puesto'] : '');
+          $detalleProspecto->numero = (isset($data['numero']) ? $data['numero'] : '');
+          $detalleProspecto->extension = (isset($data['extension']) ? $data['extension'] : '');
           $detalleProspecto->telefono = (isset($data['telefono']) ? preg_replace('/[^0-9]+/','',$data['telefono']) : '');
-          $detalleProspecto->celular = (isset($data['telefono']) ? preg_replace('/[^0-9]+/','',$data['telefono']) : '');
-          $detalleProspecto->whatsapp = (isset($data['telefono']) ? preg_replace('/[^0-9]+/','',$data['telefono']) : '');
+          $detalleProspecto->celular = (isset($data['celular']) ? preg_replace('/[^0-9]+/','',$data['celular']) : '');
+          $detalleProspecto->whatsapp = (isset($data['whatsapp']) ? preg_replace('/[^0-9]+/','',$data['whatsapp']) : '');
           $detalleProspecto->nota = (isset($data['mensaje']) ? $data['mensaje'] : '');
+          //Campos personalizados
+          $detalleProspecto->campo_adicional_1      = (isset($data['campo_adicional_1'])      ? $data['campo_adicional_1'] : '');
+          $detalleProspecto->campo_adicional_2      = (isset($data['campo_adicional_2'])      ? $data['campo_adicional_2'] : '');
+          $detalleProspecto->campo_adicional_3      = (isset($data['campo_adicional_3'])      ? $data['campo_adicional_3'] : '');
+          $detalleProspecto->campo_adicional_4      = (isset($data['campo_adicional_4'])      ? $data['campo_adicional_4'] : '');
+          $detalleProspecto->campo_adicional_5      = (isset($data['campo_adicional_5'])      ? $data['campo_adicional_5'] : '');
+          $detalleProspecto->campo_adicional_6      = (isset($data['campo_adicional_6'])      ? $data['campo_adicional_6'] : '');
+          $detalleProspecto->campo_adicional_7      = (isset($data['campo_adicional_7'])      ? $data['campo_adicional_7'] : '');
+          $detalleProspecto->campo_adicional_8      = (isset($data['campo_adicional_8'])      ? $data['campo_adicional_8'] : '');
+          $detalleProspecto->campo_adicional_9      = (isset($data['campo_adicional_9'])      ? $data['campo_adicional_9'] : '');
+          $detalleProspecto->campo_adicional_10      = (isset($data['campo_adicional_10'])      ? $data['campo_adicional_10'] : '');
+          
+
+
           $prospecto->detalle_prospecto()->save($detalleProspecto);
           
           $status->id_cat_status_prospecto = 2;
@@ -429,7 +449,7 @@ class FormsController extends Controller
 
     public function validadorProspecto(array $data){
         return Validator::make($data,[
-          'correo'=>'required|email|max:255|unique:prospectos,correo',
+          'correo'=>'nullable|email|max:255|unique:prospectos,correo',
           'telefono'=>'required|unique:detalle_prospecto,telefono|'
         ]);
     }
